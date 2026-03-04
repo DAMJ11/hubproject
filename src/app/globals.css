@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700&family=Passion+One:wght@400;700;900&display=swap');
+@import '../styles/transitions.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 220 20% 20%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 20%;
+    --primary: 160 54% 35%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 50% 25%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 20% 96%;
+    --muted-foreground: 220 10% 45%;
+    --accent: 160 54% 35%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 160 54% 35%;
+    --radius: 0.5rem;
+
+    /* Custom ProjectHub colors */
+    --projecthub-green: #0d7a5f;
+    --projecthub-green-dark: #0a6b53;
+    --projecthub-navy: #1a365d;
+    --projecthub-navy-dark: #152d4f;
+    --projecthub-teal: #0d6c5d;
+    --projecthub-light-bg: #f8f8f8;
+    --projecthub-gray: #6b7280;
+  }
+
+  .dark {
+    --background: 220 20% 10%;
+    --foreground: 0 0% 95%;
+    --card: 220 20% 12%;
+    --card-foreground: 0 0% 95%;
+    --popover: 220 20% 12%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 160 54% 35%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 50% 25%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 20% 18%;
+    --muted-foreground: 220 10% 60%;
+    --accent: 160 54% 35%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 20%;
+    --input: 220 13% 20%;
+    --ring: 160 54% 35%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Karla', sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Passion One', cursive;
+    letter-spacing: 0.02em;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-[#1a365d] text-white px-6 py-3 rounded-full font-medium transition-all duration-300 hover:bg-[#152d4f];
+  }
+  .btn-secondary {
+    @apply border-2 border-[#1a365d] text-[#1a365d] px-6 py-3 rounded-full font-medium transition-all duration-300 hover:bg-[#1a365d] hover:text-white;
+  }
+  .section-padding {
+    @apply py-16 md:py-24 px-4 md:px-8;
+  }
+  .container-custom {
+    @apply max-w-7xl mx-auto;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0d7a5f;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0a6b53;
+}

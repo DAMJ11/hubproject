@@ -1,0 +1,362 @@
+================================================================================
+                         TIDYHUBB - DOCUMENTACIÓN DEL PROYECTO
+              Plataforma de Servicios de Mantenimiento y Aseo del Hogar
+================================================================================
+
+Fecha de documentación: Marzo 2026
+Autor del desarrollo: Duber
+
+================================================================================
+1. DESCRIPCIÓN GENERAL
+================================================================================
+
+TidyHubb es una plataforma web para la reserva de servicios profesionales de 
+mantenimiento y aseo del hogar. Permite a los usuarios buscar, comparar y 
+reservar profesionales verificados para servicios como limpieza, jardinería, 
+plomería, electricidad, pintura, cerrajería, fumigación, carpintería, aires 
+acondicionados y mudanzas.
+
+La plataforma cuenta con:
+- Landing page pública informativa
+- Sistema de autenticación (login/registro)
+- Dashboard diferenciado por roles (admin y usuario)
+- API REST para gestión de datos
+- Base de datos relacional MySQL
+
+================================================================================
+2. TECNOLOGÍAS UTILIZADAS
+================================================================================
+
+FRONTEND:
+---------
+- Next.js 15.3.7 (App Router) - Framework de React con SSR/SSG
+- React 18.3 - Librería de UI
+- TypeScript 5.8 - Tipado estático
+- Tailwind CSS 3.4 - Framework de estilos utilitarios
+- Framer Motion 12.x - Animaciones y transiciones suaves
+- Shadcn/UI - Componentes de UI reutilizables basados en Radix
+  - @radix-ui/react-checkbox
+  - @radix-ui/react-dialog
+  - @radix-ui/react-dropdown-menu
+  - @radix-ui/react-slot
+  - @radix-ui/react-switch
+- Lucide React - Iconos SVG
+- class-variance-authority (CVA) - Variantes de estilos para componentes
+- clsx + tailwind-merge - Utilidades para clases CSS condicionales
+- tailwindcss-animate - Animaciones predefinidas para Tailwind
+
+BACKEND (API Routes dentro de Next.js):
+---------------------------------------
+- Next.js API Routes (App Router) - Endpoints REST del servidor
+- mysql2/promise - Driver de conexión a MySQL con pool de conexiones
+- bcryptjs 3.x - Hashing de contraseñas (bcrypt con salt)
+- jsonwebtoken 9.x - Autenticación mediante tokens JWT
+- Cookies HTTP-only - Almacenamiento seguro del token de sesión
+
+BASE DE DATOS:
+--------------
+- MySQL - Sistema de gestión de base de datos relacional
+- 14 tablas diseñadas para el dominio de servicios del hogar
+- Seeds incluidos para categorías, servicios y usuarios de prueba
+
+HERRAMIENTAS DE DESARROLLO:
+---------------------------
+- ESLint 9.x - Linting de código
+- Biome - Formateo de código
+- PostCSS - Procesamiento de CSS
+- Turbopack - Bundler de desarrollo rápido (integrado en Next.js)
+
+================================================================================
+3. ESTRUCTURA DEL PROYECTO (FRONTEND Y BACKEND)
+================================================================================
+
+IMPORTANTE: Este proyecto usa Next.js con App Router, lo que significa que el
+FRONTEND y el BACKEND coexisten en la misma carpeta del proyecto. Next.js 
+permite tener API Routes (backend) y páginas (frontend) en una sola aplicación.
+
+CARPETA RAÍZ: manufy-clone/
+│
+├── src/                          ← CÓDIGO FUENTE PRINCIPAL
+│   │
+│   ├── app/                      ← PÁGINAS Y RUTAS (FRONTEND + BACKEND)
+│   │   │
+│   │   ├── api/                  ← *** BACKEND (API REST) ***
+│   │   │   ├── auth/
+│   │   │   │   ├── login/route.ts       → POST /api/auth/login
+│   │   │   │   ├── register/route.ts    → POST /api/auth/register
+│   │   │   │   ├── logout/route.ts      → POST /api/auth/logout
+│   │   │   │   └── me/route.ts          → GET  /api/auth/me
+│   │   │   ├── bookings/route.ts        → GET/POST /api/bookings
+│   │   │   ├── categories/route.ts      → GET  /api/categories
+│   │   │   ├── professionals/route.ts   → GET  /api/professionals
+│   │   │   └── services/route.ts        → GET  /api/services
+│   │   │
+│   │   ├── page.tsx              ← *** FRONTEND: Página principal (landing) ***
+│   │   ├── layout.tsx            ← Layout raíz de la app
+│   │   ├── globals.css           ← Estilos globales
+│   │   ├── login/page.tsx        ← Página de inicio de sesión
+│   │   ├── register/page.tsx     ← Página de registro
+│   │   ├── contacto/page.tsx     ← Página de contacto
+│   │   ├── blog/page.tsx         ← Página de blog
+│   │   ├── noticias/page.tsx     ← Página de noticias
+│   │   ├── sobre-nosotros/       ← Sobre nosotros
+│   │   ├── para-marcas/          ← Info para marcas
+│   │   ├── para-fabricantes/     ← Info para fabricantes
+│   │   ├── recursos/             ← Recursos
+│   │   ├── politica-sostenibilidad/  ← Política de sostenibilidad
+│   │   │
+│   │   └── dashboard/            ← *** FRONTEND: Panel de administración ***
+│   │       ├── page.tsx               → Dashboard principal
+│   │       ├── bookings/page.tsx      → Gestión de reservas
+│   │       ├── services/page.tsx      → Gestión de servicios
+│   │       ├── services/new/page.tsx  → Crear nuevo servicio
+│   │       ├── services/categories/   → Categorías de servicios
+│   │       ├── professionals/page.tsx → Gestión de profesionales
+│   │       ├── professionals/new/     → Registrar profesional
+│   │       ├── messages/page.tsx      → Mensajería
+│   │       ├── users/page.tsx         → Gestión de usuarios
+│   │       ├── payments/page.tsx      → Pagos
+│   │       ├── reviews/page.tsx       → Reseñas
+│   │       ├── promos/page.tsx        → Códigos promocionales
+│   │       ├── reports/page.tsx       → Reportes
+│   │       ├── addresses/page.tsx     → Direcciones
+│   │       ├── settings/page.tsx      → Configuración
+│   │       └── help/page.tsx          → Ayuda
+│   │
+│   ├── components/               ← *** FRONTEND: Componentes reutilizables ***
+│   │   │
+│   │   ├── Header.tsx            → Encabezado/navegación principal
+│   │   ├── Footer.tsx            → Pie de página
+│   │   ├── Hero.tsx              → Sección hero de la landing
+│   │   ├── CTASection.tsx        → Sección de llamada a la acción
+│   │   ├── FinalCTASection.tsx   → CTA final
+│   │   ├── PlatformSection.tsx   → Sección de la plataforma
+│   │   ├── PricingSection.tsx    → Sección de precios
+│   │   ├── QualitySection.tsx    → Sección de calidad
+│   │   ├── TestimonialsSection.tsx → Testimonios
+│   │   ├── WhyManufySection.tsx  → Por qué elegirnos
+│   │   │
+│   │   ├── dashboard/            → Componentes del dashboard
+│   │   │   ├── AdminDashboard.tsx     → Vista admin
+│   │   │   ├── UserDashboard.tsx      → Vista usuario
+│   │   │   ├── DashboardLayout.tsx    → Layout del dashboard
+│   │   │   ├── DashboardHeader.tsx    → Header del dashboard
+│   │   │   ├── DashboardHome.tsx      → Página principal del dashboard
+│   │   │   ├── Sidebar.tsx            → Barra lateral de navegación
+│   │   │   ├── BookingsPanel.tsx      → Panel de reservas
+│   │   │   ├── ServicesPanel.tsx      → Panel de servicios
+│   │   │   ├── ProfessionalsPanel.tsx → Panel de profesionales
+│   │   │   ├── MessagesPanel.tsx      → Panel de mensajes
+│   │   │   └── index.ts              → Barrel exports
+│   │   │
+│   │   └── ui/                   → Componentes UI base (shadcn/ui)
+│   │       ├── button.tsx
+│   │       ├── card.tsx
+│   │       ├── checkbox.tsx
+│   │       ├── dropdown-menu.tsx
+│   │       ├── input.tsx
+│   │       ├── sheet.tsx
+│   │       ├── page-transition.tsx    → Animaciones de transición
+│   │       └── page-template.tsx      → Templates de página animados
+│   │
+│   ├── lib/                      ← *** BACKEND: Utilidades del servidor ***
+│   │   ├── auth.ts               → Funciones de autenticación (JWT, bcrypt)
+│   │   ├── db.ts                 → Conexión y pool de MySQL
+│   │   └── utils.ts              → Utilidades generales
+│   │
+│   ├── styles/                   ← Estilos adicionales
+│   │   └── transitions.css       → Transiciones CSS globales
+│   │
+│   └── types/                    ← Tipos TypeScript
+│       └── user.ts               → Tipos de usuario y auth
+│
+├── database/                     ← *** BASE DE DATOS ***
+│   └── schema.sql                → Esquema completo + seeds
+│
+├── package.json                  → Dependencias y scripts
+├── tsconfig.json                 → Configuración TypeScript
+├── tailwind.config.ts            → Configuración Tailwind CSS
+├── next.config.js                → Configuración Next.js
+├── postcss.config.mjs            → Configuración PostCSS
+├── biome.json                    → Configuración Biome (formateo)
+├── eslint.config.mjs             → Configuración ESLint
+└── netlify.toml                  → Configuración de despliegue en Netlify
+
+================================================================================
+4. RESUMEN: ¿DÓNDE ESTÁ EL FRONTEND Y EL BACKEND?
+================================================================================
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  FRONTEND (Páginas, componentes, estilos)                          │
+│  ─────────────────────────────────────────                          │
+│  src/app/*.tsx          → Páginas públicas                          │
+│  src/app/dashboard/     → Páginas del panel de control              │
+│  src/components/        → Todos los componentes React               │
+│  src/styles/            → Estilos CSS adicionales                   │
+│  src/app/globals.css    → Estilos globales                          │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  BACKEND (API, autenticación, base de datos)                        │
+│  ─────────────────────────────────────────                           │
+│  src/app/api/           → Endpoints REST (rutas de API)             │
+│  src/lib/auth.ts        → Lógica de autenticación (JWT, bcrypt)     │
+│  src/lib/db.ts          → Conexión a MySQL (pool)                   │
+│  database/schema.sql    → Esquema y datos semilla de la BD          │
+└──────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+5. BASE DE DATOS - ESQUEMA (14 TABLAS)
+================================================================================
+
+1.  users                    → Usuarios (clientes y administradores)
+2.  addresses                → Direcciones de los usuarios
+3.  service_categories       → Categorías de servicios (10 categorías)
+4.  services                 → Servicios ofrecidos (25 servicios)
+5.  professionals            → Profesionales verificados
+6.  professional_services    → Relación N:M profesionales ↔ servicios
+7.  professional_availability → Horarios de disponibilidad
+8.  bookings                 → Reservas de servicios
+9.  reviews                  → Reseñas y calificaciones
+10. conversations            → Conversaciones de chat
+11. messages                 → Mensajes dentro de conversaciones
+12. notifications            → Notificaciones del sistema
+13. payments                 → Registro de pagos
+14. promo_codes              → Códigos de descuento
+
+Categorías de servicios incluidas:
+- Aseo del Hogar, Jardinería, Plomería, Electricidad, Pintura,
+  Cerrajería, Fumigación, Carpintería, Aires Acondicionados, Mudanzas
+
+================================================================================
+6. SISTEMA DE AUTENTICACIÓN
+================================================================================
+
+- Registro: El usuario se registra con email, nombre, contraseña.
+  La contraseña se hashea con bcrypt (12 salt rounds) antes de guardarse.
+  
+- Login: Se busca el usuario por email, se compara la contraseña con 
+  bcrypt.compare(). Si es válida, se genera un JWT con datos del usuario.
+  
+- Token JWT: Se almacena en una cookie HTTP-only con expiración de 7 días.
+  Incluye: id, email, firstName, lastName, role.
+  
+- Roles: "user" (cliente) y "admin" (administrador).
+  El dashboard muestra diferentes vistas según el rol.
+
+- Usuarios de prueba (seeds):
+  • admin@tidyhubb.test / admin2026 (rol: admin)
+  • user@tidyhubb.test  / user2026  (rol: user)
+
+================================================================================
+7. ENDPOINTS DE LA API REST
+================================================================================
+
+POST /api/auth/register    → Registro de nuevo usuario
+POST /api/auth/login       → Inicio de sesión
+POST /api/auth/logout      → Cierre de sesión
+GET  /api/auth/me          → Obtener usuario autenticado actual
+
+GET  /api/categories       → Listar categorías de servicios
+GET  /api/services         → Listar servicios (filtros: category, search)
+GET  /api/professionals    → Listar profesionales (filtros: verified, search, service)
+
+GET  /api/bookings         → Listar reservas del usuario (o todas si admin)
+POST /api/bookings         → Crear nueva reserva
+
+================================================================================
+8. FUNCIONALIDADES IMPLEMENTADAS
+================================================================================
+
+LANDING PAGE:
+- Header con navegación responsiva y animaciones
+- Hero section con llamada a la acción
+- Secciones informativas: Servicios, Cómo funciona, Precios, Testimonios
+- Footer con enlaces y redes sociales
+
+AUTENTICACIÓN:
+- Formulario de login con validación
+- Formulario de registro con validación completa
+- Protección de rutas mediante JWT
+- Logo clickeable que redirige al inicio
+
+DASHBOARD (Admin):
+- Vista general con estadísticas
+- Gestión de reservas (bookings)
+- Gestión de servicios y categorías
+- Gestión de profesionales
+- Mensajería
+- Gestión de usuarios
+- Pagos y transacciones
+- Reseñas y calificaciones
+- Códigos promocionales
+- Reportes
+- Configuración del sistema
+
+DASHBOARD (Usuario):
+- Vista general personalizada
+- Mis reservas
+- Mis direcciones
+- Mensajes
+- Configuración de perfil
+
+EXPERIENCIA DE USUARIO (UX):
+- Transiciones suaves entre páginas con Framer Motion
+- Animaciones escalonadas para elementos de formulario
+- Efectos hover y tap en botones
+- Menú móvil animado con apertura/cierre suave
+- Scroll suave global
+- Respeto a preferencias de reducción de movimiento (accesibilidad)
+
+================================================================================
+9. CÓMO EJECUTAR EL PROYECTO
+================================================================================
+
+REQUISITOS PREVIOS:
+- Node.js (versión 18 o superior)
+- MySQL (versión 8 o superior)
+- npm o yarn
+
+PASOS:
+
+1. Instalar dependencias:
+   npm install
+
+2. Configurar la base de datos:
+   - Crear la base de datos ejecutando database/schema.sql en MySQL:
+     mysql -u root -p < database/schema.sql
+   
+   - Verificar que src/lib/db.ts tenga las credenciales correctas
+     o configurar variables de entorno:
+     MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE
+
+3. Configurar variables de entorno (opcional):
+   - Crear archivo .env.local en la raíz con:
+     JWT_SECRET=tu_clave_secreta
+     MYSQL_HOST=localhost
+     MYSQL_PORT=3306
+     MYSQL_USER=root
+     MYSQL_PASSWORD=tu_password
+     MYSQL_DATABASE=hubproject
+
+4. Ejecutar en modo desarrollo:
+   npm run dev
+
+5. Compilar para producción:
+   npm run build
+   npm start
+
+6. Acceder a la aplicación:
+   http://localhost:3000
+
+================================================================================
+10. SCRIPTS DISPONIBLES
+================================================================================
+
+npm run dev      → Inicia el servidor de desarrollo con Turbopack
+npm run build    → Compila la aplicación para producción
+npm start        → Inicia el servidor de producción
+npm run lint     → Ejecuta el linting de código
+npm run format   → Formatea el código con Biome
+
+================================================================================
