@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import Sidebar from "./Sidebar";
@@ -29,13 +29,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const touchCurrentXRef = useRef<number | null>(null);
   const lastFocusedElementRef = useRef<HTMLElement | null>(null);
 
-  const clearProgressTimer = () => {
+  const clearProgressTimer = useCallback(() => {
     if (!progressTimerRef.current) return;
     clearInterval(progressTimerRef.current);
     progressTimerRef.current = null;
-  };
+  }, []);
 
-  const startNavigationProgress = () => {
+  const startNavigationProgress = useCallback(() => {
     clearProgressTimer();
     setIsNavigating(true);
     setProgress(18);
@@ -47,9 +47,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         return Math.min(value + increment, 88);
       });
     }, 120);
-  };
+  }, [clearProgressTimer]);
 
-  const finishNavigationProgress = () => {
+  const finishNavigationProgress = useCallback(() => {
     clearProgressTimer();
     setProgress(100);
 
@@ -57,20 +57,20 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       setIsNavigating(false);
       setProgress(0);
     }, 220);
-  };
+  }, [clearProgressTimer]);
 
   useEffect(() => {
     if (previousPathRef.current !== pathname) {
       previousPathRef.current = pathname;
       finishNavigationProgress();
     }
-  }, [pathname]);
+  }, [finishNavigationProgress, pathname]);
 
   useEffect(() => {
     return () => {
       clearProgressTimer();
     };
-  }, []);
+  }, [clearProgressTimer]);
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 1023px)");

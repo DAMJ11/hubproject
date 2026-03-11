@@ -386,7 +386,7 @@ export default function Sidebar({
           const active = isActive(item.href);
           const isExpanded = expandedItems.includes(item.name);
           const hasSubItems = item.subItems && item.subItems.length > 0;
-          const itemBadge = item.name === "Mensajes" ? unreadCount : item.badge;
+          const itemBadge = item.name === "Mensajes" ? unreadCount : (item.badge ?? 0);
 
           return (
             <div key={item.name}>
@@ -415,7 +415,7 @@ export default function Sidebar({
                 >
                   <div className="relative">
                     <Icon className={`w-5 h-5 flex-shrink-0 ${active ? "text-white" : "text-gray-500"}`} />
-                    {Boolean(itemBadge) && itemBadge > 0 && !expanded && (
+                    {itemBadge > 0 && !expanded && (
                       <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                         {itemBadge}
                       </span>
@@ -424,7 +424,7 @@ export default function Sidebar({
                   {expanded && (
                     <>
                       <span className="flex-1 font-medium text-sm">{translateLabel(item.name)}</span>
-                      {Boolean(itemBadge) && itemBadge > 0 && (
+                      {itemBadge > 0 && (
                         <span className="w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                           {itemBadge}
                         </span>
