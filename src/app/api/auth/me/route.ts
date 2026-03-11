@@ -26,6 +26,7 @@ export async function GET() {
           firstName: user.firstName,
           lastName: user.lastName,
           role: user.role,
+          companyId: user.companyId ?? null,
         },
       },
       { status: 200 }

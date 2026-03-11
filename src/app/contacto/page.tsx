@@ -48,9 +48,9 @@ export default function ContactoPage() {
                 Envíanos Un Mensaje
               </h2>
               {submitted ? (
-                <Card className="p-8 bg-[#0d7a5f]/10 border-[#0d7a5f]">
+                <Card className="p-8 bg-[#2563eb]/10 border-[#2563eb]">
                   <CardContent className="text-center p-0">
-                    <h3 className="text-2xl font-bold text-[#0d7a5f] mb-4">
+                    <h3 className="text-2xl font-bold text-[#2563eb] mb-4">
                       ¡Mensaje Enviado!
                     </h3>
                     <p className="text-gray-600">
@@ -137,8 +137,8 @@ export default function ContactoPage() {
 
               <Card className="p-6 rounded-2xl">
                 <CardContent className="flex items-start gap-4 p-0">
-                  <div className="w-12 h-12 bg-[#0d7a5f]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-6 h-6 text-[#0d7a5f]" />
+                  <div className="w-12 h-12 bg-[#2563eb]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-6 h-6 text-[#2563eb]" />
                   </div>
                   <div>
                     <h3 className="font-bold text-[#1a365d] mb-1">Email</h3>
@@ -149,8 +149,8 @@ export default function ContactoPage() {
 
               <Card className="p-6 rounded-2xl">
                 <CardContent className="flex items-start gap-4 p-0">
-                  <div className="w-12 h-12 bg-[#0d7a5f]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Phone className="w-6 h-6 text-[#0d7a5f]" />
+                  <div className="w-12 h-12 bg-[#2563eb]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-6 h-6 text-[#2563eb]" />
                   </div>
                   <div>
                     <h3 className="font-bold text-[#1a365d] mb-1">Teléfono</h3>
@@ -161,8 +161,8 @@ export default function ContactoPage() {
 
               <Card className="p-6 rounded-2xl">
                 <CardContent className="flex items-start gap-4 p-0">
-                  <div className="w-12 h-12 bg-[#0d7a5f]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-6 h-6 text-[#0d7a5f]" />
+                  <div className="w-12 h-12 bg-[#2563eb]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-6 h-6 text-[#2563eb]" />
                   </div>
                   <div>
                     <h3 className="font-bold text-[#1a365d] mb-1">Dirección</h3>
@@ -191,3 +191,4 @@ export default function ContactoPage() {
     </main>
   );
 }
+

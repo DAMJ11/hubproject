@@ -38,11 +38,11 @@ export default function QualitySection() {
                 </span>
               )}
               <span className="text-4xl block mb-3">{service.icon}</span>
-              <h3 className="font-semibold text-[#1a365d] text-sm group-hover:text-[#0d7a5f] transition-colors">
+              <h3 className="font-semibold text-[#1a365d] text-sm group-hover:text-[#2563eb] transition-colors">
                 {service.name}
               </h3>
               <p className="text-xs text-gray-500 mt-2 line-clamp-2">{service.desc}</p>
-              <p className="text-sm font-bold text-[#0d7a5f] mt-3">{service.price}</p>
+              <p className="text-sm font-bold text-[#2563eb] mt-3">{service.price}</p>
             </div>
           ))}
         </div>
@@ -50,3 +50,4 @@ export default function QualitySection() {
     </section>
   );
 }
+

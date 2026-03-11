@@ -5,17 +5,19 @@ import Link from "next/link";
 import { Menu, X, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { usePathname } from "next/navigation";
 
 const navLinks = [
-  { name: "Servicios", href: "#servicios" },
-  { name: "Cómo Funciona", href: "#como-funciona" },
-  { name: "Profesionales", href: "#profesionales" },
-  { name: "Precios", href: "#precios" },
-  { name: "Testimonios", href: "#testimonios" },
+  { name: "Servicios", href: "/servicios" },
+  { name: "Cómo Funciona", href: "/como-funciona" },
+  { name: "Profesionales", href: "/profesionales" },
+  { name: "Precios", href: "/precios" },
+  { name: "Testimonios", href: "/testimonios" },
 ];
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <motion.header 
@@ -29,28 +31,25 @@ export default function Header() {
           {/* Logo */}
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-[#0d7a5f] rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-[#2563eb] rounded-lg flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <span className="font-bold text-xl text-[#1a365d]">TidyHubb</span>
+              <span className="font-bold text-xl text-[#1a365d]">FASHIONS DEN</span>
             </Link>
           </motion.div>
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8">
-            {navLinks.map((link, index) => (
-              <motion.a
+            {navLinks.map((link) => (
+              <Link
                 key={link.name}
                 href={link.href}
-                className="text-gray-600 hover:text-[#0d7a5f] transition-colors font-medium text-sm"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 + 0.3 }}
+                className={`text-sm font-medium transition-colors hover:text-[#2563eb] ${
+                  pathname === link.href ? "text-[#2563eb] font-semibold" : "text-gray-700"
+                }`}
               >
                 {link.name}
-              </motion.a>
+              </Link>
             ))}
           </nav>
 
@@ -63,14 +62,14 @@ export default function Header() {
           >
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link href="/login">
-                <Button variant="ghost" className="text-gray-700 hover:text-[#0d7a5f]">
+                <Button variant="ghost" className="text-gray-700 hover:text-[#2563eb]">
                   Iniciar Sesión
                 </Button>
               </Link>
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link href="/register">
-                <Button className="bg-[#0d7a5f] hover:bg-[#0a6b52] text-white rounded-lg">
+                <Button className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-lg">
                   Registrarse
                 </Button>
               </Link>
@@ -113,7 +112,7 @@ export default function Header() {
                   <motion.a
                     key={link.name}
                     href={link.href}
-                    className="text-gray-600 hover:text-[#0d7a5f] px-3 py-2 rounded-lg hover:bg-gray-50 font-medium"
+                    className="text-gray-600 hover:text-[#2563eb] px-3 py-2 rounded-lg hover:bg-gray-50 font-medium"
                     onClick={() => setMobileMenuOpen(false)}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -137,7 +136,7 @@ export default function Header() {
                   </motion.div>
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <Link href="/register">
-                      <Button className="w-full bg-[#0d7a5f] hover:bg-[#0a6b52] text-white">Registrarse</Button>
+                      <Button className="w-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white">Registrarse</Button>
                     </Link>
                   </motion.div>
                 </motion.div>
@@ -149,3 +148,4 @@ export default function Header() {
     </motion.header>
   );
 }
+

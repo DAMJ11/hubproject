@@ -44,7 +44,7 @@ export default function UserDashboard({ user }: UserDashboardProps) {
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#0d7a5f] rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-[#2563eb] rounded-full flex items-center justify-center">
                 <User className="w-5 h-5 text-white" />
               </div>
               <div className="hidden md:block">
@@ -88,7 +88,7 @@ export default function UserDashboard({ user }: UserDashboardProps) {
                   className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-[#0d7a5f] rounded-full"></div>
+                    <div className="w-2 h-2 bg-[#2563eb] rounded-full"></div>
                     <p className="text-sm text-gray-700">{activity.action}</p>
                   </div>
                   <span className="text-xs text-gray-400">{activity.time}</span>
@@ -102,19 +102,19 @@ export default function UserDashboard({ user }: UserDashboardProps) {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Acciones rápidas</h2>
             <div className="space-y-3">
               <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
-                <Package className="w-5 h-5 text-[#0d7a5f]" />
+                <Package className="w-5 h-5 text-[#2563eb]" />
                 <span className="text-sm font-medium">Crear nuevo proyecto</span>
               </button>
               <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
-                <MessageSquare className="w-5 h-5 text-[#0d7a5f]" />
+                <MessageSquare className="w-5 h-5 text-[#2563eb]" />
                 <span className="text-sm font-medium">Enviar mensaje</span>
               </button>
               <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
-                <BarChart3 className="w-5 h-5 text-[#0d7a5f]" />
+                <BarChart3 className="w-5 h-5 text-[#2563eb]" />
                 <span className="text-sm font-medium">Ver reportes</span>
               </button>
               <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
-                <Settings className="w-5 h-5 text-[#0d7a5f]" />
+                <Settings className="w-5 h-5 text-[#2563eb]" />
                 <span className="text-sm font-medium">Configuración</span>
               </button>
             </div>
@@ -124,3 +124,4 @@ export default function UserDashboard({ user }: UserDashboardProps) {
     </div>
   );
 }
+

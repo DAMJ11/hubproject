@@ -99,8 +99,8 @@ export default function PoliticaSostenibilidadPage() {
                 className="p-6 rounded-2xl hover:shadow-xl transition-all duration-300"
               >
                 <CardContent className="p-0">
-                  <div className="w-16 h-16 bg-[#0d7a5f]/10 rounded-xl flex items-center justify-center mb-6">
-                    <pillar.icon className="w-8 h-8 text-[#0d7a5f]" />
+                  <div className="w-16 h-16 bg-[#2563eb]/10 rounded-xl flex items-center justify-center mb-6">
+                    <pillar.icon className="w-8 h-8 text-[#2563eb]" />
                   </div>
                   <h3 className="text-xl font-bold text-[#1a365d] mb-4">
                     {pillar.title}
@@ -162,3 +162,4 @@ export default function PoliticaSostenibilidadPage() {
     </main>
   );
 }
+

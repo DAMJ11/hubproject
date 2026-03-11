@@ -36,10 +36,10 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-[#0d7a5f] rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-[#2563eb] rounded-lg flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <span className="font-bold text-xl">TidyHubb</span>
+              <span className="font-bold text-xl">FASHIONS DEN</span>
             </Link>
             <p className="text-sm text-gray-300 mt-3">
               Tu plataforma de confianza para reservar profesionales calificados
@@ -53,7 +53,7 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerLinks.servicios.map((link) => (
                 <li key={link.name}>
-                  <Link href={link.href} className="text-sm text-gray-300 hover:text-[#0d7a5f] transition-colors">
+                  <Link href={link.href} className="text-sm text-gray-300 hover:text-[#2563eb] transition-colors">
                     {link.name}
                   </Link>
                 </li>
@@ -67,7 +67,7 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerLinks.empresa.map((link) => (
                 <li key={link.name}>
-                  <Link href={link.href} className="text-sm text-gray-300 hover:text-[#0d7a5f] transition-colors">
+                  <Link href={link.href} className="text-sm text-gray-300 hover:text-[#2563eb] transition-colors">
                     {link.name}
                   </Link>
                 </li>
@@ -81,7 +81,7 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerLinks.profesionales.map((link) => (
                 <li key={link.name}>
-                  <Link href={link.href} className="text-sm text-gray-300 hover:text-[#0d7a5f] transition-colors">
+                  <Link href={link.href} className="text-sm text-gray-300 hover:text-[#2563eb] transition-colors">
                     {link.name}
                   </Link>
                 </li>
@@ -95,7 +95,7 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerLinks.legal.map((link) => (
                 <li key={link.name}>
-                  <Link href={link.href} className="text-sm text-gray-300 hover:text-[#0d7a5f] transition-colors">
+                  <Link href={link.href} className="text-sm text-gray-300 hover:text-[#2563eb] transition-colors">
                     {link.name}
                   </Link>
                 </li>
@@ -107,7 +107,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-gray-700 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-400">
-            &copy; {new Date().getFullYear()} TidyHubb. Todos los derechos reservados.
+            &copy; {new Date().getFullYear()} FASHIONS DEN. Todos los derechos reservados.
           </p>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1 px-3 py-1 rounded-full text-sm bg-white/10">
@@ -119,3 +119,4 @@ export default function Footer() {
     </footer>
   );
 }
+

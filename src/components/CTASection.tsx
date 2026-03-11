@@ -4,7 +4,7 @@ import { UserCheck, Shield, Award } from "lucide-react";
 
 export default function CTASection() {
   return (
-    <section id="profesionales" className="py-20 bg-[#0d7a5f] text-white">
+    <section id="profesionales" className="py-20 bg-[#2563eb] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
@@ -34,7 +34,7 @@ export default function CTASection() {
             </div>
             <div className="mt-10">
               <Link href="/register">
-                <Button size="lg" className="bg-white text-[#0d7a5f] hover:bg-gray-100 rounded-lg px-8 h-12">
+                <Button size="lg" className="bg-white text-[#2563eb] hover:bg-gray-100 rounded-lg px-8 h-12">
                   Registrarme como Profesional
                 </Button>
               </Link>
@@ -60,3 +60,4 @@ export default function CTASection() {
     </section>
   );
 }
+

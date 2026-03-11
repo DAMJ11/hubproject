@@ -1,6 +1,6 @@
--- =============================================
--- TidyHubb Database Schema
--- Plataforma de servicios de mantenimiento y aseo del hogar
+﻿-- =============================================
+-- HUBPROJECT Final Schema (Post B2B Migrations)
+-- Source of truth: migration_marketplace_b2b.sql + migration_cleanup_b2b.sql
 -- =============================================
 
 CREATE DATABASE IF NOT EXISTS hubproject
@@ -9,10 +9,90 @@ COLLATE utf8mb4_unicode_ci;
 
 USE hubproject;
 
+-- Rebuild full schema to ensure removed legacy tables are not left behind.
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS conversations;
+DROP TABLE IF EXISTS payments;
+DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS contract_milestones;
+DROP TABLE IF EXISTS contracts;
+DROP TABLE IF EXISTS proposals;
+DROP TABLE IF EXISTS rfq_attachments;
+DROP TABLE IF EXISTS rfq_materials;
+DROP TABLE IF EXISTS rfq_projects;
+DROP TABLE IF EXISTS manufacturer_certifications;
+DROP TABLE IF EXISTS manufacturer_capabilities;
+DROP TABLE IF EXISTS promo_codes;
+DROP TABLE IF EXISTS bookings;
+DROP TABLE IF EXISTS professional_availability;
+DROP TABLE IF EXISTS professional_services;
+DROP TABLE IF EXISTS professionals;
+DROP TABLE IF EXISTS services;
+DROP TABLE IF EXISTS notifications;
+DROP TABLE IF EXISTS addresses;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS companies;
+DROP TABLE IF EXISTS service_categories;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
 -- =============================================
--- 1. USERS - Usuarios (clientes y admins)
+-- 1. service_categories
 -- =============================================
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE service_categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    slug VARCHAR(120) NOT NULL UNIQUE,
+    description TEXT NULL,
+    icon VARCHAR(50) NULL,
+    image_url VARCHAR(500) NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    sort_order INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_slug (slug),
+    INDEX idx_active (is_active)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- 2. companies
+-- =============================================
+CREATE TABLE companies (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    slug VARCHAR(220) NOT NULL UNIQUE,
+    type ENUM('brand', 'manufacturer') NOT NULL,
+    legal_id VARCHAR(50) NULL,
+    description TEXT NULL,
+    logo_url VARCHAR(500) NULL,
+    website VARCHAR(500) NULL,
+    phone VARCHAR(50) NULL,
+    email VARCHAR(255) NULL,
+    address_line1 VARCHAR(255) NULL,
+    city VARCHAR(100) NULL,
+    state VARCHAR(100) NULL,
+    country VARCHAR(100) NOT NULL DEFAULT 'Colombia',
+    latitude DECIMAL(10, 8) NULL,
+    longitude DECIMAL(11, 8) NULL,
+    employee_count ENUM('1-10', '11-50', '51-200', '201-500', '500+') NULL,
+    founded_year SMALLINT NULL,
+    is_verified BOOLEAN DEFAULT FALSE,
+    is_active BOOLEAN DEFAULT TRUE,
+    verified_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_companies_slug (slug),
+    INDEX idx_companies_type (type),
+    INDEX idx_companies_active (is_active),
+    INDEX idx_companies_location (latitude, longitude)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- 3. users
+-- =============================================
+CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
@@ -20,26 +100,28 @@ CREATE TABLE IF NOT EXISTS users (
     last_name VARCHAR(100) NOT NULL,
     phone VARCHAR(50) NULL,
     avatar_url VARCHAR(500) NULL,
-    role ENUM('user', 'admin') NOT NULL DEFAULT 'user',
+    role ENUM('brand', 'manufacturer', 'admin') NOT NULL DEFAULT 'brand',
+    company_id INT NULL,
     terms_accepted BOOLEAN DEFAULT FALSE,
     email_verified BOOLEAN DEFAULT FALSE,
     email_verified_at TIMESTAMP NULL,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    INDEX idx_email (email),
-    INDEX idx_role (role),
-    INDEX idx_created_at (created_at)
+    CONSTRAINT fk_users_company FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE SET NULL,
+    INDEX idx_users_email (email),
+    INDEX idx_users_role (role),
+    INDEX idx_users_company (company_id),
+    INDEX idx_users_created_at (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
--- 2. ADDRESSES - Direcciones de usuarios
+-- 4. addresses (kept as optional table from cleanup migration)
 -- =============================================
-CREATE TABLE IF NOT EXISTS addresses (
+CREATE TABLE addresses (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    label VARCHAR(100) NOT NULL DEFAULT 'Casa',
+    label VARCHAR(100) NOT NULL DEFAULT 'Oficina',
     address_line1 VARCHAR(255) NOT NULL,
     address_line2 VARCHAR(255) NULL,
     city VARCHAR(100) NOT NULL,
@@ -51,258 +133,282 @@ CREATE TABLE IF NOT EXISTS addresses (
     is_default BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_addresses_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     INDEX idx_user_id (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
--- 3. SERVICE_CATEGORIES - Categorías de servicio
+-- 5. manufacturer_capabilities
 -- =============================================
-CREATE TABLE IF NOT EXISTS service_categories (
+CREATE TABLE manufacturer_capabilities (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    slug VARCHAR(120) NOT NULL UNIQUE,
-    description TEXT NULL,
-    icon VARCHAR(50) NULL,
-    image_url VARCHAR(500) NULL,
-    is_active BOOLEAN DEFAULT TRUE,
-    sort_order INT DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    INDEX idx_slug (slug),
-    INDEX idx_active (is_active)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- =============================================
--- 4. SERVICES - Servicios ofrecidos
--- =============================================
-CREATE TABLE IF NOT EXISTS services (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    company_id INT NOT NULL,
     category_id INT NOT NULL,
-    name VARCHAR(200) NOT NULL,
-    slug VARCHAR(220) NOT NULL UNIQUE,
+    min_order_qty INT DEFAULT 1,
+    max_monthly_capacity INT NULL,
+    lead_time_days INT NULL,
     description TEXT NULL,
-    short_description VARCHAR(500) NULL,
-    icon VARCHAR(50) NULL,
-    image_url VARCHAR(500) NULL,
-    base_price DECIMAL(10, 2) NOT NULL,
-    price_unit ENUM('hour', 'session', 'sqm', 'fixed') NOT NULL DEFAULT 'hour',
-    estimated_duration INT NULL COMMENT 'Duracion estimada en minutos',
     is_active BOOLEAN DEFAULT TRUE,
-    is_featured BOOLEAN DEFAULT FALSE,
-    sort_order INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (category_id) REFERENCES service_categories(id) ON DELETE RESTRICT,
-    INDEX idx_category (category_id),
-    INDEX idx_slug (slug),
-    INDEX idx_active_featured (is_active, is_featured)
+    FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES service_categories(id) ON DELETE CASCADE,
+    UNIQUE KEY uk_company_category (company_id, category_id),
+    INDEX idx_company (company_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
--- 5. PROFESSIONALS - Profesionales verificados
+-- 6. manufacturer_certifications
 -- =============================================
-CREATE TABLE IF NOT EXISTS professionals (
+CREATE TABLE manufacturer_certifications (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NULL COMMENT 'Si el profesional tambien tiene cuenta de usuario',
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    phone VARCHAR(50) NOT NULL,
-    avatar_url VARCHAR(500) NULL,
-    bio TEXT NULL,
-    experience_years INT DEFAULT 0,
-    rating DECIMAL(3, 2) DEFAULT 0.00,
-    total_reviews INT DEFAULT 0,
-    total_jobs INT DEFAULT 0,
-    hourly_rate DECIMAL(10, 2) NULL,
+    company_id INT NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    issued_by VARCHAR(200) NULL,
+    certificate_url VARCHAR(500) NULL,
+    issued_at DATE NULL,
+    expires_at DATE NULL,
     is_verified BOOLEAN DEFAULT FALSE,
-    is_available BOOLEAN DEFAULT TRUE,
-    is_active BOOLEAN DEFAULT TRUE,
-    verified_at TIMESTAMP NULL,
-    city VARCHAR(100) NULL,
-    state VARCHAR(100) NULL,
-    country VARCHAR(100) NOT NULL DEFAULT 'Colombia',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
+    INDEX idx_company (company_id),
+    INDEX idx_expires (expires_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- 7. rfq_projects
+-- =============================================
+CREATE TABLE rfq_projects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(20) NOT NULL UNIQUE,
+    brand_company_id INT NOT NULL,
+    created_by_user_id INT NOT NULL,
+    category_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    quantity INT NOT NULL,
+    budget_min DECIMAL(12, 2) NULL,
+    budget_max DECIMAL(12, 2) NULL,
+    currency VARCHAR(3) DEFAULT 'COP',
+    deadline DATE NULL,
+    proposals_deadline DATE NULL,
+    status ENUM('draft', 'open', 'evaluating', 'awarded', 'cancelled', 'expired') NOT NULL DEFAULT 'draft',
+    requires_sample BOOLEAN DEFAULT FALSE,
+    preferred_materials TEXT NULL,
+    sustainability_priority BOOLEAN DEFAULT FALSE,
+    proposals_count INT DEFAULT 0,
+    awarded_proposal_id INT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
-    INDEX idx_email (email),
-    INDEX idx_verified (is_verified),
-    INDEX idx_available (is_available),
-    INDEX idx_rating (rating)
+    FOREIGN KEY (brand_company_id) REFERENCES companies(id) ON DELETE RESTRICT,
+    FOREIGN KEY (created_by_user_id) REFERENCES users(id) ON DELETE RESTRICT,
+    FOREIGN KEY (category_id) REFERENCES service_categories(id) ON DELETE RESTRICT,
+    INDEX idx_code (code),
+    INDEX idx_brand (brand_company_id),
+    INDEX idx_status (status),
+    INDEX idx_category (category_id),
+    INDEX idx_created (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
--- 6. PROFESSIONAL_SERVICES - Servicios que ofrece cada profesional (N:M)
+-- 8. rfq_materials
 -- =============================================
-CREATE TABLE IF NOT EXISTS professional_services (
+CREATE TABLE rfq_materials (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    professional_id INT NOT NULL,
-    service_id INT NOT NULL,
-    custom_price DECIMAL(10, 2) NULL COMMENT 'Precio personalizado del profesional',
-    is_active BOOLEAN DEFAULT TRUE,
+    rfq_id INT NOT NULL,
+    material_type VARCHAR(100) NOT NULL,
+    composition VARCHAR(255) NULL,
+    recycled_percentage TINYINT DEFAULT 0,
+    specifications TEXT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (professional_id) REFERENCES professionals(id) ON DELETE CASCADE,
-    FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE,
-    UNIQUE KEY uk_professional_service (professional_id, service_id)
+    FOREIGN KEY (rfq_id) REFERENCES rfq_projects(id) ON DELETE CASCADE,
+    INDEX idx_rfq (rfq_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
--- 7. PROFESSIONAL_AVAILABILITY - Disponibilidad
+-- 9. rfq_attachments
 -- =============================================
-CREATE TABLE IF NOT EXISTS professional_availability (
+CREATE TABLE rfq_attachments (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    professional_id INT NOT NULL,
-    day_of_week TINYINT NOT NULL COMMENT '0=Dom, 1=Lun ... 6=Sab',
-    start_time TIME NOT NULL,
-    end_time TIME NOT NULL,
-    is_active BOOLEAN DEFAULT TRUE,
-
-    FOREIGN KEY (professional_id) REFERENCES professionals(id) ON DELETE CASCADE,
-    INDEX idx_professional (professional_id)
+    rfq_id INT NOT NULL,
+    file_name VARCHAR(255) NOT NULL,
+    file_url VARCHAR(500) NOT NULL,
+    file_type VARCHAR(50) NULL,
+    file_size INT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (rfq_id) REFERENCES rfq_projects(id) ON DELETE CASCADE,
+    INDEX idx_rfq (rfq_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
--- 8. BOOKINGS - Reservas de servicios
+-- 10. proposals
 -- =============================================
-CREATE TABLE IF NOT EXISTS bookings (
+CREATE TABLE proposals (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    booking_code VARCHAR(20) NOT NULL UNIQUE,
-    user_id INT NOT NULL,
-    professional_id INT NULL,
-    service_id INT NOT NULL,
-    address_id INT NULL,
-    status ENUM('pending', 'confirmed', 'in_progress', 'completed', 'cancelled', 'no_show') NOT NULL DEFAULT 'pending',
-    scheduled_date DATE NOT NULL,
-    scheduled_time TIME NOT NULL,
-    estimated_duration INT NOT NULL COMMENT 'En minutos',
-    actual_duration INT NULL,
+    rfq_id INT NOT NULL,
+    manufacturer_company_id INT NOT NULL,
+    submitted_by_user_id INT NOT NULL,
+    unit_price DECIMAL(12, 2) NOT NULL,
+    total_price DECIMAL(12, 2) NOT NULL,
+    currency VARCHAR(3) DEFAULT 'COP',
+    lead_time_days INT NOT NULL,
+    proposed_materials TEXT NULL,
+    recycled_percentage TINYINT DEFAULT 0,
     notes TEXT NULL,
-    admin_notes TEXT NULL,
-    subtotal DECIMAL(10, 2) NOT NULL,
-    tax DECIMAL(10, 2) DEFAULT 0.00,
-    discount DECIMAL(10, 2) DEFAULT 0.00,
-    total DECIMAL(10, 2) NOT NULL,
-    payment_status ENUM('pending', 'paid', 'refunded', 'failed') DEFAULT 'pending',
-    payment_method VARCHAR(50) NULL,
-    cancelled_by ENUM('user', 'professional', 'admin') NULL,
-    cancelled_at TIMESTAMP NULL,
-    cancellation_reason TEXT NULL,
-    started_at TIMESTAMP NULL,
+    status ENUM('submitted', 'shortlisted', 'accepted', 'rejected', 'withdrawn') NOT NULL DEFAULT 'submitted',
+    green_score DECIMAL(5, 2) DEFAULT 0.00,
+    distance_km DECIMAL(8, 2) NULL,
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    responded_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (rfq_id) REFERENCES rfq_projects(id) ON DELETE CASCADE,
+    FOREIGN KEY (manufacturer_company_id) REFERENCES companies(id) ON DELETE RESTRICT,
+    FOREIGN KEY (submitted_by_user_id) REFERENCES users(id) ON DELETE RESTRICT,
+    UNIQUE KEY uk_rfq_manufacturer (rfq_id, manufacturer_company_id),
+    INDEX idx_rfq (rfq_id),
+    INDEX idx_manufacturer (manufacturer_company_id),
+    INDEX idx_status (status),
+    INDEX idx_green_score (green_score DESC)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE rfq_projects
+    ADD CONSTRAINT fk_rfq_awarded_proposal FOREIGN KEY (awarded_proposal_id) REFERENCES proposals(id) ON DELETE SET NULL;
+
+-- =============================================
+-- 11. contracts
+-- =============================================
+CREATE TABLE contracts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(20) NOT NULL UNIQUE,
+    rfq_id INT NOT NULL,
+    proposal_id INT NOT NULL,
+    brand_company_id INT NOT NULL,
+    manufacturer_company_id INT NOT NULL,
+    total_amount DECIMAL(12, 2) NOT NULL,
+    currency VARCHAR(3) DEFAULT 'COP',
+    status ENUM('active', 'in_production', 'completed', 'disputed', 'cancelled') NOT NULL DEFAULT 'active',
+    terms TEXT NULL,
+    start_date DATE NULL,
+    expected_end_date DATE NULL,
+    actual_end_date DATE NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (rfq_id) REFERENCES rfq_projects(id) ON DELETE RESTRICT,
+    FOREIGN KEY (proposal_id) REFERENCES proposals(id) ON DELETE RESTRICT,
+    FOREIGN KEY (brand_company_id) REFERENCES companies(id) ON DELETE RESTRICT,
+    FOREIGN KEY (manufacturer_company_id) REFERENCES companies(id) ON DELETE RESTRICT,
+    INDEX idx_code (code),
+    INDEX idx_brand (brand_company_id),
+    INDEX idx_manufacturer (manufacturer_company_id),
+    INDEX idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- 12. contract_milestones
+-- =============================================
+CREATE TABLE contract_milestones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    contract_id INT NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    description TEXT NULL,
+    sort_order TINYINT NOT NULL DEFAULT 0,
+    status ENUM('pending', 'in_progress', 'completed', 'skipped') NOT NULL DEFAULT 'pending',
+    payment_amount DECIMAL(12, 2) DEFAULT 0.00,
+    payment_status ENUM('pending', 'paid', 'na') DEFAULT 'pending',
+    due_date DATE NULL,
     completed_at TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT,
-    FOREIGN KEY (professional_id) REFERENCES professionals(id) ON DELETE SET NULL,
-    FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE RESTRICT,
-    FOREIGN KEY (address_id) REFERENCES addresses(id) ON DELETE SET NULL,
-    INDEX idx_booking_code (booking_code),
-    INDEX idx_user (user_id),
-    INDEX idx_professional (professional_id),
-    INDEX idx_status (status),
-    INDEX idx_scheduled (scheduled_date, scheduled_time)
+    FOREIGN KEY (contract_id) REFERENCES contracts(id) ON DELETE CASCADE,
+    INDEX idx_contract (contract_id),
+    INDEX idx_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
--- 9. REVIEWS - Resenas de servicios
+-- 13. conversations (B2B only)
 -- =============================================
-CREATE TABLE IF NOT EXISTS reviews (
+CREATE TABLE conversations (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    booking_id INT NOT NULL UNIQUE,
-    user_id INT NOT NULL,
-    professional_id INT NOT NULL,
-    service_id INT NOT NULL,
-    rating TINYINT NOT NULL CHECK (rating BETWEEN 1 AND 5),
-    comment TEXT NULL,
-    is_public BOOLEAN DEFAULT TRUE,
-    admin_approved BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (professional_id) REFERENCES professionals(id) ON DELETE CASCADE,
-    FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE,
-    INDEX idx_professional (professional_id),
-    INDEX idx_rating (rating)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- =============================================
--- 10. CONVERSATIONS - Conversaciones de chat
--- =============================================
-CREATE TABLE IF NOT EXISTS conversations (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    professional_id INT NULL,
-    booking_id INT NULL,
+    rfq_id INT NULL,
+    contract_id INT NULL,
+    brand_company_id INT NULL,
+    manufacturer_company_id INT NULL,
+    target_company_id INT NULL,
+    admin_user_id INT NULL,
+    initiated_by_user_id INT NOT NULL,
     subject VARCHAR(255) NULL,
-    status ENUM('open', 'closed', 'archived') DEFAULT 'open',
+    status ENUM('pending', 'open', 'closed', 'archived') DEFAULT 'pending',
     last_message_at TIMESTAMP NULL,
+    accepted_at TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (professional_id) REFERENCES professionals(id) ON DELETE SET NULL,
-    FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE SET NULL,
-    INDEX idx_user (user_id),
-    INDEX idx_professional (professional_id)
+    FOREIGN KEY (rfq_id) REFERENCES rfq_projects(id) ON DELETE SET NULL,
+    FOREIGN KEY (contract_id) REFERENCES contracts(id) ON DELETE SET NULL,
+    FOREIGN KEY (brand_company_id) REFERENCES companies(id) ON DELETE CASCADE,
+    FOREIGN KEY (manufacturer_company_id) REFERENCES companies(id) ON DELETE CASCADE,
+    FOREIGN KEY (target_company_id) REFERENCES companies(id) ON DELETE CASCADE,
+    FOREIGN KEY (admin_user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (initiated_by_user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_brand (brand_company_id),
+    INDEX idx_manufacturer (manufacturer_company_id),
+    INDEX idx_target_company (target_company_id),
+    INDEX idx_admin_user (admin_user_id),
+    INDEX idx_rfq (rfq_id),
+    INDEX idx_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
--- 11. MESSAGES - Mensajes dentro de conversaciones
+-- 14. messages (B2B only)
 -- =============================================
-CREATE TABLE IF NOT EXISTS messages (
+CREATE TABLE messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
     conversation_id INT NOT NULL,
-    sender_type ENUM('user', 'professional', 'admin', 'system') NOT NULL,
-    sender_id INT NULL,
+    sender_user_id INT NOT NULL,
     content TEXT NOT NULL,
     message_type ENUM('text', 'image', 'file', 'system') DEFAULT 'text',
     file_url VARCHAR(500) NULL,
     is_read BOOLEAN DEFAULT FALSE,
     read_at TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
     FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE,
+    FOREIGN KEY (sender_user_id) REFERENCES users(id) ON DELETE CASCADE,
     INDEX idx_conversation (conversation_id),
     INDEX idx_read (is_read)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
--- 12. NOTIFICATIONS
+-- 15. reviews (B2B only)
 -- =============================================
-CREATE TABLE IF NOT EXISTS notifications (
+CREATE TABLE reviews (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    message TEXT NOT NULL,
-    type ENUM('booking', 'message', 'payment', 'review', 'system', 'promo') NOT NULL,
-    reference_type VARCHAR(50) NULL,
-    reference_id INT NULL,
-    is_read BOOLEAN DEFAULT FALSE,
-    read_at TIMESTAMP NULL,
+    contract_id INT NOT NULL,
+    reviewer_company_id INT NOT NULL,
+    reviewed_company_id INT NOT NULL,
+    reviewer_user_id INT NOT NULL,
+    rating TINYINT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+    comment TEXT NULL,
+    is_public BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    INDEX idx_user_read (user_id, is_read),
-    INDEX idx_created (created_at)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (contract_id) REFERENCES contracts(id) ON DELETE CASCADE,
+    FOREIGN KEY (reviewer_company_id) REFERENCES companies(id) ON DELETE CASCADE,
+    FOREIGN KEY (reviewed_company_id) REFERENCES companies(id) ON DELETE CASCADE,
+    FOREIGN KEY (reviewer_user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY uk_contract_reviewer (contract_id, reviewer_company_id),
+    INDEX idx_reviewed (reviewed_company_id),
+    INDEX idx_rating (rating)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
--- 13. PAYMENTS - Registro de pagos
+-- 16. payments (B2B only)
 -- =============================================
-CREATE TABLE IF NOT EXISTS payments (
+CREATE TABLE payments (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    booking_id INT NOT NULL,
-    user_id INT NOT NULL,
-    amount DECIMAL(10, 2) NOT NULL,
+    contract_id INT NOT NULL,
+    milestone_id INT NULL,
+    payer_company_id INT NOT NULL,
+    payee_company_id INT NOT NULL,
+    amount DECIMAL(12, 2) NOT NULL,
     currency VARCHAR(3) DEFAULT 'COP',
-    payment_method ENUM('cash', 'card', 'transfer', 'nequi', 'daviplata') NOT NULL,
+    payment_method ENUM('transfer', 'card', 'nequi', 'daviplata', 'other') NOT NULL DEFAULT 'transfer',
     status ENUM('pending', 'processing', 'completed', 'failed', 'refunded') DEFAULT 'pending',
     transaction_id VARCHAR(255) NULL,
     payment_gateway VARCHAR(50) NULL,
@@ -311,80 +417,119 @@ CREATE TABLE IF NOT EXISTS payments (
     metadata JSON NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE RESTRICT,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT,
-    INDEX idx_booking (booking_id),
-    INDEX idx_status (status)
+    FOREIGN KEY (contract_id) REFERENCES contracts(id) ON DELETE RESTRICT,
+    FOREIGN KEY (milestone_id) REFERENCES contract_milestones(id) ON DELETE SET NULL,
+    FOREIGN KEY (payer_company_id) REFERENCES companies(id) ON DELETE RESTRICT,
+    FOREIGN KEY (payee_company_id) REFERENCES companies(id) ON DELETE RESTRICT,
+    INDEX idx_contract (contract_id),
+    INDEX idx_status (status),
+    INDEX idx_payer (payer_company_id),
+    INDEX idx_payee (payee_company_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
--- 14. PROMO_CODES - Codigos de descuento
+-- 17. notifications (cleanup enum)
 -- =============================================
-CREATE TABLE IF NOT EXISTS promo_codes (
+CREATE TABLE notifications (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    code VARCHAR(50) NOT NULL UNIQUE,
-    description VARCHAR(255) NULL,
-    discount_type ENUM('percentage', 'fixed') NOT NULL,
-    discount_value DECIMAL(10, 2) NOT NULL,
-    min_order_amount DECIMAL(10, 2) DEFAULT 0,
-    max_uses INT NULL,
-    current_uses INT DEFAULT 0,
-    valid_from TIMESTAMP NOT NULL,
-    valid_until TIMESTAMP NOT NULL,
-    is_active BOOLEAN DEFAULT TRUE,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    type ENUM('message', 'payment', 'review', 'system', 'rfq', 'proposal', 'contract') NOT NULL,
+    reference_type VARCHAR(50) NULL,
+    reference_id INT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    read_at TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    INDEX idx_code (code),
-    INDEX idx_active_dates (is_active, valid_from, valid_until)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_user_read (user_id, is_read),
+    INDEX idx_created (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
--- SEED DATA - Categorias y servicios iniciales
+-- Seed data
 -- =============================================
 
 INSERT INTO service_categories (name, slug, description, icon, sort_order) VALUES
-('Aseo del Hogar', 'aseo-hogar', 'Limpieza profunda y mantenimiento de tu hogar', 'Sparkles', 1),
-('Jardineria', 'jardineria', 'Cuidado de jardines, podas y paisajismo', 'TreePine', 2),
-('Plomeria', 'plomeria', 'Reparacion e instalacion de tuberias y grifos', 'Wrench', 3),
-('Electricidad', 'electricidad', 'Instalacion y reparacion electrica profesional', 'Zap', 4),
-('Pintura', 'pintura', 'Pintura interior y exterior de alta calidad', 'Paintbrush', 5),
-('Cerrajeria', 'cerrajeria', 'Apertura, cambio de cerraduras y seguridad', 'KeyRound', 6),
-('Fumigacion', 'fumigacion', 'Control de plagas y fumigacion profesional', 'Bug', 7),
-('Carpinteria', 'carpinteria', 'Reparacion y fabricacion de muebles', 'Hammer', 8),
-('Aires Acondicionados', 'aires-acondicionados', 'Instalacion, mantenimiento y reparacion de A/C', 'Wind', 9),
-('Mudanzas', 'mudanzas', 'Servicio de mudanzas y transporte de muebles', 'Truck', 10);
+('Bocetos y Diseno', 'bocetos-diseno', 'Ilustracion de moda y diseno de colecciones', 'Pencil', 1),
+('Fichas Tecnicas', 'fichas-tecnicas', 'Documentacion tecnica de prendas', 'FileText', 2),
+('Patronaje Digital', 'patronaje-digital', 'Patronaje 2D/3D y escalado', 'Ruler', 3),
+('Confeccion de Muestras', 'confeccion-muestras', 'Prototipos y muestras pre-produccion', 'Scissors', 4),
+('Produccion Limitada', 'produccion-limitada', 'Producciones capsula y ediciones especiales', 'Package', 5),
+('Produccion Masiva', 'produccion-masiva', 'Produccion industrial a gran escala', 'Factory', 6);
 
-INSERT INTO services (category_id, name, slug, description, short_description, base_price, price_unit, estimated_duration) VALUES
-(1, 'Limpieza General', 'limpieza-general', 'Limpieza completa de tu hogar incluyendo pisos, banos, cocina y areas comunes.', 'Limpieza completa de tu hogar', 80000, 'session', 180),
-(1, 'Limpieza Profunda', 'limpieza-profunda', 'Limpieza exhaustiva que incluye rincones, techos, detras de muebles y desinfeccion completa.', 'Limpieza exhaustiva y desinfeccion', 150000, 'session', 300),
-(1, 'Limpieza de Oficina', 'limpieza-oficina', 'Limpieza profesional de oficinas y espacios comerciales.', 'Limpieza profesional para oficinas', 120000, 'session', 240),
-(1, 'Lavado de Tapiceria', 'lavado-tapiceria', 'Lavado y desinfeccion de sofas, sillas, colchones y tapiceria en general.', 'Lavado de muebles tapizados', 100000, 'session', 120),
-(2, 'Poda de Jardin', 'poda-jardin', 'Poda de arboles, arbustos y plantas ornamentales de tu jardin.', 'Poda profesional de jardin', 60000, 'session', 120),
-(2, 'Mantenimiento de Jardin', 'mantenimiento-jardin', 'Corte de cesped, fertilizacion, riego y cuidado general del jardin.', 'Mantenimiento integral del jardin', 90000, 'session', 180),
-(2, 'Diseno de Jardin', 'diseno-jardin', 'Diseno y creacion de jardines con plantas y paisajismo.', 'Diseno paisajistico profesional', 200000, 'session', 240),
-(3, 'Reparacion de Fugas', 'reparacion-fugas', 'Deteccion y reparacion de fugas de agua en tuberias.', 'Solucion rapida a fugas', 70000, 'session', 90),
-(3, 'Destape de Canerias', 'destape-canerias', 'Destape de canerias obstruidas con equipo profesional.', 'Destape de tuberias', 80000, 'session', 60),
-(3, 'Instalacion Sanitaria', 'instalacion-sanitaria', 'Instalacion de sanitarios, lavamanos, duchas y griferia.', 'Instalacion de aparatos sanitarios', 120000, 'session', 180),
-(4, 'Revision Electrica', 'revision-electrica', 'Diagnostico completo del sistema electrico de tu hogar.', 'Diagnostico electrico profesional', 60000, 'session', 60),
-(4, 'Instalacion de Tomas', 'instalacion-tomas', 'Instalacion de tomacorrientes, interruptores y puntos de luz.', 'Instalacion de puntos electricos', 50000, 'hour', 60),
-(4, 'Reparacion Electrica', 'reparacion-electrica', 'Reparacion de fallos electricos, cortocircuitos y averias.', 'Reparacion de problemas electricos', 80000, 'session', 120),
-(5, 'Pintura Interior', 'pintura-interior', 'Pintura de paredes interiores con materiales de primera calidad.', 'Pintura para interiores', 25000, 'sqm', 480),
-(5, 'Pintura Exterior', 'pintura-exterior', 'Pintura de fachadas y exteriores resistente a la intemperie.', 'Pintura para exteriores', 30000, 'sqm', 480),
-(6, 'Apertura de Puertas', 'apertura-puertas', 'Apertura de puertas sin dano cuando se queda sin llaves.', 'Apertura de emergencia', 50000, 'fixed', 30),
-(6, 'Cambio de Cerradura', 'cambio-cerradura', 'Cambio e instalacion de cerraduras de seguridad.', 'Instalacion de cerraduras nuevas', 80000, 'fixed', 60),
-(7, 'Fumigacion Residencial', 'fumigacion-residencial', 'Control de plagas en hogares: cucarachas, hormigas, aranas.', 'Control de plagas para hogares', 100000, 'session', 120),
-(7, 'Control de Roedores', 'control-roedores', 'Eliminacion y prevencion de ratones y ratas.', 'Eliminacion de roedores', 120000, 'session', 90),
-(8, 'Reparacion de Muebles', 'reparacion-muebles', 'Reparacion y restauracion de muebles de madera.', 'Restauracion de muebles', 70000, 'session', 120),
-(8, 'Muebles a Medida', 'muebles-medida', 'Fabricacion de muebles personalizados segun tus medidas.', 'Muebles a tu medida', 300000, 'fixed', 0),
-(9, 'Mantenimiento A/C', 'mantenimiento-ac', 'Limpieza y mantenimiento preventivo de aires acondicionados.', 'Mantenimiento de A/C', 80000, 'session', 90),
-(9, 'Instalacion A/C', 'instalacion-ac', 'Instalacion profesional de aires acondicionados.', 'Instalacion de A/C', 200000, 'fixed', 240),
-(10, 'Mudanza Local', 'mudanza-local', 'Servicio de mudanza dentro de la misma ciudad con personal y vehiculo.', 'Mudanza dentro de la ciudad', 250000, 'fixed', 480),
-(10, 'Mudanza Pequena', 'mudanza-pequena', 'Transporte de pocos muebles o electrodomesticos.', 'Transporte de articulos', 100000, 'fixed', 180);
+INSERT INTO companies (id, name, slug, type, legal_id, description, phone, email, address_line1, city, state, country, latitude, longitude, employee_count, founded_year, is_verified, is_active, verified_at) VALUES
+(1, 'Luna Collection', 'luna-collection', 'brand', '900123456-1', 'Marca de moda femenina casual con enfoque en tendencias contemporaneas.', '+57 310 200 1001', 'laura@lunacollection.co', 'Calle 85 #15-32', 'Bogota', 'Cundinamarca', 'Colombia', 4.6697, -74.0530, '1-10', 2022, TRUE, TRUE, NOW()),
+(2, 'UrbanWear Co', 'urbanwear-co', 'brand', '900234567-2', 'Streetwear urbano para hombres. Hoodies, joggers y camisetas oversize.', '+57 311 300 2002', 'carlos@urbanwear.co', 'Calle 10 #4-18', 'Medellin', 'Antioquia', 'Colombia', 6.2442, -75.5812, '1-10', 2023, TRUE, TRUE, NOW()),
+(3, 'EcoVerde Fashion', 'ecoverde-fashion', 'brand', '900345678-3', 'Moda sostenible femenina. Materiales organicos y procesos eticos.', '+57 312 400 3003', 'isabel@ecoverde.co', 'Avenida 6N #25-60', 'Cali', 'Valle del Cauca', 'Colombia', 3.4516, -76.5320, '1-10', 2021, TRUE, TRUE, NOW()),
+(4, 'StreetStyle Lab', 'streetstyle-lab', 'brand', '900456789-4', 'Laboratorio de moda urbana. Drops limitados y colaboraciones.', '+57 313 500 4004', 'pedro@streetstyle.co', 'Carrera 43A #1Sur-100', 'Medellin', 'Antioquia', 'Colombia', 6.2476, -75.5658, '1-10', 2024, TRUE, TRUE, NOW()),
+(5, 'Alta Moda Studio', 'alta-moda-studio', 'brand', '900567890-5', 'Alta costura y vestidos de gala. Diseno exclusivo para eventos.', '+57 314 600 5005', 'maria@altamoda.co', 'Calle 93 #11A-28', 'Bogota', 'Cundinamarca', 'Colombia', 4.6783, -74.0472, '1-10', 2020, TRUE, TRUE, NOW()),
+(6, 'Textiles Antioquia SAS', 'textiles-antioquia', 'manufacturer', '800111222-1', 'Planta de confeccion con experiencia en tejido plano y punto.', '+57 604 444 5555', 'ventas@textilesantioquia.co', 'Calle 30 #65-100 Zona Industrial', 'Medellin', 'Antioquia', 'Colombia', 6.2518, -75.5636, '51-200', 2011, TRUE, TRUE, NOW()),
+(7, 'Confecciones del Pacifico', 'confecciones-pacifico', 'manufacturer', '800222333-2', 'Taller especializado en moda sostenible.', '+57 602 555 6666', 'info@confeccionespacifico.co', 'Carrera 1 #20-45', 'Cali', 'Valle del Cauca', 'Colombia', 3.4372, -76.5225, '11-50', 2015, TRUE, TRUE, NOW()),
+(8, 'Bogota Fashion Factory', 'bogota-fashion-factory', 'manufacturer', '800333444-3', 'Fabrica urbana de moda rapida y streetwear.', '+57 601 666 7777', 'produccion@bogotaff.co', 'Avenida Boyaca #68D-35', 'Bogota', 'Cundinamarca', 'Colombia', 4.6609, -74.1146, '51-200', 2013, TRUE, TRUE, NOW()),
+(9, 'EcoTextil Colombia', 'ecotextil-colombia', 'manufacturer', '800444555-4', 'Textiles reciclados con certificaciones internacionales.', '+57 606 777 8888', 'contacto@ecotextil.co', 'Zona Franca Pereira Lote 5', 'Pereira', 'Risaralda', 'Colombia', 4.8133, -75.6961, '201-500', 2009, TRUE, TRUE, NOW());
 
--- SEED: Usuarios de ejemplo (1 admin, 1 user)
--- NOTA: Las contraseñas aquí son hashes bcrypt de ejemplo (texto claro: "password")
-INSERT INTO users (email, password, first_name, last_name, phone, avatar_url, role, terms_accepted, email_verified, email_verified_at, is_active, created_at, updated_at)
-VALUES
-    ('admin@tidyhubb.test', '$2b$12$IQeUmt1Eqmnrzkgxzl/IguvUJiBDtehbKFkQT/2/03ZXkSXBd7A9K', 'Admin', 'TidyHubb', '+57 300 000 0001', NULL, 'admin', TRUE, TRUE, NOW(), TRUE, NOW(), NOW()),
-    ('user@tidyhubb.test',  '$2b$12$IQeUmt1Eqmnrzkgxzl/IguvUJiBDtehbKFkQT/2/03ZXkSXBd7A9K', 'Cliente', 'Ejemplo', '+57 300 000 0002', NULL, 'user', TRUE, TRUE, NOW(), TRUE, NOW(), NOW());
+INSERT INTO users (id, email, password, first_name, last_name, phone, role, company_id, terms_accepted, email_verified, email_verified_at, is_active) VALUES
+(1, 'admin@tidyhubb.test', '$2b$12$KN2Ve23t3uUhYTuy8W2D3uIYkURnmyb4.j1t26JT7U4S3S/r6fNeW', 'Admin', 'Tidy Hubb', '+57 300 999 9999', 'admin', NULL, TRUE, TRUE, NOW(), TRUE),
+(2, 'laura@lunacollection.co', '$2b$12$IQeUmt1Eqmnrzkgxzl/IguvUJiBDtehbKFkQT/2/03ZXkSXBd7A9K', 'Laura', 'Martinez', '+57 310 200 1001', 'brand', 1, TRUE, TRUE, NOW(), TRUE),
+(3, 'carlos@urbanwear.co', '$2b$12$IQeUmt1Eqmnrzkgxzl/IguvUJiBDtehbKFkQT/2/03ZXkSXBd7A9K', 'Carlos', 'Gomez', '+57 311 300 2002', 'brand', 2, TRUE, TRUE, NOW(), TRUE),
+(4, 'isabel@ecoverde.co', '$2b$12$IQeUmt1Eqmnrzkgxzl/IguvUJiBDtehbKFkQT/2/03ZXkSXBd7A9K', 'Isabel', 'Torres', '+57 312 400 3003', 'brand', 3, TRUE, TRUE, NOW(), TRUE),
+(5, 'pedro@streetstyle.co', '$2b$12$IQeUmt1Eqmnrzkgxzl/IguvUJiBDtehbKFkQT/2/03ZXkSXBd7A9K', 'Pedro', 'Sanchez', '+57 313 500 4004', 'brand', 4, TRUE, TRUE, NOW(), TRUE),
+(6, 'maria@altamoda.co', '$2b$12$IQeUmt1Eqmnrzkgxzl/IguvUJiBDtehbKFkQT/2/03ZXkSXBd7A9K', 'Maria', 'Lopez', '+57 314 600 5005', 'brand', 5, TRUE, TRUE, NOW(), TRUE),
+(7, 'ricardo@textilesantioquia.co', '$2b$12$wS2II5qDKOQvI0uFLXN9seCncNKDLJUVgJfmUkBgrk3ZXiEGszfHe', 'Ricardo', 'Montoya', '+57 604 444 5555', 'manufacturer', 6, TRUE, TRUE, NOW(), TRUE),
+(8, 'daniela@confeccionespacifico.co', '$2b$12$UbgQgBlr1ZTnNcztewqXuu0WGfdVbRcpCPJYva1CHmFIaFLVZ0on6', 'Daniela', 'Ospina', '+57 602 555 6666', 'manufacturer', 7, TRUE, TRUE, NOW(), TRUE),
+(9, 'felipe@bogotaff.co', '$2b$12$m9m/rvhDtjJGh.vMsEyALu5kUsVomdUlPNpDxpyd9xascrb0MgPva', 'Felipe', 'Vargas', '+57 601 666 7777', 'manufacturer', 8, TRUE, TRUE, NOW(), TRUE),
+(10, 'natalia@ecotextil.co', '$2b$12$04tQISnsXjU0hSEhUQLsReMk99v2Ueri9whT99eO0g85Mtk.CFFO.', 'Natalia', 'Ramirez', '+57 606 777 8888', 'manufacturer', 9, TRUE, TRUE, NOW(), TRUE);
+
+INSERT INTO manufacturer_capabilities (company_id, category_id, min_order_qty, max_monthly_capacity, lead_time_days, description) VALUES
+(6, 5, 50, 2000, 21, 'Produccion capsulas y tirajes cortos en tejido plano y punto'),
+(6, 6, 200, 10000, 45, 'Produccion masiva con lineas automatizadas'),
+(6, 4, 1, 50, 10, 'Confeccion de muestras y prototipos'),
+(7, 4, 1, 30, 7, 'Prototipos artesanales en materiales organicos'),
+(7, 5, 10, 200, 18, 'Produccion limitada con procesos sostenibles'),
+(8, 5, 20, 1500, 15, 'Produccion capsulas streetwear con estampado digital'),
+(8, 6, 200, 8000, 40, 'Produccion masiva con sublimacion y serigrafia'),
+(9, 5, 50, 3000, 20, 'Produccion limitada con fibras PET recicladas'),
+(9, 6, 500, 20000, 35, 'Produccion masiva de textiles reciclados');
+
+INSERT INTO manufacturer_certifications (company_id, name, issued_by, issued_at, expires_at, is_verified) VALUES
+(7, 'GOTS', 'Control Union', '2025-06-01', '2027-05-31', TRUE),
+(7, 'Fair Trade', 'Fairtrade International', '2025-03-15', '2027-03-14', TRUE),
+(9, 'GRS (Global Recycled Standard)', 'Textile Exchange', '2025-01-10', '2027-01-09', TRUE),
+(9, 'OEKO-TEX Standard 100', 'OEKO-TEX Association', '2025-08-20', '2026-08-19', TRUE),
+(9, 'BCI (Better Cotton Initiative)', 'Better Cotton', '2025-04-01', '2027-03-31', TRUE),
+(6, 'ISO 9001:2015', 'ICONTEC', '2024-11-01', '2027-10-31', TRUE);
+
+INSERT INTO rfq_projects (code, brand_company_id, created_by_user_id, category_id, title, description, quantity, budget_min, budget_max, deadline, proposals_deadline, status, requires_sample, preferred_materials, sustainability_priority, proposals_count) VALUES
+('RFQ-2026-001', 2, 3, 6, 'Produccion 500 camisetas basicas streetwear', 'Necesitamos producir 500 camisetas oversize en 5 tallas (XS-XL) con estampado frontal en serigrafia.', 500, 7000000, 10000000, '2026-05-15', '2026-03-20', 'open', TRUE, 'Algodon peinado 180g, tintura reactiva', FALSE, 3),
+('RFQ-2026-002', 3, 4, 5, 'Coleccion capsula vestidos organicos', 'Produccion de 80 vestidos en 4 estilos (20 de cada uno). Prioridad en sostenibilidad.', 80, 3000000, 5000000, '2026-06-01', '2026-03-25', 'open', TRUE, 'Algodon organico GOTS, botones de tagua', TRUE, 2),
+('RFQ-2026-003', 1, 2, 5, 'Drop limitado hoodies Luna Collection', 'Produccion de 150 hoodies oversize para drop de primavera.', 150, 5000000, 8000000, '2026-04-20', '2026-03-15', 'evaluating', TRUE, 'French terry 320g algodon/poliester', FALSE, 3);
+
+INSERT INTO proposals (rfq_id, manufacturer_company_id, submitted_by_user_id, unit_price, total_price, lead_time_days, proposed_materials, recycled_percentage, notes, status, green_score, distance_km) VALUES
+(1, 6, 7, 16000, 8000000, 40, 'Algodon peinado 180g nacional', 0, 'Incluimos muestras de estampado en 3 tecnicas.', 'submitted', 32.50, 5.20),
+(1, 8, 9, 17500, 8750000, 35, 'Algodon peinado 180g importado', 10, 'Usamos tintas base agua.', 'submitted', 55.80, 380.00),
+(1, 9, 10, 19000, 9500000, 30, 'Algodon reciclado 180g (40% PET)', 40, 'Material con certificacion GRS.', 'submitted', 78.30, 290.00),
+(2, 7, 8, 52000, 4160000, 25, 'Algodon organico GOTS certificado', 30, 'Trazabilidad completa del algodon.', 'submitted', 91.50, 18.50),
+(2, 9, 10, 48000, 3840000, 35, 'Blend reciclado + organico', 60, 'Maxima sostenibilidad.', 'submitted', 85.20, 310.00),
+(3, 6, 7, 42000, 6300000, 28, 'French terry 320g', 0, 'Experiencia en hoodies oversize.', 'shortlisted', 45.00, 380.00),
+(3, 8, 9, 39000, 5850000, 22, 'French terry 320g premium', 5, 'Entregas parciales posibles.', 'shortlisted', 62.30, 8.50),
+(3, 7, 8, 48000, 7200000, 30, 'French terry organico 320g', 25, 'Bordado artesanal.', 'submitted', 72.10, 310.00);
+
+-- Actualizar propuestas aceptadas (para los contratos que se van a crear)
+UPDATE proposals SET status = 'accepted' WHERE rfq_id = 3 AND manufacturer_company_id = 8;
+UPDATE rfq_projects SET status = 'awarded', awarded_proposal_id = 7 WHERE id = 3;
+
+-- =============================================
+-- Seed: contracts
+-- =============================================
+INSERT INTO contracts (code, rfq_id, proposal_id, brand_company_id, manufacturer_company_id, total_amount, currency, status, terms, start_date, expected_end_date) VALUES
+('CTR-2026-001', 3, 7, 1, 8, 5850000, 'COP', 'in_production', 'Produccion de 150 hoodies oversize French terry 320g premium. Entrega en 3 parciales de 50 unidades.', '2026-03-10', '2026-04-20');
+
+-- =============================================
+-- Seed: contract_milestones
+-- =============================================
+INSERT INTO contract_milestones (contract_id, title, description, sort_order, status, payment_amount, payment_status, due_date) VALUES
+(1, 'Muestra aprobada', 'Fabricacion y aprobacion de muestra fisica', 1, 'completed', 585000, 'paid', '2026-03-15'),
+(1, 'Primera entrega (50 uds)', 'Produccion y entrega del primer lote', 2, 'in_progress', 1950000, 'pending', '2026-03-28'),
+(1, 'Segunda entrega (50 uds)', 'Produccion y entrega del segundo lote', 3, 'pending', 1950000, 'pending', '2026-04-10'),
+(1, 'Entrega final (50 uds)', 'Ultimo lote y cierre del contrato', 4, 'pending', 1365000, 'pending', '2026-04-20');

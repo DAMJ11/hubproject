@@ -30,7 +30,9 @@ export default function RegisterPage() {
     lastName: "",
     password: "",
     confirmPassword: "",
+    companyName: "",
   });
+  const [role, setRole] = useState<"brand" | "manufacturer">("brand");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -60,6 +62,9 @@ export default function RegisterPage() {
 
     if (!formData.firstName) newErrors.firstName = "First name is required";
     if (!formData.lastName) newErrors.lastName = "Last name is required";
+    if (!formData.companyName || formData.companyName.trim().length < 2) {
+      newErrors.companyName = "Company name is required (min 2 characters)";
+    }
 
     if (!formData.password) {
       newErrors.password = "Password is required";
@@ -100,6 +105,8 @@ export default function RegisterPage() {
           password: formData.password,
           firstName: formData.firstName,
           lastName: formData.lastName,
+          role,
+          companyName: formData.companyName.trim(),
           termsAccepted,
         }),
       });
@@ -129,10 +136,10 @@ export default function RegisterPage() {
           <StaggeredTransition delay={0.1}>
             <div className="flex justify-center mb-6">
               <Link href="/" className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-[#0d7a5f] rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-[#2563eb] rounded-lg flex items-center justify-center">
                   <span className="text-white text-lg">✨</span>
                 </div>
-                <span className="font-bold text-2xl text-[#1a365d]">TidyHubb</span>
+                <span className="font-bold text-2xl text-[#1a365d]">FASHIONS DEN</span>
               </Link>
             </div>
           </StaggeredTransition>
@@ -152,6 +159,64 @@ export default function RegisterPage() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Role Selection */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Tipo de cuenta<span className="text-red-400">*</span>
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setRole("brand")}
+                  className={`p-3 rounded-lg border-2 text-center transition-all ${
+                    role === "brand"
+                      ? "border-[#2563eb] bg-[#f0fdf4] text-[#2563eb]"
+                      : "border-gray-200 hover:border-gray-300 text-gray-600"
+                  }`}
+                  disabled={isLoading}
+                >
+                  <span className="block text-lg mb-1">🏷️</span>
+                  <span className="text-sm font-semibold">Soy Marca</span>
+                  <span className="block text-xs text-gray-500 mt-0.5">Busco fabricantes</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRole("manufacturer")}
+                  className={`p-3 rounded-lg border-2 text-center transition-all ${
+                    role === "manufacturer"
+                      ? "border-[#2563eb] bg-[#f0fdf4] text-[#2563eb]"
+                      : "border-gray-200 hover:border-gray-300 text-gray-600"
+                  }`}
+                  disabled={isLoading}
+                >
+                  <span className="block text-lg mb-1">🏭</span>
+                  <span className="text-sm font-semibold">Soy Fabricante</span>
+                  <span className="block text-xs text-gray-500 mt-0.5">Ofrezco producción</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Company Name */}
+            <div className="space-y-2">
+              <label htmlFor="companyName" className="block text-sm font-medium text-gray-700">
+                {role === "brand" ? "Nombre de tu marca" : "Nombre de tu empresa"}<span className="text-red-400">*</span>
+              </label>
+              <Input
+                id="companyName"
+                name="companyName"
+                type="text"
+                placeholder={role === "brand" ? "Ej: Luna Collection" : "Ej: Textiles Antioquia SAS"}
+                value={formData.companyName}
+                onChange={handleChange}
+                className={`h-11 rounded-lg border-gray-300 focus:border-[#2563eb] focus:ring-[#2563eb] ${
+                  errors.companyName ? "border-red-400" : ""
+                }`}
+                required
+                disabled={isLoading}
+              />
+              {errors.companyName && <p className="text-xs text-red-400">{errors.companyName}</p>}
+            </div>
+
             {/* Email */}
             <div className="space-y-2">
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -164,7 +229,7 @@ export default function RegisterPage() {
                 placeholder="example@site.com"
                 value={formData.email}
                 onChange={handleChange}
-                className={`h-11 rounded-lg border-gray-300 focus:border-[#0d7a5f] focus:ring-[#0d7a5f] ${
+                className={`h-11 rounded-lg border-gray-300 focus:border-[#2563eb] focus:ring-[#2563eb] ${
                   errors.email ? "border-red-400" : ""
                 }`}
                 required
@@ -185,7 +250,7 @@ export default function RegisterPage() {
                 placeholder="Enter your first name"
                 value={formData.firstName}
                 onChange={handleChange}
-                className={`h-11 rounded-lg border-gray-300 focus:border-[#0d7a5f] focus:ring-[#0d7a5f] ${
+                className={`h-11 rounded-lg border-gray-300 focus:border-[#2563eb] focus:ring-[#2563eb] ${
                   errors.firstName ? "border-red-400" : ""
                 }`}
                 required
@@ -206,7 +271,7 @@ export default function RegisterPage() {
                 placeholder="Enter your last name"
                 value={formData.lastName}
                 onChange={handleChange}
-                className={`h-11 rounded-lg border-gray-300 focus:border-[#0d7a5f] focus:ring-[#0d7a5f] ${
+                className={`h-11 rounded-lg border-gray-300 focus:border-[#2563eb] focus:ring-[#2563eb] ${
                   errors.lastName ? "border-red-400" : ""
                 }`}
                 required
@@ -227,7 +292,7 @@ export default function RegisterPage() {
                 placeholder="Enter your password"
                 value={formData.password}
                 onChange={handleChange}
-                className={`h-11 rounded-lg border-gray-300 focus:border-[#0d7a5f] focus:ring-[#0d7a5f] ${
+                className={`h-11 rounded-lg border-gray-300 focus:border-[#2563eb] focus:ring-[#2563eb] ${
                   errors.password ? "border-red-400" : ""
                 }`}
                 required
@@ -248,7 +313,7 @@ export default function RegisterPage() {
                 placeholder="Re-enter your password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className={`h-11 rounded-lg border-gray-300 focus:border-[#0d7a5f] focus:ring-[#0d7a5f] ${
+                className={`h-11 rounded-lg border-gray-300 focus:border-[#2563eb] focus:ring-[#2563eb] ${
                   errors.confirmPassword ? "border-red-400" : ""
                 }`}
                 required
@@ -270,7 +335,7 @@ export default function RegisterPage() {
                     setErrors({ ...errors, terms: "" });
                   }
                 }}
-                className="mt-0.5 data-[state=checked]:bg-[#0d7a5f] data-[state=checked]:border-[#0d7a5f]"
+                className="mt-0.5 data-[state=checked]:bg-[#2563eb] data-[state=checked]:border-[#2563eb]"
                 disabled={isLoading}
               />
               <label htmlFor="terms" className="text-sm text-gray-700 cursor-pointer leading-tight">
@@ -371,3 +436,4 @@ export default function RegisterPage() {
     </div>
   );
 }
+

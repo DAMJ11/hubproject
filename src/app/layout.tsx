@@ -2,22 +2,22 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "TidyHubb - Profesionales de confianza para tu hogar",
+  title: "FASHIONS DEN - Diseño y producción de moda",
   description:
-    "TidyHubb es tu plataforma de confianza para reservar profesionales calificados y verificados para el mantenimiento y aseo de tu hogar, bajo demanda.",
+    "FASHIONS DEN es tu plataforma para diseño de moda profesional: bocetos, fichas técnicas, patronaje digital, muestras y producción.",
   keywords: [
-    "servicios del hogar",
-    "limpieza profesional",
-    "jardinería",
-    "plomería",
-    "electricidad",
-    "mantenimiento del hogar",
-    "profesionales verificados",
+    "diseño de moda",
+    "bocetos de moda",
+    "fichas técnicas",
+    "patronaje digital",
+    "producción textil",
+    "muestras de moda",
+    "colecciones de moda",
   ],
   openGraph: {
-    title: "TidyHubb - Profesionales de confianza para tu hogar",
+    title: "FASHIONS DEN - Diseño y producción de moda",
     description:
-      "Reserva profesionales calificados y verificados para el cuidado de tu hogar",
+      "Plataforma profesional de diseño, patronaje y producción de moda",
     type: "website",
     locale: "es_ES",
   },

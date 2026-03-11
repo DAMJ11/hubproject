@@ -74,10 +74,10 @@ export default function LoginPage() {
           <StaggeredTransition delay={0.1}>
             <div className="flex justify-center mb-6">
               <Link href="/" className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-[#0d7a5f] rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-[#2563eb] rounded-lg flex items-center justify-center">
                   <span className="text-white text-lg">✨</span>
                 </div>
-                <span className="font-bold text-2xl text-[#1a365d]">TidyHubb</span>
+                <span className="font-bold text-2xl text-[#1a365d]">FASHIONS DEN</span>
               </Link>
             </div>
           </StaggeredTransition>
@@ -108,7 +108,7 @@ export default function LoginPage() {
                 placeholder="example@site.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="h-11 rounded-lg border-gray-300 focus:border-[#0d7a5f] focus:ring-[#0d7a5f]"
+                className="h-11 rounded-lg border-gray-300 focus:border-[#2563eb] focus:ring-[#2563eb]"
                 required
                 disabled={isLoading}
               />
@@ -125,7 +125,7 @@ export default function LoginPage() {
                 placeholder="Ingresa tu contraseña"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="h-11 rounded-lg border-gray-300 focus:border-[#0d7a5f] focus:ring-[#0d7a5f]"
+                className="h-11 rounded-lg border-gray-300 focus:border-[#2563eb] focus:ring-[#2563eb]"
                 required
                 disabled={isLoading}
               />
@@ -145,7 +145,7 @@ export default function LoginPage() {
                 id="remember"
                 checked={rememberMe}
                 onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                className="data-[state=checked]:bg-[#0d7a5f] data-[state=checked]:border-[#0d7a5f]"
+                className="data-[state=checked]:bg-[#2563eb] data-[state=checked]:border-[#2563eb]"
                 disabled={isLoading}
               />
               <label htmlFor="remember" className="text-sm text-gray-700 cursor-pointer">
@@ -238,3 +238,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

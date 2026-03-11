@@ -76,7 +76,7 @@ export default function TestimonialsSection() {
                 <p className="text-gray-700 mb-4">&ldquo;{t.content}&rdquo;</p>
 
                 <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                  <div className="w-10 h-10 bg-[#0d7a5f] rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-[#2563eb] rounded-full flex items-center justify-center">
                     <span className="text-white font-medium text-sm">
                       {t.name.split(" ").map((n) => n[0]).join("")}
                     </span>
@@ -94,3 +94,4 @@ export default function TestimonialsSection() {
     </section>
   );
 }
+

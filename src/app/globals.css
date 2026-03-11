@@ -13,29 +13,29 @@
     --card-foreground: 220 20% 20%;
     --popover: 0 0% 100%;
     --popover-foreground: 220 20% 20%;
-    --primary: 160 54% 35%;
+    --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 50% 25%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 222 47% 11%;
     --muted: 210 20% 96%;
     --muted-foreground: 220 10% 45%;
-    --accent: 160 54% 35%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 214 95% 93%;
+    --accent-foreground: 221 83% 33%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 160 54% 35%;
+    --ring: 221 83% 53%;
     --radius: 0.5rem;
 
-    /* Custom ProjectHub colors */
-    --projecthub-green: #0d7a5f;
-    --projecthub-green-dark: #0a6b53;
-    --projecthub-navy: #1a365d;
-    --projecthub-navy-dark: #152d4f;
-    --projecthub-teal: #0d6c5d;
-    --projecthub-light-bg: #f8f8f8;
-    --projecthub-gray: #6b7280;
+    /* Brand palette */
+    --brand-primary: #2563eb;
+    --brand-primary-hover: #1d4ed8;
+    --brand-primary-soft: #dbeafe;
+    --brand-surface: #f8fafc;
+    --brand-border: #e2e8f0;
+    --brand-text: #0f172a;
+    --brand-muted: #64748b;
   }
 
   .dark {
@@ -45,19 +45,19 @@
     --card-foreground: 0 0% 95%;
     --popover: 220 20% 12%;
     --popover-foreground: 0 0% 95%;
-    --primary: 160 54% 35%;
+    --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 50% 25%;
+    --secondary: 217 33% 18%;
     --secondary-foreground: 0 0% 100%;
     --muted: 220 20% 18%;
     --muted-foreground: 220 10% 60%;
-    --accent: 160 54% 35%;
+    --accent: 217 40% 24%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     --border: 220 13% 20%;
     --input: 220 13% 20%;
-    --ring: 160 54% 35%;
+    --ring: 221 83% 53%;
   }
 }
 
@@ -77,10 +77,13 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-[#1a365d] text-white px-6 py-3 rounded-full font-medium transition-all duration-300 hover:bg-[#152d4f];
+    @apply bg-primary text-primary-foreground px-6 py-3 rounded-full font-medium transition-all duration-300 hover:bg-primary/90;
   }
   .btn-secondary {
-    @apply border-2 border-[#1a365d] text-[#1a365d] px-6 py-3 rounded-full font-medium transition-all duration-300 hover:bg-[#1a365d] hover:text-white;
+    @apply border-2 border-primary text-primary px-6 py-3 rounded-full font-medium transition-all duration-300 hover:bg-primary hover:text-primary-foreground;
+  }
+  .btn-tertiary {
+    @apply bg-secondary text-secondary-foreground px-6 py-3 rounded-full font-medium transition-all duration-300 hover:bg-accent hover:text-accent-foreground;
   }
   .section-padding {
     @apply py-16 md:py-24 px-4 md:px-8;
@@ -100,10 +103,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #0d7a5f;
+  background: #2563eb;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #0a6b53;
+  background: #1d4ed8;
 }

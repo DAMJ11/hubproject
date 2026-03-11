@@ -11,6 +11,7 @@ export interface UserPayload {
   firstName: string;
   lastName: string;
   role: UserRole;
+  companyId: number | null;
 }
 
 export interface JWTPayload extends UserPayload {

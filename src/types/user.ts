@@ -1,4 +1,4 @@
-export type UserRole = "user" | "admin";
+export type UserRole = "brand" | "manufacturer" | "admin";
 
 export interface User {
   id: number;
@@ -7,6 +7,7 @@ export interface User {
   first_name: string;
   last_name: string;
   role: UserRole;
+  company_id: number | null;
   terms_accepted: boolean;
   created_at: Date;
   updated_at: Date;
@@ -17,6 +18,8 @@ export interface UserCreateInput {
   password: string;
   firstName: string;
   lastName: string;
+  role: "brand" | "manufacturer";
+  companyName: string;
   termsAccepted: boolean;
 }
 
@@ -32,6 +35,8 @@ export interface UserResponse {
   firstName: string;
   lastName: string;
   role: UserRole;
+  companyId: number | null;
+  companyName?: string;
 }
 
 export interface AuthResponse {

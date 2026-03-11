@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { DashboardLayout } from "@/components/dashboard";
+import { useState } from "react";
+import { useDashboardUser } from "@/contexts/DashboardUserContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -42,39 +41,11 @@ const categoryIcons: Record<string, React.ElementType> = {
 };
 
 export default function HelpPage() {
-  const router = useRouter();
-  const [user, setUser] = useState<UserData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user } = useDashboardUser();
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [activeCategory, setActiveCategory] = useState("all");
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/auth/me", { credentials: "same-origin" });
-        const data = await res.json();
-        if (data.success) {
-          setUser(data.user);
-        } else {
-          router.push("/login");
-        }
-      } catch {
-        router.push("/login");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUser();
-  }, [router]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#0d7a5f]" />
-      </div>
-    );
-  }
   if (!user) return null;
 
   const categories = Array.from(new Set(faqs.map((f) => f.category)));
@@ -86,11 +57,10 @@ export default function HelpPage() {
   });
 
   return (
-    <DashboardLayout user={user}>
-      <div className="space-y-6">
+    <div className="space-y-6">
         <div className="text-center max-w-2xl mx-auto">
-          <div className="w-16 h-16 rounded-full bg-[#0d7a5f]/10 flex items-center justify-center mx-auto mb-4">
-            <HelpCircle className="w-8 h-8 text-[#0d7a5f]" />
+          <div className="w-16 h-16 rounded-full bg-[#2563eb]/10 flex items-center justify-center mx-auto mb-4">
+            <HelpCircle className="w-8 h-8 text-[#2563eb]" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">¿En qué te podemos ayudar?</h1>
           <p className="text-gray-500 mt-1">Busca en nuestras preguntas frecuentes o contáctanos</p>
@@ -102,12 +72,12 @@ export default function HelpPage() {
 
         <div className="flex justify-center gap-2 flex-wrap">
           <Button variant={activeCategory === "all" ? "default" : "outline"} size="sm" onClick={() => setActiveCategory("all")}
-            className={activeCategory === "all" ? "bg-[#0d7a5f] hover:bg-[#0a6b52]" : ""}>Todas</Button>
+            className={activeCategory === "all" ? "bg-[#2563eb] hover:bg-[#1d4ed8]" : ""}>Todas</Button>
           {categories.map((cat) => {
             const Icon = categoryIcons[cat] || HelpCircle;
             return (
               <Button key={cat} variant={activeCategory === cat ? "default" : "outline"} size="sm" onClick={() => setActiveCategory(cat)}
-                className={`gap-1 ${activeCategory === cat ? "bg-[#0d7a5f] hover:bg-[#0a6b52]" : ""}`}>
+                className={`gap-1 ${activeCategory === cat ? "bg-[#2563eb] hover:bg-[#1d4ed8]" : ""}`}>
                 <Icon className="w-3.5 h-3.5" /> {cat}
               </Button>
             );
@@ -140,24 +110,24 @@ export default function HelpPage() {
           <h3 className="font-semibold text-lg mb-2">¿No encontraste lo que buscabas?</h3>
           <p className="text-sm text-gray-500 mb-4">Nuestro equipo está disponible para ayudarte</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <button className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-[#0d7a5f] hover:bg-[#0d7a5f]/5 transition-colors">
-              <MessageSquare className="w-6 h-6 text-[#0d7a5f]" />
+            <button className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-[#2563eb] hover:bg-[#2563eb]/5 transition-colors">
+              <MessageSquare className="w-6 h-6 text-[#2563eb]" />
               <span className="text-sm font-medium">Chat en Vivo</span>
               <span className="text-xs text-gray-500">Respuesta inmediata</span>
             </button>
-            <button className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-[#0d7a5f] hover:bg-[#0d7a5f]/5 transition-colors">
-              <Mail className="w-6 h-6 text-[#0d7a5f]" />
+            <button className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-[#2563eb] hover:bg-[#2563eb]/5 transition-colors">
+              <Mail className="w-6 h-6 text-[#2563eb]" />
               <span className="text-sm font-medium">Email</span>
-              <span className="text-xs text-gray-500">soporte@tidyhubb.com</span>
+              <span className="text-xs text-gray-500">soporte@fashionsden.com</span>
             </button>
-            <button className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-[#0d7a5f] hover:bg-[#0d7a5f]/5 transition-colors">
-              <Phone className="w-6 h-6 text-[#0d7a5f]" />
+            <button className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-[#2563eb] hover:bg-[#2563eb]/5 transition-colors">
+              <Phone className="w-6 h-6 text-[#2563eb]" />
               <span className="text-sm font-medium">Teléfono</span>
               <span className="text-xs text-gray-500">+57 601 555 0000</span>
             </button>
           </div>
         </Card>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }
+

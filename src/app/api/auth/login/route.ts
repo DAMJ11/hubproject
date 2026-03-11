@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { queryOne } from "@/lib/db";
-import { comparePassword, generateToken, setAuthCookie } from "@/lib/auth";
+import { comparePassword, generateToken } from "@/lib/auth";
 import type { User, UserLoginInput, AuthResponse } from "@/types/user";
 
 export async function POST(request: NextRequest) {
@@ -19,9 +19,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Find user by email
-    const user = await queryOne<User>(
-      "SELECT id, email, password, first_name, last_name, role FROM users WHERE email = ?",
+    // Find user by email (include company info)
+    const user = await queryOne<User & { company_name?: string }>(
+      `SELECT u.id, u.email, u.password, u.first_name, u.last_name, u.role, u.company_id,
+              c.name as company_name
+       FROM users u LEFT JOIN companies c ON u.company_id = c.id
+       WHERE u.email = ?`,
       [email.toLowerCase()]
     );
 
@@ -54,13 +57,12 @@ export async function POST(request: NextRequest) {
       email: user.email,
       firstName: user.first_name,
       lastName: user.last_name,
-      role: user.role || "user",
+      role: user.role || "brand",
+      companyId: user.company_id ?? null,
     });
 
-    // Set auth cookie
-    await setAuthCookie(token);
-
-    return NextResponse.json<AuthResponse>(
+    // Set auth cookie (usando NextResponse)
+    const response = NextResponse.json<AuthResponse>(
       {
         success: true,
         message: "Login successful",
@@ -69,12 +71,22 @@ export async function POST(request: NextRequest) {
           email: user.email,
           firstName: user.first_name,
           lastName: user.last_name,
-          role: user.role || "user",
+          role: user.role || "brand",
+          companyId: user.company_id ?? null,
+          companyName: (user as { company_name?: string }).company_name,
         },
         token,
       },
       { status: 200 }
     );
+    response.cookies.set("auth_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 7,
+      path: "/",
+    });
+    return response;
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json<AuthResponse>(

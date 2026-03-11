@@ -1,0 +1,28 @@
+Alta prioridad (afectan directamente la experiencia)
+
+✅ Transición de contenido animada — al cambiar de sección, el contenido aparece abruptamente. Una animación suave (fade/slide) haría la navegación más fluida y profesional.
+
+✅ Indicador de sección activa durante navegación — cuando el usuario hace clic en el sidebar, no hay ninguna señal visual de que algo está cargando. Un indicador sutil (barra de progreso arriba, como GitHub/YouTube) daría feedback inmediato.
+
+✅ Datos reales vs. datos mock — todas las páginas (reservas, pagos, usuarios, reportes, etc.) usan datos hardcodeados. El usuario ve información falsa, lo que hace inútil el dashboard en producción.
+
+✅ Sidebar en móvil — el sidebar no tiene comportamiento responsive adecuado. En pantallas pequeñas se superpone o desaparece sin una experiencia táctil cómoda (swipe para abrir/cerrar).
+
+🟡 Prioridad media (mejoran la confianza y usabilidad)
+
+✅ Feedback de acciones — botones como "Guardar", "Crear Servicio", "Registrar Profesional" no tienen feedback alguno (spinner, toast de éxito/error). El usuario no sabe si la acción funcionó.
+
+✅ Estado vacío — si no hay reservas, usuarios o pagos, no hay un mensaje amigable. El usuario solo ve una tabla vacía sin contexto.
+
+✅ Confirmación antes de acciones destructivas — por ejemplo, desactivar un usuario o eliminar algo no pide confirmación. Un usuario podría hacerlo por error.
+
+✅ Persistencia de filtros — si el usuario filtra por estado en pagos y navega a otro lado, al volver pierde el filtro.
+
+🟢 Baja prioridad (detalles de pulido)
+
+✅ Breadcrumbs o título dinámico en el header — el header no refleja en qué sección está el usuario actualmente.
+
+✅ Modo oscuro — la infraestructura de Tailwind lo permite, pero no está implementado.
+
+✅ Accesibilidad básica — algunos botones de ícono no tienen aria-label, lo que dificulta el uso con lectores de pantalla.
+

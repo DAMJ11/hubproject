@@ -70,7 +70,7 @@ export default function PricingSection() {
               key={plan.name}
               className={`rounded-2xl p-8 ${
                 plan.highlighted
-                  ? "bg-[#0d7a5f] text-white ring-4 ring-[#0d7a5f]/20 scale-105"
+                  ? "bg-[#2563eb] text-white ring-4 ring-[#2563eb]/20 scale-105"
                   : "bg-gray-50 border border-gray-200"
               }`}
             >
@@ -99,7 +99,7 @@ export default function PricingSection() {
               <ul className="mt-8 space-y-3">
                 {plan.features.map((feature) => (
                   <li key={feature} className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 className={`w-4 h-4 flex-shrink-0 ${plan.highlighted ? "text-white" : "text-[#0d7a5f]"}`} />
+                    <CheckCircle2 className={`w-4 h-4 flex-shrink-0 ${plan.highlighted ? "text-white" : "text-[#2563eb]"}`} />
                     <span>{feature}</span>
                   </li>
                 ))}
@@ -110,8 +110,8 @@ export default function PricingSection() {
                   <Button
                     className={`w-full h-12 rounded-lg font-medium ${
                       plan.highlighted
-                        ? "bg-white text-[#0d7a5f] hover:bg-gray-100"
-                        : "bg-[#0d7a5f] text-white hover:bg-[#0a6b52]"
+                        ? "bg-white text-[#2563eb] hover:bg-gray-100"
+                        : "bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
                     }`}
                   >
                     {plan.cta}
@@ -125,3 +125,4 @@ export default function PricingSection() {
     </section>
   );
 }
+

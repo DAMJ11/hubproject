@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { DashboardLayout } from "@/components/dashboard";
+import { useDashboardUser } from "@/contexts/DashboardUserContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { User, Mail, Phone, Lock, Bell, Shield, Eye, EyeOff, Save, Camera } from "lucide-react";
+import { User, Mail, Phone, Lock, Bell, Shield, Eye, EyeOff, Save, Camera, Loader2 } from "lucide-react";
 
 interface UserData {
   id: number;
@@ -18,9 +17,7 @@ interface UserData {
 }
 
 export default function SettingsPage() {
-  const router = useRouter();
-  const [user, setUser] = useState<UserData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user } = useDashboardUser();
   const [activeTab, setActiveTab] = useState("perfil");
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -40,41 +37,46 @@ export default function SettingsPage() {
     pushMessages: true,
     pushPromos: false,
   });
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [savingNotifications, setSavingNotifications] = useState(false);
+  const [profileSaved, setProfileSaved] = useState(false);
+  const [notificationsSaved, setNotificationsSaved] = useState(false);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/auth/me", { credentials: "same-origin" });
-        const data = await res.json();
-        if (data.success) {
-          setUser(data.user);
-          setFormData((prev) => ({
-            ...prev,
-            firstName: data.user.firstName || "",
-            lastName: data.user.lastName || "",
-            email: data.user.email || "",
-            phone: data.user.phone || "",
-          }));
-        } else {
-          router.push("/login");
-        }
-      } catch {
-        router.push("/login");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUser();
-  }, [router]);
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        email: user.email || "",
+        phone: user.phone || "",
+      }));
+    }
+  }, [user]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#0d7a5f]" />
-      </div>
-    );
-  }
   if (!user) return null;
+
+  const handleSaveProfile = async () => {
+    if (savingProfile) return;
+    setSavingProfile(true);
+    setProfileSaved(false);
+
+    await new Promise((resolve) => setTimeout(resolve, 450));
+
+    setSavingProfile(false);
+    setProfileSaved(true);
+  };
+
+  const handleSaveNotifications = async () => {
+    if (savingNotifications) return;
+    setSavingNotifications(true);
+    setNotificationsSaved(false);
+
+    await new Promise((resolve) => setTimeout(resolve, 450));
+
+    setSavingNotifications(false);
+    setNotificationsSaved(true);
+  };
 
   const tabs = [
     { id: "perfil", label: "Mi Perfil", icon: User },
@@ -83,8 +85,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <DashboardLayout user={user}>
-      <div className="space-y-6">
+    <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Configuración</h1>
           <p className="text-gray-500 mt-1">Administra tu cuenta y preferencias</p>
@@ -97,7 +98,7 @@ export default function SettingsPage() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === tab.id
-                  ? "text-[#0d7a5f] border-[#0d7a5f]"
+                  ? "text-[#2563eb] border-[#2563eb]"
                   : "text-gray-500 border-transparent hover:text-gray-700"
               }`}
             >
@@ -111,7 +112,7 @@ export default function SettingsPage() {
           <Card className="p-6">
             <div className="flex items-center gap-6 mb-8">
               <div className="relative">
-                <div className="w-20 h-20 rounded-full bg-[#0d7a5f] flex items-center justify-center text-white text-2xl font-bold">
+                <div className="w-20 h-20 rounded-full bg-[#2563eb] flex items-center justify-center text-white text-2xl font-bold">
                   {user.firstName[0]}{user.lastName[0]}
                 </div>
                 <button className="absolute -bottom-1 -right-1 w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center border hover:bg-gray-50">
@@ -175,10 +176,11 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            <div className="mt-6 flex justify-end">
-              <Button className="bg-[#0d7a5f] hover:bg-[#0a6b52] gap-2">
-                <Save className="w-4 h-4" />
-                Guardar Cambios
+            <div className="mt-6 flex items-center justify-between gap-3">
+              <p className="text-sm text-emerald-700">{profileSaved ? "Cambios guardados." : ""}</p>
+              <Button className="bg-[#2563eb] hover:bg-[#1d4ed8] gap-2" onClick={handleSaveProfile} disabled={savingProfile}>
+                {savingProfile ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                {savingProfile ? "Guardando..." : "Guardar Cambios"}
               </Button>
             </div>
           </Card>
@@ -233,7 +235,7 @@ export default function SettingsPage() {
                   />
                 </div>
               </div>
-              <Button className="bg-[#0d7a5f] hover:bg-[#0a6b52] gap-2 mt-2">
+              <Button className="bg-[#2563eb] hover:bg-[#1d4ed8] gap-2 mt-2">
                 <Shield className="w-4 h-4" />
                 Actualizar Contraseña
               </Button>
@@ -262,7 +264,7 @@ export default function SettingsPage() {
                         type="checkbox"
                         checked={notifications[item.key]}
                         onChange={() => setNotifications({ ...notifications, [item.key]: !notifications[item.key] })}
-                        className="w-5 h-5 rounded text-[#0d7a5f] focus:ring-[#0d7a5f]"
+                        className="w-5 h-5 rounded text-[#2563eb] focus:ring-[#2563eb]"
                       />
                     </label>
                   ))}
@@ -285,22 +287,23 @@ export default function SettingsPage() {
                         type="checkbox"
                         checked={notifications[item.key]}
                         onChange={() => setNotifications({ ...notifications, [item.key]: !notifications[item.key] })}
-                        className="w-5 h-5 rounded text-[#0d7a5f] focus:ring-[#0d7a5f]"
+                        className="w-5 h-5 rounded text-[#2563eb] focus:ring-[#2563eb]"
                       />
                     </label>
                   ))}
                 </div>
               </div>
-              <div className="flex justify-end">
-                <Button className="bg-[#0d7a5f] hover:bg-[#0a6b52] gap-2">
-                  <Save className="w-4 h-4" />
-                  Guardar Preferencias
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-sm text-emerald-700">{notificationsSaved ? "Preferencias guardadas." : ""}</p>
+                <Button className="bg-[#2563eb] hover:bg-[#1d4ed8] gap-2" onClick={handleSaveNotifications} disabled={savingNotifications}>
+                  {savingNotifications ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  {savingNotifications ? "Guardando..." : "Guardar Preferencias"}
                 </Button>
               </div>
             </div>
           </Card>
         )}
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }
+

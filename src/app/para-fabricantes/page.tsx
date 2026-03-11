@@ -258,7 +258,7 @@ export default function ParaFabricantesPage() {
                 key={index}
                 className={`relative overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-2 ${
                   plan.highlighted
-                    ? "border-2 border-[#0d7a5f] shadow-xl"
+                    ? "border-2 border-[#2563eb] shadow-xl"
                     : "border shadow-lg"
                 }`}
               >
@@ -272,7 +272,7 @@ export default function ParaFabricantesPage() {
                     >
                       <path
                         d="M20 5L35 15V30L20 40L5 30V15L20 5Z"
-                        fill={plan.highlighted ? "#0d7a5f" : "#1a365d"}
+                        fill={plan.highlighted ? "#2563eb" : "#1a365d"}
                       />
                       <path
                         d="M20 12L28 17V27L20 32L12 27V17L20 12Z"
@@ -280,7 +280,7 @@ export default function ParaFabricantesPage() {
                       />
                       <path
                         d="M20 18L24 21V27L20 30L16 27V21L20 18Z"
-                        fill={plan.highlighted ? "#0d7a5f" : "#1a365d"}
+                        fill={plan.highlighted ? "#2563eb" : "#1a365d"}
                       />
                     </svg>
                   </div>
@@ -290,10 +290,10 @@ export default function ParaFabricantesPage() {
                   </h3>
 
                   <div className="flex items-baseline justify-center mb-4">
-                    <span className="text-4xl font-bold text-[#0d7a5f]">
+                    <span className="text-4xl font-bold text-[#2563eb]">
                       {plan.price}
                     </span>
-                    <span className="text-xl text-[#0d7a5f] ml-1">€</span>
+                    <span className="text-xl text-[#2563eb] ml-1">€</span>
                     <span className="text-gray-600 ml-1">/mes</span>
                   </div>
 
@@ -305,7 +305,7 @@ export default function ParaFabricantesPage() {
                     variant="outline"
                     className={`rounded-full px-8 py-6 w-full font-medium transition-all ${
                       plan.highlighted
-                        ? "border-2 border-[#0d7a5f] text-[#0d7a5f] hover:bg-[#0d7a5f] hover:text-white"
+                        ? "border-2 border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
                         : "border-2 border-[#1a365d] text-[#1a365d] hover:bg-[#1a365d] hover:text-white"
                     }`}
                   >
@@ -346,3 +346,4 @@ export default function ParaFabricantesPage() {
     </main>
   );
 }
+

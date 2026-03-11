@@ -16,13 +16,13 @@ export default function Hero() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div>
-            <div className="inline-flex items-center gap-2 bg-[#0d7a5f]/10 text-[#0d7a5f] rounded-full px-4 py-2 text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 bg-[#2563eb]/10 text-[#2563eb] rounded-full px-4 py-2 text-sm font-medium mb-6">
               <span>🏠</span> Tu hogar, nuestro cuidado
             </div>
 
             <h1 className="text-4xl lg:text-6xl font-bold text-[#1a365d] leading-tight">
               Profesionales de confianza para tu{" "}
-              <span className="text-[#0d7a5f]">hogar</span>
+              <span className="text-[#2563eb]">hogar</span>
             </h1>
 
             <p className="mt-6 text-lg text-gray-600 max-w-lg">
@@ -37,7 +37,7 @@ export default function Hero() {
                 const Icon = item.icon;
                 return (
                   <div key={item.text} className="flex items-center gap-2 text-sm text-gray-700">
-                    <Icon className="w-5 h-5 text-[#0d7a5f]" />
+                    <Icon className="w-5 h-5 text-[#2563eb]" />
                     <span>{item.text}</span>
                   </div>
                 );
@@ -47,12 +47,12 @@ export default function Hero() {
             {/* CTA Buttons */}
             <div className="flex flex-wrap gap-4 mt-10">
               <Link href="/register">
-                <Button size="lg" className="bg-[#0d7a5f] hover:bg-[#0a6b52] text-white rounded-lg px-8 h-12 text-base">
+                <Button size="lg" className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-lg px-8 h-12 text-base">
                   Reservar Servicio
                 </Button>
               </Link>
               <a href="#como-funciona">
-                <Button size="lg" variant="outline" className="rounded-lg px-8 h-12 text-base border-[#0d7a5f] text-[#0d7a5f] hover:bg-[#0d7a5f]/5">
+                <Button size="lg" variant="outline" className="rounded-lg px-8 h-12 text-base border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb]/5">
                   ¿Cómo Funciona?
                 </Button>
               </a>
@@ -101,3 +101,4 @@ export default function Hero() {
     </section>
   );
 }
+

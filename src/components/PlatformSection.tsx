@@ -46,10 +46,10 @@ export default function PlatformSection() {
             return (
               <div key={step.step} className="text-center group">
                 <div className="relative inline-block mb-6">
-                  <div className="w-20 h-20 bg-[#0d7a5f]/10 rounded-2xl flex items-center justify-center group-hover:bg-[#0d7a5f] transition-colors">
-                    <Icon className="w-10 h-10 text-[#0d7a5f] group-hover:text-white transition-colors" />
+                  <div className="w-20 h-20 bg-[#2563eb]/10 rounded-2xl flex items-center justify-center group-hover:bg-[#2563eb] transition-colors">
+                    <Icon className="w-10 h-10 text-[#2563eb] group-hover:text-white transition-colors" />
                   </div>
-                  <span className="absolute -top-2 -right-2 w-8 h-8 bg-[#0d7a5f] text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  <span className="absolute -top-2 -right-2 w-8 h-8 bg-[#2563eb] text-white rounded-full flex items-center justify-center text-sm font-bold">
                     {step.step}
                   </span>
                 </div>
@@ -63,3 +63,4 @@ export default function PlatformSection() {
     </section>
   );
 }
+

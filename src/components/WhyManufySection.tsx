@@ -51,8 +51,8 @@ export default function WhyManufySection() {
             const Icon = reason.icon;
             return (
               <div key={reason.title} className="bg-white rounded-xl p-8 hover:shadow-lg transition-shadow border border-gray-100">
-                <div className="w-14 h-14 bg-[#0d7a5f]/10 rounded-xl flex items-center justify-center mb-5">
-                  <Icon className="w-7 h-7 text-[#0d7a5f]" />
+                <div className="w-14 h-14 bg-[#2563eb]/10 rounded-xl flex items-center justify-center mb-5">
+                  <Icon className="w-7 h-7 text-[#2563eb]" />
                 </div>
                 <h3 className="text-xl font-semibold text-[#1a365d] mb-3">{reason.title}</h3>
                 <p className="text-gray-600">{reason.description}</p>
@@ -64,3 +64,4 @@ export default function WhyManufySection() {
     </section>
   );
 }
+
