@@ -161,7 +161,7 @@ export default function ReviewsPage() {
                 <MessageSquare className="w-3.5 h-3.5" /> Responder
               </button>
               {!review.is_public && (
-                <span className="text-xs text-orange-500 ml-auto">Privada</span>
+                <span className="text-xs text-[#2563eb] ml-auto">Privada</span>
               )}
             </div>
           </Card>

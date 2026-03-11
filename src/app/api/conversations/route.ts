@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryOne } from "@/lib/db";
 import { getSessionUser, hasRole } from "@/lib/session";
+import { notifyConversationParticipants } from "@/lib/realtime/notifyConversation";
 
 // GET /api/conversations - Lista conversaciones del usuario autenticado
 export async function GET(request: NextRequest) {
@@ -200,6 +201,15 @@ export async function POST(request: NextRequest) {
         [conversationId]
       );
     }
+
+    await notifyConversationParticipants(conversationId, "chat.conversation.updated", {
+      action: isAdmin ? "conversation_started" : "conversation_requested",
+      actorUserId: user.id,
+    });
+    await notifyConversationParticipants(conversationId, "chat.unread.updated", {
+      reason: "conversation_created",
+      actorUserId: user.id,
+    });
 
     return NextResponse.json({
       success: true,

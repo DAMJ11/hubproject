@@ -17,6 +17,8 @@ import {
   CheckCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { emitUnreadMessagesRefresh } from "@/hooks/useUnreadMessagesCount";
+import { getPusherClient } from "@/lib/realtime/pusherClient";
 
 interface Conversation {
   id: number;
@@ -99,6 +101,18 @@ export default function MessagesPanel() {
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastMsgIdRef = useRef<number>(0);
 
+  const refreshConversations = useCallback(async () => {
+    try {
+      const res = await fetch("/api/conversations", { cache: "no-store" });
+      const data = await res.json();
+      if (data.success) {
+        setConversations(data.conversations ?? []);
+      }
+    } catch {
+      // noop
+    }
+  }, []);
+
   // Cargar usuario y conversaciones
   useEffect(() => {
     Promise.all([
@@ -130,6 +144,7 @@ export default function MessagesPanel() {
         setConversations((prev) =>
           prev.map((c) => (c.id === convId ? { ...c, unread_count: 0 } : c))
         );
+        emitUnreadMessagesRefresh();
       }
     } catch (e) {
       console.error("Error loading messages:", e);
@@ -168,14 +183,65 @@ export default function MessagesPanel() {
   // Polling para lista de conversaciones (unread badges, ultimo mensaje)
   useEffect(() => {
     const convPoll = setInterval(async () => {
-      try {
-        const res = await fetch("/api/conversations");
-        const data = await res.json();
-        if (data.success) setConversations(data.conversations ?? []);
-      } catch (_) {}
+      await refreshConversations();
     }, 10000);
     return () => clearInterval(convPoll);
-  }, []);
+  }, [refreshConversations]);
+
+  // Realtime de usuario: actualiza lista de conversaciones y badges inmediatamente
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const pusher = getPusherClient();
+    if (!pusher) return;
+
+    const channelName = `private-user-${user.id}`;
+    const channel = pusher.subscribe(channelName);
+
+    const onConversationChange = async () => {
+      await refreshConversations();
+      emitUnreadMessagesRefresh();
+    };
+
+    channel.bind("chat.unread.updated", onConversationChange);
+    channel.bind("chat.message.created", onConversationChange);
+    channel.bind("chat.conversation.updated", onConversationChange);
+
+    return () => {
+      channel.unbind("chat.unread.updated", onConversationChange);
+      channel.unbind("chat.message.created", onConversationChange);
+      channel.unbind("chat.conversation.updated", onConversationChange);
+      pusher.unsubscribe(channelName);
+    };
+  }, [refreshConversations, user?.id]);
+
+  // Realtime de conversación activa: recarga mensajes al llegar nuevos eventos
+  useEffect(() => {
+    if (!selectedConv || selectedConv.status !== "open") return;
+
+    const pusher = getPusherClient();
+    if (!pusher) return;
+
+    const channelName = `private-conversation-${selectedConv.id}`;
+    const channel = pusher.subscribe(channelName);
+
+    const onMessageCreated = async () => {
+      await loadMessages(selectedConv.id, true);
+    };
+
+    const onConversationUpdated = async () => {
+      await refreshConversations();
+    };
+
+    channel.bind("chat.message.created", onMessageCreated);
+    channel.bind("chat.conversation.updated", onConversationUpdated);
+
+    return () => {
+      channel.unbind("chat.message.created", onMessageCreated);
+      channel.unbind("chat.conversation.updated", onConversationUpdated);
+      pusher.unsubscribe(channelName);
+    };
+  }, [loadMessages, refreshConversations, selectedConv]);
 
   // Buscar empresas
   useEffect(() => {
@@ -219,6 +285,7 @@ export default function MessagesPanel() {
               : c
           )
         );
+        emitUnreadMessagesRefresh();
         setNewMessage("");
       }
     } catch (e) {
@@ -247,6 +314,7 @@ export default function MessagesPanel() {
         const convRes = await fetch("/api/conversations");
         const convData = await convRes.json();
         setConversations(convData.conversations ?? []);
+        emitUnreadMessagesRefresh();
         setNewChatTarget(null);
         setNewChatSubject("");
         setNewChatMessage("");
@@ -274,6 +342,7 @@ export default function MessagesPanel() {
         const convRes = await fetch("/api/conversations");
         const convData = await convRes.json();
         setConversations(convData.conversations ?? []);
+        emitUnreadMessagesRefresh();
         if (action === "accept") {
           const accepted = convData.conversations?.find((c: Conversation) => c.id === convId);
           if (accepted) {

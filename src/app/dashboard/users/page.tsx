@@ -5,7 +5,7 @@ import { useDashboardUser } from "@/contexts/DashboardUserContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Users, Search, Mail, Phone, Shield, ShieldCheck, MoreVertical, UserX, UserCheck, Loader2 } from "lucide-react";
+import { Users, Search, Mail, Phone, Shield, ShieldCheck, Trash2, UserX, UserCheck, Loader2 } from "lucide-react";
 
 interface UserRecord {
   id: number;
@@ -25,14 +25,94 @@ export default function UsersPage() {
   const [filterRole, setFilterRole] = useState("all");
   const [users, setUsers] = useState<UserRecord[]>([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
+  const [actionMessage, setActionMessage] = useState("");
+  const [actionError, setActionError] = useState("");
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/dashboard/users");
+      const data = await response.json();
+      setUsers(data.users ?? []);
+    } catch (error) {
+      console.error(error);
+      setActionError("No se pudo cargar la lista de usuarios.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    fetch("/api/dashboard/users")
-      .then((r) => r.json())
-      .then((data) => setUsers(data.users ?? []))
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    fetchUsers();
   }, []);
+
+  const handleUserAction = async (
+    targetUser: UserRecord,
+    action: "activate" | "deactivate" | "grant_admin" | "delete"
+  ) => {
+    if (actionLoadingId !== null) return;
+
+    if (action === "delete") {
+      const confirmed = window.confirm(
+        `¿Seguro que deseas eliminar a ${targetUser.first_name} ${targetUser.last_name}? Esta acción no se puede deshacer.`
+      );
+      if (!confirmed) return;
+    }
+
+    setActionMessage("");
+    setActionError("");
+    setActionLoadingId(targetUser.id);
+
+    try {
+      const response =
+        action === "delete"
+          ? await fetch(`/api/dashboard/users?userId=${targetUser.id}`, { method: "DELETE" })
+          : await fetch("/api/dashboard/users", {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ userId: targetUser.id, action }),
+            });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setActionError(data?.error || "No se pudo completar la acción.");
+        return;
+      }
+
+      setActionMessage(data?.message || "Acción aplicada correctamente.");
+
+      // Actualización local del usuario
+      setUsers((prev) => {
+        if (action === "delete") {
+          return prev.filter((u) => u.id !== targetUser.id);
+        }
+        return prev.map((u) =>
+          u.id === targetUser.id
+            ? {
+                ...u,
+                is_active:
+                  action === "activate"
+                    ? true
+                    : action === "deactivate"
+                    ? false
+                    : u.is_active,
+                role:
+                  action === "grant_admin"
+                    ? "admin"
+                    : u.role,
+              }
+            : u
+        );
+      });
+    } catch (error) {
+      console.error(error);
+      setActionError("Ocurrió un error al ejecutar la acción.");
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
 
   if (!user) return null;
 
@@ -47,7 +127,10 @@ export default function UsersPage() {
   const filteredUsers = users.filter((u) => {
     const matchesSearch =
       `${u.first_name} ${u.last_name} ${u.email}`.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesRole = filterRole === "all" || u.role === filterRole;
+    const matchesRole =
+      filterRole === "all" ||
+      (filterRole === "admin" && u.role === "admin") ||
+      (filterRole === "clients" && u.role !== "admin");
     return matchesSearch && matchesRole;
   });
 
@@ -60,13 +143,24 @@ export default function UsersPage() {
         </div>
       </div>
 
+      {actionError && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
+          {actionError}
+        </div>
+      )}
+      {actionMessage && (
+        <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-2 text-sm text-green-700">
+          {actionMessage}
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <Input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Buscar por nombre o correo..." className="pl-10" />
         </div>
         <div className="flex gap-2">
-          {["all", "user", "admin"].map((role) => (
+          {["all", "clients", "admin"].map((role) => (
             <Button key={role} variant={filterRole === role ? "default" : "outline"} size="sm" onClick={() => setFilterRole(role)}
               className={filterRole === role ? "bg-[#2563eb] hover:bg-[#1d4ed8]" : ""}>
               {role === "all" ? "Todos" : role === "admin" ? "Admins" : "Clientes"}
@@ -134,14 +228,41 @@ export default function UsersPage() {
                   <td className="p-4 text-sm text-gray-500">{new Date(u.created_at).toLocaleDateString("es-CO")}</td>
                   <td className="p-4 text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <Button variant="ghost" size="sm" className="text-gray-500 hover:text-[#2563eb]">
-                        {u.is_active ? <UserX className="w-4 h-4" /> : <UserCheck className="w-4 h-4" />}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-gray-500 hover:text-[#2563eb]"
+                        disabled={actionLoadingId === u.id || u.id === user.id}
+                        title={u.id === user.id ? "No puedes modificar tu propio usuario" : u.is_active ? "Desactivar usuario" : "Activar usuario"}
+                        onClick={() => handleUserAction(u, u.is_active ? "deactivate" : "activate")}
+                      >
+                        {actionLoadingId === u.id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : u.is_active ? (
+                          <UserX className="w-4 h-4" />
+                        ) : (
+                          <UserCheck className="w-4 h-4" />
+                        )}
                       </Button>
-                      <Button variant="ghost" size="sm" className="text-gray-500 hover:text-[#2563eb]">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-gray-500 hover:text-[#2563eb]"
+                        disabled={actionLoadingId === u.id || u.role === "admin" || u.id === user.id}
+                        title={u.role === "admin" ? "Ya es admin" : "Otorgar permisos de admin"}
+                        onClick={() => handleUserAction(u, "grant_admin")}
+                      >
                         <Shield className="w-4 h-4" />
                       </Button>
-                      <Button variant="ghost" size="sm" className="text-gray-500">
-                        <MoreVertical className="w-4 h-4" />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-gray-500 hover:text-red-600"
+                        disabled={actionLoadingId === u.id || u.role === "admin" || u.id === user.id}
+                        title={u.role === "admin" ? "No se puede eliminar un admin" : "Eliminar usuario"}
+                        onClick={() => handleUserAction(u, "delete")}
+                      >
+                        <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
                   </td>

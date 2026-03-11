@@ -242,6 +242,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.22, ease: "easeOut" }}
+              className="px-4 py-5 sm:px-6 lg:px-8"
             >
               {children}
             </motion.div>

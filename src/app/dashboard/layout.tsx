@@ -1,5 +1,4 @@
 import { DashboardUserProvider } from "@/contexts/DashboardUserContext";
-import { LanguageProvider } from "@/contexts/LanguageContext";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 
 export default function DashboardRootLayout({
@@ -9,9 +8,7 @@ export default function DashboardRootLayout({
 }) {
   return (
     <DashboardUserProvider>
-      <LanguageProvider>
-        <DashboardLayout>{children}</DashboardLayout>
-      </LanguageProvider>
+      <DashboardLayout>{children}</DashboardLayout>
     </DashboardUserProvider>
   );
 }

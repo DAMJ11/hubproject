@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryOne } from "@/lib/db";
 import { getSessionUser, hasRole } from "@/lib/session";
+import { notifyConversationParticipants } from "@/lib/realtime/notifyConversation";
 
 // PUT /api/conversations/[id]/respond - Aceptar o rechazar solicitud de chat
 export async function PUT(
@@ -71,12 +72,30 @@ export async function PUT(
         [conversationId]
       );
 
+      await notifyConversationParticipants(conversationId, "chat.conversation.updated", {
+        action: "conversation_accepted",
+        actorUserId: user.id,
+      });
+      await notifyConversationParticipants(conversationId, "chat.unread.updated", {
+        reason: "conversation_accepted",
+        actorUserId: user.id,
+      });
+
       return NextResponse.json({ success: true, message: "Chat aceptado" });
     } else {
       await query(
         `UPDATE conversations SET status = 'closed' WHERE id = ?`,
         [conversationId]
       );
+
+      await notifyConversationParticipants(conversationId, "chat.conversation.updated", {
+        action: "conversation_rejected",
+        actorUserId: user.id,
+      });
+      await notifyConversationParticipants(conversationId, "chat.unread.updated", {
+        reason: "conversation_rejected",
+        actorUserId: user.id,
+      });
 
       return NextResponse.json({ success: true, message: "Chat rechazado" });
     }

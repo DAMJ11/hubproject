@@ -1,61 +1,71 @@
-import { CheckCircle2, Users, Shield, Clock, Sparkles, CreditCard } from "lucide-react";
+"use client";
 
-const reasons = [
-  {
-    icon: CheckCircle2,
-    title: "Profesionales Verificados",
-    description: "Cada profesional pasa por un riguroso proceso de verificación de identidad, antecedentes y habilidades.",
+import { BadgeCheck, ShieldCheck, MessageSquareText, Timer, Layers, LineChart } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+
+const copy = {
+  es: {
+    title: "Por que elegir nuestra red de producción?",
+    subtitle: "Diseñada para marcas de moda que necesitan agilidad comercial sin perder estándar de calidad.",
+    items: [
+      ["Manufacturers verificados", "Perfiles evaluados por capacidad productiva, historial de cumplimiento y tipo de prenda."],
+      ["Ordenes con control", "Hitos y acuerdos visibles para ambas partes, con evidencia de cambios y aprobaciones."],
+      ["Comunicación centralizada", "Mensajería por orden para evitar pérdida de contexto entre diseño, muestra y producción."],
+      ["Tiempos trazables", "Seguimiento desde sample hasta despacho para anticipar retrasos y actuar a tiempo."],
+      ["Escala por colecciones", "Gestiona múltiples drops, cápsulas o temporadas con estructura y visibilidad operativa."],
+      ["Decisiones con datos", "Mide desempeño de fábricas, costos y cumplimiento para mejorar cada ciclo de producción."],
+    ],
   },
-  {
-    icon: Shield,
-    title: "Garantía de Satisfacción",
-    description: "Si no estás satisfecho con el servicio, te lo repetimos sin costo adicional o te devolvemos tu dinero.",
+  en: {
+    title: "Why choose our production network?",
+    subtitle: "Built for fashion brands that need commercial speed without compromising quality standards.",
+    items: [
+      ["Verified manufacturers", "Profiles vetted by production capacity, track record and product category."],
+      ["Order control", "Milestones and agreements visible to both sides, with clear approval history."],
+      ["Centralized communication", "Order-based messaging to avoid losing context between design, sample and production."],
+      ["Traceable timelines", "Track from sample to dispatch to anticipate delays and act early."],
+      ["Collection scale", "Manage multiple drops, capsules or seasons with structure and visibility."],
+      ["Data-driven decisions", "Measure factory performance, costs and delivery to improve every cycle."],
+    ],
   },
-  {
-    icon: Clock,
-    title: "Servicio bajo Demanda",
-    description: "Reserva servicios cuando los necesites, disponible los 7 días de la semana con horarios flexibles.",
+  fr: {
+    title: "Pourquoi choisir notre reseau de production ?",
+    subtitle: "Concu pour les marques de mode qui veulent de l'agilite sans perdre les standards qualite.",
+    items: [
+      ["Fabricants verifies", "Profils evalues selon capacite de production, historique de performance et categorie produit."],
+      ["Commandes sous controle", "Jalons et accords visibles pour les deux parties avec historique des validations."],
+      ["Communication centralisee", "Messagerie par commande pour garder le contexte entre design, sample et production."],
+      ["Delais tracables", "Suivi du sample a l'expedition pour anticiper les retards et agir rapidement."],
+      ["Echelle par collections", "Gerez plusieurs drops, capsules ou saisons avec structure et visibilite."],
+      ["Decisions data-driven", "Mesurez performance usine, couts et respect des delais pour optimiser chaque cycle."],
+    ],
   },
-  {
-    icon: CreditCard,
-    title: "Pagos Seguros",
-    description: "Tu pago está protegido. Solo se cobra cuando el servicio ha sido completado a tu satisfacción.",
-  },
-  {
-    icon: Users,
-    title: "Comunidad Confiable",
-    description: "Sistema de reseñas transparente para que elijas al mejor profesional con base en experiencias reales.",
-  },
-  {
-    icon: Sparkles,
-    title: "Calidad Premium",
-    description: "Nuestros profesionales usan productos y herramientas de alta calidad para resultados excepcionales.",
-  },
-];
+};
+
+const icons = [BadgeCheck, ShieldCheck, MessageSquareText, Timer, Layers, LineChart];
 
 export default function WhyManufySection() {
+  const { language } = useLanguage();
+  const t = copy[language];
+
   return (
     <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-[#1a365d]">
-            ¿Por qué elegir TidyHubb?
-          </h2>
-          <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-            Somos la plataforma líder en servicios para el hogar con los estándares más altos de calidad y confianza.
-          </p>
+          <h2 className="text-3xl lg:text-4xl font-bold text-[#1f2937]">{t.title}</h2>
+          <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">{t.subtitle}</p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {reasons.map((reason) => {
-            const Icon = reason.icon;
+          {t.items.map(([title, description], index) => {
+            const Icon = icons[index];
             return (
-              <div key={reason.title} className="bg-white rounded-xl p-8 hover:shadow-lg transition-shadow border border-gray-100">
+              <div key={title} className="bg-white rounded-xl p-8 hover:shadow-lg transition-shadow border border-gray-100">
                 <div className="w-14 h-14 bg-[#2563eb]/10 rounded-xl flex items-center justify-center mb-5">
                   <Icon className="w-7 h-7 text-[#2563eb]" />
                 </div>
-                <h3 className="text-xl font-semibold text-[#1a365d] mb-3">{reason.title}</h3>
-                <p className="text-gray-600">{reason.description}</p>
+                <h3 className="text-xl font-semibold text-[#1f2937] mb-3">{title}</h3>
+                <p className="text-gray-600">{description}</p>
               </div>
             );
           })}

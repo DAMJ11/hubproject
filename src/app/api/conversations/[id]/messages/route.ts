@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query, queryOne } from "@/lib/db";
 import { getSessionUser, hasRole } from "@/lib/session";
+import { notifyConversationParticipants } from "@/lib/realtime/notifyConversation";
 
 // GET /api/conversations/[id]/messages - Obtener mensajes de una conversación
 export async function GET(
@@ -79,6 +80,14 @@ export async function GET(
        WHERE conversation_id = ? AND sender_user_id != ? AND is_read = FALSE`,
       [conversationId, user.id]
     );
+
+    await notifyConversationParticipants(conversationId, "chat.messages.read", {
+      readerUserId: user.id,
+    });
+    await notifyConversationParticipants(conversationId, "chat.unread.updated", {
+      reason: "messages_read",
+      readerUserId: user.id,
+    });
 
     return NextResponse.json({ success: true, messages, conversation });
   } catch (error) {
@@ -162,6 +171,18 @@ export async function POST(
     );
 
     const messageId = (result as unknown as { insertId: number }).insertId;
+
+    await notifyConversationParticipants(conversationId, "chat.message.created", {
+      messageId,
+      senderUserId: user.id,
+      preview: content.trim().slice(0, 120),
+      createdAt: new Date().toISOString(),
+    });
+    await notifyConversationParticipants(conversationId, "chat.unread.updated", {
+      reason: "message_created",
+      messageId,
+      senderUserId: user.id,
+    });
 
     return NextResponse.json({
       success: true,

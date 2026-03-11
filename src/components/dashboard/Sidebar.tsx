@@ -31,6 +31,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useUnreadMessagesCount } from "@/hooks/useUnreadMessagesCount";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -56,7 +57,7 @@ const adminNavItems: NavItem[] = [
   { name: "Proyectos (RFQ)", href: "/dashboard/rfq", icon: FileText },
   { name: "Contratos", href: "/dashboard/contracts", icon: Briefcase },
   { name: "Usuarios", href: "/dashboard/users", icon: Users },
-  { name: "Mensajes", href: "/dashboard/messages", icon: MessageSquare, badge: 3 },
+  { name: "Mensajes", href: "/dashboard/messages", icon: MessageSquare },
   { name: "Pagos", href: "/dashboard/payments", icon: CreditCard },
   { name: "Reseñas", href: "/dashboard/reviews", icon: Star },
   { name: "Reportes", href: "/dashboard/reports", icon: BarChart3 },
@@ -68,7 +69,7 @@ const brandNavItems: NavItem[] = [
   { name: "Mis Proyectos", href: "/dashboard/projects", icon: FileText, badge: 2 },
   { name: "Mis Contratos", href: "/dashboard/contracts", icon: Briefcase },
   { name: "Fabricantes", href: "/dashboard/manufacturers", icon: Factory },
-  { name: "Mensajes", href: "/dashboard/messages", icon: MessageSquare, badge: 1 },
+  { name: "Mensajes", href: "/dashboard/messages", icon: MessageSquare },
   { name: "Mi Empresa", href: "/dashboard/company", icon: Building2 },
   { name: "Pagos", href: "/dashboard/payments", icon: CreditCard },
   { name: "Ayuda", href: "/dashboard/help", icon: HelpCircle },
@@ -79,7 +80,7 @@ const manufacturerNavItems: NavItem[] = [
   { name: "Oportunidades", href: "/dashboard/opportunities", icon: Leaf, badge: 3 },
   { name: "Mis Propuestas", href: "/dashboard/proposals", icon: Send },
   { name: "Mis Contratos", href: "/dashboard/contracts", icon: Briefcase },
-  { name: "Mensajes", href: "/dashboard/messages", icon: MessageSquare, badge: 1 },
+  { name: "Mensajes", href: "/dashboard/messages", icon: MessageSquare },
   {
     name: "Mi Perfil",
     href: "/dashboard/company",
@@ -110,6 +111,7 @@ export default function Sidebar({
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const sidebarRef = useRef<HTMLElement | null>(null);
+  const { unreadCount } = useUnreadMessagesCount(15000);
 
   const labelMap = {
     en: {
@@ -384,6 +386,7 @@ export default function Sidebar({
           const active = isActive(item.href);
           const isExpanded = expandedItems.includes(item.name);
           const hasSubItems = item.subItems && item.subItems.length > 0;
+          const itemBadge = item.name === "Mensajes" ? unreadCount : item.badge;
 
           return (
             <div key={item.name}>
@@ -412,18 +415,18 @@ export default function Sidebar({
                 >
                   <div className="relative">
                     <Icon className={`w-5 h-5 flex-shrink-0 ${active ? "text-white" : "text-gray-500"}`} />
-                    {item.badge && !expanded && (
+                    {Boolean(itemBadge) && itemBadge > 0 && !expanded && (
                       <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                        {item.badge}
+                        {itemBadge}
                       </span>
                     )}
                   </div>
                   {expanded && (
                     <>
                       <span className="flex-1 font-medium text-sm">{translateLabel(item.name)}</span>
-                      {item.badge && (
+                      {Boolean(itemBadge) && itemBadge > 0 && (
                         <span className="w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                          {item.badge}
+                          {itemBadge}
                         </span>
                       )}
                     </>

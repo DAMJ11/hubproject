@@ -1,82 +1,168 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Menu, X, Sparkles } from "lucide-react";
+import { ChevronDown, Menu, X, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { usePathname } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { AppLanguage, LANGUAGE_OPTIONS } from "@/contexts/LanguageContext";
 
-const navLinks = [
-  { name: "Servicios", href: "/servicios" },
-  { name: "Cómo Funciona", href: "/como-funciona" },
-  { name: "Profesionales", href: "/profesionales" },
-  { name: "Precios", href: "/precios" },
-  { name: "Testimonios", href: "/testimonios" },
-];
+const STORAGE_KEY = "dashboard-language";
+const getFlagSrc = (countryCode: "es" | "gb" | "fr") => `https://flagcdn.com/w40/${countryCode}.png`;
+
+const navLabels = {
+  es: {
+    capabilities: "Capacidades",
+    howItWorks: "Cómo funciona",
+    manufacturers: "Manufacturers",
+    plans: "Planes",
+    cases: "Casos",
+    login: "Iniciar sesión",
+    register: "Crear cuenta",
+  },
+  en: {
+    capabilities: "Capabilities",
+    howItWorks: "How it works",
+    manufacturers: "Manufacturers",
+    plans: "Plans",
+    cases: "Cases",
+    login: "Log in",
+    register: "Create account",
+  },
+  fr: {
+    capabilities: "Capacites",
+    howItWorks: "Comment ca marche",
+    manufacturers: "Manufacturiers",
+    plans: "Plans",
+    cases: "Cas clients",
+    login: "Se connecter",
+    register: "Creer un compte",
+  },
+};
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
+  const [language, setLanguage] = useState<AppLanguage>("es");
+
+  useEffect(() => {
+    const storedLanguage = localStorage.getItem(STORAGE_KEY);
+    if (storedLanguage === "es" || storedLanguage === "en" || storedLanguage === "fr") {
+      setLanguage(storedLanguage);
+      document.documentElement.lang = storedLanguage;
+      return;
+    }
+
+    document.documentElement.lang = "es";
+  }, []);
+
+  const labels = navLabels[language];
+  const selectedLanguage = LANGUAGE_OPTIONS.find((lang) => lang.code === language) ?? LANGUAGE_OPTIONS[0];
+
+  const navLinks = useMemo(
+    () => [
+      { name: labels.capabilities, href: "/#servicios" },
+      { name: labels.howItWorks, href: "/#como-funciona" },
+      { name: labels.manufacturers, href: "/#manufacturers" },
+      { name: labels.plans, href: "/#precios" },
+      { name: labels.cases, href: "/#testimonios" },
+    ],
+    [labels],
+  );
+
+  const handleLanguageChange = (nextLanguage: AppLanguage) => {
+    setLanguage(nextLanguage);
+    localStorage.setItem(STORAGE_KEY, nextLanguage);
+    document.documentElement.lang = nextLanguage;
+  };
 
   return (
-    <motion.header 
+    <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.3 }}
-      className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100"
+      className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-[#111827]/10"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-[#2563eb] rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-[#111827] rounded-lg flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <span className="font-bold text-xl text-[#1a365d]">FASHIONS DEN</span>
+              <span className="font-bold text-xl text-[#111827]">FASHIONS DEN</span>
             </Link>
           </motion.div>
 
-          {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className={`text-sm font-medium transition-colors hover:text-[#2563eb] ${
-                  pathname === link.href ? "text-[#2563eb] font-semibold" : "text-gray-700"
-                }`}
+                className="text-sm font-medium transition-colors hover:text-[#2563eb] text-gray-700"
               >
                 {link.name}
               </Link>
             ))}
           </nav>
 
-          {/* Auth Buttons */}
-          <motion.div 
+          <motion.div
             className="hidden md:flex items-center gap-3"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
           >
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-2 px-3">
+                  <img
+                    src={getFlagSrc(selectedLanguage.countryCode)}
+                    alt={selectedLanguage.name}
+                    className="w-5 h-4 rounded-[2px] object-cover"
+                    loading="lazy"
+                  />
+                  <ChevronDown className="w-4 h-4 text-gray-400" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                {LANGUAGE_OPTIONS.map((lang) => (
+                  <DropdownMenuItem
+                    key={lang.code}
+                    onClick={() => handleLanguageChange(lang.code)}
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <img
+                      src={getFlagSrc(lang.countryCode)}
+                      alt={lang.name}
+                      className="w-5 h-4 rounded-[2px] object-cover"
+                      loading="lazy"
+                    />
+                    <span>{lang.name}</span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link href="/login">
                 <Button variant="ghost" className="text-gray-700 hover:text-[#2563eb]">
-                  Iniciar Sesión
+                  {labels.login}
                 </Button>
               </Link>
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link href="/register">
                 <Button className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-lg">
-                  Registrarse
+                  {labels.register}
                 </Button>
               </Link>
             </motion.div>
           </motion.div>
 
-          {/* Mobile Menu Button */}
           <motion.button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-2 hover:bg-gray-100 rounded-lg"
@@ -97,10 +183,9 @@ export default function Header() {
           </motion.button>
         </div>
 
-        {/* Mobile Menu */}
         <AnimatePresence>
           {mobileMenuOpen && (
-            <motion.div 
+            <motion.div
               className="md:hidden py-4 border-t border-gray-100"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
@@ -123,20 +208,55 @@ export default function Header() {
                     {link.name}
                   </motion.a>
                 ))}
-                <motion.div 
+                <motion.div
                   className="flex flex-col gap-2 pt-3 border-t border-gray-100"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
                 >
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                        <img
+                          src={getFlagSrc(selectedLanguage.countryCode)}
+                          alt={selectedLanguage.name}
+                          className="w-5 h-4 rounded-[2px] object-cover"
+                          loading="lazy"
+                        />
+                        <span>{selectedLanguage.name}</span>
+                        <ChevronDown className="w-4 h-4 text-gray-400" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="center" className="w-44">
+                      {LANGUAGE_OPTIONS.map((lang) => (
+                        <DropdownMenuItem
+                          key={lang.code}
+                          onClick={() => handleLanguageChange(lang.code)}
+                          className="flex items-center gap-2 cursor-pointer"
+                        >
+                          <img
+                            src={getFlagSrc(lang.countryCode)}
+                            alt={lang.name}
+                            className="w-5 h-4 rounded-[2px] object-cover"
+                            loading="lazy"
+                          />
+                          <span>{lang.name}</span>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <Link href="/login">
-                      <Button variant="outline" className="w-full">Iniciar Sesión</Button>
+                      <Button variant="outline" className="w-full">
+                        {labels.login}
+                      </Button>
                     </Link>
                   </motion.div>
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <Link href="/register">
-                      <Button className="w-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white">Registrarse</Button>
+                      <Button className="w-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white">
+                        {labels.register}
+                      </Button>
                     </Link>
                   </motion.div>
                 </motion.div>

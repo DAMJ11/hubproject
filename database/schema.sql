@@ -528,6 +528,7 @@ INSERT INTO contracts (code, rfq_id, proposal_id, brand_company_id, manufacturer
 -- =============================================
 -- Seed: contract_milestones
 -- =============================================
+
 INSERT INTO contract_milestones (contract_id, title, description, sort_order, status, payment_amount, payment_status, due_date) VALUES
 (1, 'Muestra aprobada', 'Fabricacion y aprobacion de muestra fisica', 1, 'completed', 585000, 'paid', '2026-03-15'),
 (1, 'Primera entrega (50 uds)', 'Produccion y entrega del primer lote', 2, 'in_progress', 1950000, 'pending', '2026-03-28'),
