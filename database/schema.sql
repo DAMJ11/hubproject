@@ -469,17 +469,28 @@ INSERT INTO companies (id, name, slug, type, legal_id, description, phone, email
 (8, 'Bogota Fashion Factory', 'bogota-fashion-factory', 'manufacturer', '800333444-3', 'Fabrica urbana de moda rapida y streetwear.', '+57 601 666 7777', 'produccion@bogotaff.co', 'Avenida Boyaca #68D-35', 'Bogota', 'Cundinamarca', 'Colombia', 4.6609, -74.1146, '51-200', 2013, TRUE, TRUE, NOW()),
 (9, 'EcoTextil Colombia', 'ecotextil-colombia', 'manufacturer', '800444555-4', 'Textiles reciclados con certificaciones internacionales.', '+57 606 777 8888', 'contacto@ecotextil.co', 'Zona Franca Pereira Lote 5', 'Pereira', 'Risaralda', 'Colombia', 4.8133, -75.6961, '201-500', 2009, TRUE, TRUE, NOW());
 
+-- =============================================
+-- Contraseña estandarizada para TODOS los usuarios de prueba:
+--   Email / Contraseña
+--   ─────────────────────────────────────────────
+--   admin@tidyhubb.test          / Test1234!   (rol: admin)
+--   laura@lunacollection.co      / Test1234!   (rol: brand,  empresa: Luna Collection)
+--   ricardo@textilesantioquia.co / Test1234!   (rol: manufacturer, empresa: Textiles Antioquia SAS)
+-- =============================================
+-- Hash bcrypt-12 de "Test1234!":
+SET @pwd = '$2b$12$0AJqdete69Suw4NRWXoooeLxQ/ilIbzl1zGZwtjYNQp3EBUwGb/sq';
+
 INSERT INTO users (id, email, password, first_name, last_name, phone, role, company_id, terms_accepted, email_verified, email_verified_at, is_active) VALUES
-(1, 'admin@tidyhubb.test', '$2b$12$KN2Ve23t3uUhYTuy8W2D3uIYkURnmyb4.j1t26JT7U4S3S/r6fNeW', 'Admin', 'Tidy Hubb', '+57 300 999 9999', 'admin', NULL, TRUE, TRUE, NOW(), TRUE),
-(2, 'laura@lunacollection.co', '$2b$12$IQeUmt1Eqmnrzkgxzl/IguvUJiBDtehbKFkQT/2/03ZXkSXBd7A9K', 'Laura', 'Martinez', '+57 310 200 1001', 'brand', 1, TRUE, TRUE, NOW(), TRUE),
-(3, 'carlos@urbanwear.co', '$2b$12$IQeUmt1Eqmnrzkgxzl/IguvUJiBDtehbKFkQT/2/03ZXkSXBd7A9K', 'Carlos', 'Gomez', '+57 311 300 2002', 'brand', 2, TRUE, TRUE, NOW(), TRUE),
-(4, 'isabel@ecoverde.co', '$2b$12$IQeUmt1Eqmnrzkgxzl/IguvUJiBDtehbKFkQT/2/03ZXkSXBd7A9K', 'Isabel', 'Torres', '+57 312 400 3003', 'brand', 3, TRUE, TRUE, NOW(), TRUE),
-(5, 'pedro@streetstyle.co', '$2b$12$IQeUmt1Eqmnrzkgxzl/IguvUJiBDtehbKFkQT/2/03ZXkSXBd7A9K', 'Pedro', 'Sanchez', '+57 313 500 4004', 'brand', 4, TRUE, TRUE, NOW(), TRUE),
-(6, 'maria@altamoda.co', '$2b$12$IQeUmt1Eqmnrzkgxzl/IguvUJiBDtehbKFkQT/2/03ZXkSXBd7A9K', 'Maria', 'Lopez', '+57 314 600 5005', 'brand', 5, TRUE, TRUE, NOW(), TRUE),
-(7, 'ricardo@textilesantioquia.co', '$2b$12$wS2II5qDKOQvI0uFLXN9seCncNKDLJUVgJfmUkBgrk3ZXiEGszfHe', 'Ricardo', 'Montoya', '+57 604 444 5555', 'manufacturer', 6, TRUE, TRUE, NOW(), TRUE),
-(8, 'daniela@confeccionespacifico.co', '$2b$12$UbgQgBlr1ZTnNcztewqXuu0WGfdVbRcpCPJYva1CHmFIaFLVZ0on6', 'Daniela', 'Ospina', '+57 602 555 6666', 'manufacturer', 7, TRUE, TRUE, NOW(), TRUE),
-(9, 'felipe@bogotaff.co', '$2b$12$m9m/rvhDtjJGh.vMsEyALu5kUsVomdUlPNpDxpyd9xascrb0MgPva', 'Felipe', 'Vargas', '+57 601 666 7777', 'manufacturer', 8, TRUE, TRUE, NOW(), TRUE),
-(10, 'natalia@ecotextil.co', '$2b$12$04tQISnsXjU0hSEhUQLsReMk99v2Ueri9whT99eO0g85Mtk.CFFO.', 'Natalia', 'Ramirez', '+57 606 777 8888', 'manufacturer', 9, TRUE, TRUE, NOW(), TRUE);
+(1, 'admin@tidyhubb.test',           @pwd, 'Admin',   'Tidy Hubb', '+57 300 999 9999', 'admin',        NULL, TRUE, TRUE, NOW(), TRUE),
+(2, 'laura@lunacollection.co',       @pwd, 'Laura',   'Martinez',  '+57 310 200 1001', 'brand',        1,    TRUE, TRUE, NOW(), TRUE),
+(3, 'carlos@urbanwear.co',           @pwd, 'Carlos',  'Gomez',     '+57 311 300 2002', 'brand',        2,    TRUE, TRUE, NOW(), TRUE),
+(4, 'isabel@ecoverde.co',            @pwd, 'Isabel',  'Torres',    '+57 312 400 3003', 'brand',        3,    TRUE, TRUE, NOW(), TRUE),
+(5, 'pedro@streetstyle.co',          @pwd, 'Pedro',   'Sanchez',   '+57 313 500 4004', 'brand',        4,    TRUE, TRUE, NOW(), TRUE),
+(6, 'maria@altamoda.co',             @pwd, 'Maria',   'Lopez',     '+57 314 600 5005', 'brand',        5,    TRUE, TRUE, NOW(), TRUE),
+(7, 'ricardo@textilesantioquia.co',  @pwd, 'Ricardo', 'Montoya',   '+57 604 444 5555', 'manufacturer', 6,    TRUE, TRUE, NOW(), TRUE),
+(8, 'daniela@confeccionespacifico.co', @pwd, 'Daniela', 'Ospina', '+57 602 555 6666', 'manufacturer', 7,    TRUE, TRUE, NOW(), TRUE),
+(9, 'felipe@bogotaff.co',            @pwd, 'Felipe',  'Vargas',    '+57 601 666 7777', 'manufacturer', 8,    TRUE, TRUE, NOW(), TRUE),
+(10, 'natalia@ecotextil.co',         @pwd, 'Natalia', 'Ramirez',   '+57 606 777 8888', 'manufacturer', 9,    TRUE, TRUE, NOW(), TRUE);
 
 INSERT INTO manufacturer_capabilities (company_id, category_id, min_order_qty, max_monthly_capacity, lead_time_days, description) VALUES
 (6, 5, 50, 2000, 21, 'Produccion capsulas y tirajes cortos en tejido plano y punto'),
