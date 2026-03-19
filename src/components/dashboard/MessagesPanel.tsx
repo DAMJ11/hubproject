@@ -76,6 +76,8 @@ interface CompanyResult {
 
 interface UserInfo {
   id: number;
+  firstName: string;
+  lastName: string;
   role: string;
   companyId: number | null;
 }
