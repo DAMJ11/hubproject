@@ -14,6 +14,9 @@ interface Capability {
   max_monthly_capacity: number | null;
   lead_time_days: number | null;
   description: string | null;
+  unit_price_from: number | null;
+  wholesale_price_from: number | null;
+  commercial_notes: string | null;
   is_active: boolean;
 }
 
@@ -34,8 +37,14 @@ export default function CapabilitiesPage() {
     minOrderQty: "1",
     maxMonthlyCapacity: "",
     leadTimeDays: "",
+    unitPriceFrom: "",
+    wholesalePriceFrom: "",
+    commercialNotes: "",
     description: "",
   });
+
+  const formatCOP = (amount: number) =>
+    new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(amount);
 
   const fetchData = useCallback(async () => {
     try {
@@ -46,7 +55,7 @@ export default function CapabilitiesPage() {
       const capData = await capRes.json();
       const catData = await catRes.json();
       if (capData.success) setCapabilities(capData.data);
-      if (catData.success) setCategories(catData.data);
+      if (catData.success) setCategories(catData.categories);
     } catch (err) {
       console.error(err);
     } finally {
@@ -70,13 +79,25 @@ export default function CapabilitiesPage() {
           minOrderQty: Number(form.minOrderQty) || 1,
           maxMonthlyCapacity: form.maxMonthlyCapacity ? Number(form.maxMonthlyCapacity) : null,
           leadTimeDays: form.leadTimeDays ? Number(form.leadTimeDays) : null,
+          unitPriceFrom: form.unitPriceFrom ? Number(form.unitPriceFrom) : null,
+          wholesalePriceFrom: form.wholesalePriceFrom ? Number(form.wholesalePriceFrom) : null,
+          commercialNotes: form.commercialNotes || null,
           description: form.description || null,
         }),
       });
       const data = await res.json();
       if (data.success) {
         setShowForm(false);
-        setForm({ categoryId: "", minOrderQty: "1", maxMonthlyCapacity: "", leadTimeDays: "", description: "" });
+        setForm({
+          categoryId: "",
+          minOrderQty: "1",
+          maxMonthlyCapacity: "",
+          leadTimeDays: "",
+          unitPriceFrom: "",
+          wholesalePriceFrom: "",
+          commercialNotes: "",
+          description: "",
+        });
         fetchData();
       }
     } catch (err) {
@@ -144,6 +165,14 @@ export default function CapabilitiesPage() {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tiempo entrega (días)</label>
               <Input type="number" value={form.leadTimeDays} onChange={(e) => setForm({ ...form, leadTimeDays: e.target.value })} />
             </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Precio desde por prenda (COP)</label>
+              <Input type="number" min="0" value={form.unitPriceFrom} onChange={(e) => setForm({ ...form, unitPriceFrom: e.target.value })} placeholder="Ej: 18500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Precio mayorista desde (COP)</label>
+              <Input type="number" min="0" value={form.wholesalePriceFrom} onChange={(e) => setForm({ ...form, wholesalePriceFrom: e.target.value })} placeholder="Ej: 16000" />
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Descripción</label>
@@ -153,6 +182,16 @@ export default function CapabilitiesPage() {
               rows={2}
               className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-slate-900 dark:border-slate-700"
               placeholder="Detalle de lo que puedes producir..."
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notas comerciales</label>
+            <textarea
+              value={form.commercialNotes}
+              onChange={(e) => setForm({ ...form, commercialNotes: e.target.value })}
+              rows={2}
+              className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-slate-900 dark:border-slate-700"
+              placeholder="Ej: precio mayorista aplica desde 1.000 unidades, incluye empaques, etc."
             />
           </div>
           <div className="flex gap-2">
@@ -187,7 +226,22 @@ export default function CapabilitiesPage() {
                       {cap.max_monthly_capacity && <span>Capacidad: <strong>{cap.max_monthly_capacity.toLocaleString()}</strong> uds/mes</span>}
                       {cap.lead_time_days && <span>Entrega: <strong>{cap.lead_time_days}</strong> días</span>}
                     </div>
+                    {(cap.unit_price_from !== null || cap.wholesale_price_from !== null) && (
+                      <div className="flex flex-wrap gap-2 mt-2 text-xs">
+                        {cap.unit_price_from !== null && (
+                          <span className="rounded-full bg-blue-50 text-blue-700 px-2 py-1">
+                            Desde {formatCOP(cap.unit_price_from)} / prenda
+                          </span>
+                        )}
+                        {cap.wholesale_price_from !== null && (
+                          <span className="rounded-full bg-indigo-50 text-indigo-700 px-2 py-1">
+                            Mayorista desde {formatCOP(cap.wholesale_price_from)}
+                          </span>
+                        )}
+                      </div>
+                    )}
                     {cap.description && <p className="text-sm text-gray-400 mt-1">{cap.description}</p>}
+                    {cap.commercial_notes && <p className="text-xs text-gray-500 mt-1">{cap.commercial_notes}</p>}
                   </div>
                 </div>
                 <button onClick={() => handleDelete(cap.id)} className="text-gray-400 hover:text-red-500 p-1">

@@ -41,7 +41,7 @@ export default function FinalCTASection() {
             </Button>
           </Link>
           <Link href="/login">
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 rounded-lg px-8 h-12 text-base">
+            <Button size="lg" variant="outline" className="border-white text-[#111827] hover:bg-white/10 rounded-lg px-8 h-12 text-base">
               {t.ctaSecondary}
             </Button>
           </Link>

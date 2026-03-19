@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Send,
   Search,
@@ -22,6 +23,7 @@ import { getPusherClient } from "@/lib/realtime/pusherClient";
 
 interface Conversation {
   id: number;
+  rfq_id: number | null;
   subject: string | null;
   status: string;
   last_message_at: string | null;
@@ -38,6 +40,8 @@ interface Conversation {
   admin_user_name: string | null;
   brand_logo: string | null;
   manufacturer_logo: string | null;
+  rfq_code: string | null;
+  rfq_title: string | null;
   initiator_name: string;
   unread_count: number;
   last_message: string | null;
@@ -54,6 +58,8 @@ interface Message {
   sender_name: string;
   sender_role: string;
   sender_avatar: string | null;
+  pending?: boolean;
+  failed?: boolean;
 }
 
 interface CompanyResult {
@@ -74,7 +80,15 @@ interface UserInfo {
   companyId: number | null;
 }
 
+interface RfqOption {
+  id: number;
+  code: string;
+  title: string;
+  status: string;
+}
+
 export default function MessagesPanel() {
+  const searchParams = useSearchParams();
   const [user, setUser] = useState<UserInfo | null>(null);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConv, setSelectedConv] = useState<Conversation | null>(null);
@@ -95,11 +109,16 @@ export default function MessagesPanel() {
   const [newChatTarget, setNewChatTarget] = useState<CompanyResult | null>(null);
   const [newChatSubject, setNewChatSubject] = useState("");
   const [newChatMessage, setNewChatMessage] = useState("");
+  const [selectedRfqId, setSelectedRfqId] = useState<number | null>(null);
+  const [rfqOptions, setRfqOptions] = useState<RfqOption[]>([]);
+  const [rfqLoading, setRfqLoading] = useState(false);
   const [creatingChat, setCreatingChat] = useState(false);
+  const [createChatError, setCreateChatError] = useState("");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastMsgIdRef = useRef<number>(0);
+  const prefillHandledRef = useRef(false);
 
   const refreshConversations = useCallback(async () => {
     try {
@@ -136,11 +155,16 @@ export default function MessagesPanel() {
       if (data.success) {
         const msgs: Message[] = data.messages ?? [];
         const newLastId = msgs.length > 0 ? msgs[msgs.length - 1].id : 0;
-        // Solo actualizar si hay mensajes nuevos
-        if (!isPolling || newLastId !== lastMsgIdRef.current) {
-          setMessages(msgs);
-          lastMsgIdRef.current = newLastId;
-        }
+        // Merge server messages with any local pending messages to avoid losing optimistic UI
+        setMessages((prev) => {
+          const pendingLocal = prev.filter((m) => (m as Message).pending);
+          // Keep pending messages that aren't already present on server
+          const pendingToAppend = pendingLocal.filter((p) => !msgs.some((s) => s.id === p.id));
+          const merged = [...msgs, ...pendingToAppend];
+          return merged;
+        });
+        if (!isPolling) lastMsgIdRef.current = newLastId;
+        else if (newLastId !== lastMsgIdRef.current) lastMsgIdRef.current = newLastId;
         setConversations((prev) =>
           prev.map((c) => (c.id === convId ? { ...c, unread_count: 0 } : c))
         );
@@ -243,6 +267,87 @@ export default function MessagesPanel() {
     };
   }, [loadMessages, refreshConversations, selectedConv]);
 
+  // Cargar opciones de RFQ para el nuevo chat según rol y empresa destino
+  useEffect(() => {
+    if (!newChatTarget || !user || user.role === "admin") {
+      setRfqOptions([]);
+      setSelectedRfqId(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadRfqOptions = async () => {
+      setRfqLoading(true);
+      try {
+        const res = await fetch(`/api/conversations/rfq-options?targetCompanyId=${newChatTarget.id}`);
+        const data = await res.json();
+
+        if (!cancelled && data.success) {
+          const options = (data.data ?? []) as RfqOption[];
+          setRfqOptions(options);
+          setSelectedRfqId((prev) => {
+            if (prev && options.some((opt) => opt.id === prev)) return prev;
+            return options.length > 0 ? options[0].id : null;
+          });
+        }
+      } catch (e) {
+        console.error(e);
+        if (!cancelled) {
+          setRfqOptions([]);
+          setSelectedRfqId(null);
+        }
+      } finally {
+        if (!cancelled) setRfqLoading(false);
+      }
+    };
+
+    loadRfqOptions();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [newChatTarget, user]);
+
+  // Prefill desde URL: targetCompanyId, rfqId, subject, message
+  useEffect(() => {
+    if (!user || prefillHandledRef.current) return;
+
+    const targetCompanyId = Number(searchParams.get("targetCompanyId"));
+    if (!targetCompanyId || Number.isNaN(targetCompanyId)) {
+      prefillHandledRef.current = true;
+      return;
+    }
+
+    const rfqId = Number(searchParams.get("rfqId"));
+    const subject = searchParams.get("subject") || "";
+    const message = searchParams.get("message") || "";
+
+    prefillHandledRef.current = true;
+    setTab("search");
+    setSelectedConv(null);
+    setCreateChatError("");
+
+    const hydrateTarget = async () => {
+      try {
+        const res = await fetch(`/api/companies?id=${targetCompanyId}`);
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setNewChatTarget(data.data[0]);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    hydrateTarget();
+    setNewChatSubject(subject);
+    setNewChatMessage(message);
+    if (rfqId && !Number.isNaN(rfqId)) {
+      setSelectedRfqId(rfqId);
+    }
+  }, [searchParams, user]);
+
   // Buscar empresas
   useEffect(() => {
     if (companySearch.trim().length < 2) {
@@ -267,29 +372,60 @@ export default function MessagesPanel() {
   // Enviar mensaje
   const handleSend = async () => {
     if (!newMessage.trim() || !selectedConv || sending) return;
+    const tempId = -Date.now();
+    const tempMsg: Message = {
+      id: tempId,
+      conversation_id: selectedConv.id,
+      sender_user_id: user?.id ?? 0,
+      content: newMessage.trim(),
+      message_type: "text",
+      is_read: false,
+      created_at: new Date().toISOString(),
+      sender_name: `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim(),
+      sender_role: user?.role ?? "",
+      sender_avatar: null,
+      pending: true,
+    };
+
+    // Optimistic update: mostrar mensaje inmediatamente
+    setMessages((prev) => [...prev, tempMsg]);
+    lastMsgIdRef.current = tempId;
+    setConversations((prev) =>
+      prev.map((c) =>
+        c.id === selectedConv.id
+          ? { ...c, last_message: tempMsg.content, last_message_at: tempMsg.created_at }
+          : c
+      )
+    );
+    emitUnreadMessagesRefresh();
+    setNewMessage("");
     setSending(true);
+
     try {
       const res = await fetch(`/api/conversations/${selectedConv.id}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: newMessage }),
+        body: JSON.stringify({ content: tempMsg.content }),
       });
       const data = await res.json();
       if (data.success && data.message) {
-        setMessages((prev) => [...prev, data.message]);
+        // Reemplazar mensaje temporal por el mensaje real del servidor
+        setMessages((prev) => prev.map((m) => (m.id === tempId ? data.message : m)));
         lastMsgIdRef.current = data.message.id;
         setConversations((prev) =>
           prev.map((c) =>
             c.id === selectedConv.id
-              ? { ...c, last_message: newMessage, last_message_at: new Date().toISOString() }
+              ? { ...c, last_message: data.message.content, last_message_at: data.message.created_at }
               : c
           )
         );
         emitUnreadMessagesRefresh();
-        setNewMessage("");
+      } else {
+        setMessages((prev) => prev.map((m) => (m.id === tempId ? { ...m, pending: false, failed: true } : m)));
       }
     } catch (e) {
       console.error(e);
+      setMessages((prev) => prev.map((m) => (m.id === tempId ? { ...m, pending: false, failed: true } : m)));
     } finally {
       setSending(false);
     }
@@ -298,6 +434,13 @@ export default function MessagesPanel() {
   // Crear nueva conversacion
   const handleCreateChat = async () => {
     if (!newChatTarget || !newChatSubject.trim() || creatingChat) return;
+    setCreateChatError("");
+
+    if (user?.role !== "admin" && !selectedRfqId) {
+      setCreateChatError("Selecciona un proyecto para iniciar el contacto.");
+      return;
+    }
+
     setCreatingChat(true);
     try {
       const res = await fetch("/api/conversations", {
@@ -307,6 +450,7 @@ export default function MessagesPanel() {
           targetCompanyId: newChatTarget.id,
           subject: newChatSubject,
           initialMessage: newChatMessage,
+          rfqId: selectedRfqId,
         }),
       });
       const data = await res.json();
@@ -318,12 +462,15 @@ export default function MessagesPanel() {
         setNewChatTarget(null);
         setNewChatSubject("");
         setNewChatMessage("");
+        setSelectedRfqId(null);
+        setRfqOptions([]);
         setTab(user?.role === "admin" ? "chats" : "pending");
       } else {
-        alert(data.message);
+        setCreateChatError(data.message || "No se pudo crear el chat.");
       }
     } catch (e) {
       console.error(e);
+      setCreateChatError("Error de red al crear la solicitud.");
     } finally {
       setCreatingChat(false);
     }
@@ -490,6 +637,9 @@ export default function MessagesPanel() {
                 onClick={() => {
                   setTab("chats");
                   setNewChatTarget(null);
+                  setSelectedRfqId(null);
+                  setRfqOptions([]);
+                  setCreateChatError("");
                 }}
                 className="text-xs text-[#2563eb] hover:text-[#1e40af] flex items-center gap-1 mb-3"
               >
@@ -525,7 +675,10 @@ export default function MessagesPanel() {
               {companyResults.map((company) => (
                 <button
                   key={company.id}
-                  onClick={() => setNewChatTarget(company)}
+                  onClick={() => {
+                    setNewChatTarget(company);
+                    setCreateChatError("");
+                  }}
                   className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left border-b border-[#e2e8f0] ${
                     newChatTarget?.id === company.id
                       ? "bg-[#f1f5f9]"
@@ -602,9 +755,15 @@ export default function MessagesPanel() {
                           {isPendingForMe(conv) ? "Solicitud recibida" : "Esperando aceptacion"}
                         </span>
                       ) : conv.last_message ? (
-                        <p className="text-sm text-[#64748b] truncate">{conv.last_message}</p>
+                        <p className="text-sm text-[#64748b] truncate">
+                          {conv.rfq_code ? `[${conv.rfq_code}] ` : ""}
+                          {conv.last_message}
+                        </p>
                       ) : (
-                        <p className="text-xs text-[#64748b] italic">{conv.subject}</p>
+                        <p className="text-xs text-[#64748b] italic">
+                          {conv.rfq_code ? `[${conv.rfq_code}] ` : ""}
+                          {conv.subject}
+                        </p>
                       )}
                     </div>
                     {conv.unread_count > 0 && (
@@ -652,6 +811,36 @@ export default function MessagesPanel() {
                   : "Deberan aceptar tu solicitud antes de poder chatear."}
               </p>
               <div className="space-y-3">
+                {user?.role !== "admin" && (
+                  <div>
+                    <label className="block text-xs font-medium text-[#64748b] mb-1">
+                      {user?.role === "brand" ? "Proyecto a ofrecer" : "Proyecto de interés"}
+                    </label>
+                    {rfqLoading ? (
+                      <div className="w-full px-3 py-2 bg-[#f1f5f9] rounded-lg text-xs text-[#64748b] flex items-center gap-2">
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" /> Cargando proyectos...
+                      </div>
+                    ) : rfqOptions.length === 0 ? (
+                      <div className="w-full px-3 py-2 bg-[#fef3c7] text-[#92400e] rounded-lg text-xs">
+                        {user?.role === "brand"
+                          ? "No tienes proyectos activos para ofrecer."
+                          : "La marca no tiene proyectos activos para contacto."}
+                      </div>
+                    ) : (
+                      <select
+                        value={selectedRfqId ?? ""}
+                        onChange={(e) => setSelectedRfqId(Number(e.target.value))}
+                        className="w-full px-3 py-2 bg-[#f1f5f9] text-[#1e293b] text-sm rounded-lg border-none outline-none focus:ring-1 focus:ring-[#2563eb]"
+                      >
+                        {rfqOptions.map((rfq) => (
+                          <option key={rfq.id} value={rfq.id}>
+                            {rfq.code} - {rfq.title}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                )}
                 <div>
                   <label className="block text-xs font-medium text-[#64748b] mb-1">Asunto</label>
                   <input
@@ -671,9 +860,14 @@ export default function MessagesPanel() {
                     className="w-full rounded-lg border-none px-3 py-2 bg-[#f1f5f9] text-[#1e293b] text-sm outline-none placeholder:text-[#64748b] focus:ring-1 focus:ring-[#2563eb] resize-none"
                   />
                 </div>
+                {createChatError && (
+                  <div className="text-xs text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+                    {createChatError}
+                  </div>
+                )}
                 <Button
                   onClick={handleCreateChat}
-                  disabled={!newChatSubject.trim() || creatingChat}
+                  disabled={!newChatSubject.trim() || creatingChat || (user?.role !== "admin" && (!selectedRfqId || rfqOptions.length === 0))}
                   className="w-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-lg"
                 >
                   {creatingChat ? (
@@ -843,10 +1037,10 @@ export default function MessagesPanel() {
                     )}
                     <div className={`flex ${isMe ? "justify-end" : "justify-start"} mb-[2px]`}>
                       <div
-                        className={`relative max-w-[65%] rounded-lg px-[9px] pt-1.5 pb-2 shadow ${
+                        className={`relative max-w-[65%] rounded-lg px-[9px] pt-2 pb-2 shadow grid gap-1 ${
                           isMe
-                            ? "bg-[#2563eb] text-white"
-                            : "bg-[#ffffff] text-[#0f172a]"
+                            ? "bg-[#2563eb] text-white justify-items-end"
+                            : "bg-[#ffffff] text-[#0f172a] justify-items-start"
                         }`}
                         style={isMe
                           ? { borderTopRightRadius: "0px" }
@@ -856,21 +1050,25 @@ export default function MessagesPanel() {
                         {!isMe && (
                           <p className="text-xs font-medium text-[#1e40af] mb-0.5">{msg.sender_name}</p>
                         )}
-                        <p className="text-[14.2px] leading-[19px] whitespace-pre-wrap">
-                          {msg.content}
-                          {/* Spacer invisible to make room for timestamp */}
-                          <span className="inline-block w-[58px]" />
-                        </p>
-                        <span className={`absolute bottom-[3px] right-[7px] text-[11px] flex items-center gap-0.5 ${
-                          isMe ? "text-[#dbeafe]" : "text-[#64748b]"
-                        }`}>
-                          {formatTime(msg.created_at)}
+                        <div className="w-full">
+                          <p className="text-[14.2px] leading-[19px] whitespace-pre-wrap">
+                            {msg.content}
+                          </p>
+                        </div>
+                        <div className="w-full flex items-center justify-end text-[11px] gap-1 mt-0.5">
+                          <span className={`${isMe ? "text-[#dbeafe]" : "text-[#64748b]"}`}>{formatTime(msg.created_at)}</span>
                           {isMe && (
-                            msg.is_read
-                              ? <CheckCheck className="w-[16px] h-[16px] text-[#1d4ed8] ml-0.5" />
-                              : <Check className="w-[16px] h-[16px] ml-0.5" />
+                            msg.pending ? (
+                              <Loader2 className="w-4 h-4 animate-spin ml-0.5 text-white" />
+                            ) : msg.failed ? (
+                              <XCircle className="w-4 h-4 text-red-400 ml-0.5" />
+                            ) : msg.is_read ? (
+                              <CheckCheck className="w-[16px] h-[16px] text-[#1d4ed8] ml-0.5" />
+                            ) : (
+                              <Check className="w-[16px] h-[16px] ml-0.5" />
+                            )
                           )}
-                        </span>
+                        </div>
                       </div>
                     </div>
                   </div>

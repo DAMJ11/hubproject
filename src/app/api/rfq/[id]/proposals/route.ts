@@ -111,7 +111,7 @@ export async function POST(
       ),
       queryOne<{ avg_rating: number }>(
         `SELECT COALESCE(AVG(r.rating), 0) as avg_rating FROM reviews r
-         JOIN contracts ct ON r.booking_id = ct.id
+         JOIN contracts ct ON r.contract_id = ct.id
          WHERE ct.manufacturer_company_id = ?`, [user.companyId]
       ),
     ]);

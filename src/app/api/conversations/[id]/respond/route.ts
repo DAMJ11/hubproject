@@ -10,7 +10,7 @@ export async function PUT(
 ) {
   try {
     const user = await getSessionUser(request);
-    if (!user || !user.companyId) {
+    if (!user) {
       return NextResponse.json({ success: false, message: "No autorizado" }, { status: 401 });
     }
 

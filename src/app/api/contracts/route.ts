@@ -42,6 +42,8 @@ export async function GET(request: NextRequest) {
              WHERE 1=1`;
     } else {
       sql = `SELECT ct.id, ct.code, r.title as rfq_title,
+                    bc.name as brand_name,
+                    mc.name as manufacturer_name,
                     CASE
                       WHEN ct.brand_company_id = ? THEN mc.name
                       ELSE bc.name

@@ -11,10 +11,28 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
     const type = searchParams.get("type");
     const page = Math.max(1, Number(searchParams.get("page")) || 1);
     const limit = Math.min(50, Math.max(1, Number(searchParams.get("limit")) || 20));
     const offset = (page - 1) * limit;
+
+    if (id) {
+      const parsedId = Number(id);
+      if (!parsedId || Number.isNaN(parsedId)) {
+        return NextResponse.json({ success: false, message: "Invalid company id" }, { status: 400 });
+      }
+
+      const company = await queryOne<Record<string, unknown>>(
+        `SELECT id, name, slug, type, description, logo_url, city, state, country,
+                latitude, longitude, is_verified, employee_count, founded_year, created_at
+         FROM companies
+         WHERE is_active = TRUE AND id = ?`,
+        [parsedId]
+      );
+
+      return NextResponse.json({ success: true, data: company ? [company] : [] });
+    }
 
     let sql = `SELECT id, name, slug, type, description, logo_url, city, state, country,
                       latitude, longitude, is_verified, employee_count, founded_year, created_at

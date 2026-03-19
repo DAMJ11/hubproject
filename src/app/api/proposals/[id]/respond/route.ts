@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { query, queryOne } from "@/lib/db";
 import pool from "@/lib/db";
 import { getSessionUser, hasRole } from "@/lib/session";
+import { proposalRespondSchema } from "@/lib/validations/proposals";
 
 // PUT /api/proposals/[id]/respond - Marca acepta o rechaza propuesta
 export async function PUT(
@@ -10,7 +11,11 @@ export async function PUT(
 ) {
   try {
     const user = await getSessionUser(request);
-    if (!user || !user.companyId) {
+    if (!user) {
+      return NextResponse.json({ success: false, message: "Not authenticated" }, { status: 401 });
+    }
+    const isAdmin = hasRole(user, "admin");
+    if (!isAdmin && !user.companyId) {
       return NextResponse.json({ success: false, message: "Not authenticated" }, { status: 401 });
     }
 
@@ -18,29 +23,63 @@ export async function PUT(
     const proposalId = Number(id);
 
     const body = await request.json();
-    const { action } = body; // "accept" | "reject" | "shortlist"
-
-    if (!["accept", "reject", "shortlist"].includes(action)) {
-      return NextResponse.json({ success: false, message: "action must be 'accept', 'reject', or 'shortlist'" }, { status: 400 });
+    const parsed = proposalRespondSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ success: false, message: "action debe ser 'accept', 'reject' o 'shortlist'" }, { status: 400 });
     }
+    const { action } = parsed.data;
 
     // Verificar propuesta y propiedad del RFQ
     const proposal = await queryOne<{
-      id: number; rfq_id: number; manufacturer_company_id: number;
-      total_price: number; lead_time_days: number; status: string;
+      id: number;
+      rfq_id: number;
+      brand_company_id: number;
+      manufacturer_company_id: number;
+      total_price: number;
+      lead_time_days: number;
+      status: string;
     }>(
-      `SELECT p.id, p.rfq_id, p.manufacturer_company_id, p.total_price, p.lead_time_days, p.status
-       FROM proposals p
-       JOIN rfq_projects r ON p.rfq_id = r.id
-       WHERE p.id = ? AND r.brand_company_id = ?`,
-      [proposalId, user.companyId]
+      isAdmin
+        ? `SELECT p.id, p.rfq_id, r.brand_company_id, p.manufacturer_company_id, p.total_price, p.lead_time_days, p.status
+           FROM proposals p
+           JOIN rfq_projects r ON p.rfq_id = r.id
+           WHERE p.id = ?`
+        : `SELECT p.id, p.rfq_id, r.brand_company_id, p.manufacturer_company_id, p.total_price, p.lead_time_days, p.status
+           FROM proposals p
+           JOIN rfq_projects r ON p.rfq_id = r.id
+           WHERE p.id = ? AND r.brand_company_id = ?`,
+      isAdmin ? [proposalId] : [proposalId, user.companyId!]
     );
 
-    if (!proposal && !hasRole(user, "admin")) {
+    if (!proposal) {
       return NextResponse.json({ success: false, message: "Proposal not found or unauthorized" }, { status: 404 });
     }
 
-    const p = proposal!;
+    const p = proposal;
+
+    // Validar que la propuesta esté en estado válido para responder
+    if (action === "accept" || action === "shortlist") {
+      if (!['submitted', 'shortlisted'].includes(p.status)) {
+        return NextResponse.json({ success: false, message: `No se puede ${action === 'accept' ? 'aceptar' : 'preseleccionar'} una propuesta en estado '${p.status}'` }, { status: 400 });
+      }
+    }
+    if (action === "reject" && !['submitted', 'shortlisted'].includes(p.status)) {
+      return NextResponse.json({ success: false, message: `No se puede rechazar una propuesta en estado '${p.status}'` }, { status: 400 });
+    }
+
+    // Validar que el RFQ no esté ya adjudicado (prevenir doble adjudicación)
+    if (action === "accept") {
+      const rfq = await queryOne<{ status: string; awarded_proposal_id: number | null }>(
+        `SELECT status, awarded_proposal_id FROM rfq_projects WHERE id = ?`,
+        [p.rfq_id]
+      );
+      if (!rfq || !['open', 'evaluating'].includes(rfq.status)) {
+        return NextResponse.json({ success: false, message: `No se puede adjudicar: el RFQ está en estado '${rfq?.status || 'desconocido'}'` }, { status: 400 });
+      }
+      if (rfq.awarded_proposal_id) {
+        return NextResponse.json({ success: false, message: "Este RFQ ya fue adjudicado a otra propuesta" }, { status: 409 });
+      }
+    }
 
     if (action === "accept") {
       // Aceptar propuesta → crear contrato → rechazar las demás
@@ -77,7 +116,7 @@ export async function PUT(
           `INSERT INTO contracts (code, rfq_id, proposal_id, brand_company_id, manufacturer_company_id,
             total_amount, status, start_date, expected_end_date)
            VALUES (?, ?, ?, ?, ?, ?, 'active', CURDATE(), DATE_ADD(CURDATE(), INTERVAL ? DAY))`,
-          [code, p.rfq_id, proposalId, user.companyId, p.manufacturer_company_id,
+          [code, p.rfq_id, proposalId, p.brand_company_id, p.manufacturer_company_id,
             p.total_price, p.lead_time_days]
         );
         const contractId = (contractResult as { insertId: number }).insertId;

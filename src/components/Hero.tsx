@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Ruler, Shirt, Factory, Clock3 } from "lucide-react";
+import { Ruler, Shirt, Factory, Clock3, Move, Layers, Tag, User, ShoppingBag } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const content = {
@@ -86,7 +86,14 @@ const content = {
   },
 };
 
-const categoryIcons = ["👕", "🧵", "🏃", "🧥", "👗", "🧢"];
+const categoryIcons = [
+  Shirt,    // Camisetas y tops
+  Tag,      // Private label
+  Move,     // Activewear
+  Layers,   // Outerwear
+  Tag,      // Vestidos y sets
+  User      // Accesorios
+];
 const categoryColors = [
   "bg-amber-50 border-amber-100",
   "bg-sky-50 border-sky-100",
@@ -171,13 +178,16 @@ export default function Hero() {
 
           <div className="hidden lg:block relative">
             <div className="grid grid-cols-2 gap-4">
-              {t.categories.map((name, idx) => (
-                <div key={name} className={`${categoryColors[idx]} border rounded-xl p-6 hover:shadow-lg transition-all hover:-translate-y-1 cursor-pointer`}>
-                  <span className="text-3xl">{categoryIcons[idx]}</span>
-                  <h3 className="font-semibold text-gray-900 mt-3">{name}</h3>
-                  <p className="text-sm text-gray-500 mt-1">{t.categoryDesc[idx]}</p>
-                </div>
-              ))}
+              {t.categories.map((name, idx) => {
+                const Icon = categoryIcons[idx];
+                return (
+                  <div key={name} className={`${categoryColors[idx]} border rounded-xl p-6 hover:shadow-lg transition-all hover:-translate-y-1 cursor-pointer`}>
+                    <Icon className="w-8 h-8 mx-auto mb-3 text-[#2563eb]" />
+                    <h3 className="font-semibold text-gray-900 mt-3">{name}</h3>
+                    <p className="text-sm text-gray-500 mt-1">{t.categoryDesc[idx]}</p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

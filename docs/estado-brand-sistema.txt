@@ -1,0 +1,117 @@
+ESTADO SISTEMA BRAND - 2026-03-12
+
+Resumen
+- Se ejecutaron correcciones criticas de Fase 1 para estabilizar el flujo de marca (brand).
+- Este documento separa lo que ya se corrigio, lo que sigue pendiente y mejoras recomendadas a futuro.
+
+Cambios realizados (hecho)
+1) Correccion de query de green score en propuestas
+- Archivo: src/app/api/rfq/[id]/proposals/route.ts
+- Cambio: se reemplazo JOIN contracts ct ON r.booking_id = ct.id por JOIN contracts ct ON r.contract_id = ct.id.
+- Impacto: evita error de SQL por columna inexistente y habilita calculo de rating promedio del fabricante.
+
+2) Alineacion de estados de propuestas en UI de brand
+- Archivo: src/app/dashboard/projects/[id]/page.tsx
+- Cambio: la UI ahora usa estado submitted (no pending) como estado inicial valido.
+- Impacto: la marca puede volver a preseleccionar/aceptar/rechazar propuestas recibidas correctamente.
+
+3) Shape de contratos corregido para brand/manufacturer
+- Archivo: src/app/api/contracts/route.ts
+- Cambio: para usuarios no admin ahora tambien retorna brand_name y manufacturer_name, ademas de counterpart_name.
+- Impacto: la pantalla de contratos deja de mostrar nombres vacios en lista.
+
+4) Carga de proyectos recientes en dashboard corregida
+- Archivo: src/components/dashboard/DashboardHome.tsx
+- Cambio: se ajusto lectura de respuesta a data.data (antes data.projects).
+- Impacto: se muestran proyectos recientes correctamente en home del dashboard.
+
+5) End-point de responder propuestas robustecido
+- Archivo: src/app/api/proposals/[id]/respond/route.ts
+- Cambios:
+  - Soporte correcto para admin aunque no tenga companyId.
+  - Eliminacion de non-null assertion insegura sobre proposal.
+  - Resolucion de brand_company_id desde la propuesta/RFQ para crear contrato.
+- Impacto: reduce riesgo de crash y mantiene consistencia de datos al adjudicar.
+
+6) Contacto bidireccional por proyecto (brand <-> manufacturer)
+- Archivos:
+  - src/app/api/conversations/route.ts
+  - src/app/api/conversations/rfq-options/route.ts
+  - src/components/dashboard/MessagesPanel.tsx
+  - src/app/dashboard/opportunities/[id]/page.tsx
+  - src/app/dashboard/projects/[id]/page.tsx
+  - src/app/api/companies/route.ts
+- Cambios:
+  - La conversación ahora puede asociarse a un RFQ (rfq_id) y listar rfq_code/rfq_title en bandeja.
+  - Manufacturer solo puede iniciar contacto con una marca si esa marca tiene proyectos activos.
+  - Brand y manufacturer seleccionan proyecto en el flujo de nuevo chat (excepto admin).
+  - Se añadió endpoint para opciones de proyecto por contexto de conversación.
+  - Se añadió soporte para prellenar chat desde URL (targetCompanyId, rfqId, subject, message).
+  - Se agregó botón desde oportunidad (manufacturer -> brand) y desde propuesta (brand -> manufacturer).
+- Impacto: flujo de contacto queda contextualizado por proyecto y reduce conversaciones genéricas sin contexto de negocio.
+
+7) Directorio de fabricantes para brand con filtros y chat directo
+- Archivos:
+  - src/app/api/manufacturers/route.ts
+  - src/app/dashboard/manufacturers/page.tsx
+- Cambios:
+  - Se implemento listado real de fabricantes con filtros por texto, ciudad, categoria, verificados y certificaciones.
+  - Se incluyen datos de capacidades, certificaciones y proyectos adjudicados para priorizar empresas.
+  - Cada tarjeta permite iniciar contacto por chat con prefill hacia Mensajes.
+- Impacto: la vista de Fabricantes ahora soporta descubrimiento y contacto comercial directo, evitando el 404 y el placeholder vacio.
+
+8) Flujo bidireccional de oferta del fabricante (capacidad + tiempos + precios base)
+- Archivos:
+  - src/app/api/manufacturers/capabilities/route.ts
+  - src/app/dashboard/company/capabilities/page.tsx
+  - src/app/dashboard/proposals/page.tsx
+  - src/app/dashboard/manufacturers/page.tsx
+- Cambios:
+  - El fabricante puede publicar, por capacidad, precio desde por prenda, precio mayorista y notas comerciales.
+  - En Mis Propuestas se agrego bloque de "Oferta base para marcas" con acceso directo a gestion de capacidades.
+  - En Directorio de fabricantes, la marca puede abrir "Ver oferta tecnica y comercial" por empresa para evaluar mejor y seleccionar.
+- Impacto: se habilita flujo comercial bidireccional: la marca publica proyectos y el fabricante tambien expone su oferta activa para ser descubierto/seleccionado.
+
+Pendiente (recomendado siguiente iteracion)
+1) Modulo de pagos con campos heredados
+- Pantalla src/app/dashboard/payments/page.tsx aun usa naming legado (booking_code, client_name, service_name).
+- API actual retorna contrato y partes B2B (contract_code, payer_name, payee_name).
+- Propuesta: alinear interfaz y tabla con modelo B2B real.
+
+2) Modulo de resenas con enfoque legacy
+- Pantalla y API de resenas no estan totalmente alineadas con entidades B2B (contratos/companias).
+- Propuesta: redisenar para mostrar reseñas por contraparte de contrato y metricas utiles para brand.
+
+3) Reglas de negocio de adjudicacion mas estrictas
+- Al aceptar propuesta se crea contrato automaticamente (actual), pero faltan validaciones extra:
+  - evitar adjudicar si RFQ no esta en estado valido
+  - evitar doble adjudicacion por concurrencia
+  - idempotencia en reintentos
+
+4) Estado UX en detalle de proyecto
+- Actualmente la accion depende de estado submitted/shortlisted.
+- Propuesta: agregar feedback visual adicional (toasts de exito/error) y bloqueo explicito por estado del RFQ.
+
+Buenas mejoras a futuro
+1) Workflow completo brand orientado a conversion
+- Tablero con embudo: proyecto creado -> propuestas recibidas -> shortlist -> adjudicado -> contrato completado.
+
+2) Scoring comparativo de propuestas
+- Comparador lado a lado (precio, lead time, green score, certificaciones, distancia, rating historico).
+
+3) Auditoria de decisiones
+- Guardar eventos de decision (quien preselecciono, cuando, motivo) para trazabilidad.
+
+4) Notificaciones transaccionales
+- Notificar por evento clave: nueva propuesta, shortlist, rechazo, adjudicacion, hito completado, pago registrado.
+
+5) Tests de integracion por rol
+- Casos minimos sugeridos:
+  - brand crea RFQ y ve solo sus RFQ
+  - manufacturer propone y brand responde
+  - se crea contrato solo una vez al aceptar
+  - brand/manufacturer/admin ven contratos segun permisos
+
+Criterio de cierre de Fase 1
+- Corregidos bloqueos criticos de consistencia en propuestas, contratos y dashboard.
+- Sistema listo para pasar a Fase 2 (alineacion completa de pagos/resenas y modulo de fabricantes).

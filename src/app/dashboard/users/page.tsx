@@ -20,6 +20,71 @@ interface UserRecord {
 }
 
 export default function UsersPage() {
+  // Estado para modal de cambio de contraseña
+  const [showPasswordModal, setShowPasswordModal] = useState<{ user: UserRecord | null }>({ user: null });
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+  const resetPasswordModalState = () => {
+    setNewPassword("");
+    setConfirmPassword("");
+    setPasswordError("");
+  };
+
+  const openPasswordModal = (targetUser: UserRecord) => {
+    setShowPasswordModal({ user: targetUser });
+    resetPasswordModalState();
+  };
+
+  const closePasswordModal = () => {
+    setShowPasswordModal({ user: null });
+    resetPasswordModalState();
+  };
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = window.setTimeout(() => setToast(null), 3200);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
+
+  const handleChangePassword = async () => {
+    if (!showPasswordModal.user) return;
+
+    if (newPassword.length < 6) {
+      setPasswordError("La contraseña debe tener al menos 6 caracteres.");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Las contraseñas no coinciden.");
+      return;
+    }
+
+    setPasswordLoading(true);
+    setPasswordError("");
+    try {
+      const response = await fetch("/api/dashboard/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: showPasswordModal.user.id, action: "change_password", newPassword }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setPasswordError(data?.error || "No se pudo cambiar la contraseña.");
+        return;
+      }
+      const fullName = `${showPasswordModal.user.first_name} ${showPasswordModal.user.last_name}`;
+      closePasswordModal();
+      setToast({ type: "success", message: `Contraseña actualizada para ${fullName}.` });
+    } catch (error) {
+      setPasswordError("Error de red.");
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
   const { user } = useDashboardUser();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterRole, setFilterRole] = useState("all");
@@ -136,6 +201,14 @@ export default function UsersPage() {
 
   return (
     <div className="space-y-6">
+      {toast && (
+        <div className="fixed top-5 right-5 z-[70]">
+          <div className={`rounded-lg px-4 py-3 text-sm shadow-lg border ${toast.type === "success" ? "bg-green-50 border-green-200 text-green-700" : "bg-red-50 border-red-200 text-red-700"}`}>
+            {toast.message}
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Gesti&oacute;n de Clientes</h1>
@@ -157,7 +230,17 @@ export default function UsersPage() {
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <Input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Buscar por nombre o correo..." className="pl-10" />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Buscar por nombre o correo..."
+            className="pl-10"
+            name="users-search"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="none"
+            spellCheck={false}
+          />
         </div>
         <div className="flex gap-2">
           {["all", "clients", "admin"].map((role) => (
@@ -264,6 +347,20 @@ export default function UsersPage() {
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
+                      {/* Botón para cambiar contraseña */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-gray-500 hover:text-green-600"
+                        disabled={u.role === "admin" || u.id === user.id}
+                        title={u.role === "admin" ? "No puedes cambiar la contraseña de un admin" : "Cambiar contraseña"}
+                        onClick={() => openPasswordModal(u)}
+                      >
+                        {/* SVG candado */}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                          <path fillRule="evenodd" d="M10 2a4 4 0 0 0-4 4v3H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-1V6a4 4 0 0 0-4-4zm-2 7V6a2 2 0 1 1 4 0v3H8zm-3 2a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-7z" clipRule="evenodd" />
+                        </svg>
+                      </Button>
                     </div>
                   </td>
                 </tr>
@@ -272,6 +369,53 @@ export default function UsersPage() {
           </table>
         </div>
       </Card>
+          {/* Modal de cambio de contraseña */}
+          {showPasswordModal.user && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+              <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
+                <h2 className="text-lg font-bold mb-2">Cambiar contraseña</h2>
+                <p className="text-sm mb-4">Usuario: <span className="font-semibold">{showPasswordModal.user.first_name} {showPasswordModal.user.last_name}</span> (ID: {showPasswordModal.user.id})</p>
+                {/* Campo oculto de usuario para guiar al autofill y evitar que tome la barra de búsqueda */}
+                <input
+                  type="text"
+                  name="username"
+                  autoComplete="username"
+                  value={showPasswordModal.user.email}
+                  readOnly
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  className="hidden"
+                />
+                <Input
+                  type="password"
+                  name="new-password"
+                  autoComplete="new-password"
+                  placeholder="Nueva contraseña (mínimo 6 caracteres)"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  disabled={passwordLoading}
+                  className="mb-3"
+                />
+                <Input
+                  type="password"
+                  name="confirm-new-password"
+                  autoComplete="new-password"
+                  placeholder="Confirmar nueva contraseña"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  disabled={passwordLoading}
+                  className="mb-3"
+                />
+                {passwordError && <div className="text-red-600 text-sm mb-2">{passwordError}</div>}
+                <div className="flex gap-2 justify-end">
+                  <Button variant="outline" onClick={closePasswordModal} disabled={passwordLoading}>Cancelar</Button>
+                  <Button variant="default" onClick={handleChangePassword} disabled={passwordLoading || newPassword.length < 6 || confirmPassword.length < 6}>
+                    {passwordLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Guardar"}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
     </div>
   );
 }

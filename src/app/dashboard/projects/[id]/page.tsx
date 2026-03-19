@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
+import Link from "next/link";
 import { ArrowLeft, Clock, Package, DollarSign, Leaf, MapPin, Shield, Loader2, Check, X, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -56,7 +57,7 @@ const statusLabels: Record<string, { label: string; color: string }> = {
 };
 
 const proposalStatusLabels: Record<string, { label: string; color: string }> = {
-  pending: { label: "Pendiente", color: "bg-gray-100 text-gray-700" },
+  submitted: { label: "Enviada", color: "bg-gray-100 text-gray-700" },
   shortlisted: { label: "Preseleccionada", color: "bg-blue-100 text-blue-700" },
   accepted: { label: "Aceptada", color: "bg-green-100 text-green-700" },
   rejected: { label: "Rechazada", color: "bg-red-100 text-red-700" },
@@ -202,7 +203,7 @@ export default function ProjectDetailPage() {
         ) : (
           <div className="space-y-4">
             {proposals.map((p) => {
-              const ps = proposalStatusLabels[p.status] || proposalStatusLabels.pending;
+              const ps = proposalStatusLabels[p.status] || proposalStatusLabels.submitted;
               const isAwarded = rfq.status === "awarded";
               return (
                 <div key={p.id} className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-5">
@@ -257,8 +258,23 @@ export default function ProjectDetailPage() {
                   )}
                   {p.notes && <p className="text-xs text-gray-500 dark:text-gray-400 mt-1"><strong>Notas:</strong> {p.notes}</p>}
 
+                  <div className="mt-3">
+                    <Link
+                      href={`/dashboard/messages?${new URLSearchParams({
+                        targetCompanyId: String(p.manufacturer_company_id),
+                        rfqId: String(rfq.id),
+                        subject: `Proyecto ${rfq.code}: conversación inicial`,
+                        message: `Hola ${p.manufacturer_name}, quiero conversar sobre tu propuesta para el proyecto ${rfq.code}.`,
+                      }).toString()}`}
+                    >
+                      <Button size="sm" variant="outline" className="text-xs">
+                        Contactar fabricante
+                      </Button>
+                    </Link>
+                  </div>
+
                   {/* Actions */}
-                  {!isAwarded && p.status === "pending" && (
+                  {!isAwarded && p.status === "submitted" && (
                     <div className="flex gap-2 mt-4 pt-3 border-t border-gray-100 dark:border-slate-700">
                       <Button size="sm" variant="outline" onClick={() => handleAction(p.id, "shortlist")} disabled={actionLoading === p.id}
                         className="text-blue-600 border-blue-200 hover:bg-blue-50">

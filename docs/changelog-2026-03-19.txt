@@ -1,0 +1,75 @@
+================================================================================
+  CHANGELOG — 19 de Marzo de 2026
+  Proyecto: TidyHubb (Manufy-Clone)
+  Objetivo: Preparación para prueba de despliegue
+================================================================================
+
+CAMBIOS APLICADOS HOY:
+──────────────────────
+
+1. [SEGURIDAD] Eliminar contraseña hardcoded en src/lib/db.ts
+   - La contraseña de MySQL estaba en texto plano como valor por defecto.
+   - Se cambia para usar únicamente variables de entorno, sin fallback inseguro.
+
+2. [API] Crear endpoint /api/health
+   - Verifica conexión a base de datos y estado del servidor.
+   - Retorna info básica: status, timestamp, uptime, database connectivity.
+   - Necesario para monitoreo de deploy en Netlify/producción.
+
+3. [SEGURIDAD] Instalar Zod + validaciones de entrada en endpoints de auth
+   - Se instala la librería Zod para validación de schemas.
+   - Se crean schemas de validación para login y register.
+   - Se aplican en /api/auth/login y /api/auth/register.
+   - Previene inyecciones y datos malformados en los puntos de entrada.
+
+4. [SEGURIDAD] Rate limiting en endpoints de autenticación
+   - Se crea utilidad de rate limiting en memoria (src/lib/rate-limit.ts).
+   - Se aplica a /api/auth/login (5 intentos / 15 min por IP).
+   - Se aplica a /api/auth/register (3 intentos / 15 min por IP).
+   - Previene ataques de fuerza bruta.
+
+5. [LÓGICA] Validaciones de adjudicación en propuestas
+   - Se agregan validaciones en /api/proposals/[id]/respond:
+     * No se puede aceptar una propuesta si el RFQ ya fue adjudicado.
+     * No se puede actuar sobre propuestas ya aceptadas o rechazadas.
+     * Solo propuestas en estado 'submitted' o 'shortlisted' pueden ser aceptadas.
+   - Previene doble adjudicación y transiciones de estado inválidas.
+
+6. [UX] Error Boundary global en React
+   - Se crea componente ErrorBoundary (src/components/ErrorBoundary.tsx).
+   - Se integra en el layout principal para capturar errores de renderizado.
+   - Muestra mensaje amigable al usuario en vez de pantalla en blanco.
+
+7. [DATOS] Script de seed para base de datos
+   - Se crea database/seed.sql con datos de prueba:
+     * 2 empresas (1 marca, 1 fabricante)
+     * 2 usuarios (1 por empresa)  
+     * Categorías de servicio
+     * Capacidades y certificaciones de fabricante
+     * 1 RFQ de ejemplo con materiales
+   - Permite probar el flujo completo sin crear datos manualmente.
+
+8. [API] Paginación en endpoint de conversaciones
+   - GET /api/conversations ahora soporta parámetros page y limit.
+   - Evita retornar cientos de conversaciones en una sola respuesta.
+
+──────────────────────
+
+ARCHIVOS CREADOS:
+  - docs/changelog-2026-03-19.txt          (este archivo)
+  - src/app/api/health/route.ts            (health check endpoint)
+  - src/lib/validations/auth.ts            (schemas Zod para auth)
+  - src/lib/rate-limit.ts                  (utilidad de rate limiting)
+  - src/components/ErrorBoundary.tsx        (error boundary React)
+  - database/seed.sql                      (datos de prueba)
+
+ARCHIVOS MODIFICADOS:
+  - src/lib/db.ts                          (remover contraseña hardcoded)
+  - src/app/api/auth/login/route.ts        (Zod + rate limiting)
+  - src/app/api/auth/register/route.ts     (Zod + rate limiting)
+  - src/app/api/proposals/[id]/respond/route.ts  (validaciones de estado)
+  - src/app/providers.tsx                  (agregar ErrorBoundary)
+  - src/app/api/conversations/route.ts     (paginación)
+  - package.json                           (agregar zod)
+
+================================================================================

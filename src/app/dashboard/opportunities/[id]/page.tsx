@@ -2,12 +2,14 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
+import Link from "next/link";
 import { ArrowLeft, Package, Clock, DollarSign, Leaf, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 interface RFQDetail {
   id: number;
+  brand_company_id: number;
   code: string;
   title: string;
   description: string;
@@ -135,6 +137,12 @@ export default function OpportunityDetailPage() {
   }
 
   const inputClass = "h-11 rounded-lg border-gray-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-[#0d7a5f] focus:ring-[#0d7a5f]";
+  const contactBrandParams = new URLSearchParams({
+    targetCompanyId: String(rfq.brand_company_id),
+    rfqId: String(rfq.id),
+    subject: `Interés en proyecto ${rfq.code}`,
+    message: `Hola, estamos interesados en apoyar el proyecto ${rfq.code} (${rfq.title}).`,
+  });
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -175,6 +183,14 @@ export default function OpportunityDetailPage() {
             ))}
           </div>
         )}
+
+        <div className="pt-3 border-t border-gray-100 dark:border-slate-700">
+          <Link href={`/dashboard/messages?${contactBrandParams.toString()}`}>
+            <Button type="button" variant="outline" className="w-full">
+              Contactar marca sobre este proyecto
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Proposal form */}

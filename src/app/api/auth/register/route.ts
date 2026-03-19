@@ -2,72 +2,31 @@ import { NextRequest, NextResponse } from "next/server";
 import { query, queryOne } from "@/lib/db";
 import pool from "@/lib/db";
 import { hashPassword, generateToken, setAuthCookie } from "@/lib/auth";
-import type { User, UserCreateInput, AuthResponse } from "@/types/user";
+import { registerSchema } from "@/lib/validations/auth";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import type { User, AuthResponse } from "@/types/user";
 
 export async function POST(request: NextRequest) {
   try {
-    const body: UserCreateInput = await request.json();
-    const { email, password, firstName, lastName, role, companyName, termsAccepted } = body;
-
-    // Validate role
-    const validRoles = ["brand", "manufacturer"] as const;
-    if (!role || !validRoles.includes(role)) {
+    // Rate limiting: 3 registros por IP cada hora
+    const ip = getClientIp(request);
+    const rl = checkRateLimit(`register:${ip}`, 3, 60 * 60 * 1000);
+    if (!rl.allowed) {
       return NextResponse.json<AuthResponse>(
-        { success: false, message: "Role must be 'brand' or 'manufacturer'" },
-        { status: 400 }
+        { success: false, message: `Demasiados intentos de registro. Intenta en ${rl.retryAfterSeconds}s` },
+        { status: 429 }
       );
     }
 
-    if (!companyName || companyName.trim().length < 2) {
+    const body = await request.json();
+    const parsed = registerSchema.safeParse(body);
+    if (!parsed.success) {
       return NextResponse.json<AuthResponse>(
-        { success: false, message: "Company name is required (min 2 characters)" },
+        { success: false, message: parsed.error.issues[0]?.message || "Datos inválidos" },
         { status: 400 }
       );
     }
-
-    // Validation
-    if (!email || !password || !firstName || !lastName) {
-      return NextResponse.json<AuthResponse>(
-        {
-          success: false,
-          message: "All fields are required",
-        },
-        { status: 400 }
-      );
-    }
-
-    if (!termsAccepted) {
-      return NextResponse.json<AuthResponse>(
-        {
-          success: false,
-          message: "You must accept the terms and conditions",
-        },
-        { status: 400 }
-      );
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json<AuthResponse>(
-        {
-          success: false,
-          message: "Invalid email format",
-        },
-        { status: 400 }
-      );
-    }
-
-    // Validate password strength
-    if (password.length < 8) {
-      return NextResponse.json<AuthResponse>(
-        {
-          success: false,
-          message: "Password must be at least 8 characters long",
-        },
-        { status: 400 }
-      );
-    }
+    const { email, password, firstName, lastName, role, companyName, termsAccepted } = parsed.data;
 
     // Check if user already exists
     const existingUser = await queryOne<User>(

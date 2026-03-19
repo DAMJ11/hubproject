@@ -2,11 +2,13 @@ import mysql from "mysql2/promise";
 
 // Database connection configuration
 const dbConfig = {
-  host: process.env.MYSQLHOST || "localhost",
-  port: Number(process.env.MYSQLPORT) || 3307,
-  user: process.env.MYSQLUSER || "root",
-  password: process.env.MYSQLPASSWORD || "Duber1037776117*",
-  database: process.env.MYSQLDATABASE || "hubproject",
+  // Support both naming conventions: MYSQLHOST or MYSQL_HOST
+  host: process.env.MYSQLHOST || process.env.MYSQL_HOST || "localhost",
+  port: Number(process.env.MYSQLPORT || process.env.MYSQL_PORT) || 3307,
+  user: process.env.MYSQLUSER || process.env.MYSQL_USER || "root",
+  // Allow MYSQLPASSWORD or MYSQL_PASSWORD
+  password: process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD || "",
+  database: process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE || "hubproject",
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,

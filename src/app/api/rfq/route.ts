@@ -2,6 +2,7 @@
 import { query, queryOne } from "@/lib/db";
 import pool from "@/lib/db";
 import { getSessionUser, hasRole } from "@/lib/session";
+import { rfqCreateSchema } from "@/lib/validations/rfq";
 
 // GET /api/rfq - Listar proyectos RFQ
 // Marcas: ven sus propios RFQs. Fabricantes: ven RFQs abiertos. Admin: ve todos.
@@ -15,18 +16,15 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status");
     const categoryId = searchParams.get("categoryId");
+        const countOnly = searchParams.get("countOnly") === "true";
     const page = Math.max(1, Number(searchParams.get("page")) || 1);
     const limit = Math.min(50, Math.max(1, Number(searchParams.get("limit")) || 20));
     const offset = (page - 1) * limit;
 
-        let sql = `SELECT r.id, r.code, r.title, sc.name as category_name, r.quantity,
-           r.budget_min, r.budget_max, r.deadline, r.proposals_deadline,
-           r.status, r.proposals_count, r.sustainability_priority,
-           c.name as brand_name, c.city as brand_city, r.created_at
-         FROM rfq_projects r
-         JOIN companies c ON r.brand_company_id = c.id
-         JOIN service_categories sc ON r.category_id = sc.id
-         WHERE 1=1`;
+        let fromWhereSql = `FROM rfq_projects r
+          JOIN companies c ON r.brand_company_id = c.id
+          JOIN service_categories sc ON r.category_id = sc.id
+          WHERE 1=1`;
     const params: (string | number)[] = [];
 
     // Filtrar por rol
@@ -34,16 +32,28 @@ export async function GET(request: NextRequest) {
       if (!user.companyId || !Number.isFinite(Number(user.companyId))) {
         return NextResponse.json({ success: false, message: "Brand user without valid company" }, { status: 403 });
       }
-      sql += ` AND r.brand_company_id = ?`;
+      fromWhereSql += ` AND r.brand_company_id = ?`;
       params.push(Number(user.companyId));
     } else if (hasRole(user, "manufacturer")) {
       if (!user.companyId || !Number.isFinite(Number(user.companyId))) {
         return NextResponse.json({ success: false, message: "Manufacturer user without valid company" }, { status: 403 });
       }
-      // Fabricantes ven RFQs abiertos y tambien RFQs donde ya enviaron propuesta.
-      sql += `
+      // Fabricantes ven oportunidades abiertas que encajan con sus capacidades
+      // o RFQs donde ya participaron con propuesta.
+      fromWhereSql += `
         AND (
-          r.status = 'open'
+          (
+            r.status = 'open'
+            AND EXISTS (
+              SELECT 1
+              FROM manufacturer_capabilities mc
+              WHERE mc.company_id = ?
+                AND mc.is_active = TRUE
+                AND mc.category_id = r.category_id
+                AND (mc.min_order_qty IS NULL OR r.quantity >= mc.min_order_qty)
+                AND (mc.max_monthly_capacity IS NULL OR r.quantity <= mc.max_monthly_capacity)
+            )
+          )
           OR EXISTS (
             SELECT 1
             FROM proposals p
@@ -51,12 +61,12 @@ export async function GET(request: NextRequest) {
               AND p.manufacturer_company_id = ?
           )
         )`;
-      params.push(Number(user.companyId));
+      params.push(Number(user.companyId), Number(user.companyId));
     }
     // Admin ve todos
 
     if (status) {
-      sql += ` AND r.status = ?`;
+      fromWhereSql += ` AND r.status = ?`;
       params.push(status);
     }
 
@@ -65,9 +75,27 @@ export async function GET(request: NextRequest) {
       if (!Number.isFinite(parsedCategoryId)) {
         return NextResponse.json({ success: false, message: "Invalid categoryId" }, { status: 400 });
       }
-      sql += ` AND r.category_id = ?`;
+      fromWhereSql += ` AND r.category_id = ?`;
       params.push(parsedCategoryId);
     }
+
+    if (countOnly) {
+      const countRows = await query<Array<{ total: number }>>(
+        `SELECT COUNT(*) as total ${fromWhereSql}`,
+        params
+      );
+
+      return NextResponse.json({
+        success: true,
+        total: Number(countRows?.[0]?.total ?? 0),
+      });
+    }
+
+    let sql = `SELECT r.id, r.code, r.title, sc.name as category_name, r.quantity,
+           r.budget_min, r.budget_max, r.deadline, r.proposals_deadline,
+           r.status, r.proposals_count, r.sustainability_priority,
+           c.name as brand_name, c.city as brand_city, r.created_at
+         ${fromWhereSql}`;
 
     const safeLimit = Math.trunc(limit);
     const safeOffset = Math.trunc(offset);
@@ -91,15 +119,11 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { categoryId, title, description, quantity, budgetMin, budgetMax, deadline, proposalsDeadline, requiresSample, preferredMaterials, sustainabilityPriority, materials } = body;
-
-    if (!categoryId || !title || !description || !quantity) {
-      return NextResponse.json({ success: false, message: "categoryId, title, description, and quantity are required" }, { status: 400 });
+    const parsed = rfqCreateSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ success: false, message: parsed.error.issues[0]?.message || "Datos inválidos" }, { status: 400 });
     }
-
-    if (quantity < 1) {
-      return NextResponse.json({ success: false, message: "Quantity must be at least 1" }, { status: 400 });
-    }
+    const { categoryId, title, description, quantity, budgetMin, budgetMax, deadline, proposalsDeadline, requiresSample, preferredMaterials, sustainabilityPriority, materials } = parsed.data;
 
     const connection = await pool.getConnection();
     try {
@@ -151,7 +175,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const user = await getSessionUser(request);
-    if (!user || !user.companyId) {
+    if (!user || (!user.companyId && !hasRole(user, "admin"))) {
       return NextResponse.json({ success: false, message: "Not authenticated" }, { status: 401 });
     }
 

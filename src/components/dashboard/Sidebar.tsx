@@ -32,6 +32,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useUnreadMessagesCount } from "@/hooks/useUnreadMessagesCount";
+import { useOpportunitiesCount } from "@/hooks/useOpportunitiesCount";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -77,7 +78,7 @@ const brandNavItems: NavItem[] = [
 
 const manufacturerNavItems: NavItem[] = [
   { name: "Inicio", href: "/dashboard", icon: Home },
-  { name: "Oportunidades", href: "/dashboard/opportunities", icon: Leaf, badge: 3 },
+  { name: "Oportunidades", href: "/dashboard/opportunities", icon: Leaf },
   { name: "Mis Propuestas", href: "/dashboard/proposals", icon: Send },
   { name: "Mis Contratos", href: "/dashboard/contracts", icon: Briefcase },
   { name: "Mensajes", href: "/dashboard/messages", icon: MessageSquare },
@@ -112,6 +113,7 @@ export default function Sidebar({
   const [searchQuery, setSearchQuery] = useState("");
   const sidebarRef = useRef<HTMLElement | null>(null);
   const { unreadCount } = useUnreadMessagesCount(15000);
+  const { opportunitiesCount } = useOpportunitiesCount(userRole === "manufacturer", 10000);
 
   const labelMap = {
     en: {
@@ -386,7 +388,11 @@ export default function Sidebar({
           const active = isActive(item.href);
           const isExpanded = expandedItems.includes(item.name);
           const hasSubItems = item.subItems && item.subItems.length > 0;
-          const itemBadge = item.name === "Mensajes" ? unreadCount : (item.badge ?? 0);
+          const itemBadge = item.name === "Mensajes"
+            ? unreadCount
+            : item.name === "Oportunidades" && userRole === "manufacturer"
+              ? opportunitiesCount
+              : (item.badge ?? 0);
 
           return (
             <div key={item.name}>

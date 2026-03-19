@@ -7,7 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "bunx tsc --noEmit && next lint",
-    "format": "bunx biome format --write"
+    "format": "bunx biome format --write",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
+    "prisma:push": "prisma db push"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
@@ -32,7 +36,8 @@
     "react-grab": "latest",
     "same-runtime": "^0.0.1",
     "tailwind-merge": "^3.3.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

@@ -1,6 +1,6 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
+import { Sparkles, Shirt, Layers, Move, Tag, User, ShoppingBag } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const copy = {
@@ -58,16 +58,16 @@ const copy = {
 };
 
 const services = [
-  { icon: "👕", name: "Camisetas y tops", nameEn: "Tees and tops", nameFr: "T-shirts et tops", desc: "Jersey, rib y blends premium", descEn: "Jersey, rib and premium blends", descFr: "Jersey, rib et melanges premium", popular: true },
-  { icon: "👖", name: "Denim y bottoms", nameEn: "Denim and bottoms", nameFr: "Denim et bas", desc: "Jeans, cargos y pantalón sastre", descEn: "Jeans, cargos and tailored pants", descFr: "Jeans, cargos et pantalon tailleur", popular: true },
-  { icon: "🧥", name: "Outerwear", nameEn: "Outerwear", nameFr: "Outerwear", desc: "Bomber, puffer y trench", descEn: "Bomber, puffer and trench", descFr: "Bomber, doudoune et trench", popular: false },
-  { icon: "🏃", name: "Activewear", nameEn: "Activewear", nameFr: "Activewear", desc: "Leggings, tops y sets deportivos", descEn: "Leggings, tops and sport sets", descFr: "Leggings, tops et ensembles sport", popular: true },
-  { icon: "👗", name: "Vestidos y sets", nameEn: "Dresses and sets", nameFr: "Robes et sets", desc: "Confección femenina y acabados finos", descEn: "Womenswear construction and fine finishes", descFr: "Confection feminine et finitions fines", popular: false },
-  { icon: "🧢", name: "Accesorios", nameEn: "Accessories", nameFr: "Accessoires", desc: "Gorras, tote bags y trims", descEn: "Caps, tote bags and trims", descFr: "Casquettes, tote bags et trims", popular: false },
-  { icon: "🧶", name: "Punto y knitwear", nameEn: "Knitwear", nameFr: "Maille", desc: "Galga fina y media", descEn: "Fine and mid gauge", descFr: "Jauge fine et moyenne", popular: true },
-  { icon: "🧵", name: "Private label", nameEn: "Private label", nameFr: "Private label", desc: "Etiqueta, empaque y branding", descEn: "Labels, packaging and branding", descFr: "Etiquettes, packaging et branding", popular: true },
-  { icon: "🧒", name: "Kidswear", nameEn: "Kidswear", nameFr: "Kidswear", desc: "Materiales suaves y seguros", descEn: "Soft and safe materials", descFr: "Materiaux souples et surs", popular: false },
-  { icon: "🛍️", name: "Producción integral", nameEn: "Full production", nameFr: "Production complete", desc: "Del patronaje al packing final", descEn: "From pattern making to final packing", descFr: "Du patronage au packing final", popular: false },
+  { icon: Shirt, name: "Camisetas y tops", nameEn: "Tees and tops", nameFr: "T-shirts et tops", desc: "Jersey, rib y blends premium", descEn: "Jersey, rib and premium blends", descFr: "Jersey, rib et melanges premium", popular: true },
+  { icon: Tag, name: "Denim y bottoms", nameEn: "Denim and bottoms", nameFr: "Denim et bas", desc: "Jeans, cargos y pantalón sastre", descEn: "Jeans, cargos and tailored pants", descFr: "Jeans, cargos et pantalon tailleur", popular: true },
+  { icon: Layers, name: "Outerwear", nameEn: "Outerwear", nameFr: "Outerwear", desc: "Bomber, puffer y trench", descEn: "Bomber, puffer and trench", descFr: "Bomber, doudoune et trench", popular: false },
+  { icon: Move, name: "Activewear", nameEn: "Activewear", nameFr: "Activewear", desc: "Leggings, tops y sets deportivos", descEn: "Leggings, tops and sport sets", descFr: "Leggings, tops et ensembles sport", popular: true },
+  { icon: Tag, name: "Vestidos y sets", nameEn: "Dresses and sets", nameFr: "Robes et sets", desc: "Confección femenina y acabados finos", descEn: "Womenswear construction and fine finishes", descFr: "Confection feminine et finitions fines", popular: false },
+  { icon: Tag, name: "Accesorios", nameEn: "Accessories", nameFr: "Accessoires", desc: "Gorras, tote bags y trims", descEn: "Caps, tote bags and trims", descFr: "Casquettes, tote bags et trims", popular: false },
+  { icon: Layers, name: "Punto y knitwear", nameEn: "Knitwear", nameFr: "Maille", desc: "Galga fina y media", descEn: "Fine and mid gauge", descFr: "Jauge fine et moyenne", popular: true },
+  { icon: Tag, name: "Private label", nameEn: "Private label", nameFr: "Private label", desc: "Etiqueta, empaque y branding", descEn: "Labels, packaging and branding", descFr: "Etiquettes, packaging et branding", popular: true },
+  { icon: User, name: "Kidswear", nameEn: "Kidswear", nameFr: "Kidswear", desc: "Materiales suaves y seguros", descEn: "Soft and safe materials", descFr: "Materiaux souples et surs", popular: false },
+  { icon: ShoppingBag, name: "Producción integral", nameEn: "Full production", nameFr: "Production complete", desc: "Del patronaje al packing final", descEn: "From pattern making to final packing", descFr: "Du patronage au packing final", popular: false },
 ];
 
 export default function QualitySection() {
@@ -93,7 +93,10 @@ export default function QualitySection() {
                   <Sparkles className="w-3 h-3" /> {t.featured}
                 </span>
               )}
-              <span className="text-4xl block mb-3">{service.icon}</span>
+              {(() => {
+                const Icon = service.icon;
+                return <Icon className="w-8 h-8 mx-auto mb-3 text-[#2563eb]" />;
+              })()}
               <h3 className="font-semibold text-[#1f2937] text-sm group-hover:text-[#2563eb] transition-colors">
                 {language === "en" ? service.nameEn : language === "fr" ? service.nameFr : service.name}
               </h3>

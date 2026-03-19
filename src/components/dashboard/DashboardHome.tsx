@@ -86,7 +86,7 @@ export default function DashboardHome({ user }: DashboardHomeProps) {
         }
         if (projectsRes.ok) {
           const data = await projectsRes.json();
-          setProjects((data.projects ?? []).slice(0, 4));
+          setProjects((data.data ?? []).slice(0, 4));
         }
       } catch (err) {
         console.error("Error loading dashboard data:", err);

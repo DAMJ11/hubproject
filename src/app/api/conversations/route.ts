@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { query, queryOne } from "@/lib/db";
 import { getSessionUser, hasRole } from "@/lib/session";
 import { notifyConversationParticipants } from "@/lib/realtime/notifyConversation";
+import { createConversationSchema } from "@/lib/validations/conversations";
 
 // GET /api/conversations - Lista conversaciones del usuario autenticado
 export async function GET(request: NextRequest) {
@@ -39,6 +40,7 @@ export async function GET(request: NextRequest) {
 
     const conversations = await query<Array<{
       id: number;
+      rfq_id: number | null;
       subject: string | null;
       status: string;
       last_message_at: string | null;
@@ -55,6 +57,8 @@ export async function GET(request: NextRequest) {
       admin_user_name: string | null;
       brand_logo: string | null;
       manufacturer_logo: string | null;
+      rfq_code: string | null;
+      rfq_title: string | null;
       initiator_name: string;
       unread_count: number;
       last_message: string | null;
@@ -63,6 +67,8 @@ export async function GET(request: NextRequest) {
         bc.name AS brand_name, bc.logo_url AS brand_logo,
         mc.name AS manufacturer_name, mc.logo_url AS manufacturer_logo,
         tc.name AS target_company_name,
+        r.code AS rfq_code,
+        r.title AS rfq_title,
         CONCAT(au.first_name, ' ', au.last_name) AS admin_user_name,
         CONCAT(iu.first_name, ' ', iu.last_name) AS initiator_name,
         (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id AND m.is_read = FALSE AND m.sender_user_id != ?) AS unread_count,
@@ -71,6 +77,7 @@ export async function GET(request: NextRequest) {
        LEFT JOIN companies bc ON bc.id = c.brand_company_id
        LEFT JOIN companies mc ON mc.id = c.manufacturer_company_id
        LEFT JOIN companies tc ON tc.id = c.target_company_id
+      LEFT JOIN rfq_projects r ON r.id = c.rfq_id
        LEFT JOIN users au ON au.id = c.admin_user_id
        JOIN users iu ON iu.id = c.initiated_by_user_id
        WHERE ${whereClause}
@@ -94,11 +101,13 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { targetCompanyId, subject, initialMessage } = body;
-
-    if (!targetCompanyId || !subject?.trim()) {
-      return NextResponse.json({ success: false, message: "targetCompanyId y subject son requeridos" }, { status: 400 });
+    const parsed = createConversationSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ success: false, message: parsed.error.issues[0]?.message || "Datos inválidos" }, { status: 400 });
     }
+    const { targetCompanyId, subject, initialMessage, rfqId } = parsed.data;
+
+    const parsedRfqId = rfqId ?? null;
 
     // Validar que la empresa destino existe y es del tipo opuesto
     const targetCompany = await queryOne<{ id: number; type: string; name: string }>(
@@ -163,11 +172,64 @@ export async function POST(request: NextRequest) {
       const brandCompanyId = userCompany.type === "brand" ? user.companyId : targetCompanyId;
       const manufacturerCompanyId = userCompany.type === "manufacturer" ? user.companyId : targetCompanyId;
 
-      // Verificar que no exista ya una conversación pending u open entre las mismas empresas
+      let selectedRfqId: number | null = null;
+
+      if (parsedRfqId) {
+        // Si se pasa rfqId, debe pertenecer a la marca de la conversación.
+        const rfq = await queryOne<{ id: number; status: string }>(
+          `SELECT id, status
+           FROM rfq_projects
+           WHERE id = ? AND brand_company_id = ?`,
+          [parsedRfqId, brandCompanyId]
+        );
+
+        if (!rfq) {
+          return NextResponse.json({ success: false, message: "El proyecto seleccionado no pertenece a la marca" }, { status: 400 });
+        }
+
+        // Manufacturer solo puede iniciar por proyectos abiertos/en evaluación.
+        if (userCompany.type === "manufacturer" && !["open", "evaluating"].includes(rfq.status)) {
+          return NextResponse.json({ success: false, message: "Solo puedes contactar por proyectos abiertos o en evaluación" }, { status: 400 });
+        }
+
+        // Brand solo puede ofrecer proyectos no cerrados.
+        if (userCompany.type === "brand" && !["draft", "open", "evaluating"].includes(rfq.status)) {
+          return NextResponse.json({ success: false, message: "Solo puedes ofrecer proyectos activos" }, { status: 400 });
+        }
+
+        selectedRfqId = parsedRfqId;
+      }
+
+      // Si manufacturer inicia sin rfqId, validar al menos un proyecto activo en la marca.
+      if (userCompany.type === "manufacturer" && !selectedRfqId) {
+        const activeRfq = await queryOne<{ id: number }>(
+          `SELECT id FROM rfq_projects
+           WHERE brand_company_id = ? AND status IN ('open', 'evaluating')
+           ORDER BY created_at DESC LIMIT 1`,
+          [brandCompanyId]
+        );
+
+        if (!activeRfq) {
+          return NextResponse.json({ success: false, message: "La marca no tiene proyectos activos para contactar" }, { status: 400 });
+        }
+      }
+
+      // Verificar duplicados por par de empresas y contexto RFQ.
       const existing = await queryOne<{ id: number; status: string }>(
-        `SELECT id, status FROM conversations
-         WHERE brand_company_id = ? AND manufacturer_company_id = ? AND status IN ('pending', 'open')`,
-        [brandCompanyId, manufacturerCompanyId]
+        selectedRfqId
+          ? `SELECT id, status FROM conversations
+             WHERE brand_company_id = ? AND manufacturer_company_id = ?
+               AND rfq_id = ?
+               AND status IN ('pending', 'open')
+             ORDER BY id DESC LIMIT 1`
+          : `SELECT id, status FROM conversations
+             WHERE brand_company_id = ? AND manufacturer_company_id = ?
+               AND rfq_id IS NULL
+               AND status IN ('pending', 'open')
+             ORDER BY id DESC LIMIT 1`,
+        selectedRfqId
+          ? [brandCompanyId, manufacturerCompanyId, selectedRfqId]
+          : [brandCompanyId, manufacturerCompanyId]
       );
 
       if (existing) {
@@ -183,8 +245,8 @@ export async function POST(request: NextRequest) {
       // Crear conversación con status pending
       const result = await query<{ insertId: number }>(
         `INSERT INTO conversations (rfq_id, contract_id, brand_company_id, manufacturer_company_id, target_company_id, admin_user_id, initiated_by_user_id, subject, status)
-         VALUES (NULL, NULL, ?, ?, NULL, NULL, ?, ?, 'pending')`,
-        [brandCompanyId, manufacturerCompanyId, user.id, subject.trim()]
+         VALUES (?, NULL, ?, ?, NULL, NULL, ?, ?, 'pending')`,
+        [selectedRfqId, brandCompanyId, manufacturerCompanyId, user.id, subject.trim()]
       );
       conversationId = (result as unknown as { insertId: number }).insertId;
     }

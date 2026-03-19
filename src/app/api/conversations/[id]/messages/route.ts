@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { query, queryOne } from "@/lib/db";
 import { getSessionUser, hasRole } from "@/lib/session";
 import { notifyConversationParticipants } from "@/lib/realtime/notifyConversation";
+import { sendMessageSchema } from "@/lib/validations/conversations";
 
 // GET /api/conversations/[id]/messages - Obtener mensajes de una conversación
 export async function GET(
@@ -110,11 +111,11 @@ export async function POST(
     const { id } = await params;
     const conversationId = Number(id);
     const body = await request.json();
-    const { content, messageType } = body;
-
-    if (!content?.trim()) {
-      return NextResponse.json({ success: false, message: "El contenido del mensaje es requerido" }, { status: 400 });
+    const parsed = sendMessageSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ success: false, message: parsed.error.issues[0]?.message || "Datos inválidos" }, { status: 400 });
     }
+    const { content, messageType } = parsed.data;
 
     // Verificar que la conversación existe y está abierta
     const conversation = await queryOne<{

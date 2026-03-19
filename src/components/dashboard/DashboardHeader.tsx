@@ -73,7 +73,11 @@ const headerMessages = {
     ariaThemeLight: "Cambiar a modo claro",
     ariaNotifications: "Abrir notificaciones",
     viewAllNotifications: "Ver todas las notificaciones",
-    roleLabel: "Administrador",
+    roleLabels: {
+      admin: "Administrador",
+      manufacturer: "Fabricante",
+      brand: "Marca",
+    },
     profileSettings: "Configuracion",
     signOut: "Cerrar sesion",
   },
@@ -112,7 +116,11 @@ const headerMessages = {
     ariaThemeLight: "Switch to light mode",
     ariaNotifications: "Open notifications",
     viewAllNotifications: "View all notifications",
-    roleLabel: "Administrator",
+    roleLabels: {
+      admin: "Administrator",
+      manufacturer: "Manufacturer",
+      brand: "Brand",
+    },
     profileSettings: "Settings",
     signOut: "Sign out",
   },
@@ -151,7 +159,11 @@ const headerMessages = {
     ariaThemeLight: "Passer en mode clair",
     ariaNotifications: "Ouvrir les notifications",
     viewAllNotifications: "Voir toutes les notifications",
-    roleLabel: "Administrateur",
+    roleLabels: {
+      admin: "Administrateur",
+      manufacturer: "Fabricant",
+      brand: "Marque",
+    },
     profileSettings: "Parametres",
     signOut: "Se deconnecter",
   },
@@ -202,6 +214,11 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
   }, [messages.dashboard, pathname, segmentLabels]);
 
   const pageTitle = breadcrumbs[breadcrumbs.length - 1] ?? messages.dashboard;
+  const roleLabel = user.role === "admin"
+    ? messages.roleLabels.admin
+    : user.role === "manufacturer"
+      ? messages.roleLabels.manufacturer
+      : messages.roleLabels.brand;
 
   const handleLogout = async () => {
     try {
@@ -328,7 +345,7 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
               </div>
               <div className="hidden sm:block text-left">
                 <p className="text-sm font-medium text-gray-900">{user.firstName}</p>
-                <p className="text-xs text-gray-500">{messages.roleLabel}</p>
+                <p className="text-xs text-gray-500">{roleLabel}</p>
               </div>
               <ChevronDown className="w-4 h-4 text-gray-400" />
             </Button>

@@ -1,0 +1,102 @@
+SISTEMA DE TRADUCCION DE LA PAGINA (ES / EN / FR)
+
+Resumen rapido
+- La app usa un contexto global de idioma en cliente: LanguageContext.
+- El idioma activo se guarda en localStorage para persistir entre visitas.
+- Cada componente define sus textos en objetos por idioma (es, en, fr).
+- El componente lee language desde useLanguage() y renderiza el bloque correspondiente.
+
+1) Punto central: LanguageContext
+Archivo: src/contexts/LanguageContext.tsx
+
+Que define:
+- Tipo AppLanguage: "es" | "en" | "fr".
+- Opciones de idioma (LANGUAGE_OPTIONS) con codigo, nombre y bandera.
+- Estado global language + funcion setLanguage.
+
+Como inicializa el idioma:
+- Primero revisa localStorage con la clave dashboard-language.
+- Si existe un valor valido (es/en/fr), lo usa.
+- Si no existe, detecta el idioma del navegador:
+  - fr* -> fr
+  - en* -> en
+  - cualquier otro -> es
+- Tambien actualiza document.documentElement.lang.
+
+Como persiste cambios:
+- setLanguage(next) actualiza estado,
+- guarda en localStorage,
+- y vuelve a actualizar <html lang="..."> en runtime.
+
+2) Inyeccion global del provider
+Archivos:
+- src/app/providers.tsx
+- src/app/layout.tsx
+
+Flujo:
+- Providers envuelve toda la app con <LanguageProvider>.
+- layout.tsx monta <Providers>{children}</Providers>.
+- Resultado: cualquier componente cliente puede usar useLanguage().
+
+3) Patron de traduccion en componentes
+Patron usado en componentes de UI (Hero, QualitySection, Footer, etc.):
+
+A. Definir copy por idioma:
+  const copy = {
+    es: { ... },
+    en: { ... },
+    fr: { ... }
+  };
+
+B. Leer idioma actual:
+  const { language } = useLanguage();
+
+C. Resolver textos:
+  const t = copy[language];
+
+D. Renderizar:
+  <h2>{t.title}</h2>
+
+Para arrays o campos puntuales tambien se usa:
+- language === "en" ? valueEn : language === "fr" ? valueFr : valueEs
+
+4) Selectores de idioma en la UI
+Lugares principales:
+- Header publico: src/components/Header.tsx
+- DashboardHeader: src/components/dashboard/DashboardHeader.tsx
+- Login/Register: paginas con dropdown de idioma.
+
+Comportamiento esperado:
+- Al seleccionar idioma, se llama setLanguage(...).
+- El contexto notifica a componentes suscritos y se rerenderiza el texto.
+- El idioma queda persistido para futuras visitas.
+
+Nota tecnica importante
+- Header.tsx maneja su propio estado local de idioma con localStorage (no usa useLanguage()).
+- Esto funciona porque comparte la misma clave dashboard-language,
+  pero no es la forma mas consistente del proyecto.
+
+Recomendacion de mantenimiento
+- Unificar Header.tsx para usar useLanguage() como el resto.
+- Ventaja: una sola fuente de verdad y menos riesgo de desincronizacion.
+
+5) Alcance real del sistema actual
+- Traduce textos de interfaz definidos en componentes cliente.
+- No usa i18n routing por URL (/es, /en, /fr).
+- No usa archivos JSON externos ni libreria i18n dedicada.
+- Es un enfoque manual y directo, facil de mantener en apps medianas.
+
+6) Como agregar nuevas traducciones correctamente
+Paso 1: En el componente, agrega claves es/en/fr en el objeto copy.
+Paso 2: Consume copy[language] para render.
+Paso 3: Si hay datos con campos separados (name, nameEn, nameFr), aplica fallback:
+  en -> nameEn
+  fr -> nameFr
+  default -> name
+Paso 4: Evita hardcodear strings fuera del objeto de traduccion.
+
+7) Checklist de validacion
+- Cambiar idioma desde dropdown actualiza los textos visibles.
+- Recargar pagina mantiene idioma seleccionado.
+- <html lang="..."> cambia correctamente.
+- No quedan textos quemados en un solo idioma en nuevas secciones.

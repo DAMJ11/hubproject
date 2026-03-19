@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Leaf, Clock, DollarSign, Package } from "lucide-react";
+import Link from "next/link";
+import { Loader2, Leaf, Clock, DollarSign, Package, Settings, Factory } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface MyProposal {
   id: number;
@@ -19,6 +21,16 @@ interface MyProposal {
   submitted_at: string;
 }
 
+interface CapabilityOffer {
+  id: number;
+  category_name: string;
+  min_order_qty: number;
+  max_monthly_capacity: number | null;
+  lead_time_days: number | null;
+  unit_price_from: number | null;
+  wholesale_price_from: number | null;
+}
+
 const statusLabels: Record<string, { label: string; color: string }> = {
   pending: { label: "Pendiente", color: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300" },
   shortlisted: { label: "Preseleccionada", color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" },
@@ -33,6 +45,8 @@ function formatCOP(amount: number) {
 export default function MyProposalsPage() {
   const router = useRouter();
   const [proposals, setProposals] = useState<MyProposal[]>([]);
+  const [offers, setOffers] = useState<CapabilityOffer[]>([]);
+  const [offersLoading, setOffersLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
 
@@ -48,9 +62,29 @@ export default function MyProposalsPage() {
     }
   }, []);
 
-  useEffect(() => { fetchProposals(); }, [fetchProposals]);
+  const fetchOffers = useCallback(async () => {
+    setOffersLoading(true);
+    try {
+      const res = await fetch("/api/manufacturers/capabilities", { cache: "no-store" });
+      const data = await res.json();
+      if (data.success) {
+        setOffers(data.data || []);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setOffersLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProposals();
+    fetchOffers();
+  }, [fetchProposals, fetchOffers]);
 
   const filtered = filter === "all" ? proposals : proposals.filter((p) => p.status === filter);
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(value);
   const tabs = [
     { key: "all", label: "Todas" },
     { key: "pending", label: "Pendientes" },
@@ -72,6 +106,51 @@ export default function MyProposalsPage() {
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Mis Propuestas</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400">Seguimiento de tus propuestas enviadas</p>
+      </div>
+
+      <div className="rounded-xl border border-blue-100 bg-blue-50 p-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h2 className="text-sm font-semibold text-blue-900 flex items-center gap-2">
+              <Factory className="w-4 h-4" /> Oferta base para marcas (flujo bidireccional)
+            </h2>
+            <p className="text-xs text-blue-800 mt-1">
+              Publica tus capacidades, tiempos y precios base para que las marcas te encuentren y te seleccionen.
+            </p>
+          </div>
+          <Link href="/dashboard/company/capabilities">
+            <Button size="sm" className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white">
+              <Settings className="w-4 h-4 mr-2" /> Gestionar mi oferta
+            </Button>
+          </Link>
+        </div>
+
+        <div className="mt-3">
+          {offersLoading ? (
+            <div className="text-xs text-blue-700 flex items-center gap-2">
+              <Loader2 className="w-3.5 h-3.5 animate-spin" /> Cargando capacidades...
+            </div>
+          ) : offers.length === 0 ? (
+            <p className="text-xs text-blue-700">
+              Aun no tienes capacidades registradas. Completa tu oferta para aparecer mejor en el directorio de fabricantes.
+            </p>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {offers.slice(0, 4).map((offer) => (
+                <span key={offer.id} className="text-xs rounded-full bg-white/80 text-blue-900 border border-blue-200 px-2 py-1">
+                  {offer.category_name}
+                  {offer.unit_price_from !== null ? ` · desde ${formatCurrency(offer.unit_price_from)}` : ""}
+                  {offer.lead_time_days ? ` · ${offer.lead_time_days}d` : ""}
+                </span>
+              ))}
+              {offers.length > 4 && (
+                <span className="text-xs rounded-full bg-white/80 text-blue-900 border border-blue-200 px-2 py-1">
+                  +{offers.length - 4} capacidades
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="flex gap-2 flex-wrap">
