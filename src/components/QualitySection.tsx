@@ -1,109 +1,113 @@
 "use client";
 
-import { Sparkles, Shirt, Layers, Move, Tag, User, ShoppingBag } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
-
-const copy = {
-  es: {
-    title: "Capacidades de producción disponibles",
-    subtitle: "Encuentra fabricantes especializados por categoría, volumen y nivel de complejidad técnica.",
-    details: [
-      "MOQ desde 120",
-      "Lead time 4-6 sem",
-      "Desarrollo tecnico",
-      "Costuras performance",
-      "Control por talla",
-      "Series capsula",
-      "Muestras en 10 dias",
-      "Ready for retail",
-      "Compliance infantil",
-      "One-stop partner",
-    ],
-    featured: "Destacado",
-  },
-  en: {
-    title: "Available production capabilities",
-    subtitle: "Find specialized manufacturers by category, volume and technical complexity.",
-    details: [
-      "MOQ from 120",
-      "Lead time 4-6 wks",
-      "Technical development",
-      "Performance seams",
-      "Size control",
-      "Capsule runs",
-      "Samples in 10 days",
-      "Ready for retail",
-      "Kids compliance",
-      "One-stop partner",
-    ],
-    featured: "Featured",
-  },
-  fr: {
-    title: "Capacites de production disponibles",
-    subtitle: "Trouvez des fabricants specialises par categorie, volume et complexite technique.",
-    details: [
-      "MOQ des 120",
-      "Delai 4-6 sem",
-      "Developpement technique",
-      "Coutures performance",
-      "Controle des tailles",
-      "Series capsule",
-      "Samples en 10 jours",
-      "Pret retail",
-      "Conformite kids",
-      "One-stop partner",
-    ],
-    featured: "Mis en avant",
-  },
-};
+import { Shirt, Layers, Move, Tag, User, ShoppingBag } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const services = [
-  { icon: Shirt, name: "Camisetas y tops", nameEn: "Tees and tops", nameFr: "T-shirts et tops", desc: "Jersey, rib y blends premium", descEn: "Jersey, rib and premium blends", descFr: "Jersey, rib et melanges premium", popular: true },
-  { icon: Tag, name: "Denim y bottoms", nameEn: "Denim and bottoms", nameFr: "Denim et bas", desc: "Jeans, cargos y pantalón sastre", descEn: "Jeans, cargos and tailored pants", descFr: "Jeans, cargos et pantalon tailleur", popular: true },
-  { icon: Layers, name: "Outerwear", nameEn: "Outerwear", nameFr: "Outerwear", desc: "Bomber, puffer y trench", descEn: "Bomber, puffer and trench", descFr: "Bomber, doudoune et trench", popular: false },
-  { icon: Move, name: "Activewear", nameEn: "Activewear", nameFr: "Activewear", desc: "Leggings, tops y sets deportivos", descEn: "Leggings, tops and sport sets", descFr: "Leggings, tops et ensembles sport", popular: true },
-  { icon: Tag, name: "Vestidos y sets", nameEn: "Dresses and sets", nameFr: "Robes et sets", desc: "Confección femenina y acabados finos", descEn: "Womenswear construction and fine finishes", descFr: "Confection feminine et finitions fines", popular: false },
-  { icon: Tag, name: "Accesorios", nameEn: "Accessories", nameFr: "Accessoires", desc: "Gorras, tote bags y trims", descEn: "Caps, tote bags and trims", descFr: "Casquettes, tote bags et trims", popular: false },
-  { icon: Layers, name: "Punto y knitwear", nameEn: "Knitwear", nameFr: "Maille", desc: "Galga fina y media", descEn: "Fine and mid gauge", descFr: "Jauge fine et moyenne", popular: true },
-  { icon: Tag, name: "Private label", nameEn: "Private label", nameFr: "Private label", desc: "Etiqueta, empaque y branding", descEn: "Labels, packaging and branding", descFr: "Etiquettes, packaging et branding", popular: true },
-  { icon: User, name: "Kidswear", nameEn: "Kidswear", nameFr: "Kidswear", desc: "Materiales suaves y seguros", descEn: "Soft and safe materials", descFr: "Materiaux souples et surs", popular: false },
-  { icon: ShoppingBag, name: "Producción integral", nameEn: "Full production", nameFr: "Production complete", desc: "Del patronaje al packing final", descEn: "From pattern making to final packing", descFr: "Du patronage au packing final", popular: false },
+  {
+    icon: Shirt,
+    iconColor: "text-[#c8915b]",
+    iconBg: "bg-[#fbefe5]",
+    cardBg: "bg-gradient-to-b from-[#fff7f0] via-[#fffdfa] to-white",
+    accent: "text-[#c8915b]",
+  },
+  {
+    icon: Tag,
+    iconColor: "text-[#5a8fe8]",
+    iconBg: "bg-[#eaf1ff]",
+    cardBg: "bg-gradient-to-b from-[#f5f8ff] via-[#fcfdff] to-white",
+    accent: "text-[#5a8fe8]",
+  },
+  {
+    icon: Layers,
+    iconColor: "text-[#89879c]",
+    iconBg: "bg-[#f0eff5]",
+    cardBg: "bg-gradient-to-b from-[#f9f8fc] via-[#fcfcfe] to-white",
+    accent: "text-[#7f7d91]",
+  },
+  {
+    icon: Move,
+    iconColor: "text-[#6aa58c]",
+    iconBg: "bg-[#e9f6ef]",
+    cardBg: "bg-gradient-to-b from-[#f3fbf6] via-[#fcfefd] to-white",
+    accent: "text-[#6aa58c]",
+  },
+  {
+    icon: Shirt,
+    iconColor: "text-[#cc7c92]",
+    iconBg: "bg-[#fdeef3]",
+    cardBg: "bg-gradient-to-b from-[#fff5f8] via-[#fffdfd] to-white",
+    accent: "text-[#cc7c92]",
+  },
+  {
+    icon: Tag,
+    iconColor: "text-[#7e7cf3]",
+    iconBg: "bg-[#f0efff]",
+    cardBg: "bg-gradient-to-b from-[#f7f6ff] via-[#fefeff] to-white",
+    accent: "text-[#7e7cf3]",
+  },
+  {
+    icon: Layers,
+    iconColor: "text-[#c98d51]",
+    iconBg: "bg-[#fcf1e7]",
+    cardBg: "bg-gradient-to-b from-[#fff7f0] via-[#fffdfb] to-white",
+    accent: "text-[#c98d51]",
+  },
+  {
+    icon: Tag,
+    iconColor: "text-[#dd8b5f]",
+    iconBg: "bg-[#fff1e8]",
+    cardBg: "bg-gradient-to-b from-[#fff8f3] via-[#fffdfb] to-white",
+    accent: "text-[#dd8b5f]",
+  },
+  {
+    icon: User,
+    iconColor: "text-[#7ab292]",
+    iconBg: "bg-[#eef8f1]",
+    cardBg: "bg-gradient-to-b from-[#f4fbf6] via-[#fcfefd] to-white",
+    accent: "text-[#7ab292]",
+  },
+  {
+    icon: ShoppingBag,
+    iconColor: "text-[#9b9ba3]",
+    iconBg: "bg-[#f1f1f3]",
+    cardBg: "bg-gradient-to-b from-[#fafafa] via-[#fefefe] to-white",
+    accent: "text-[#8d8d96]",
+  },
 ];
 
 export default function QualitySection() {
-  const { language } = useLanguage();
-  const t = copy[language];
+  const t = useTranslations("Quality");
 
   return (
-    <section id="servicios" className="py-20 bg-white">
+    <section id="servicios" className="bg-white py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-[#1f2937]">{t.title}</h2>
-          <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">{t.subtitle}</p>
+          <h2 className="text-3xl font-bold text-[#1f2937] lg:text-4xl">{t("title")}</h2>
+          <p className="mx-auto mt-4 max-w-3xl text-base text-gray-600 lg:text-lg">{t("subtitle")}</p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
           {services.map((service, index) => (
             <div
-              key={service.name}
-              className="relative bg-gray-50 border border-gray-100 rounded-xl p-6 text-center hover:shadow-lg transition-all hover:-translate-y-1 cursor-pointer group"
+              key={index}
+              className={`${service.cardBg} group flex min-h-[170px] flex-col rounded-2xl border border-[#ebe6e1] px-4 py-5 text-center shadow-[0_18px_40px_-34px_rgba(15,23,42,0.35)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_44px_-30px_rgba(15,23,42,0.28)] md:min-h-[184px] md:px-5`}
             >
-              {service.popular && (
-                <span className="absolute top-2 right-2 bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" /> {t.featured}
-                </span>
-              )}
               {(() => {
                 const Icon = service.icon;
-                return <Icon className="w-8 h-8 mx-auto mb-3 text-[#2563eb]" />;
+                return (
+                  <div className={`mx-auto mb-4 grid h-10 w-10 place-items-center rounded-full ${service.iconBg}`}>
+                    <Icon className={`h-5 w-5 ${service.iconColor}`} />
+                  </div>
+                );
               })()}
-              <h3 className="font-semibold text-[#1f2937] text-sm group-hover:text-[#2563eb] transition-colors">
-                {language === "en" ? service.nameEn : language === "fr" ? service.nameFr : service.name}
+              <h3 className="text-[1rem] font-semibold leading-6 text-[#1f2937] transition-colors duration-300 group-hover:text-[#111827]">
+                {t(`services.${index}.name`)}
               </h3>
-              <p className="text-xs text-gray-500 mt-2 line-clamp-2">
-                {language === "en" ? service.descEn : language === "fr" ? service.descFr : service.desc}
+              <p className="mt-2 text-xs leading-5 text-gray-500 md:text-[13px]">
+                {t(`services.${index}.shortDesc`)}
               </p>
-              <p className="text-sm font-bold text-[#2563eb] mt-3">{t.details[index]}</p>
+              <p className={`mt-auto pt-4 text-sm font-semibold ${service.accent}`}>{t(`services.${index}.detail`)}</p>
             </div>
           ))}
         </div>

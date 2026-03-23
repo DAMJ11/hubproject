@@ -1,0 +1,1401 @@
+{
+  "Header": {
+    "capabilities": "Capabilities",
+    "howItWorks": "How it works",
+    "manufacturers": "Manufacturers",
+    "plans": "Plans",
+    "cases": "Cases",
+    "login": "Log in",
+    "register": "Create account"
+  },
+  "Footer": {
+    "brandText": "B2B platform connecting brands and manufacturers across design, development and fashion production workflows.",
+    "services": "Capabilities",
+    "company": "Company",
+    "manufacturers": "Manufacturers",
+    "legal": "Legal",
+    "serviceLinks": {
+      "0": "Streetwear",
+      "1": "Denim",
+      "2": "Activewear",
+      "3": "Outerwear",
+      "4": "Private Label",
+      "5": "All categories"
+    },
+    "companyLinks": {
+      "0": "About Us",
+      "1": "Blog",
+      "2": "Manufacturer Program",
+      "3": "Contact"
+    },
+    "manufacturerLinks": {
+      "0": "Create factory profile",
+      "1": "Verification requirements",
+      "2": "Help Center"
+    },
+    "legalLinks": {
+      "0": "Terms and Conditions",
+      "1": "Privacy Policy",
+      "2": "Cookie Policy"
+    },
+    "copyright": "All rights reserved."
+  },
+  "Hero": {
+    "pill": "Fashion production, simplified",
+    "titleA": "Get your collection made",
+    "titleB": "without the chaos",
+    "subtitle": "From first idea to final production, work with verified partners across Latin America — all managed in one place.",
+    "highlights": {
+      "0": "Verified partners you can trust",
+      "1": "Clear pricing and timelines",
+      "2": "Samples before production",
+      "3": "Track every step in real time"
+    },
+    "ctaPrimary": "Start your first project",
+    "ctaSecondary": "How it works",
+    "stats": {
+      "0": "Verified partners",
+      "1": "Projects completed",
+      "2": "On-time delivery"
+    },
+    "categories": {
+      "0": "Streetwear",
+      "1": "Denim",
+      "2": "Activewear",
+      "3": "Outerwear",
+      "4": "Womenswear",
+      "5": "Accessories"
+    },
+    "categoryDesc": {
+      "0": "Oversized cuts, embroidery and screen-print",
+      "1": "Washes, technical fit and premium finishes",
+      "2": "Technical fabrics and high-performance seams",
+      "3": "Jackets, padding and waterproof processes",
+      "4": "Pattern making, fine confection and boutique finish",
+      "5": "Caps, bags and trims development"
+    }
+  },
+  "Platform": {
+    "title": "How Fashions Den works",
+    "subtitle": "From first idea to final production, manage every step with the right partners, clear communication, and full visibility.",
+    "steps": {
+      "0": {
+        "title": "Upload your project",
+        "desc": "Share your sketch, tech pack, materials, measurements or references so the right partners can properly review your project."
+      },
+      "1": {
+        "title": "Find the ideal partner",
+        "desc": "Explore verified designers, sample makers and manufacturers by category, capabilities, MOQ, lead times and location."
+      },
+      "2": {
+        "title": "Review sample and confirm production",
+        "desc": "Approve samples, align changes, confirm pricing and move forward with clear timelines, milestones and expectations."
+      },
+      "3": {
+        "title": "Track everything in one place",
+        "desc": "Monitor progress, approvals, updates and deliveries from a shared workflow for brands and production partners."
+      }
+    }
+  },
+  "WhyManufy": {
+    "title": "A better way to build your collection",
+    "subtitle": "Fashions Den gives brands one place to find the right partners, manage the process, and move from first idea to final production with more clarity and control.",
+    "items": {
+      "0": {
+        "title": "Verified fashion partners",
+        "desc": "Work with evaluated designers, pattern makers, sample makers and manufacturers at every stage of the process."
+      },
+      "1": {
+        "title": "From sketch to production",
+        "desc": "Whether you need a tech pack, a first sample or full production, everything starts in one place."
+      },
+      "2": {
+        "title": "Clear communication",
+        "desc": "Keep briefs, feedback, revisions and approvals together so nothing gets lost between design and production."
+      },
+      "3": {
+        "title": "Smarter matching",
+        "desc": "Find the ideal partner by category, capabilities, MOQ, lead times and project needs."
+      },
+      "4": {
+        "title": "Real production visibility",
+        "desc": "Track samples, approvals, timelines and key updates with more clarity from start to finish."
+      },
+      "5": {
+        "title": "Built to scale collections",
+        "desc": "Manage a single product, a drop, or a full collection with a structure that grows with your brand."
+      }
+    }
+  },
+  "Quality": {
+    "title": "What can you build on Fashions Den",
+    "subtitle": "From first sample to full production, find the right partners for every stage of your collection.",
+    "services": {
+      "0": { "name": "Tees & tops", "shortDesc": "Jersey, rib, premium blends", "detail": "From 10 units" },
+      "1": { "name": "Denim & bottoms", "shortDesc": "Jeans, cargos, tailored pieces", "detail": "4 to 6 week lead time" },
+      "2": { "name": "Outerwear", "shortDesc": "Bomber, puffer, trench", "detail": "Technical development available" },
+      "3": { "name": "Activewear", "shortDesc": "Performance sets and essentials", "detail": "Technical fabrics and seams" },
+      "4": { "name": "Dresses & sets", "shortDesc": "Structured and soft silhouettes", "detail": "Fit and pattern expertise" },
+      "5": { "name": "Accessories", "shortDesc": "Caps, bags, trims", "detail": "From 10 units" },
+      "6": { "name": "Knitwear", "shortDesc": "Fine gauge to heavy knit", "detail": "Samples from 1 month" },
+      "7": { "name": "Private label", "shortDesc": "Labels, packaging, branding", "detail": "Retail-ready production" },
+      "8": { "name": "Kidswear", "shortDesc": "Soft, safe materials", "detail": "Compliance-ready production" },
+      "9": { "name": "Full production", "shortDesc": "From pattern to final delivery", "detail": "One partner for the whole process" }
+    }
+  },
+  "CTA": {
+    "title": "Are you a manufacturer? Connect with brands that are ready to buy",
+    "subtitle": "Receive clear briefs, structured orders and direct conversations with growing fashion brands. Less commercial friction, more active production.",
+    "bullets": {
+      "0": "Visibility to brands segmented by category",
+      "1": "Transparent order process with defined milestones",
+      "2": "Long-term relationships with recurring purchases"
+    },
+    "cta": "Apply as factory",
+    "stats": {
+      "0": { "value": "+38%", "label": "Average growth per factory" },
+      "1": { "value": "14 days", "label": "Average first order" },
+      "2": { "value": "84%", "label": "Repeat orders" },
+      "3": { "value": "24/7", "label": "Cross-team messaging" }
+    }
+  },
+  "Testimonials": {
+    "title": "Results from brands and manufacturers",
+    "subtitle": "Fashion teams producing with more speed, control and predictability.",
+    "items": {
+      "0": {
+        "name": "Valeria Ruiz",
+        "role": "Founder, NOVA LABEL",
+        "quote": "We went from producing across three separate chats to managing everything in one flow. Today we launch collections with fewer delays and better quality control.",
+        "badge": "Streetwear brand"
+      },
+      "1": {
+        "name": "Andrés Peña",
+        "role": "Head of Production, AURA SPORT",
+        "quote": "We found a manufacturer for activewear with real experience in technical fabrics. The sample process was much faster.",
+        "badge": "Activewear brand"
+      },
+      "2": {
+        "name": "Paola Medina",
+        "role": "COO, LINO STUDIO",
+        "quote": "Milestone tracking helped us detect bottlenecks before they affected the season delivery date.",
+        "badge": "Womenswear brand"
+      },
+      "3": {
+        "name": "Textiles Rivera",
+        "role": "Manufacturer partner",
+        "quote": "We now receive better defined briefs and orders with more technical context. That allowed us to improve response times and close rate.",
+        "badge": "Multi-category factory"
+      },
+      "4": {
+        "name": "Confecciones Delta",
+        "role": "Manufacturer partner",
+        "quote": "We connected with brands that are actually ready to produce. Less unproductive negotiation, more concrete orders.",
+        "badge": "Denim & outerwear"
+      },
+      "5": {
+        "name": "Samuel Ortiz",
+        "role": "Supply Lead, MONOCHROME",
+        "quote": "Per-order messaging and change history save us hours every week. The team operates with better clarity.",
+        "badge": "Premium brand"
+      }
+    }
+  },
+  "Pricing": {
+    "title": "Plans for brands and suppliers",
+    "subtitle": "Choose the plan that fits your operation. No commitments, cancel anytime.",
+    "tabBrands": "For Brands",
+    "tabSuppliers": "For Suppliers",
+    "featured": "Most popular",
+    "perMonth": "/mo",
+    "trialTitle": "7-day free trial",
+    "trialItems": {
+      "0": "1 active project maximum",
+      "1": "Can message suppliers",
+      "2": "Can receive matches",
+      "3": "Can start a project"
+    },
+    "trialNote": "Must add payment method",
+    "brandPlans": {
+      "0": {
+        "name": "Starter",
+        "price": "$29",
+        "desc": "For brands starting their first production",
+        "features": { "0": "1 active project", "1": "Standard matching", "2": "Basic support" },
+        "cta": "Start with Starter"
+      },
+      "1": {
+        "name": "Scale",
+        "price": "$149",
+        "desc": "For growing brands with frequent drops",
+        "features": { "0": "Up to 4 active projects", "1": "Priority matching", "2": "Better partners", "3": "Production tracking" },
+        "cta": "Choose Scale"
+      },
+      "2": {
+        "name": "Enterprise",
+        "price": "$499",
+        "desc": "For brands with large-scale operations",
+        "features": { "0": "Unlimited projects", "1": "Dedicated support", "2": "Fast-track production", "3": "Top-tier partners" },
+        "cta": "Contact sales"
+      }
+    },
+    "supplierPlans": {
+      "0": {
+        "name": "Standard",
+        "price": "Free",
+        "desc": "For manufacturers looking to receive projects",
+        "features": { "0": "Access to projects", "1": "Receive invitations", "2": "Messaging" },
+        "cta": "Start free"
+      },
+      "1": {
+        "name": "Pro",
+        "price": "$99",
+        "desc": "For manufacturers seeking more visibility",
+        "features": { "0": "Priority visibility", "1": "More project invitations", "2": "Verified badge" },
+        "cta": "Choose Pro"
+      },
+      "2": {
+        "name": "Elite",
+        "price": "$599",
+        "desc": "For manufacturers wanting premium access",
+        "features": { "0": "Maximum visibility", "1": "Priority matching", "2": "Access to best projects" },
+        "cta": "Contact sales"
+      }
+    }
+  },
+  "FinalCTA": {
+    "title": "Ready to accelerate your next collection?",
+    "subtitle": "Connect design, sourcing and production in one collaborative workspace for brands and manufacturers.",
+    "ctaPrimary": "Create account and publish order",
+    "ctaSecondary": "Go to dashboard"
+  },
+  "Blog": {
+    "title": "Blog",
+    "readMore": "Read More",
+    "posts": {
+      "0": { "title": "5 Steps to create a sustainable fashion brand", "excerpt": "Discover how to start your fashion brand with sustainable practices from day one.", "date": "Feb 15, 2024" },
+      "1": { "title": "The future of circular fashion", "excerpt": "The circular economy is transforming the fashion industry. Here's how.", "date": "Feb 10, 2024" },
+      "2": { "title": "Sustainable certifications you should know", "excerpt": "A complete guide to the most important certifications in sustainable fashion.", "date": "Feb 5, 2024" },
+      "3": { "title": "Sustainable materials for your collection", "excerpt": "Explore the most innovative and eco-friendly materials for your next collection.", "date": "Feb 1, 2024" },
+      "4": { "title": "How to communicate your brand's sustainability", "excerpt": "Effective strategies to convey your sustainable values to your customers.", "date": "Jan 28, 2024" },
+      "5": { "title": "Ethical fashion trends for 2024", "excerpt": "The trends that will shape the future of responsible fashion this year.", "date": "Jan 20, 2024" }
+    }
+  },
+  "Contact": {
+    "title": "Contact",
+    "subtitle": "Have a question? We're here to help.",
+    "formTitle": "Send Us A Message",
+    "successTitle": "Message Sent!",
+    "successText": "Thank you for contacting us. We'll get back to you as soon as possible.",
+    "name": "Name",
+    "namePlaceholder": "Your name",
+    "email": "Email",
+    "emailPlaceholder": "you@email.com",
+    "subject": "Subject",
+    "subjectPlaceholder": "How can we help you?",
+    "message": "Message",
+    "messagePlaceholder": "Write your message here...",
+    "send": "Send Message",
+    "infoTitle": "Contact Information",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "addressLabel": "Address",
+    "address": "Amsterdam, Netherlands",
+    "hoursLabel": "Business Hours",
+    "weekdays": "Monday - Friday: 9:00 - 18:00",
+    "weekends": "Saturday - Sunday: Closed"
+  },
+  "News": {
+    "title": "News",
+    "readMore": "Read More",
+    "posts": {
+      "0": { "title": "ProjectHub launches new platform for sustainable manufacturers", "date": "Feb 15, 2024" },
+      "1": { "title": "Sustainable fashion grows 25% in Europe", "date": "Feb 10, 2024" },
+      "2": { "title": "New sustainability regulations in the EU", "date": "Feb 5, 2024" },
+      "3": { "title": "ProjectHub expands its manufacturer network in Portugal", "date": "Feb 1, 2024" },
+      "4": { "title": "Circular fashion trends for 2024", "date": "Jan 28, 2024" },
+      "5": { "title": "How brands are adopting sustainable practices", "date": "Jan 20, 2024" }
+    }
+  },
+  "Resources": {
+    "title": "Articles",
+    "readMore": "Read More",
+    "articles": {
+      "0": "Costs Of Starting A Clothing Line",
+      "1": "How To Find The Perfect Hoodie Manufacturer",
+      "2": "How To Find A T-Shirt Manufacturer",
+      "3": "30 Tips On How To Start A Clothing Line",
+      "4": "Local Clothing Sourcing",
+      "5": "How Are Clothes Made?",
+      "6": "How To Find Custom Clothing Manufacturers For Startups?",
+      "7": "How To Promote A Clothing Line?",
+      "8": "Organize A Photo Shoot"
+    }
+  },
+  "About": {
+    "title": "About Us",
+    "intro": "ProjectHub is Europe's first B2B sustainable sourcing platform. Our mission is to make sustainable fashion accessible to all brands, connecting them with European manufacturers committed to ethical and environmental practices.",
+    "intro2": "Founded with the vision of transforming the fashion industry, we work every day to create an ecosystem where sustainability is the norm, not the exception.",
+    "joinUs": "Join Us",
+    "missionTitle": "Our Mission",
+    "missionText": "Simplify the sustainable fashion production process by connecting brands with the best European manufacturers and providing the tools needed to create conscious and ethical collections.",
+    "valuesTitle": "Our Values",
+    "values": {
+      "0": { "title": "Sustainability", "desc": "We believe in a future where fashion and the environment coexist in harmony." },
+      "1": { "title": "Transparency", "desc": "We promote transparency throughout the supply chain." },
+      "2": { "title": "Collaboration", "desc": "We connect brands and manufacturers to create lasting relationships." },
+      "3": { "title": "Innovation", "desc": "We use technology to simplify complex processes." }
+    },
+    "ctaTitle": "Ready To Join The Sustainable Fashion Revolution?",
+    "ctaCreate": "Create An Account",
+    "ctaContact": "Contact"
+  },
+  "ForBrands": {
+    "heroTitle": "Start Your Sustainable Fashion Project",
+    "heroSubtitle": "Source effectively and produce more sustainably.",
+    "joinNow": "Join Now",
+    "learnMore": "Learn More",
+    "platformTitle": "Europe's First Sustainable Sourcing Platform",
+    "platformText1": "You're ready to produce your fashion locally and sustainably — great! But right now, finding the perfect European manufacturer for your product can be a real hassle. You may have been browsing the internet, visiting trade shows, or even diving into social media. But those methods can eat up your time, drain your wallet, and in the worst case, lead you to a disappointing manufacturer.",
+    "platformText2": "That's where we come in: introducing ProjectHub, Europe's first sustainable sourcing platform. Forget the headaches and welcome a super simple way to find what you need!",
+    "howItWorksTitle": "Create Fashion The Easy Way",
+    "howItWorksSubtitle": "Watch your idea come to life in a few simple steps.",
+    "steps": {
+      "0": { "title": "Create Your Project", "desc": "Post a request for quotation to get in touch with manufacturers." },
+      "1": { "title": "Chat And Compare", "desc": "Negotiate in your own language using our real-time translated chat." },
+      "2": { "title": "Start Production", "desc": "Order your collection using our secure ordering and payment tools." }
+    },
+    "features": {
+      "0": { "title": "Trusted Manufacturers", "desc": "Get access to reliable manufacturers in Europe for your sustainable fashion project, significantly reducing your sourcing costs and simplifying the procurement process." },
+      "1": { "title": "Less Hassle, More Matches", "desc": "Upload your project and let qualified manufacturers come to you, saving time on endless searches and having the option to explore the network yourself." },
+      "2": { "title": "Guidance Built For You", "desc": "Receive personalized guidance from our team through the platform chat. Once inside, we'll be here to address your specific needs and help you bring your project to life." }
+    },
+    "ctaTitle": "Start An Effortless Journey Towards A More Conscious Fashion World",
+    "ctaExplore": "Explore Our Platform",
+    "ctaCall": "Book A Call"
+  },
+  "ForManufacturers": {
+    "heroTitle": "Find New Leads And Grow Your Business",
+    "heroSubtitle": "Get visible to brands across Europe.",
+    "joinNow": "Join Now",
+    "learnMore": "Learn More",
+    "platformTitle": "Europe's First Sustainable Sourcing Platform",
+    "platformText1": "You love creating quality products, not spending hours trying to land your next client. But between trade shows, unsolicited emails and social media chaos, it's easy to burn out before even closing a sale.",
+    "platformText2": "That's why we created ProjectHub, Europe's first sustainable sourcing platform. We connect you with a community of sustainable brands actively looking for partners like you so you can grow your business stress-free.",
+    "howItWorksTitle": "Create Fashion The Easy Way",
+    "howItWorksSubtitle": "Help your next client in a few simple steps.",
+    "steps": {
+      "0": { "title": "Find New Leads", "desc": "Receive updates on the latest RFQs in your production categories." },
+      "1": { "title": "Chat And Negotiate", "desc": "Negotiate in your own language using our real-time translated chat." },
+      "2": { "title": "Start Production", "desc": "Close a deal and start producing for your newly found lead." }
+    },
+    "features": {
+      "0": { "title": "Fair Pricing For Sustainability", "desc": "Sustainable manufacturing can't match the prices brands are used to in fast fashion. We're on a mission to educate brands about the true value of sustainable products to ensure you receive fair compensation for your commitment to sustainability." },
+      "1": { "title": "Available In Your Language", "desc": "Chat, negotiate and easily manage your clients on our platform, all in your preferred language. With our handy translation tools, communicating with clients across Europe is a breeze." },
+      "2": { "title": "Support Your Sustainable Business Growth", "desc": "We've got you covered! You can count on our expertise and support every step of the way. Whether it's finding the right leads or improving the sustainability of your business, we're here to help." }
+    },
+    "pricingTitle": "Pricing For Manufacturers",
+    "pricingSubtitle": "We offer packages for different production capacities.",
+    "viewComparison": "View Full Comparison",
+    "plans": {
+      "0": { "name": "BASIC", "price": "49", "desc": "Ideal for supply chain partners looking to get started." },
+      "1": { "name": "GROWTH", "price": "79", "desc": "The preferred option for established supply chain partners." },
+      "2": { "name": "PROFESSIONAL", "price": "99", "desc": "Unique experience designed for larger companies ready for new leads." }
+    },
+    "perMonth": "/mo",
+    "learnMorePlan": "Learn More",
+    "ctaTitle": "Ready To Get Started?",
+    "ctaSubtitle": "Create an account and dive into your next sustainable fashion adventure!",
+    "ctaButton": "Create An Account"
+  },
+  "Sustainability": {
+    "title": "Sustainability Policy",
+    "intro": "At ProjectHub, sustainability is not just a buzzword — it's at the core of everything we do. Our sustainability policy guides every decision we make and every partner we work with.",
+    "intro2": "We are committed to transforming the fashion industry towards a more responsible, ethical and environmentally friendly model.",
+    "pillarsTitle": "Our Sustainability Pillars",
+    "pillarsSubtitle": "These are the fundamental principles that guide our commitment to sustainability.",
+    "pillars": {
+      "0": { "title": "Ethical Production", "desc": "We work exclusively with manufacturers who meet ethical production standards, ensuring fair labor conditions." },
+      "1": { "title": "Circular Economy", "desc": "We promote circular economy practices, from design to end-of-life of the product." },
+      "2": { "title": "Footprint Reduction", "desc": "We encourage local production to reduce the carbon footprint of transportation." },
+      "3": { "title": "Sustainable Materials", "desc": "We incentivize the use of organic, recycled and low environmental impact materials." },
+      "4": { "title": "Total Transparency", "desc": "We demand transparency throughout the supply chain of our partners." },
+      "5": { "title": "Responsible Community", "desc": "We build a community of brands and manufacturers committed to change." }
+    },
+    "commitmentTitle": "Our Commitment",
+    "commitmentText": "We are committed to rigorously verifying every manufacturer on our platform, ensuring they meet our sustainability standards. We only work with partners who share our vision of a more responsible fashion industry.",
+    "commitmentButton": "Join Our Movement",
+    "ctaTitle": "Want To Learn More About Our Policy?",
+    "ctaContact": "Contact",
+    "ctaCreate": "Create Account"
+  },
+  "Login": {
+    "email": "Email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "forgotPassword": "Forgot your password?",
+    "rememberMe": "Remember me",
+    "signingIn": "Signing in...",
+    "signIn": "Sign in",
+    "signInGoogle": "Sign in with Google",
+    "noAccount": "Don't have an account?",
+    "createNow": "Create one now",
+    "needHelp": "Need help?",
+    "error": "An error occurred. Please try again.",
+    "hidePassword": "Hide password",
+    "showPassword": "Show password"
+  },
+  "Register": {
+    "accountType": "Account type",
+    "iAmBrand": "I am a brand",
+    "lookingForFactories": "Looking for factories",
+    "iAmManufacturer": "I am a manufacturer",
+    "offeringProduction": "Offering production",
+    "brandName": "Brand name",
+    "companyName": "Company name",
+    "email": "Email",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "iAgree": "I agree to",
+    "terms": "Terms and Conditions",
+    "and": "and",
+    "privacy": "Privacy Policy",
+    "creating": "Creating account...",
+    "create": "Create account",
+    "hasAccount": "Already have an account?",
+    "logIn": "Log in",
+    "error": "An error occurred. Please try again.",
+    "validation": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email format",
+      "firstNameRequired": "First name is required",
+      "lastNameRequired": "Last name is required",
+      "companyRequired": "Company name is required (min 2 characters)",
+      "passwordRequired": "Password is required",
+      "passwordLength": "Password must be at least 8 characters",
+      "passwordMismatch": "Passwords do not match",
+      "termsRequired": "You must accept terms and conditions"
+    }
+  },
+  "Sidebar": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "companies": "Companies",
+      "projectsRfq": "Projects (RFQ)",
+      "contracts": "Contracts",
+      "users": "Users",
+      "messages": "Messages",
+      "payments": "Payments",
+      "reviews": "Reviews",
+      "reports": "Reports",
+      "settings": "Settings",
+      "home": "Home",
+      "myProjects": "My Projects",
+      "myContracts": "My Contracts",
+      "manufacturers": "Manufacturers",
+      "myCompany": "My Company",
+      "help": "Help",
+      "opportunities": "Opportunities",
+      "myProposals": "My Proposals",
+      "myProfile": "My Profile",
+      "companyDetails": "Company Details",
+      "capabilities": "Capabilities",
+      "certifications": "Certifications",
+      "greenScore": "Green Score"
+    },
+    "closeMenu": "Close menu",
+    "collapseMenu": "Collapse menu",
+    "searchPlaceholder": "Search...",
+    "roleAdmin": "Administrator",
+    "roleManufacturer": "Manufacturer",
+    "roleBrand": "Brand",
+    "ctaAdmin": "View Projects",
+    "ctaBrand": "Publish Project",
+    "ctaManufacturer": "View Opportunities",
+    "ctaAdminAria": "View projects",
+    "ctaBrandAria": "Publish project",
+    "ctaManufacturerAria": "View opportunities"
+  },
+  "DashboardHeader": {
+    "dashboard": "Dashboard",
+    "segmentLabels": {
+      "companies": "Companies",
+      "rfq": "Projects (RFQ)",
+      "projects": "My Projects",
+      "contracts": "Contracts",
+      "opportunities": "Opportunities",
+      "proposals": "Proposals",
+      "company": "My Company",
+      "capabilities": "Capabilities",
+      "certifications": "Certifications",
+      "manufacturers": "Manufacturers",
+      "users": "Users",
+      "messages": "Messages",
+      "payments": "Payments",
+      "reviews": "Reviews",
+      "reports": "Reports",
+      "settings": "Settings",
+      "help": "Help",
+      "new": "New",
+      "green-score": "Green Score"
+    },
+    "notificationsTitle": "Notifications",
+    "notifications": {
+      "0": { "title": "Your cleaning booking was confirmed", "time": "5 min ago" },
+      "1": { "title": "Carlos M. is on the way to your address", "time": "1 hour ago" },
+      "2": { "title": "A new professional is available in your area", "time": "2 hours ago" },
+      "3": { "title": "Rate your gardening service", "time": "3 hours ago" }
+    },
+    "ariaOpenMenu": "Open or close sidebar menu",
+    "ariaThemeDark": "Switch to dark mode",
+    "ariaThemeLight": "Switch to light mode",
+    "ariaNotifications": "Open notifications",
+    "viewAllNotifications": "View all notifications",
+    "roleAdmin": "Administrator",
+    "roleManufacturer": "Manufacturer",
+    "roleBrand": "Brand",
+    "profileSettings": "Settings",
+    "signOut": "Sign out"
+  },
+  "Companies": {
+    "title": "Companies",
+    "subtitle": "Management of registered brands and manufacturers",
+    "searchPlaceholder": "Search by name or city...",
+    "filterAll": "All",
+    "filterBrands": "Brands",
+    "filterManufacturers": "Manufacturers",
+    "total": "Total",
+    "brands": "Brands",
+    "manufacturers": "Manufacturers",
+    "empty": "No companies found",
+    "employeesSuffix": "employees",
+    "foundedPrefix": "Founded in",
+    "typeBrand": "Brand",
+    "typeManufacturer": "Manufacturer"
+  },
+  "DashboardLayout": {
+    "loading": "Loading dashboard...",
+    "closeSidebar": "Close sidebar"
+  },
+  "DashboardHome": {
+    "status": {
+      "draft": "Draft",
+      "open": "Open",
+      "evaluating": "Evaluating",
+      "awarded": "Awarded",
+      "cancelled": "Cancelled",
+      "expired": "Expired"
+    },
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
+    "subtitle": {
+      "admin": "Here's a summary of FASHIONS DEN activity.",
+      "brand": "What fashion project do you need to produce today?",
+      "manufacturer": "Check available opportunities."
+    },
+    "button": {
+      "createProject": "Create Project",
+      "viewOpportunities": "View Opportunities",
+      "viewProjects": "View Projects"
+    },
+    "section": {
+      "recentProjects": "Recent Projects",
+      "myProjects": "My Projects",
+      "recentOpportunities": "Recent Opportunities",
+      "quickActions": "Quick Actions"
+    },
+    "viewAll": "View all",
+    "noProjects": "No projects yet.",
+    "proposals": "proposals",
+    "units": "units",
+    "quick": {
+      "newProject": "New Project",
+      "exploreManufacturers": "Explore Manufacturers",
+      "myContracts": "My Contracts",
+      "viewCompanies": "View Companies",
+      "manageProjects": "Manage Projects",
+      "viewContracts": "View Contracts",
+      "viewOpportunities": "View Opportunities",
+      "myProposals": "My Proposals",
+      "myProfile": "My Profile"
+    }
+  },
+  "AdminDashboard": {
+    "title": "Administration Panel",
+    "welcome": "Welcome, {name} - Administrator access",
+    "role": "Administrator",
+    "stats": {
+      "totalUsers": "Total users",
+      "activeProjects": "Active projects",
+      "monthlyRevenue": "Monthly revenue",
+      "openTickets": "Open tickets"
+    },
+    "vsPrevMonth": "vs previous month",
+    "recentUsers": "Recent users",
+    "viewAll": "View all",
+    "table": {
+      "user": "User",
+      "email": "Email",
+      "registered": "Registered",
+      "status": "Status"
+    },
+    "statusActive": "Active",
+    "statusPending": "Pending",
+    "systemStatus": "System status",
+    "adminActions": "Admin actions",
+    "actions": {
+      "manageUsers": "Manage users",
+      "database": "Database",
+      "analytics": "Analytics",
+      "systemLogs": "System logs",
+      "settings": "Settings"
+    }
+  },
+  "UserDashboard": {
+    "welcome": "Welcome, {name}!",
+    "subtitle": "User panel - Manage your projects and activities here",
+    "stats": {
+      "activeProjects": "Active projects",
+      "newMessages": "New messages",
+      "pendingTasks": "Pending tasks",
+      "notifications": "Notifications"
+    },
+    "recentActivity": "Recent activity",
+    "quickActions": "Quick actions",
+    "actions": {
+      "createProject": "Create new project",
+      "sendMessage": "Send message",
+      "viewReports": "View reports",
+      "settings": "Settings"
+    }
+  },
+  "MessagesPanel": {
+    "header": {
+      "title": "Chats",
+      "newButton": "New"
+    },
+    "tabs": {
+      "active": "Active ({count})",
+      "pending": "Pending ({count})"
+    },
+    "search": {
+      "placeholder": "Search or start a new chat",
+      "back": "Back",
+      "hintAdmin": "Search any company to start a direct chat",
+      "hintBrand": "Search a manufacturer to start a chat",
+      "hintManufacturer": "Search a brand to start a chat",
+      "inputAdmin": "Search brands or manufacturers...",
+      "inputBrand": "Search manufacturers...",
+      "inputManufacturer": "Search brands...",
+      "noResults": "No results"
+    },
+    "companyType": {
+      "manufacturer": "Manufacturer",
+      "brand": "Brand"
+    },
+    "defaults": {
+      "location": "Colombia",
+      "conversation": "Conversation",
+      "company": "Company",
+      "admin": "Administrator",
+      "b2b": "B2B"
+    },
+    "list": {
+      "emptyPending": "No pending requests",
+      "emptyActive": "No active conversations",
+      "requestReceived": "Request received",
+      "waitingAcceptance": "Waiting for acceptance"
+    },
+    "newChat": {
+      "titleAdmin": "New direct chat",
+      "titleUser": "New chat request",
+      "infoAdmin": "The chat will open directly.",
+      "infoUser": "They must accept your request before you can chat.",
+      "rfqLabelBrand": "Project to offer",
+      "rfqLabelManufacturer": "Project of interest",
+      "loadingProjects": "Loading projects...",
+      "noProjectsBrand": "You have no active projects to offer.",
+      "noProjectsManufacturer": "The brand has no active projects for contact.",
+      "subjectLabel": "Subject",
+      "subjectPlaceholder": "E.g.: Production inquiry, Quote...",
+      "messageLabel": "Initial message (optional)",
+      "messagePlaceholder": "Tell them why you want to contact them...",
+      "submitAdmin": "Start chat",
+      "submitUser": "Send request",
+      "selectProject": "Select a project to start the contact."
+    },
+    "searchEmpty": {
+      "title": "Search a company",
+      "subtitleAdmin": "Use the search bar on the left to find companies",
+      "subtitleBrand": "Use the search bar on the left to find manufacturers",
+      "subtitleManufacturer": "Use the search bar on the left to find brands"
+    },
+    "pending": {
+      "headerStatus": "Pending request",
+      "incomingTitle": "Request from {name}",
+      "subjectLabel": "Subject:",
+      "acceptPrompt": "Do you want to accept this chat request?",
+      "reject": "Reject",
+      "accept": "Accept",
+      "sentTitle": "Request sent",
+      "waitingMessage": "Waiting for {name} to accept your request."
+    },
+    "chat": {
+      "noMessages": "No messages yet. Write the first one.",
+      "inputPlaceholder": "Type a message"
+    },
+    "emptyState": {
+      "title": "HubB Messages",
+      "line1": "Send and receive messages with brands and manufacturers.",
+      "line2": "Select a conversation or start a new chat."
+    },
+    "closed": {
+      "title": "Conversation closed",
+      "subtitle": "This conversation is no longer active"
+    },
+    "errors": {
+      "createFailed": "Could not create the chat.",
+      "networkError": "Network error creating the request."
+    }
+  },
+  "Addresses": {
+    "title": "My Addresses",
+    "subtitle": "Manage your shipping and delivery addresses",
+    "addButton": "Add Address",
+    "deleteConfirm": "You are about to delete the address \"{label}\". This action cannot be undone.\n\nDo you want to continue?",
+    "form": {
+      "newTitle": "New Address",
+      "label": "Label",
+      "labelPlaceholder": "E.g.: Workshop, Office, Home",
+      "addressLine1": "Main Address",
+      "addressLine1Placeholder": "Street, Road, Avenue...",
+      "complement": "Additional Info",
+      "complementPlaceholder": "Apt, Tower, Floor (optional)",
+      "city": "City",
+      "cityPlaceholder": "Bogotá",
+      "state": "State/Province",
+      "statePlaceholder": "Cundinamarca",
+      "postalCode": "Postal Code",
+      "postalCodePlaceholder": "110221",
+      "cancel": "Cancel",
+      "save": "Save Address"
+    },
+    "defaultBadge": "Default",
+    "postalCodeLabel": "PC: {code}",
+    "edit": "Edit",
+    "setDefault": "Set as Default",
+    "deleteAriaLabel": "Delete address {label}"
+  },
+  "Contracts": {
+    "title": "My Contracts",
+    "subtitle": "Production and payment tracking",
+    "empty": "You don't have any contracts yet",
+    "milestones": "{completed}/{total} milestones",
+    "status": {
+      "active": "Active",
+      "completed": "Completed",
+      "disputed": "Disputed",
+      "cancelled": "Cancelled"
+    }
+  },
+  "ContractDetail": {
+    "notFound": "Contract not found",
+    "back": "Go back",
+    "totalValue": "Total value",
+    "paid": "Paid",
+    "progress": "Progress",
+    "milestonesTitle": "Production Milestones",
+    "percentOfTotal": "{pct}% of total",
+    "dueDate": "Due: {date}",
+    "completedDate": "Completed: {date}",
+    "startMilestone": "Start milestone",
+    "markCompleted": "Mark as completed",
+    "registerPayment": "Register payment",
+    "completedMessage": "This contract has been completed successfully",
+    "status": {
+      "active": "Active",
+      "completed": "Completed",
+      "disputed": "Disputed",
+      "cancelled": "Cancelled"
+    },
+    "paymentStatus": {
+      "pending": "Payment pending",
+      "invoiced": "Invoiced",
+      "paid": "Paid"
+    }
+  },
+  "GreenScore": {
+    "title": "Green Score",
+    "subtitle": "Your Green Score reflects your commitment to sustainability",
+    "scoreLabel": {
+      "excellent": "Excellent",
+      "good": "Good",
+      "needsImprovement": "Needs improvement",
+      "noData": "No data"
+    },
+    "averageOfProposals": "Average of {count} proposal(s) submitted",
+    "breakdown": {
+      "proximity": "Proximity",
+      "materials": "Materials",
+      "certifications": "Certifications",
+      "history": "Track Record"
+    },
+    "maxPoints": "max. {max} pts",
+    "certificationsTitle": "Certifications ({count})",
+    "noCertifications": "You have no registered certifications",
+    "expires": "Expires: {date}",
+    "howToImprove": "How to improve your score",
+    "tips": {
+      "certifications": "Get certifications like GOTS or OEKO-TEX to earn up to +30 points",
+      "materials": "Use recycled materials in your proposals to improve the materials score",
+      "proximity": "Proximity to the brand adds points automatically (up to 30pts)",
+      "ratings": "Maintain good customer ratings to earn up to 10pts"
+    }
+  },
+  "Help": {
+    "title": "How can we help you?",
+    "subtitle": "Search our FAQ or contact us",
+    "searchPlaceholder": "Search frequently asked questions...",
+    "allCategories": "All",
+    "categories": {
+      "reservations": "Bookings",
+      "payments": "Payments",
+      "security": "Security",
+      "account": "Account"
+    },
+    "faq": {
+      "0": {
+        "question": "How can I make a booking?",
+        "answer": "Go to the 'Search Services' section, select the one you need, choose the date and time, and confirm your booking. You will receive a confirmation email."
+      },
+      "1": {
+        "question": "Can I cancel my booking?",
+        "answer": "Yes, you can cancel up to 4 hours before the service at no cost. Later cancellations may incur a 30% charge of the service value."
+      },
+      "2": {
+        "question": "What happens if the professional doesn't show up?",
+        "answer": "In case of a professional no-show, we will contact you immediately to assign another professional or reschedule at no additional cost. You will also receive a discount on your next service."
+      },
+      "3": {
+        "question": "What payment methods do you accept?",
+        "answer": "We accept cash, credit/debit card, bank transfer, Nequi, and Daviplata. Payment is made once the service is completed."
+      },
+      "4": {
+        "question": "How do I apply a discount code?",
+        "answer": "When confirming your booking, you will find a field to enter your promo code. The discount will be automatically applied to the total."
+      },
+      "5": {
+        "question": "Are the professionals verified?",
+        "answer": "All our professionals go through a verification process that includes identity validation, background checks, and professional certifications. Only verified professionals appear on the platform."
+      },
+      "6": {
+        "question": "Is there a service guarantee?",
+        "answer": "Yes, all services come with a satisfaction guarantee. If you are not satisfied, you can request a free review within 48 hours of the service."
+      },
+      "7": {
+        "question": "How do I change my password?",
+        "answer": "Go to Settings > Security and you can change your password. You will need to enter your current password and the new password twice to confirm."
+      }
+    },
+    "contactTitle": "Didn't find what you were looking for?",
+    "contactSubtitle": "Our team is available to help you",
+    "chatLive": "Live Chat",
+    "chatDescription": "Instant response",
+    "email": "Email",
+    "emailAddress": "soporte@fashionsden.com",
+    "phone": "Phone",
+    "phoneNumber": "+57 601 555 0000"
+  },
+  "Opportunities": {
+    "title": "Opportunities",
+    "subtitle": "Open projects where you can submit your proposal",
+    "searchPlaceholder": "Search by title or category...",
+    "noResults": "No results",
+    "noOpportunities": "No opportunities available",
+    "sustainable": "Sustainable",
+    "propose": "Propose",
+    "units": "{count} units",
+    "delivery": "Delivery: {date}",
+    "daysLeft": "{count} days to propose",
+    "deadlinePassed": "Deadline passed",
+    "proposals": "{count} proposals"
+  },
+  "OpportunityDetail": {
+    "validationError": "Unit price and lead time are required",
+    "submitError": "Error sending proposal",
+    "connectionError": "Connection error",
+    "notFound": "Project not found",
+    "back": "Back",
+    "submitted": {
+      "title": "Proposal sent!",
+      "description": "Your proposal has been received. We will notify you when the brand responds.",
+      "viewProposals": "View my proposals"
+    },
+    "contactSubject": "Interest in project {code}",
+    "contactMessage": "Hello, we are interested in supporting project {code} ({title}).",
+    "sustainablePriority": "🌿 Sustainable priority",
+    "units": "{count} units",
+    "delivery": "Delivery: {date}",
+    "preferredMaterials": "Preferred materials:",
+    "requiresSample": "⚠️ Requires prior sample",
+    "specifiedMaterials": "Specified materials:",
+    "recycled": "{percentage}% recycled",
+    "contactBrand": "Contact brand about this project",
+    "proposalTitle": "Your Proposal",
+    "unitPriceLabel": "Unit price (COP) *",
+    "total": "Total: {amount}",
+    "leadTimeLabel": "Lead time (days) *",
+    "proposedMaterialsLabel": "Proposed materials",
+    "proposedMaterialsPlaceholder": "E.g.: GOTS organic cotton 180g",
+    "recycledPercentageLabel": "Recycled material percentage (%)",
+    "recycledPercentageHint": "Higher percentage improves your Green Score",
+    "notesLabel": "Additional notes",
+    "notesPlaceholder": "Include details about your capacity, experience, etc.",
+    "submitting": "Sending...",
+    "submitProposal": "Submit Proposal"
+  },
+  "Payments": {
+    "title": "Payments",
+    "subtitle": "Payment management and tracking",
+    "totalRevenue": "Total Revenue",
+    "pending": "Pending",
+    "transactions": "Transactions",
+    "successRate": "Success Rate",
+    "searchPlaceholder": "Search by code, client or service...",
+    "allFilter": "All",
+    "status": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "failed": "Failed",
+      "refunded": "Refunded"
+    },
+    "table": {
+      "code": "Code",
+      "client": "Client",
+      "service": "Service",
+      "amount": "Amount",
+      "method": "Method",
+      "status": "Status",
+      "date": "Date"
+    },
+    "emptyNoPayments": "No payments recorded yet.",
+    "emptyNoResults": "No payments found with those filters.",
+    "emptyHint": "Transactions will appear here when recorded.",
+    "filterHint": "Try clearing the search or changing the status.",
+    "clearFilters": "Clear filters"
+  },
+  "Projects": {
+    "title": "My Projects",
+    "subtitle": "Publish projects and receive proposals from manufacturers",
+    "newProject": "Publish Project",
+    "firstProject": "Publish your first project",
+    "emptyState": "You don't have any projects yet",
+    "sustainable": "🌿 Sustainable",
+    "units": "{quantity} units",
+    "delivery": "📅 Delivery: {date}",
+    "proposals": "proposals",
+    "status": {
+      "draft": "Draft",
+      "open": "Open",
+      "evaluating": "Evaluating",
+      "awarded": "Awarded",
+      "cancelled": "Cancelled",
+      "expired": "Expired"
+    },
+    "filters": {
+      "all": "All",
+      "open": "Open",
+      "evaluating": "Evaluating",
+      "awarded": "Awarded",
+      "draft": "Drafts"
+    }
+  },
+  "ProjectNew": {
+    "title": "Publish New Project",
+    "subtitle": "Describe your needs and receive proposals from manufacturers",
+    "requiredFieldsError": "Complete the required fields",
+    "createError": "Error creating project",
+    "connectionError": "Connection error",
+    "fields": {
+      "title": "Project title *",
+      "category": "Category *",
+      "quantity": "Quantity (units) *",
+      "description": "Detailed description *",
+      "budgetMin": "Minimum budget (COP)",
+      "budgetMax": "Maximum budget (COP)",
+      "deadline": "Delivery deadline",
+      "proposalsDeadline": "Proposals deadline",
+      "preferredMaterials": "Preferred materials",
+      "materialsSpec": "Material specifications"
+    },
+    "placeholders": {
+      "title": "E.g.: Production of 500 streetwear t-shirts",
+      "select": "Select...",
+      "quantity": "500",
+      "description": "Describe materials, sizes, colors, finishes...",
+      "budgetMin": "5000000",
+      "budgetMax": "10000000",
+      "materials": "E.g.: Organic cotton 180g",
+      "materialType": "Type (e.g.: Cotton)",
+      "composition": "Composition",
+      "recycledPercent": "% recycled"
+    },
+    "addMaterial": "+ Add material",
+    "requiresSample": "Requires prior sample",
+    "sustainabilityPriority": "🌿 Prioritize sustainability",
+    "cancel": "Cancel",
+    "submitting": "Publishing...",
+    "submit": "Publish Project"
+  },
+  "ProjectDetail": {
+    "notFound": "Project not found",
+    "back": "Back",
+    "sustainable": "🌿 Sustainable",
+    "quantity": "Quantity",
+    "units": "{quantity} units",
+    "budget": "Budget",
+    "notSpecified": "Not specified",
+    "deadline": "Deadline",
+    "noDeadline": "No deadline",
+    "proposalsLabel": "Proposals",
+    "received": "{count} received",
+    "description": "Description",
+    "preferredMaterials": "Preferred materials:",
+    "requiresSample": "⚠️ Requires prior approved sample",
+    "specifiedMaterials": "Specified materials",
+    "recycled": "{percentage}% recycled",
+    "proposalsTitle": "Proposals ({count})",
+    "noProposals": "No proposals received for this project yet",
+    "unitPrice": "Unit price",
+    "totalPrice": "Total price",
+    "leadTime": "Lead time",
+    "days": "{days} days",
+    "certifications": "Certifications",
+    "materials": "Materials:",
+    "recycledPercent": "({percentage}% recycled)",
+    "notes": "Notes:",
+    "contactManufacturer": "Contact manufacturer",
+    "shortlist": "Shortlist",
+    "accept": "Accept",
+    "reject": "Reject",
+    "award": "Award",
+    "messageSubject": "Project {code}: initial conversation",
+    "messageBody": "Hello {name}, I'd like to discuss your proposal for project {code}.",
+    "status": {
+      "draft": "Draft",
+      "open": "Open",
+      "evaluating": "Evaluating",
+      "awarded": "Awarded",
+      "cancelled": "Cancelled"
+    },
+    "proposalStatus": {
+      "submitted": "Submitted",
+      "shortlisted": "Shortlisted",
+      "accepted": "Accepted",
+      "rejected": "Rejected"
+    }
+  },
+  "Proposals": {
+    "title": "My Proposals",
+    "subtitle": "Track your submitted proposals",
+    "offersTitle": "Base offer for brands (bidirectional flow)",
+    "offersDescription": "Publish your capabilities, lead times and base prices so brands can find and select you.",
+    "manageOffer": "Manage my offer",
+    "loadingCapabilities": "Loading capabilities...",
+    "noCapabilities": "You don't have registered capabilities yet. Complete your offer to appear better in the manufacturers directory.",
+    "fromPrice": "from {price}",
+    "moreCapabilities": "+{count} capabilities",
+    "days": "{days} days",
+    "submitted": "Submitted: {date}",
+    "noProposals": "You have no proposals",
+    "noProposalsFiltered": "with this status",
+    "noProposalsYet": "yet",
+    "status": {
+      "pending": "Pending",
+      "shortlisted": "Shortlisted",
+      "accepted": "Accepted",
+      "rejected": "Rejected"
+    },
+    "tabs": {
+      "all": "All",
+      "pending": "Pending",
+      "shortlisted": "Shortlisted",
+      "accepted": "Accepted",
+      "rejected": "Rejected"
+    }
+  },
+  "RFQ": {
+    "title": "Projects (RFQ)",
+    "subtitle": "All platform quotation requests",
+    "searchPlaceholder": "Search by title, code or brand...",
+    "allStatuses": "All statuses",
+    "noResults": "No projects found",
+    "budget": "Budget",
+    "proposals": "Proposals",
+    "eco": "Eco",
+    "units": "{quantity} units",
+    "statsTotal": "Total",
+    "statsOpen": "Open",
+    "statsEvaluating": "Evaluating",
+    "statsAwarded": "Awarded",
+    "status": {
+      "draft": "Draft",
+      "open": "Open",
+      "evaluating": "Evaluating",
+      "awarded": "Awarded",
+      "cancelled": "Cancelled",
+      "expired": "Expired"
+    },
+    "statusFilter": {
+      "draft": "Draft",
+      "open": "Open",
+      "evaluating": "Evaluating",
+      "awarded": "Awarded",
+      "cancelled": "Cancelled",
+      "expired": "Expired"
+    }
+  },
+  "Company": {
+    "noCompany": "No associated company",
+    "noCompanyDesc": "Your account is not linked to any company yet.",
+    "title": "My Company",
+    "manufacturerProfile": "Manufacturer profile",
+    "brandProfile": "Brand profile",
+    "name": "Name",
+    "legalId": "Tax ID",
+    "description": "Description",
+    "phone": "Phone",
+    "website": "Website",
+    "location": "Location",
+    "address": "Address",
+    "city": "City",
+    "state": "State / Province",
+    "country": "Country",
+    "employees": "Employees",
+    "select": "Select",
+    "foundedYear": "Founded year",
+    "saveChanges": "Save changes",
+    "saved": "Saved"
+  },
+  "Certifications": {
+    "title": "Certifications",
+    "subtitle": "Sustainability and quality certifications",
+    "add": "Add",
+    "newCertification": "New certification",
+    "nameLabel": "Name *",
+    "namePlaceholder": "E.g.: GOTS, OEKO-TEX",
+    "issuedBy": "Issued by",
+    "issuedByPlaceholder": "Certifying body",
+    "issuedAt": "Issue date",
+    "expiresAt": "Expiration date",
+    "save": "Save",
+    "cancel": "Cancel",
+    "empty": "You have no certifications registered",
+    "emptyHint": "Certifications improve your green score",
+    "verified": "Verified",
+    "expired": "Expired",
+    "by": "By: {issuer}",
+    "from": "From: {date}",
+    "until": "Until: {date}"
+  },
+  "Capabilities": {
+    "title": "Capabilities",
+    "subtitle": "Production categories you offer",
+    "add": "Add",
+    "newCapability": "New capability",
+    "category": "Category",
+    "selectCategory": "Select category",
+    "moqLabel": "MOQ (minimum)",
+    "monthlyCapacity": "Monthly capacity",
+    "monthlyCapacityPlaceholder": "Units/month",
+    "leadTime": "Lead time (days)",
+    "unitPrice": "Price from per garment (COP)",
+    "unitPricePlaceholder": "E.g.: 18500",
+    "wholesalePrice": "Wholesale price from (COP)",
+    "wholesalePricePlaceholder": "E.g.: 16000",
+    "description": "Description",
+    "descriptionPlaceholder": "Detail what you can produce...",
+    "commercialNotes": "Commercial notes",
+    "commercialNotesPlaceholder": "E.g.: wholesale price applies from 1,000 units, includes packaging, etc.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "empty": "You have no capabilities registered",
+    "emptyHint": "Add the production categories you offer",
+    "moq": "MOQ: {qty} units",
+    "capacity": "Capacity: {qty} units/month",
+    "delivery": "Delivery: {days} days",
+    "priceFrom": "From {price} / garment",
+    "wholesaleFrom": "Wholesale from {price}"
+  },
+  "Manufacturers": {
+    "title": "Manufacturer directory",
+    "subtitle": "Explore companies, filter by key criteria and start a chat with one click.",
+    "brandOnlyBanner": "This view is designed for brands. You can browse the directory, but the main contact flow is optimized for brand accounts.",
+    "filters": "Filters",
+    "updating": "Updating results...",
+    "searchPlaceholder": "Search by name, description or location",
+    "cityPlaceholder": "City",
+    "allCategories": "All categories",
+    "clearFilters": "Clear filters",
+    "onlyVerified": "Verified only",
+    "withCertifications": "With active certifications",
+    "errorLoading": "Could not load manufacturers",
+    "networkError": "Network error loading manufacturers",
+    "noResults": "No manufacturers found with those filters.",
+    "locationNA": "Location not available",
+    "awarded": "{count} awarded",
+    "noDescription": "No public description.",
+    "certifications": "{count} certifications",
+    "verifiedCertifications": "{count} verified certifications",
+    "founded": "Founded in {year}",
+    "team": "Team {size}",
+    "hideOffer": "Hide technical offer",
+    "showOffer": "View technical & commercial offer",
+    "loadingOffer": "Loading offer...",
+    "noCapabilities": "This manufacturer has not published detailed capabilities yet.",
+    "offerMoq": "MOQ {qty}",
+    "offerCapacity": "Capacity {qty}/month",
+    "offerDelivery": "Delivery {days} days",
+    "offerPriceFrom": "From {price} per garment",
+    "offerWholesaleFrom": "Wholesale from {price}",
+    "contactChat": "Contact via chat",
+    "contactBrandOnly": "Contact available for brand accounts",
+    "chatSubject": "Explore collaboration with {name}",
+    "chatMessage": "Hello {name}, we are interested in exploring a collaboration for our active projects.",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {page} of {total}",
+    "tip": "Tip: when starting a chat, in Messages you can choose the active project you want to offer the manufacturer to keep the contact context."
+  },
+  "Reports": {
+    "title": "Reports",
+    "subtitle": "Analytics and platform metrics",
+    "monthlyOrders": "Monthly Orders",
+    "monthlyRevenue": "Monthly Revenue",
+    "newClients": "New Clients",
+    "avgRating": "Average Rating",
+    "monthlyOrdersChart": "Monthly Orders",
+    "topServices": "Most Requested Services",
+    "topSpecialists": "Top Specialists",
+    "orders": "{count} orders",
+    "jobs": "{count} jobs"
+  },
+  "Reviews": {
+    "titleAdmin": "Reviews",
+    "titleUser": "My Reviews",
+    "subtitleAdmin": "All platform reviews",
+    "subtitleUser": "Reviews you have left",
+    "reviewCount": "{count} reviews",
+    "searchPlaceholder": "Search reviews...",
+    "all": "All",
+    "emptyNoReviews": "No reviews registered yet.",
+    "emptyFiltered": "No reviews found with those filters.",
+    "emptyNoReviewsHint": "When your clients leave comments they will appear here.",
+    "emptyFilteredHint": "Adjust the search or star filter.",
+    "clearFilters": "Clear filters",
+    "specialist": "Specialist: {name}",
+    "useful": "Useful",
+    "reply": "Reply",
+    "private": "Private"
+  },
+  "Settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account and preferences",
+    "tabProfile": "My Profile",
+    "tabSecurity": "Security",
+    "tabNotifications": "Notifications",
+    "roleAdmin": "Administrator",
+    "roleClient": "Client",
+    "firstName": "First name",
+    "firstNamePlaceholder": "Your first name",
+    "lastName": "Last name",
+    "lastNamePlaceholder": "Your last name",
+    "email": "Email",
+    "emailPlaceholder": "you@email.com",
+    "phone": "Phone",
+    "phonePlaceholder": "+1 555 000 0000",
+    "profileSaved": "Changes saved.",
+    "saving": "Saving...",
+    "saveChanges": "Save Changes",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Minimum 8 characters",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Repeat the password",
+    "updatePassword": "Update Password",
+    "notificationPreferences": "Notification Preferences",
+    "emailSection": "Email",
+    "notifBookings": "Booking updates",
+    "notifBookingsDesc": "Status of your bookings and confirmations",
+    "notifMessages": "New messages",
+    "notifMessagesDesc": "When you receive a message from a professional",
+    "notifPromos": "Promotions and offers",
+    "notifPromosDesc": "Discounts and special offers",
+    "pushSection": "Push Notifications",
+    "pushBookings": "Real-time bookings",
+    "pushBookingsDesc": "Immediate alerts about your bookings",
+    "pushMessages": "Instant messages",
+    "pushMessagesDesc": "Real-time chat notifications",
+    "pushPromos": "Flash offers",
+    "pushPromosDesc": "Limited-time promotions",
+    "notificationsSaved": "Preferences saved.",
+    "savePreferences": "Save Preferences"
+  },
+  "Users": {
+    "title": "Client Management",
+    "registeredClients": "{count} registered clients",
+    "searchPlaceholder": "Search by name or email...",
+    "filterAll": "All",
+    "filterAdmins": "Admins",
+    "filterClients": "Clients",
+    "colUser": "User",
+    "colContact": "Contact",
+    "colRole": "Role",
+    "colOrders": "Orders",
+    "colStatus": "Status",
+    "colRegistration": "Registration",
+    "colActions": "Actions",
+    "role": {
+      "admin": "Admin",
+      "client": "Client"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "cannotModifySelf": "You cannot modify your own user",
+    "deactivateUser": "Deactivate user",
+    "activateUser": "Activate user",
+    "alreadyAdmin": "Already an admin",
+    "grantAdmin": "Grant admin permissions",
+    "cannotDeleteAdmin": "Cannot delete an admin",
+    "deleteUser": "Delete user",
+    "cannotChangeAdminPassword": "You cannot change an admin's password",
+    "changePassword": "Change password",
+    "modalUserLabel": "User",
+    "newPasswordPlaceholder": "New password (minimum 6 characters)",
+    "confirmPasswordPlaceholder": "Confirm new password",
+    "cancel": "Cancel",
+    "save": "Save",
+    "passwordMinLength": "Password must be at least 6 characters.",
+    "passwordsMismatch": "Passwords do not match.",
+    "passwordChangeFailed": "Could not change the password.",
+    "passwordUpdated": "Password updated for {name}.",
+    "networkError": "Network error.",
+    "loadUsersFailed": "Could not load the user list.",
+    "confirmDelete": "Are you sure you want to delete {name}? This action cannot be undone.",
+    "actionFailed": "Could not complete the action.",
+    "actionSuccess": "Action applied successfully.",
+    "actionError": "An error occurred while executing the action."
+  },
+  "Metadata": {
+    "title": "FASHIONS DEN - Fashion design and production",
+    "description": "FASHIONS DEN is your platform for professional fashion design: sketches, tech packs, digital pattern making, samples and production."
+  }
+}

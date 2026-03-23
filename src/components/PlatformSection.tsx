@@ -1,74 +1,82 @@
 "use client";
 
-import { FileText, Factory, PackageCheck, Truck } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { FileText, Search, ClipboardCheck, Truck } from "lucide-react";
+import { useTranslations } from "next-intl";
 
-const copy = {
-  es: {
-    title: "Como funciona la plataforma?",
-    subtitle:
-      "Un flujo simple para pasar de idea a producción sin perder control de tiempos, calidad y comunicación.",
-    steps: [
-      ["Carga tu diseño", "Sube tech pack, materiales y referencias de estilo para que los manufacturers coticen con precisión."],
-      ["Selecciona fabricante", "Compara capacidades, MOQ, tiempos y certificaciones para elegir el partner ideal de producción."],
-      ["Aprueba muestra y orden", "Valida prototipos, negocia ajustes y confirma la orden con hitos claros de pago y entrega."],
-      ["Monitorea la producción", "Sigue estado, incidencias y fechas de despacho en un tablero compartido entre brand y fábrica."],
-    ],
+const icons = [FileText, Search, ClipboardCheck, Truck];
+const stepColors = [
+  {
+    badge: "bg-[#d8f4ee]",
+    line: "bg-[#e9dfd8]",
+    badgeText: "text-teal-700",
+    iconBg: "bg-white/80",
+    iconColor: "text-teal-600",
+    cardBg: "bg-gradient-to-b from-[#eefaf7] via-[#f9fcfb] to-white",
   },
-  en: {
-    title: "How does the platform work?",
-    subtitle: "A simple flow to move from idea to production with full control over timing, quality and communication.",
-    steps: [
-      ["Upload your design", "Upload tech pack, materials and style references so manufacturers can quote accurately."],
-      ["Select manufacturer", "Compare capabilities, MOQ, lead times and certifications to choose the right production partner."],
-      ["Approve sample and order", "Validate prototypes, negotiate adjustments and confirm the order with clear payment and delivery milestones."],
-      ["Track production", "Follow status, incidents and shipping dates in a shared board for brand and factory."],
-    ],
+  {
+    badge: "bg-[#ece3ff]",
+    line: "bg-[#e9dfd8]",
+    badgeText: "text-violet-700",
+    iconBg: "bg-white/80",
+    iconColor: "text-violet-600",
+    cardBg: "bg-gradient-to-b from-[#f5f1ff] via-[#fbfaff] to-white",
   },
-  fr: {
-    title: "Comment fonctionne la plateforme ?",
-    subtitle: "Un flux simple pour passer de l'idee a la production, sans perdre le controle des delais, de la qualite et de la communication.",
-    steps: [
-      ["Chargez votre design", "Ajoutez tech pack, materiaux et references de style pour des devis precis des fabricants."],
-      ["Selectionnez un fabricant", "Comparez capacites, MOQ, delais et certifications pour choisir le bon partenaire."],
-      ["Validez echantillon et commande", "Validez les prototypes, negociez les ajustements et confirmez la commande avec des jalons clairs."],
-      ["Suivez la production", "Suivez statut, incidents et dates d'expedition dans un tableau partage entre marque et usine."],
-    ],
+  {
+    badge: "bg-[#ffdce9]",
+    line: "bg-[#e9dfd8]",
+    badgeText: "text-pink-700",
+    iconBg: "bg-white/80",
+    iconColor: "text-pink-600",
+    cardBg: "bg-gradient-to-b from-[#fff2f7] via-[#fffafc] to-white",
   },
-};
-
-const icons = [FileText, Factory, PackageCheck, Truck];
+  {
+    badge: "bg-[#d8f4ea]",
+    line: "bg-[#e9dfd8]",
+    badgeText: "text-emerald-700",
+    iconBg: "bg-white/80",
+    iconColor: "text-emerald-600",
+    cardBg: "bg-gradient-to-b from-[#eefaf4] via-[#fbfdfc] to-white",
+  },
+];
 
 export default function PlatformSection() {
-  const { language } = useLanguage();
-  const t = copy[language];
+  const t = useTranslations("Platform");
 
   return (
-    <section id="como-funciona" className="py-20 bg-white">
+    <section id="como-funciona" className="py-20 bg-[#faf9f7]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-[#1f2937]">{t.title}</h2>
-          <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">{t.subtitle}</p>
+          <h2 className="text-3xl lg:text-4xl font-bold text-[#1f2937]">{t("title")}</h2>
+          <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">{t("subtitle")}</p>
         </div>
 
-        <div className="grid md:grid-cols-4 gap-8">
-          {t.steps.map(([title, description], index) => {
-            const Icon = icons[index];
-            return (
-              <div key={title} className="text-center group">
-                <div className="relative inline-block mb-6">
-                  <div className="w-20 h-20 bg-[#2563eb]/10 rounded-2xl flex items-center justify-center group-hover:bg-[#2563eb] transition-colors">
-                    <Icon className="w-10 h-10 text-[#2563eb] group-hover:text-white transition-colors" />
-                  </div>
-                  <span className="absolute -top-2 -right-2 w-8 h-8 bg-[#2563eb] text-white rounded-full flex items-center justify-center text-sm font-bold">
+        <div className="relative">
+          <div className="absolute left-[12.5%] right-[12.5%] top-4 hidden h-px bg-[#e9dfd8] md:block" />
+
+          <div className="grid gap-6 md:grid-cols-4 md:gap-5 lg:gap-7">
+            {icons.map((Icon, index) => {
+              const color = stepColors[index];
+              return (
+                <div key={index} className="relative flex h-full flex-col items-center">
+                  <span
+                    className={`relative z-10 inline-flex h-8 min-w-8 items-center justify-center rounded-full border border-white/90 px-3 text-xs font-semibold ${color.badge} ${color.badgeText} shadow-[0_10px_24px_-18px_rgba(15,23,42,0.45)]`}
+                  >
                     {`0${index + 1}`}
                   </span>
+                  <div className={`h-6 w-px ${color.line} opacity-90`} />
+                  <div className="w-full flex-1">
+                    <div className={`${color.cardBg} flex h-full flex-col rounded-[22px] border border-[#ece5df] px-5 py-6 shadow-[0_22px_45px_-38px_rgba(15,23,42,0.45)] transition-shadow hover:shadow-[0_24px_50px_-36px_rgba(15,23,42,0.42)] md:px-6`}>
+                      <div className={`mx-auto mb-5 grid h-12 w-12 place-items-center rounded-2xl ${color.iconBg} shadow-[0_16px_30px_-24px_rgba(15,23,42,0.35)]`}>
+                        <Icon className={`block h-6 w-6 ${color.iconColor}`} />
+                      </div>
+                      <h3 className="mb-3 text-[1.05rem] font-semibold leading-8 text-[#1f2937]">{t(`steps.${index}.title`)}</h3>
+                      <p className="text-sm leading-7 text-gray-600">{t(`steps.${index}.desc`)}</p>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="text-xl font-semibold text-[#1f2937] mb-3">{title}</h3>
-                <p className="text-gray-600">{description}</p>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

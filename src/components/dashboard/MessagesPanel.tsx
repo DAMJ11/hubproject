@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { emitUnreadMessagesRefresh } from "@/hooks/useUnreadMessagesCount";
 import { getPusherClient } from "@/lib/realtime/pusherClient";
+import { useTranslations, useLocale } from "next-intl";
 
 interface Conversation {
   id: number;
@@ -91,6 +92,8 @@ interface RfqOption {
 
 export default function MessagesPanel() {
   const searchParams = useSearchParams();
+  const t = useTranslations("MessagesPanel");
+  const locale = useLocale();
   const [user, setUser] = useState<UserInfo | null>(null);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConv, setSelectedConv] = useState<Conversation | null>(null);
@@ -439,7 +442,7 @@ export default function MessagesPanel() {
     setCreateChatError("");
 
     if (user?.role !== "admin" && !selectedRfqId) {
-      setCreateChatError("Selecciona un proyecto para iniciar el contacto.");
+      setCreateChatError(t("newChat.selectProject"));
       return;
     }
 
@@ -468,11 +471,11 @@ export default function MessagesPanel() {
         setRfqOptions([]);
         setTab(user?.role === "admin" ? "chats" : "pending");
       } else {
-        setCreateChatError(data.message || "No se pudo crear el chat.");
+        setCreateChatError(data.message || t("errors.createFailed"));
       }
     } catch (e) {
       console.error(e);
-      setCreateChatError("Error de red al crear la solicitud.");
+      setCreateChatError(t("errors.networkError"));
     } finally {
       setCreatingChat(false);
     }
@@ -513,9 +516,9 @@ export default function MessagesPanel() {
     const d = new Date(dateStr);
     const now = new Date();
     if (d.toDateString() === now.toDateString()) {
-      return d.toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
+      return d.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
     }
-    return d.toLocaleDateString("es-CO", { day: "2-digit", month: "short" });
+    return d.toLocaleDateString(locale, { day: "2-digit", month: "short" });
   };
 
   const getInitials = (name: string) =>
@@ -527,24 +530,24 @@ export default function MessagesPanel() {
       .substring(0, 2);
 
   const getOtherPartyName = (conv: Conversation) => {
-    if (!user) return conv.target_company_name || conv.brand_name || conv.manufacturer_name || "Conversacion";
+    if (!user) return conv.target_company_name || conv.brand_name || conv.manufacturer_name || t("defaults.conversation");
     if (conv.admin_user_id) {
-      if (user.role === "admin") return conv.target_company_name || "Empresa";
-      return conv.admin_user_name || "Administrador";
+      if (user.role === "admin") return conv.target_company_name || t("defaults.company");
+      return conv.admin_user_name || t("defaults.admin");
     }
     if (user.role === "admin") return `${conv.brand_name || "-"} ? ${conv.manufacturer_name || "-"}`;
-    if (user.companyId && conv.brand_company_id === user.companyId) return conv.manufacturer_name || "Fabricante";
-    return conv.brand_name || "Marca";
+    if (user.companyId && conv.brand_company_id === user.companyId) return conv.manufacturer_name || t("companyType.manufacturer");
+    return conv.brand_name || t("companyType.brand");
   };
 
   const getOtherPartyType = (conv: Conversation) => {
     if (!user) return "";
     if (conv.admin_user_id) {
-      return user.role === "admin" ? "Empresa" : "Administrador";
+      return user.role === "admin" ? t("defaults.company") : t("defaults.admin");
     }
-    if (user.role === "admin") return "B2B";
-    if (user.companyId === conv.brand_company_id) return "Fabricante";
-    return "Marca";
+    if (user.role === "admin") return t("defaults.b2b");
+    if (user.companyId === conv.brand_company_id) return t("companyType.manufacturer");
+    return t("companyType.brand");
   };
 
   const openConversations = conversations.filter((c) => c.status === "open");
@@ -581,7 +584,7 @@ export default function MessagesPanel() {
         {/* Sidebar Header */}
         <div className="bg-[#ffffff] px-4 py-3">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold text-[#0f172a]">Chats</h2>
+            <h2 className="text-lg font-semibold text-[#0f172a]">{t("header.title")}</h2>
             <Button
               size="sm"
               onClick={() => {
@@ -590,7 +593,7 @@ export default function MessagesPanel() {
               }}
               className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white gap-1 rounded-lg text-xs h-8"
             >
-              <Plus className="w-3.5 h-3.5" /> Nuevo
+              <Plus className="w-3.5 h-3.5" /> {t("header.newButton")}
             </Button>
           </div>
 
@@ -605,7 +608,7 @@ export default function MessagesPanel() {
                       : "bg-[#f1f5f9] text-[#64748b] hover:bg-[#e2e8f0]"
                   }`}
                 >
-                  Activos ({openConversations.length})
+                  {t("tabs.active", { count: openConversations.length })}
                 </button>
                 <button
                   onClick={() => setTab("pending")}
@@ -615,13 +618,13 @@ export default function MessagesPanel() {
                       : "bg-[#f1f5f9] text-[#64748b] hover:bg-[#e2e8f0]"
                   }`}
                 >
-                  <Clock className="w-3 h-3" /> Pendientes ({pendingConversations.length})
+                  <Clock className="w-3 h-3" /> {t("tabs.pending", { count: pendingConversations.length })}
                 </button>
               </div>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748b]" />
                 <input
-                  placeholder="Buscar o empezar un nuevo chat"
+                  placeholder={t("search.placeholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-3 py-1.5 bg-[#f1f5f9] text-[#1e293b] text-sm rounded-lg border-none outline-none placeholder:text-[#64748b] focus:ring-1 focus:ring-[#2563eb]"
@@ -645,19 +648,19 @@ export default function MessagesPanel() {
                 }}
                 className="text-xs text-[#2563eb] hover:text-[#1e40af] flex items-center gap-1 mb-3"
               >
-                <ArrowLeft className="w-3.5 h-3.5" /> Volver
+                <ArrowLeft className="w-3.5 h-3.5" /> {t("search.back")}
               </button>
               <p className="text-xs text-[#64748b] mb-2">
                 {user?.role === "admin"
-                  ? "Busca cualquier empresa para iniciar chat directo"
-                  : `Busca un${user?.role === "brand" ? " fabricante" : "a marca"} para iniciar chat`}
+                  ? t("search.hintAdmin")
+                  : user?.role === "brand" ? t("search.hintBrand") : t("search.hintManufacturer")}
               </p>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748b]" />
                 <input
                   placeholder={user?.role === "admin"
-                    ? "Buscar marcas o fabricantes..."
-                    : `Buscar ${user?.role === "brand" ? "fabricantes" : "marcas"}...`}
+                    ? t("search.inputAdmin")
+                    : user?.role === "brand" ? t("search.inputBrand") : t("search.inputManufacturer")}
                   value={companySearch}
                   onChange={(e) => setCompanySearch(e.target.value)}
                   className="w-full pl-10 pr-3 py-1.5 bg-[#f1f5f9] text-[#1e293b] text-sm rounded-lg border-none outline-none placeholder:text-[#64748b] focus:ring-1 focus:ring-[#2563eb]"
@@ -672,7 +675,7 @@ export default function MessagesPanel() {
                 </div>
               )}
               {!companySearching && companyResults.length === 0 && companySearch.trim().length >= 2 && (
-                <div className="text-center py-8 text-xs text-[#64748b]">Sin resultados</div>
+                <div className="text-center py-8 text-xs text-[#64748b]">{t("search.noResults")}</div>
               )}
               {companyResults.map((company) => (
                 <button
@@ -700,7 +703,7 @@ export default function MessagesPanel() {
                       {company.is_verified && <CheckCircle2 className="w-3.5 h-3.5 text-[#2563eb] flex-shrink-0" />}
                     </div>
                     <p className="text-xs text-[#64748b]">
-                      {company.city ?? "Colombia"} &bull; {company.type === "manufacturer" ? "Fabricante" : "Marca"}
+                      {company.city ?? t("defaults.location")} &bull; {company.type === "manufacturer" ? t("companyType.manufacturer") : t("companyType.brand")}
                     </p>
                   </div>
                 </button>
@@ -714,7 +717,7 @@ export default function MessagesPanel() {
           <div className="flex-1 overflow-y-auto bg-[#f8fafc]">
             {filteredConversations.length === 0 && (
               <div className="text-center py-12 text-xs text-[#64748b]">
-                {tab === "pending" ? "No hay solicitudes pendientes" : "No hay conversaciones activas"}
+                {tab === "pending" ? t("list.emptyPending") : t("list.emptyActive")}
               </div>
             )}
             {filteredConversations.map((conv) => (
@@ -754,7 +757,7 @@ export default function MessagesPanel() {
                     <div className="flex-1 min-w-0">
                       {conv.status === "pending" ? (
                         <span className="text-xs text-[#f59e0b] font-medium">
-                          {isPendingForMe(conv) ? "Solicitud recibida" : "Esperando aceptacion"}
+                          {isPendingForMe(conv) ? t("list.requestReceived") : t("list.waitingAcceptance")}
                         </span>
                       ) : conv.last_message ? (
                         <p className="text-sm text-[#64748b] truncate">
@@ -792,7 +795,7 @@ export default function MessagesPanel() {
           >
             <div className="bg-[#ffffff] rounded-xl shadow-lg border border-[#f1f5f9] p-6 w-full max-w-md">
               <h3 className="text-lg font-semibold text-[#0f172a] mb-1">
-                {user?.role === "admin" ? "Nuevo chat directo" : "Nueva solicitud de chat"}
+                {user?.role === "admin" ? t("newChat.titleAdmin") : t("newChat.titleUser")}
               </h3>
               <div className="flex items-center gap-3 mb-4 bg-[#f1f5f9] rounded-lg p-3">
                 <div className="w-10 h-10 bg-[#2563eb] rounded-full flex items-center justify-center flex-shrink-0">
@@ -803,30 +806,30 @@ export default function MessagesPanel() {
                 <div>
                   <p className="text-sm font-medium text-[#0f172a]">{newChatTarget.name}</p>
                   <p className="text-xs text-[#64748b]">
-                    {newChatTarget.type === "manufacturer" ? "Fabricante" : "Marca"} &bull; {newChatTarget.city ?? "Colombia"}
+                    {newChatTarget.type === "manufacturer" ? t("companyType.manufacturer") : t("companyType.brand")} &bull; {newChatTarget.city ?? t("defaults.location")}
                   </p>
                 </div>
               </div>
               <p className="text-xs text-[#64748b] mb-4">
                 {user?.role === "admin"
-                  ? "El chat se abrira directamente."
-                  : "Deberan aceptar tu solicitud antes de poder chatear."}
+                  ? t("newChat.infoAdmin")
+                  : t("newChat.infoUser")}
               </p>
               <div className="space-y-3">
                 {user?.role !== "admin" && (
                   <div>
                     <label className="block text-xs font-medium text-[#64748b] mb-1">
-                      {user?.role === "brand" ? "Proyecto a ofrecer" : "Proyecto de interés"}
+                      {user?.role === "brand" ? t("newChat.rfqLabelBrand") : t("newChat.rfqLabelManufacturer")}
                     </label>
                     {rfqLoading ? (
                       <div className="w-full px-3 py-2 bg-[#f1f5f9] rounded-lg text-xs text-[#64748b] flex items-center gap-2">
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" /> Cargando proyectos...
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" /> {t("newChat.loadingProjects")}
                       </div>
                     ) : rfqOptions.length === 0 ? (
                       <div className="w-full px-3 py-2 bg-[#fef3c7] text-[#92400e] rounded-lg text-xs">
                         {user?.role === "brand"
-                          ? "No tienes proyectos activos para ofrecer."
-                          : "La marca no tiene proyectos activos para contacto."}
+                          ? t("newChat.noProjectsBrand")
+                          : t("newChat.noProjectsManufacturer")}
                       </div>
                     ) : (
                       <select
@@ -844,18 +847,18 @@ export default function MessagesPanel() {
                   </div>
                 )}
                 <div>
-                  <label className="block text-xs font-medium text-[#64748b] mb-1">Asunto</label>
+                  <label className="block text-xs font-medium text-[#64748b] mb-1">{t("newChat.subjectLabel")}</label>
                   <input
-                    placeholder="Ej: Consulta de produccion, Cotizacion..."
+                    placeholder={t("newChat.subjectPlaceholder")}
                     value={newChatSubject}
                     onChange={(e) => setNewChatSubject(e.target.value)}
                     className="w-full px-3 py-2 bg-[#f1f5f9] text-[#1e293b] text-sm rounded-lg border-none outline-none placeholder:text-[#64748b] focus:ring-1 focus:ring-[#2563eb]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#64748b] mb-1">Mensaje inicial (opcional)</label>
+                  <label className="block text-xs font-medium text-[#64748b] mb-1">{t("newChat.messageLabel")}</label>
                   <textarea
-                    placeholder="Cuentales por que quieres contactarlos..."
+                    placeholder={t("newChat.messagePlaceholder")}
                     value={newChatMessage}
                     onChange={(e) => setNewChatMessage(e.target.value)}
                     rows={3}
@@ -877,7 +880,7 @@ export default function MessagesPanel() {
                   ) : (
                     <Send className="w-4 h-4 mr-2" />
                   )}
-                  {user?.role === "admin" ? "Iniciar chat" : "Enviar solicitud"}
+                  {user?.role === "admin" ? t("newChat.submitAdmin") : t("newChat.submitUser")}
                 </Button>
               </div>
             </div>
@@ -888,9 +891,9 @@ export default function MessagesPanel() {
           <div className="flex-1 flex items-center justify-center bg-[#ffffff]">
             <div className="text-center">
               <Building2 className="w-12 h-12 text-[#cbd5e1] mx-auto mb-3" />
-              <h3 className="text-lg font-medium text-[#0f172a]">Busca una empresa</h3>
+              <h3 className="text-lg font-medium text-[#0f172a]">{t("searchEmpty.title")}</h3>
               <p className="text-sm text-[#64748b] mt-1">
-                Usa el buscador de la izquierda para encontrar {user?.role === "admin" ? "empresas" : user?.role === "brand" ? "fabricantes" : "marcas"}
+                {user?.role === "admin" ? t("searchEmpty.subtitleAdmin") : user?.role === "brand" ? t("searchEmpty.subtitleBrand") : t("searchEmpty.subtitleManufacturer")}
               </p>
             </div>
           </div>
@@ -909,7 +912,7 @@ export default function MessagesPanel() {
               <div className="flex-1">
                 <h3 className="font-medium text-[#0f172a] text-[15px]">{getOtherPartyName(selectedConv)}</h3>
                 <p className="text-xs text-[#f59e0b] flex items-center gap-1">
-                  <Clock className="w-3 h-3" /> Solicitud pendiente
+                  <Clock className="w-3 h-3" /> {t("pending.headerStatus")}
                 </p>
               </div>
             </div>
@@ -923,37 +926,37 @@ export default function MessagesPanel() {
                 {isPendingForMe(selectedConv) ? (
                   <>
                     <h3 className="text-lg font-semibold text-[#0f172a] mb-1">
-                      Solicitud de {selectedConv.initiator_name}
+                      {t("pending.incomingTitle", { name: selectedConv.initiator_name })}
                     </h3>
                     <p className="text-sm text-[#64748b] mb-1">
-                      Asunto: <span className="font-medium text-[#1e293b]">{selectedConv.subject}</span>
+                      {t("pending.subjectLabel")} <span className="font-medium text-[#1e293b]">{selectedConv.subject}</span>
                     </p>
                     <p className="text-sm text-[#64748b] mb-4">
-                      Deseas aceptar esta solicitud de chat?
+                      {t("pending.acceptPrompt")}
                     </p>
                     <div className="flex gap-3 justify-center">
                       <button
                         onClick={() => handleRespond(selectedConv.id, "reject")}
                         className="px-4 py-2 rounded-lg text-sm bg-[#f1f5f9] text-red-400 hover:bg-[#e2e8f0] transition-colors flex items-center gap-1"
                       >
-                        <XCircle className="w-4 h-4" /> Rechazar
+                        <XCircle className="w-4 h-4" /> {t("pending.reject")}
                       </button>
                       <button
                         onClick={() => handleRespond(selectedConv.id, "accept")}
                         className="px-4 py-2 rounded-lg text-sm bg-[#2563eb] text-white hover:bg-[#1d4ed8] transition-colors flex items-center gap-1"
                       >
-                        <CheckCircle2 className="w-4 h-4" /> Aceptar
+                        <CheckCircle2 className="w-4 h-4" /> {t("pending.accept")}
                       </button>
                     </div>
                   </>
                 ) : (
                   <>
-                    <h3 className="text-lg font-semibold text-[#0f172a] mb-1">Solicitud enviada</h3>
+                    <h3 className="text-lg font-semibold text-[#0f172a] mb-1">{t("pending.sentTitle")}</h3>
                     <p className="text-sm text-[#64748b] mb-1">
-                      Asunto: <span className="font-medium text-[#1e293b]">{selectedConv.subject}</span>
+                      {t("pending.subjectLabel")} <span className="font-medium text-[#1e293b]">{selectedConv.subject}</span>
                     </p>
                     <p className="text-sm text-[#64748b]">
-                      Esperando a que <span className="font-medium text-[#1e293b]">{getOtherPartyName(selectedConv)}</span> acepte tu solicitud.
+                      {t("pending.waitingMessage", { name: getOtherPartyName(selectedConv) })}
                     </p>
                   </>
                 )}
@@ -1001,7 +1004,7 @@ export default function MessagesPanel() {
               {!messagesLoading && messages.length === 0 && (
                 <div className="flex justify-center py-8">
                   <div className="bg-[#eff6ff] text-[#64748b] text-xs px-4 py-2 rounded-lg shadow">
-                    No hay mensajes aun. Escribe el primero.
+                    {t("chat.noMessages")}
                   </div>
                 </div>
               )}
@@ -1029,7 +1032,7 @@ export default function MessagesPanel() {
                     {showDateSep && (
                       <div className="flex justify-center py-2">
                         <span className="text-xs text-[#64748b] bg-[#eff6ff] px-3 py-1 rounded-lg shadow">
-                          {new Date(msg.created_at).toLocaleDateString("es-CO", {
+                          {new Date(msg.created_at).toLocaleDateString(locale, {
                             day: "numeric",
                             month: "long",
                             year: "numeric",
@@ -1083,7 +1086,7 @@ export default function MessagesPanel() {
             <div className="px-3 py-2 bg-[#ffffff] flex items-end gap-2">
               <div className="flex-1 bg-[#f1f5f9] rounded-lg flex items-end">
                 <input
-                  placeholder="Escribe un mensaje"
+                  placeholder={t("chat.inputPlaceholder")}
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyDown={(e) => {
@@ -1113,11 +1116,11 @@ export default function MessagesPanel() {
               <div className="w-[72px] h-[72px] mx-auto mb-5 rounded-full bg-[#cbd5e1] flex items-center justify-center">
                 <MessageSquare className="w-9 h-9 text-[#64748b]" />
               </div>
-              <h3 className="text-[28px] font-light text-[#0f172a] mb-2">HubB Mensajes</h3>
+              <h3 className="text-[28px] font-light text-[#0f172a] mb-2">{t("emptyState.title")}</h3>
               <p className="text-sm text-[#64748b] leading-relaxed">
-                Envia y recibe mensajes con marcas y fabricantes.
+                {t("emptyState.line1")}
                 <br />
-                Selecciona una conversacion o inicia un nuevo chat.
+                {t("emptyState.line2")}
               </p>
             </div>
           </div>
@@ -1128,8 +1131,8 @@ export default function MessagesPanel() {
           <div className="flex-1 flex items-center justify-center bg-[#ffffff]">
             <div className="text-center">
               <XCircle className="w-12 h-12 text-[#cbd5e1] mx-auto mb-3" />
-              <h3 className="text-lg font-medium text-[#0f172a]">Conversacion cerrada</h3>
-              <p className="text-sm text-[#64748b] mt-1">Esta conversacion ya no esta activa</p>
+              <h3 className="text-lg font-medium text-[#0f172a]">{t("closed.title")}</h3>
+              <p className="text-sm text-[#64748b] mt-1">{t("closed.subtitle")}</p>
             </div>
           </div>
         )}

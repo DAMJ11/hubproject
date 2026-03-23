@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import { useMemo, useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
+import { Link, useRouter, usePathname } from "@/i18n/navigation";
 import { ChevronDown, Menu, X, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -11,75 +12,39 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { AppLanguage, LANGUAGE_OPTIONS } from "@/contexts/LanguageContext";
+import type { AppLocale } from "@/i18n/routing";
 
-const STORAGE_KEY = "dashboard-language";
+const LANGUAGE_OPTIONS = [
+  { code: "es" as const, name: "Español", countryCode: "es" as const },
+  { code: "en" as const, name: "English", countryCode: "gb" as const },
+  { code: "fr" as const, name: "Français", countryCode: "fr" as const },
+];
+
 const getFlagSrc = (countryCode: "es" | "gb" | "fr") => `https://flagcdn.com/w40/${countryCode}.png`;
-
-const navLabels = {
-  es: {
-    capabilities: "Capacidades",
-    howItWorks: "Cómo funciona",
-    manufacturers: "Manufacturers",
-    plans: "Planes",
-    cases: "Casos",
-    login: "Iniciar sesión",
-    register: "Crear cuenta",
-  },
-  en: {
-    capabilities: "Capabilities",
-    howItWorks: "How it works",
-    manufacturers: "Manufacturers",
-    plans: "Plans",
-    cases: "Cases",
-    login: "Log in",
-    register: "Create account",
-  },
-  fr: {
-    capabilities: "Capacites",
-    howItWorks: "Comment ca marche",
-    manufacturers: "Manufacturiers",
-    plans: "Plans",
-    cases: "Cas clients",
-    login: "Se connecter",
-    register: "Creer un compte",
-  },
-};
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [language, setLanguage] = useState<AppLanguage>("es");
+  const t = useTranslations("Header");
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  useEffect(() => {
-    const storedLanguage = localStorage.getItem(STORAGE_KEY);
-    if (storedLanguage === "es" || storedLanguage === "en" || storedLanguage === "fr") {
-      setLanguage(storedLanguage);
-      document.documentElement.lang = storedLanguage;
-      return;
-    }
+  const selectedLanguage = LANGUAGE_OPTIONS.find((lang) => lang.code === locale) ?? LANGUAGE_OPTIONS[0];
 
-    document.documentElement.lang = "es";
-  }, []);
-
-  const labels = navLabels[language];
-  const selectedLanguage = LANGUAGE_OPTIONS.find((lang) => lang.code === language) ?? LANGUAGE_OPTIONS[0];
+  const switchLocale = (newLocale: AppLocale) => {
+    router.replace(pathname, { locale: newLocale });
+  };
 
   const navLinks = useMemo(
     () => [
-      { name: labels.capabilities, href: "/#servicios" },
-      { name: labels.howItWorks, href: "/#como-funciona" },
-      { name: labels.manufacturers, href: "/#manufacturers" },
-      { name: labels.plans, href: "/#precios" },
-      { name: labels.cases, href: "/#testimonios" },
+      { name: t("capabilities"), href: "/#servicios" },
+      { name: t("howItWorks"), href: "/#como-funciona" },
+      { name: t("manufacturers"), href: "/#manufacturers" },
+      { name: t("plans"), href: "/#precios" },
+      { name: t("cases"), href: "/#testimonios" },
     ],
-    [labels],
+    [t],
   );
-
-  const handleLanguageChange = (nextLanguage: AppLanguage) => {
-    setLanguage(nextLanguage);
-    localStorage.setItem(STORAGE_KEY, nextLanguage);
-    document.documentElement.lang = nextLanguage;
-  };
 
   return (
     <motion.header
@@ -133,7 +98,7 @@ export default function Header() {
                 {LANGUAGE_OPTIONS.map((lang) => (
                   <DropdownMenuItem
                     key={lang.code}
-                    onClick={() => handleLanguageChange(lang.code)}
+                    onClick={() => switchLocale(lang.code)}
                     className="flex items-center gap-2 cursor-pointer"
                   >
                     <img
@@ -150,14 +115,14 @@ export default function Header() {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link href="/login">
                 <Button variant="ghost" className="text-gray-700 hover:text-[#2563eb]">
-                  {labels.login}
+                  {t("login")}
                 </Button>
               </Link>
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link href="/register">
                 <Button className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-lg">
-                  {labels.register}
+                  {t("register")}
                 </Button>
               </Link>
             </motion.div>
@@ -231,7 +196,7 @@ export default function Header() {
                       {LANGUAGE_OPTIONS.map((lang) => (
                         <DropdownMenuItem
                           key={lang.code}
-                          onClick={() => handleLanguageChange(lang.code)}
+                          onClick={() => switchLocale(lang.code)}
                           className="flex items-center gap-2 cursor-pointer"
                         >
                           <img
@@ -248,14 +213,14 @@ export default function Header() {
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <Link href="/login">
                       <Button variant="outline" className="w-full">
-                        {labels.login}
+                        {t("login")}
                       </Button>
                     </Link>
                   </motion.div>
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <Link href="/register">
                       <Button className="w-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white">
-                        {labels.register}
+                        {t("register")}
                       </Button>
                     </Link>
                   </motion.div>

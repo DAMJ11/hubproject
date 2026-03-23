@@ -1,6 +1,7 @@
 "use client";
 
 import { User, BarChart3, Package, MessageSquare, Settings, Bell, Calendar } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface UserDashboardProps {
   user: {
@@ -11,11 +12,12 @@ interface UserDashboardProps {
 }
 
 export default function UserDashboard({ user }: UserDashboardProps) {
+  const t = useTranslations("UserDashboard");
   const stats = [
-    { label: "Proyectos activos", value: "3", icon: Package, color: "bg-blue-500" },
-    { label: "Mensajes nuevos", value: "12", icon: MessageSquare, color: "bg-green-500" },
-    { label: "Tareas pendientes", value: "8", icon: Calendar, color: "bg-yellow-500" },
-    { label: "Notificaciones", value: "5", icon: Bell, color: "bg-purple-500" },
+    { label: t("stats.activeProjects"), value: "3", icon: Package, color: "bg-blue-500" },
+    { label: t("stats.newMessages"), value: "12", icon: MessageSquare, color: "bg-green-500" },
+    { label: t("stats.pendingTasks"), value: "8", icon: Calendar, color: "bg-yellow-500" },
+    { label: t("stats.notifications"), value: "5", icon: Bell, color: "bg-purple-500" },
   ];
 
   const recentActivity = [
@@ -32,10 +34,10 @@ export default function UserDashboard({ user }: UserDashboardProps) {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
-              ¡Bienvenido, {user.firstName}!
+              {t("welcome", { name: user.firstName })}
             </h1>
             <p className="text-sm text-gray-500 mt-1">
-              Panel de usuario - Aquí puedes gestionar tus proyectos y actividades
+              {t("subtitle")}
             </p>
           </div>
           <div className="flex items-center gap-4">
@@ -80,7 +82,7 @@ export default function UserDashboard({ user }: UserDashboardProps) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Recent Activity */}
           <div className="lg:col-span-2 bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Actividad reciente</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{t("recentActivity")}</h2>
             <div className="space-y-4">
               {recentActivity.map((activity, index) => (
                 <div
@@ -99,23 +101,23 @@ export default function UserDashboard({ user }: UserDashboardProps) {
 
           {/* Quick Actions */}
           <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Acciones rápidas</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{t("quickActions")}</h2>
             <div className="space-y-3">
               <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                 <Package className="w-5 h-5 text-[#2563eb]" />
-                <span className="text-sm font-medium">Crear nuevo proyecto</span>
+                <span className="text-sm font-medium">{t("actions.createProject")}</span>
               </button>
               <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                 <MessageSquare className="w-5 h-5 text-[#2563eb]" />
-                <span className="text-sm font-medium">Enviar mensaje</span>
+                <span className="text-sm font-medium">{t("actions.sendMessage")}</span>
               </button>
               <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                 <BarChart3 className="w-5 h-5 text-[#2563eb]" />
-                <span className="text-sm font-medium">Ver reportes</span>
+                <span className="text-sm font-medium">{t("actions.viewReports")}</span>
               </button>
               <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                 <Settings className="w-5 h-5 text-[#2563eb]" />
-                <span className="text-sm font-medium">Configuración</span>
+                <span className="text-sm font-medium">{t("actions.settings")}</span>
               </button>
             </div>
           </div>

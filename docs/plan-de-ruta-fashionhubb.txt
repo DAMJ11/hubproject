@@ -1,0 +1,362 @@
+============================================================
+PLAN DE RUTA — FASHIONHUBB REBRAND + UI UPDATE
+Fecha: 20 de marzo de 2026
+============================================================
+
+RESUMEN GENERAL
+───────────────
+El proyecto actual se llama "FASHIONS DEN" en el Header.
+Se renombrará a "FASHIONHUBB" (logo coming soon).
+Se actualizarán 4 secciones del home + los paquetes de precios
+con la nueva estructura de Brands y Suppliers.
+
+============================================================
+CAMBIO 0 — RENOMBRAR A FASHIONHUBB (Global)
+============================================================
+Archivo:  src/components/Header.tsx
+Acción:   Cambiar "FASHIONS DEN" → "FASHIONHUBB"
+Detalle:
+  - Línea del <span>: "FASHIONS DEN" → "FASHIONHUBB"
+  - Evaluar si el icono Sparkles se mantiene o se reemplaza
+    por un placeholder hasta que llegue el logo.
+Impacto:  Solo el header (se usa en home y todas las páginas).
+
+============================================================
+CAMBIO 1 — SECCIÓN HERO (Home principal)
+============================================================
+Archivo:  src/components/Hero.tsx
+Ref:      Imagen 1 (estado actual) → Imagen 3/4 (objetivo)
+
+Cambios en contenido (objeto `content`):
+┌──────────────────────────────────────────────────────────┐
+│ ESPAÑOL (es)                                             │
+├──────────────────────────────────────────────────────────┤
+│ pill:      "Producción de moda, simplificada"            │
+│ titleA:    "Haz realidad tu colección"                   │
+│ titleB:    "sin el caos"                                 │
+│ titleC:    "" (vacío, el título termina en titleB)       │
+│ subtitle:  "Desde la primera idea hasta la producción    │
+│            final, trabaja con partners verificados en    │
+│            Latinoamérica — todo gestionado en un solo    │
+│            lugar."                                       │
+│ highlights:                                              │
+│   - "Partners verificados en quienes confiar"            │
+│   - "Precios claros y tiempos definidos"                 │
+│   - "Muestras antes de producción"                       │
+│   - "Sigue cada paso en tiempo real"                     │
+│ ctaPrimary:   "Publica tu primer proyecto"               │
+│ ctaSecondary: "Cómo funciona"                            │
+│ stats:                                                   │
+│   - "250+" → "Partners verificados"                      │
+│   - "1,200+" → "Proyectos completados"                   │
+│   - "92%" → "Entrega on-time"                            │
+└──────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│ ENGLISH (en)                                             │
+├──────────────────────────────────────────────────────────┤
+│ pill:      "Fashion production, simplified"              │
+│ titleA:    "Get your collection made"                    │
+│ titleB:    "without the chaos"                           │
+│ titleC:    "" (empty)                                    │
+│ subtitle:  "From first idea to final production, work    │
+│            with verified partners across Latin America   │
+│            — all managed in one place."                  │
+│ highlights:                                              │
+│   - "Verified partners you can trust"                    │
+│   - "Clear pricing and timelines"                        │
+│   - "Samples before production"                          │
+│   - "Track every step in real time"                      │
+│ ctaPrimary:   "Start your first project"                 │
+│ ctaSecondary: "How it works"                             │
+│ stats:                                                   │
+│   - "250+" → "verified partners"                         │
+│   - "1,200+" → "projects completed"                      │
+│   - "92%" → "On-time delivery"                           │
+└──────────────────────────────────────────────────────────┘
+
+Cambios visuales:
+  - Los emojis del pill cambian: 👟 → sin emoji (o 👔 si se quiere)
+  - Las stats "1.2K+" cambian a "1,200+"
+  - Los category cards se mantienen igual (mismo grid 2x3)
+    pero se actualizan los textos en inglés para coincidir
+    con la imagen 4 (ya están correctos).
+  - Colores de los category cards:
+    Streetwear → fondo amarillo/ámbar claro ✓
+    Denim      → fondo sky/celeste ✓
+    Activewear → fondo verde claro ✓
+    Outerwear  → fondo gris claro ✓
+    Womenswear → fondo rosa claro ✓
+    Accesorios → fondo violeta claro ✓
+
+NOTA: Las categorías y su diseño visual ya coinciden
+con el objetivo de la imagen 4. Solo cambian textos.
+
+============================================================
+CAMBIO 2 — SECCIÓN "CÓMO FUNCIONA" (PlatformSection)
+============================================================
+Archivo:  src/components/PlatformSection.tsx
+Ref:      Imagen 2 (estado actual) → Imagen 3 inferior (objetivo)
+
+Cambios en contenido (objeto `copy`):
+┌──────────────────────────────────────────────────────────┐
+│ ESPAÑOL (es)                                             │
+├──────────────────────────────────────────────────────────┤
+│ title:    "Cómo funciona FashionHubb"                    │
+│ subtitle: "Desde la primera idea hasta la producción     │
+│           final, gestiona cada paso con los partners     │
+│           correctos, comunicación clara y visibilidad    │
+│           total."                                        │
+│ Steps:                                                   │
+│  1. "Sube tu proyecto"                                   │
+│     "Comparte tu boceto, tech pack, materiales, medidas  │
+│     o referencias para que los partners adecuados        │
+│     revisen tu proyecto correctamente."                  │
+│  2. "Encuentra el partner ideal"                         │
+│     "Explora diseñadores, muestristas y fabricantes      │
+│     verificados por categoría, capacidades, MOQ,         │
+│     tiempos y ubicación."                                │
+│  3. "Revisa muestra y confirma producción"               │
+│     "Aprueba muestras, alinea cambios, confirma precios  │
+│     y avanza con tiempos claros, hitos y expectativas."  │
+│  4. "Sigue todo en un solo lugar"                        │
+│     "Monitorea avances, aprobaciones, actualizaciones    │
+│     y entregas desde un flujo compartido para brands     │
+│     y partners de producción."                           │
+└──────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│ ENGLISH (en)                                             │
+├──────────────────────────────────────────────────────────┤
+│ title:    "How FashionHubb works"                        │
+│ subtitle: "From first idea to final production, manage   │
+│           every step with the right partners, clear      │
+│           communication, and full visibility."           │
+│ Steps:                                                   │
+│  1. "Upload your project"                                │
+│     "Share your sketch, tech pack, materials,            │
+│     measurements, or references so the right partners    │
+│     can review your project properly."                   │
+│  2. "Get matched with the right partner"                 │
+│     "Browse verified designers, sample makers, and       │
+│     manufacturers based on category, capabilities,       │
+│     MOQs, lead times, and location."                     │
+│  3. "Review sample and confirm production"               │
+│     "Approve samples, align changes, confirm pricing,    │
+│     and move forward with clear timelines, milestones,   │
+│     and expectations."                                   │
+│  4. "Track everything in one place"                      │
+│     "Follow progress, approvals, updates, and delivery   │
+│     from one shared workflow built for both brands and   │
+│     production partners."                                │
+└──────────────────────────────────────────────────────────┘
+
+Cambios visuales:
+  - Diseño actual: 4 cards en fila con iconos azules sobre
+    fondo azul claro, número en badge circular azul.
+  - Diseño objetivo (imagen 3): 4 cards con bordes suaves,
+    cada card tiene un borde superior de color diferente:
+      Card 1 → borde verde/teal
+      Card 2 → borde morado/violeta
+      Card 3 → borde rosa/magenta
+      Card 4 → borde verde oscuro
+    Iconos en colores que coinciden con su borde superior.
+    Número (01, 02, 03, 04) en badge circular sobre la card
+    con el mismo color del borde.
+  - Transición de cuadrícula plana a cards con sombras
+    suaves y bordes redondeados.
+
+============================================================
+CAMBIO 3 — SECCIÓN "POR QUÉ ELEGIRNOS" (WhyManufySection)
+============================================================
+Archivo:  src/components/WhyManufySection.tsx
+Ref:      Imagen 5 (estado actual) → Imagen 6 (objetivo)
+
+Cambios en contenido (objeto `copy`):
+┌──────────────────────────────────────────────────────────┐
+│ ESPAÑOL (es)                                             │
+├──────────────────────────────────────────────────────────┤
+│ title:    "Una mejor forma de crear tu colección"        │
+│ subtitle: "FashionHubb le da a las marcas un solo lugar  │
+│           para encontrar los partners correctos,         │
+│           gestionar el proceso, y pasar de la primera    │
+│           idea a la producción final con más claridad    │
+│           y control."                                    │
+│ Items (6 cards):                                         │
+│  1. "Partners de moda verificados"                       │
+│     "Trabaja con diseñadores, patronistas, muestristas   │
+│     y fabricantes evaluados en cada etapa del proceso."   │
+│  2. "Del boceto a la producción"                         │
+│     "Ya necesites un tech pack, una primera muestra o    │
+│     producción completa, todo empieza en un solo lugar." │
+│  3. "Comunicación clara"                                 │
+│     "Mantén briefs, feedback, revisiones y aprobaciones  │
+│     juntos para que nada se pierda entre diseño y        │
+│     producción."                                         │
+│  4. "Matching más inteligente"                           │
+│     "Encuentra el partner ideal por categoría,           │
+│     capacidades, MOQ, tiempos y necesidades del          │
+│     proyecto."                                           │
+│  5. "Visibilidad real de producción"                     │
+│     "Sigue muestras, aprobaciones, tiempos y             │
+│     actualizaciones clave con más claridad de inicio     │
+│     a fin."                                              │
+│  6. "Hecho para escalar colecciones"                     │
+│     "Gestiona un producto, un drop, o una colección      │
+│     completa con una estructura que crece con tu marca." │
+└──────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│ ENGLISH (en)                                             │
+├──────────────────────────────────────────────────────────┤
+│ title:    "A better way to build your collection"        │
+│ subtitle: "FashionHubb gives brands one place to find    │
+│           the right partners, manage the process, and    │
+│           move from first idea to final production with  │
+│           more clarity and control."                     │
+│ Items (6 cards):                                         │
+│  1. "Verified fashion partners"                          │
+│     "Work with vetted designers, pattern makers, sample  │
+│     makers, and manufacturers across every stage of      │
+│     the process."                                        │
+│  2. "From sketch to production"                          │
+│     "Whether you need a tech pack, a first sample, or   │
+│     full production, everything starts in one place."    │
+│  3. "Clear communication"                                │
+│     "Keep briefs, feedback, revisions, and approvals     │
+│     together so nothing gets lost between design and     │
+│     production."                                         │
+│  4. "Smarter matching"                                   │
+│     "Find the right partner based on category,           │
+│     capabilities, MOQs, lead times, and project needs."  │
+│  5. "Real production visibility"                         │
+│     "Track samples, approvals, timelines, and key        │
+│     updates with more clarity from start to finish."     │
+│  6. "Built to scale collections"                         │
+│     "Manage one product, one drop, or a full collection  │
+│     with a structure that grows with your brand."        │
+└──────────────────────────────────────────────────────────┘
+
+Cambios visuales:
+  - Diseño actual: Cards blancas con borde gris sobre
+    fondo gris claro (bg-gray-50), iconos azules en
+    cuadrado azul claro.
+  - Diseño objetivo (imagen 6): Cards blancas con sombra
+    suave sobre fondo blanco. Los iconos ahora son
+    circulares con colores diferenciados:
+      Card 1 → icono rosa/rojo (estrella)
+      Card 2 → icono verde (documento/edit)
+      Card 3 → icono naranja/amarillo (mensaje)
+      Card 4 → icono azul (lupa/búsqueda)
+      Card 5 → icono verde oscuro (checklist)
+      Card 6 → icono morado (layers/estructura)
+  - Actualizar iconos Lucide:
+      1. BadgeCheck → Star o Award
+      2. ShieldCheck → FileEdit o PenTool
+      3. MessageSquareText → MessageCircle
+      4. Timer → Search
+      5. Layers → ClipboardCheck
+      6. LineChart → Layers o LayoutGrid
+
+============================================================
+CAMBIO 4 — SECCIÓN DE PRECIOS (PricingSection)
+============================================================
+Archivo:  src/components/PricingSection.tsx
+Ref:      Nueva estructura de paquetes proporcionada
+
+La sección actual tiene 3 planes (Brand Starter, Brand Scale,
+Manufacturer Pro). Se reemplaza por una sección con dos tabs
+o dos bloques: FOR BRANDS y FOR SUPPLIERS.
+
+NUEVA ESTRUCTURA:
+┌──────────────────────────────────────────────────────────┐
+│ 🟢 FOR BRANDS                                           │
+├──────────────────────────────────────────────────────────┤
+│ Starter — $29/month                                      │
+│   ✓ 1 active project                                     │
+│   ✓ Standard matching                                    │
+│   ✓ Basic support                                        │
+│                                                          │
+│ Scale — $149/month ⭐ (destacado)                         │
+│   ✓ Up to 4 active projects                              │
+│   ✓ Priority matching                                    │
+│   ✓ Better partners                                      │
+│   ✓ Production tracking                                  │
+│                                                          │
+│ Enterprise — $499/month                                   │
+│   ✓ Unlimited projects                                    │
+│   ✓ Dedicated support                                     │
+│   ✓ Fast-track production                                 │
+│   ✓ Top-tier partners                                     │
+├──────────────────────────────────────────────────────────┤
+│ 🔴 FOR SUPPLIERS                                         │
+├──────────────────────────────────────────────────────────┤
+│ Standard — Gratis / Free                                 │
+│   ✓ Access to projects                                    │
+│   ✓ Receive invites                                       │
+│   ✓ Messaging                                             │
+│                                                          │
+│ Pro — $99/month                                           │
+│   ✓ Priority visibility                                   │
+│   ✓ More project invites                                  │
+│   ✓ Verified badge                                        │
+│                                                          │
+│ Elite — $599/month                                        │
+│   ✓ Top visibility                                        │
+│   ✓ Priority matching                                     │
+│   ✓ Access to best projects                               │
+├──────────────────────────────────────────────────────────┤
+│ ✅ FREE 7-DAY TRIAL (nota al pie o banner)               │
+│   Durante el trial:                                       │
+│   - 1 active project max                                  │
+│   - Can message suppliers                                 │
+│   - Can receive matches                                   │
+│   - Can start a project                                   │
+│   🔒 Must add payment method                              │
+└──────────────────────────────────────────────────────────┘
+
+Diseño sugerido:
+  - Tabs "For Brands" / "For Suppliers" (toggle superior)
+  - O sección dividida: primero 3 cards de Brands,
+    luego 3 cards de Suppliers.
+  - Card destacada: Scale (brands) y Pro (suppliers).
+  - Banner inferior con info del trial de 7 días.
+  - Mantener 3 idiomas (es, en, fr).
+
+============================================================
+RESUMEN DE ARCHIVOS A MODIFICAR
+============================================================
+  1. src/components/Header.tsx         → Renombrar a FASHIONHUBB
+  2. src/components/Hero.tsx           → Textos + stats
+  3. src/components/PlatformSection.tsx → Textos + estilo cards
+  4. src/components/WhyManufySection.tsx→ Textos + iconos + colores
+  5. src/components/PricingSection.tsx  → Reestructura completa
+
+ARCHIVOS SIN CAMBIOS:
+  - src/app/page.tsx (orden de secciones se mantiene)
+  - src/components/QualitySection.tsx (sin cambios indicados)
+  - src/components/CTASection.tsx (sin cambios indicados)
+  - src/components/TestimonialsSection.tsx (sin cambios indicados)
+  - src/components/FinalCTASection.tsx (sin cambios indicados)
+  - src/components/Footer.tsx (sin cambios indicados)
+
+============================================================
+ORDEN DE EJECUCIÓN SUGERIDO
+============================================================
+  Paso 1 → Cambio 0: Header (rápido, afecta toda la app)
+  Paso 2 → Cambio 1: Hero (textos, mínimos cambios visuales)
+  Paso 3 → Cambio 2: PlatformSection (textos + rediseño cards)
+  Paso 4 → Cambio 3: WhyManufySection (textos + iconos)
+  Paso 5 → Cambio 4: PricingSection (reestructura completa)
+
+============================================================
+NOTAS ADICIONALES
+============================================================
+  - Todos los componentes ya soportan 3 idiomas (es, en, fr).
+    Los textos en francés deben actualizarse también para
+    mantener paridad.
+  - El nombre del archivo WhyManufySection.tsx podría
+    renombrarse a WhyFashionHubbSection.tsx por consistencia
+    (opcional, no crítico).
+  - Logo: pendiente. Se mantiene el icono Sparkles como
+    placeholder hasta recibir el asset final.
+  - El archivo actual del Header dice "FASHIONS DEN",
+    no "TidyHubb" — ya tuvo un cambio previo.
+============================================================

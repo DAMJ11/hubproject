@@ -14,6 +14,7 @@ import {
   Database,
   FileText,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface AdminDashboardProps {
   user: {
@@ -24,11 +25,12 @@ interface AdminDashboardProps {
 }
 
 export default function AdminDashboard({ user }: AdminDashboardProps) {
+  const t = useTranslations("AdminDashboard");
   const stats = [
-    { label: "Usuarios totales", value: "1,234", icon: Users, color: "bg-blue-500", change: "+12%" },
-    { label: "Proyectos activos", value: "89", icon: Package, color: "bg-green-500", change: "+5%" },
-    { label: "Ingresos del mes", value: "$45,231", icon: TrendingUp, color: "bg-purple-500", change: "+18%" },
-    { label: "Tickets abiertos", value: "23", icon: MessageSquare, color: "bg-yellow-500", change: "-8%" },
+    { label: t("stats.totalUsers"), value: "1,234", icon: Users, color: "bg-blue-500", change: "+12%" },
+    { label: t("stats.activeProjects"), value: "89", icon: Package, color: "bg-green-500", change: "+5%" },
+    { label: t("stats.monthlyRevenue"), value: "$45,231", icon: TrendingUp, color: "bg-purple-500", change: "+18%" },
+    { label: t("stats.openTickets"), value: "23", icon: MessageSquare, color: "bg-yellow-500", change: "-8%" },
   ];
 
   const recentUsers = [
@@ -54,11 +56,11 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
             <div className="flex items-center gap-2">
               <Shield className="w-6 h-6 text-red-500" />
               <h1 className="text-2xl font-bold text-white">
-                Panel de Administración
+                {t("title")}
               </h1>
             </div>
             <p className="text-sm text-gray-400 mt-1">
-              Bienvenido, {user.firstName} - Acceso de administrador
+              {t("welcome", { name: user.firstName })}
             </p>
           </div>
           <div className="flex items-center gap-4">
@@ -72,7 +74,7 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
               </div>
               <div className="hidden md:block">
                 <p className="text-sm font-medium text-white">{user.firstName} {user.lastName}</p>
-                <p className="text-xs text-red-400">Administrador</p>
+                <p className="text-xs text-red-400">{t("role")}</p>
               </div>
             </div>
           </div>
@@ -92,7 +94,7 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
                   <p className="text-sm text-gray-400">{stat.label}</p>
                   <p className="text-3xl font-bold text-white mt-1">{stat.value}</p>
                   <p className={`text-xs mt-1 ${stat.change.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}>
-                    {stat.change} vs mes anterior
+                    {stat.change} {t("vsPrevMonth")}
                   </p>
                 </div>
                 <div className={`${stat.color} p-3 rounded-lg`}>
@@ -107,19 +109,19 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
           {/* Recent Users */}
           <div className="lg:col-span-2 bg-gray-800 rounded-xl border border-gray-700 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-white">Usuarios recientes</h2>
+              <h2 className="text-lg font-semibold text-white">{t("recentUsers")}</h2>
               <button className="text-sm text-blue-400 hover:text-blue-300 transition-colors">
-                Ver todos
+                {t("viewAll")}
               </button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="text-left text-xs text-gray-400 border-b border-gray-700">
-                    <th className="pb-3 font-medium">Usuario</th>
-                    <th className="pb-3 font-medium">Email</th>
-                    <th className="pb-3 font-medium">Registro</th>
-                    <th className="pb-3 font-medium">Estado</th>
+                    <th className="pb-3 font-medium">{t("table.user")}</th>
+                    <th className="pb-3 font-medium">{t("table.email")}</th>
+                    <th className="pb-3 font-medium">{t("table.registered")}</th>
+                    <th className="pb-3 font-medium">{t("table.status")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -143,7 +145,7 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
                               : "bg-yellow-500/20 text-yellow-400"
                           }`}
                         >
-                          {user.status === "active" ? "Activo" : "Pendiente"}
+                          {user.status === "active" ? t("statusActive") : t("statusPending")}
                         </span>
                       </td>
                     </tr>
@@ -159,7 +161,7 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
             <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Activity className="w-5 h-5 text-green-400" />
-                <h2 className="text-lg font-semibold text-white">Estado del sistema</h2>
+                <h2 className="text-lg font-semibold text-white">{t("systemStatus")}</h2>
               </div>
               <div className="space-y-3">
                 {systemStatus.map((system, index) => (
@@ -176,27 +178,27 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
 
             {/* Admin Actions */}
             <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">Acciones de admin</h2>
+              <h2 className="text-lg font-semibold text-white mb-4">{t("adminActions")}</h2>
               <div className="space-y-2">
                 <button className="w-full flex items-center gap-3 p-3 text-left text-gray-300 hover:bg-gray-700 rounded-lg transition-colors">
                   <Users className="w-5 h-5 text-blue-400" />
-                  <span className="text-sm font-medium">Gestionar usuarios</span>
+                  <span className="text-sm font-medium">{t("actions.manageUsers")}</span>
                 </button>
                 <button className="w-full flex items-center gap-3 p-3 text-left text-gray-300 hover:bg-gray-700 rounded-lg transition-colors">
                   <Database className="w-5 h-5 text-green-400" />
-                  <span className="text-sm font-medium">Base de datos</span>
+                  <span className="text-sm font-medium">{t("actions.database")}</span>
                 </button>
                 <button className="w-full flex items-center gap-3 p-3 text-left text-gray-300 hover:bg-gray-700 rounded-lg transition-colors">
                   <BarChart3 className="w-5 h-5 text-purple-400" />
-                  <span className="text-sm font-medium">Analíticas</span>
+                  <span className="text-sm font-medium">{t("actions.analytics")}</span>
                 </button>
                 <button className="w-full flex items-center gap-3 p-3 text-left text-gray-300 hover:bg-gray-700 rounded-lg transition-colors">
                   <FileText className="w-5 h-5 text-yellow-400" />
-                  <span className="text-sm font-medium">Logs del sistema</span>
+                  <span className="text-sm font-medium">{t("actions.systemLogs")}</span>
                 </button>
                 <button className="w-full flex items-center gap-3 p-3 text-left text-gray-300 hover:bg-gray-700 rounded-lg transition-colors">
                   <Settings className="w-5 h-5 text-gray-400" />
-                  <span className="text-sm font-medium">Configuración</span>
+                  <span className="text-sm font-medium">{t("actions.settings")}</span>
                 </button>
               </div>
             </div>

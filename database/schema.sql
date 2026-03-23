@@ -447,6 +447,81 @@ CREATE TABLE notifications (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
+-- 18. subscription_plans
+-- =============================================
+CREATE TABLE subscription_plans (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    slug ENUM('brand_starter','brand_scale','brand_enterprise','supplier_standard','supplier_pro','supplier_elite') NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL,
+    target_role ENUM('brand', 'manufacturer', 'admin') NOT NULL,
+    price_usd DECIMAL(8, 2) NOT NULL DEFAULT 0.00,
+    max_active_projects INT NOT NULL DEFAULT -1,
+    priority_matching BOOLEAN DEFAULT FALSE,
+    verified_badge BOOLEAN DEFAULT FALSE,
+    production_tracking BOOLEAN DEFAULT FALSE,
+    dedicated_support BOOLEAN DEFAULT FALSE,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_target_role (target_role),
+    INDEX idx_active (is_active)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- 19. subscriptions
+-- =============================================
+CREATE TABLE subscriptions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    plan_id INT NOT NULL,
+    status ENUM('trial','active','cancelled','expired','past_due') NOT NULL DEFAULT 'trial',
+    trial_ends_at TIMESTAMP NULL,
+    current_period_start TIMESTAMP NOT NULL,
+    current_period_end TIMESTAMP NOT NULL,
+    cancelled_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (plan_id) REFERENCES subscription_plans(id),
+    INDEX idx_user (user_id),
+    INDEX idx_status (status),
+    INDEX idx_trial_ends (trial_ends_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- 20. subscription_invoices
+-- =============================================
+CREATE TABLE subscription_invoices (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    subscription_id INT NOT NULL,
+    amount DECIMAL(8, 2) NOT NULL,
+    currency VARCHAR(3) DEFAULT 'USD',
+    status ENUM('pending','processing','completed','failed','refunded') DEFAULT 'pending',
+    description VARCHAR(255) NULL,
+    paid_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (subscription_id) REFERENCES subscriptions(id) ON DELETE CASCADE,
+    INDEX idx_subscription (subscription_id),
+    INDEX idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- 21. user_payment_methods
+-- =============================================
+CREATE TABLE user_payment_methods (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    type VARCHAR(20) NOT NULL,
+    last_four VARCHAR(4) NOT NULL,
+    brand VARCHAR(20) NULL,
+    is_default BOOLEAN DEFAULT FALSE,
+    expires_at DATE NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_user (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
 -- Seed data
 -- =============================================
 

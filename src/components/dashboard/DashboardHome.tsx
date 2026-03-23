@@ -16,7 +16,8 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useTranslations, useLocale } from "next-intl";
 
 interface DashboardHomeProps {
   user: {
@@ -45,13 +46,13 @@ interface ProjectItem {
   category_name: string;
 }
 
-const statusConfig: Record<string, { label: string; color: string }> = {
-  draft: { label: "Borrador", color: "bg-gray-100 text-gray-700" },
-  open: { label: "Abierto", color: "bg-green-100 text-green-700" },
-  evaluating: { label: "Evaluando", color: "bg-blue-100 text-blue-700" },
-  awarded: { label: "Adjudicado", color: "bg-purple-100 text-purple-700" },
-  cancelled: { label: "Cancelado", color: "bg-red-100 text-red-700" },
-  expired: { label: "Expirado", color: "bg-yellow-100 text-yellow-700" },
+const statusColors: Record<string, string> = {
+  draft: "bg-gray-100 text-gray-700",
+  open: "bg-green-100 text-green-700",
+  evaluating: "bg-blue-100 text-blue-700",
+  awarded: "bg-purple-100 text-purple-700",
+  cancelled: "bg-red-100 text-red-700",
+  expired: "bg-yellow-100 text-yellow-700",
 };
 
 const iconMap: Record<string, React.ElementType> = {
@@ -65,6 +66,8 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 export default function DashboardHome({ user }: DashboardHomeProps) {
+  const t = useTranslations("DashboardHome");
+  const locale = useLocale();
   const isBrand = user.role === "brand";
   const isManufacturer = user.role === "manufacturer";
   const isAdmin = user.role === "admin";
@@ -100,13 +103,13 @@ export default function DashboardHome({ user }: DashboardHomeProps) {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Buenos días";
-    if (hour < 18) return "Buenas tardes";
-    return "Buenas noches";
+    if (hour < 12) return t("greeting.morning");
+    if (hour < 18) return t("greeting.afternoon");
+    return t("greeting.evening");
   };
 
   const formatCOP = (n: number) =>
-    new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
+    new Intl.NumberFormat(locale, { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
 
   if (loading) {
     return (
@@ -126,30 +129,30 @@ export default function DashboardHome({ user }: DashboardHomeProps) {
           </h1>
           <p className="text-gray-500 mt-1">
             {isAdmin
-              ? "Aquí tienes un resumen de la actividad de FASHIONS DEN."
+              ? t("subtitle.admin")
               : isBrand
-                ? "¿Qué proyecto de moda necesitas producir hoy?"
-                : "Revisa las oportunidades disponibles."}
+                ? t("subtitle.brand")
+                : t("subtitle.manufacturer")}
           </p>
         </div>
         {isBrand && (
           <Link href="/dashboard/projects/new">
             <Button className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white">
-              <Plus className="w-4 h-4 mr-2" /> Crear Proyecto
+              <Plus className="w-4 h-4 mr-2" /> {t("button.createProject")}
             </Button>
           </Link>
         )}
         {isManufacturer && (
           <Link href="/dashboard/opportunities">
             <Button className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white">
-              <Search className="w-4 h-4 mr-2" /> Ver Oportunidades
+              <Search className="w-4 h-4 mr-2" /> {t("button.viewOpportunities")}
             </Button>
           </Link>
         )}
         {isAdmin && (
           <Link href="/dashboard/rfq">
             <Button className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white">
-              <FileText className="w-4 h-4 mr-2" /> Ver Proyectos
+              <FileText className="w-4 h-4 mr-2" /> {t("button.viewProjects")}
             </Button>
           </Link>
         )}
@@ -184,31 +187,31 @@ export default function DashboardHome({ user }: DashboardHomeProps) {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-lg font-semibold">
-                {isAdmin ? "Proyectos Recientes" : isBrand ? "Mis Proyectos" : "Oportunidades Recientes"}
+                {isAdmin ? t("section.recentProjects") : isBrand ? t("section.myProjects") : t("section.recentOpportunities")}
               </CardTitle>
               <Link href={isAdmin ? "/dashboard/rfq" : isBrand ? "/dashboard/projects" : "/dashboard/opportunities"}>
-                <Button variant="ghost" size="sm" className="text-[#2563eb]">Ver todos</Button>
+                <Button variant="ghost" size="sm" className="text-[#2563eb]">{t("viewAll")}</Button>
               </Link>
             </CardHeader>
             <CardContent>
               {projects.length === 0 ? (
-                <p className="text-gray-500 text-sm text-center py-8">No hay proyectos aún.</p>
+                <p className="text-gray-500 text-sm text-center py-8">{t("noProjects")}</p>
               ) : (
                 <div className="space-y-4">
                   {projects.map((p) => {
-                    const st = statusConfig[p.status] ?? statusConfig.draft;
+                    const st = statusColors[p.status] ?? statusColors.draft;
                     return (
                       <div key={p.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
                             <h4 className="font-medium text-gray-900">{p.title}</h4>
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${st.color}`}>{st.label}</span>
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${st}`}>{t(`status.${p.status}`)}</span>
                           </div>
                           <div className="flex items-center gap-4 text-sm text-gray-500">
                             <span className="text-xs text-gray-400">{p.code}</span>
-                            <span>📦 {p.quantity} uds</span>
-                            <span className="flex items-center gap-1"><Send className="w-3 h-3" /> {p.proposals_count} propuestas</span>
-                            <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {new Date(p.created_at).toLocaleDateString("es-CO")}</span>
+                            <span>📦 {p.quantity} {t("units")}</span>
+                            <span className="flex items-center gap-1"><Send className="w-3 h-3" /> {p.proposals_count} {t("proposals")}</span>
+                            <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {new Date(p.created_at).toLocaleDateString(locale)}</span>
                           </div>
                         </div>
                         {p.budget_max > 0 && (
@@ -227,24 +230,24 @@ export default function DashboardHome({ user }: DashboardHomeProps) {
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg font-semibold">Acciones Rápidas</CardTitle>
+              <CardTitle className="text-lg font-semibold">{t("section.quickActions")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               {isAdmin && (
                 <>
                   <Link href="/dashboard/companies">
                     <Button variant="outline" className="w-full justify-start">
-                      <Factory className="w-4 h-4 mr-2" /> Ver Empresas
+                      <Factory className="w-4 h-4 mr-2" /> {t("quick.viewCompanies")}
                     </Button>
                   </Link>
                   <Link href="/dashboard/rfq">
                     <Button variant="outline" className="w-full justify-start">
-                      <FileText className="w-4 h-4 mr-2" /> Gestionar Proyectos
+                      <FileText className="w-4 h-4 mr-2" /> {t("quick.manageProjects")}
                     </Button>
                   </Link>
                   <Link href="/dashboard/contracts">
                     <Button variant="outline" className="w-full justify-start">
-                      <Briefcase className="w-4 h-4 mr-2" /> Ver Contratos
+                      <Briefcase className="w-4 h-4 mr-2" /> {t("quick.viewContracts")}
                     </Button>
                   </Link>
                 </>
@@ -253,17 +256,17 @@ export default function DashboardHome({ user }: DashboardHomeProps) {
                 <>
                   <Link href="/dashboard/projects/new">
                     <Button variant="outline" className="w-full justify-start">
-                      <Plus className="w-4 h-4 mr-2" /> Nuevo Proyecto
+                      <Plus className="w-4 h-4 mr-2" /> {t("quick.newProject")}
                     </Button>
                   </Link>
                   <Link href="/dashboard/manufacturers">
                     <Button variant="outline" className="w-full justify-start">
-                      <Factory className="w-4 h-4 mr-2" /> Explorar Fabricantes
+                      <Factory className="w-4 h-4 mr-2" /> {t("quick.exploreManufacturers")}
                     </Button>
                   </Link>
                   <Link href="/dashboard/contracts">
                     <Button variant="outline" className="w-full justify-start">
-                      <Briefcase className="w-4 h-4 mr-2" /> Mis Contratos
+                      <Briefcase className="w-4 h-4 mr-2" /> {t("quick.myContracts")}
                     </Button>
                   </Link>
                 </>
@@ -272,17 +275,17 @@ export default function DashboardHome({ user }: DashboardHomeProps) {
                 <>
                   <Link href="/dashboard/opportunities">
                     <Button variant="outline" className="w-full justify-start">
-                      <Leaf className="w-4 h-4 mr-2" /> Ver Oportunidades
+                      <Leaf className="w-4 h-4 mr-2" /> {t("quick.viewOpportunities")}
                     </Button>
                   </Link>
                   <Link href="/dashboard/proposals">
                     <Button variant="outline" className="w-full justify-start">
-                      <Send className="w-4 h-4 mr-2" /> Mis Propuestas
+                      <Send className="w-4 h-4 mr-2" /> {t("quick.myProposals")}
                     </Button>
                   </Link>
                   <Link href="/dashboard/company">
                     <Button variant="outline" className="w-full justify-start">
-                      <Factory className="w-4 h-4 mr-2" /> Mi Perfil
+                      <Factory className="w-4 h-4 mr-2" /> {t("quick.myProfile")}
                     </Button>
                   </Link>
                 </>

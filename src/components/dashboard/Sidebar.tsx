@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -30,7 +29,8 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { useUnreadMessagesCount } from "@/hooks/useUnreadMessagesCount";
 import { useOpportunitiesCount } from "@/hooks/useOpportunitiesCount";
 
@@ -45,57 +45,57 @@ interface SidebarProps {
 }
 
 interface NavItem {
-  name: string;
+  key: string;
   href: string;
   icon: React.ElementType;
   badge?: number;
-  subItems?: { name: string; href: string }[];
+  subItems?: { key: string; href: string }[];
 }
 
 const adminNavItems: NavItem[] = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Empresas", href: "/dashboard/companies", icon: Factory },
-  { name: "Proyectos (RFQ)", href: "/dashboard/rfq", icon: FileText },
-  { name: "Contratos", href: "/dashboard/contracts", icon: Briefcase },
-  { name: "Usuarios", href: "/dashboard/users", icon: Users },
-  { name: "Mensajes", href: "/dashboard/messages", icon: MessageSquare },
-  { name: "Pagos", href: "/dashboard/payments", icon: CreditCard },
-  { name: "Reseñas", href: "/dashboard/reviews", icon: Star },
-  { name: "Reportes", href: "/dashboard/reports", icon: BarChart3 },
-  { name: "Configuración", href: "/dashboard/settings", icon: Settings },
+  { key: "dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { key: "companies", href: "/dashboard/companies", icon: Factory },
+  { key: "projectsRfq", href: "/dashboard/rfq", icon: FileText },
+  { key: "contracts", href: "/dashboard/contracts", icon: Briefcase },
+  { key: "users", href: "/dashboard/users", icon: Users },
+  { key: "messages", href: "/dashboard/messages", icon: MessageSquare },
+  { key: "payments", href: "/dashboard/payments", icon: CreditCard },
+  { key: "reviews", href: "/dashboard/reviews", icon: Star },
+  { key: "reports", href: "/dashboard/reports", icon: BarChart3 },
+  { key: "settings", href: "/dashboard/settings", icon: Settings },
 ];
 
 const brandNavItems: NavItem[] = [
-  { name: "Inicio", href: "/dashboard", icon: Home },
-  { name: "Mis Proyectos", href: "/dashboard/projects", icon: FileText, badge: 2 },
-  { name: "Mis Contratos", href: "/dashboard/contracts", icon: Briefcase },
-  { name: "Fabricantes", href: "/dashboard/manufacturers", icon: Factory },
-  { name: "Mensajes", href: "/dashboard/messages", icon: MessageSquare },
-  { name: "Mi Empresa", href: "/dashboard/company", icon: Building2 },
-  { name: "Pagos", href: "/dashboard/payments", icon: CreditCard },
-  { name: "Ayuda", href: "/dashboard/help", icon: HelpCircle },
+  { key: "home", href: "/dashboard", icon: Home },
+  { key: "myProjects", href: "/dashboard/projects", icon: FileText, badge: 2 },
+  { key: "myContracts", href: "/dashboard/contracts", icon: Briefcase },
+  { key: "manufacturers", href: "/dashboard/manufacturers", icon: Factory },
+  { key: "messages", href: "/dashboard/messages", icon: MessageSquare },
+  { key: "myCompany", href: "/dashboard/company", icon: Building2 },
+  { key: "payments", href: "/dashboard/payments", icon: CreditCard },
+  { key: "help", href: "/dashboard/help", icon: HelpCircle },
 ];
 
 const manufacturerNavItems: NavItem[] = [
-  { name: "Inicio", href: "/dashboard", icon: Home },
-  { name: "Oportunidades", href: "/dashboard/opportunities", icon: Leaf },
-  { name: "Mis Propuestas", href: "/dashboard/proposals", icon: Send },
-  { name: "Mis Contratos", href: "/dashboard/contracts", icon: Briefcase },
-  { name: "Mensajes", href: "/dashboard/messages", icon: MessageSquare },
+  { key: "home", href: "/dashboard", icon: Home },
+  { key: "opportunities", href: "/dashboard/opportunities", icon: Leaf },
+  { key: "myProposals", href: "/dashboard/proposals", icon: Send },
+  { key: "myContracts", href: "/dashboard/contracts", icon: Briefcase },
+  { key: "messages", href: "/dashboard/messages", icon: MessageSquare },
   {
-    name: "Mi Perfil",
+    key: "myProfile",
     href: "/dashboard/company",
     icon: Factory,
     subItems: [
-      { name: "Datos de Empresa", href: "/dashboard/company" },
-      { name: "Capacidades", href: "/dashboard/company/capabilities" },
-      { name: "Certificaciones", href: "/dashboard/company/certifications" },
+      { key: "companyDetails", href: "/dashboard/company" },
+      { key: "capabilities", href: "/dashboard/company/capabilities" },
+      { key: "certifications", href: "/dashboard/company/certifications" },
     ],
   },
-  { name: "Puntuación Verde", href: "/dashboard/green-score", icon: Award },
-  { name: "Pagos", href: "/dashboard/payments", icon: CreditCard },
-  { name: "Reseñas", href: "/dashboard/reviews", icon: Star },
-  { name: "Configuración", href: "/dashboard/settings", icon: Settings },
+  { key: "greenScore", href: "/dashboard/green-score", icon: Award },
+  { key: "payments", href: "/dashboard/payments", icon: CreditCard },
+  { key: "reviews", href: "/dashboard/reviews", icon: Star },
+  { key: "settings", href: "/dashboard/settings", icon: Settings },
 ];
 
 export default function Sidebar({
@@ -108,117 +108,12 @@ export default function Sidebar({
   onNavigateStart,
 }: SidebarProps) {
   const pathname = usePathname();
-  const { language } = useLanguage();
+  const t = useTranslations("Sidebar");
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const sidebarRef = useRef<HTMLElement | null>(null);
   const { unreadCount } = useUnreadMessagesCount(15000);
   const { opportunitiesCount } = useOpportunitiesCount(userRole === "manufacturer", 10000);
-
-  const labelMap = {
-    en: {
-      Dashboard: "Dashboard",
-      Empresas: "Companies",
-      "Proyectos (RFQ)": "Projects (RFQ)",
-      Contratos: "Contracts",
-      Usuarios: "Users",
-      Mensajes: "Messages",
-      Pagos: "Payments",
-      Reseñas: "Reviews",
-      Reportes: "Reports",
-      Configuración: "Settings",
-      Inicio: "Home",
-      "Mis Proyectos": "My Projects",
-      "Mis Contratos": "My Contracts",
-      Fabricantes: "Manufacturers",
-      "Mi Empresa": "My Company",
-      Ayuda: "Help",
-      Oportunidades: "Opportunities",
-      "Mis Propuestas": "My Proposals",
-      "Mi Perfil": "My Profile",
-      "Datos de Empresa": "Company Details",
-      Capacidades: "Capabilities",
-      Certificaciones: "Certifications",
-      "Puntuación Verde": "Green Score",
-    },
-    fr: {
-      Dashboard: "Tableau de bord",
-      Empresas: "Entreprises",
-      "Proyectos (RFQ)": "Projets (RFQ)",
-      Contratos: "Contrats",
-      Usuarios: "Utilisateurs",
-      Mensajes: "Messages",
-      Pagos: "Paiements",
-      Reseñas: "Avis",
-      Reportes: "Rapports",
-      Configuración: "Parametres",
-      Inicio: "Accueil",
-      "Mis Proyectos": "Mes Projets",
-      "Mis Contratos": "Mes Contrats",
-      Fabricantes: "Fabricants",
-      "Mi Empresa": "Mon Entreprise",
-      Ayuda: "Aide",
-      Oportunidades: "Opportunites",
-      "Mis Propuestas": "Mes Propositions",
-      "Mi Perfil": "Mon Profil",
-      "Datos de Empresa": "Donnees d'entreprise",
-      Capacidades: "Capacites",
-      Certificaciones: "Certifications",
-      "Puntuación Verde": "Score Vert",
-    },
-  } as const;
-
-  const uiText = {
-    es: {
-      closeMenu: "Cerrar menu",
-      collapseMenu: "Colapsar menu",
-      searchPlaceholder: "Buscar...",
-      roleAdmin: "Administrador",
-      roleManufacturer: "Fabricante",
-      roleBrand: "Marca",
-      ctaAdmin: "Ver Proyectos",
-      ctaBrand: "Publicar Proyecto",
-      ctaManufacturer: "Ver Oportunidades",
-      ctaAdminAria: "Ver proyectos",
-      ctaBrandAria: "Publicar proyecto",
-      ctaManufacturerAria: "Ver oportunidades",
-    },
-    en: {
-      closeMenu: "Close menu",
-      collapseMenu: "Collapse menu",
-      searchPlaceholder: "Search...",
-      roleAdmin: "Administrator",
-      roleManufacturer: "Manufacturer",
-      roleBrand: "Brand",
-      ctaAdmin: "View Projects",
-      ctaBrand: "Publish Project",
-      ctaManufacturer: "View Opportunities",
-      ctaAdminAria: "View projects",
-      ctaBrandAria: "Publish project",
-      ctaManufacturerAria: "View opportunities",
-    },
-    fr: {
-      closeMenu: "Fermer le menu",
-      collapseMenu: "Reduire le menu",
-      searchPlaceholder: "Rechercher...",
-      roleAdmin: "Administrateur",
-      roleManufacturer: "Fabricant",
-      roleBrand: "Marque",
-      ctaAdmin: "Voir Projets",
-      ctaBrand: "Publier Projet",
-      ctaManufacturer: "Voir Opportunites",
-      ctaAdminAria: "Voir projets",
-      ctaBrandAria: "Publier projet",
-      ctaManufacturerAria: "Voir opportunites",
-    },
-  } as const;
-
-  const t = uiText[language];
-  const translateLabel = (label: string) => {
-    if (language === "es") return label;
-    const dict = language === "en" ? labelMap.en : labelMap.fr;
-    return dict[label as keyof typeof dict] ?? label;
-  };
 
   const navItems = userRole === "admin"
     ? adminNavItems
@@ -287,7 +182,7 @@ export default function Sidebar({
           <button
             onClick={onMobileClose}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            aria-label={t.closeMenu}
+            aria-label={t("closeMenu")}
           >
             <X className="w-5 h-5 text-gray-500" />
           </button>
@@ -295,7 +190,7 @@ export default function Sidebar({
           <button
             onClick={onToggle}
             className={`p-2 hover:bg-gray-100 rounded-lg transition-colors ${!isOpen ? "hidden" : ""}`}
-            aria-label={t.collapseMenu}
+            aria-label={t("collapseMenu")}
           >
             <Menu className="w-5 h-5 text-gray-500" />
           </button>
@@ -321,7 +216,7 @@ export default function Sidebar({
           >
             <Button className="w-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-lg flex items-center justify-center gap-2">
               <Plus className="w-4 h-4" />
-              {userRole === "admin" ? t.ctaAdmin : userRole === "brand" ? t.ctaBrand : t.ctaManufacturer}
+              {userRole === "admin" ? t("ctaAdmin") : userRole === "brand" ? t("ctaBrand") : t("ctaManufacturer")}
             </Button>
           </Link>
         </div>
@@ -341,7 +236,7 @@ export default function Sidebar({
               )
             }
           >
-            <Button size="icon" className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-lg" aria-label={userRole === "admin" ? t.ctaAdminAria : userRole === "brand" ? t.ctaBrandAria : t.ctaManufacturerAria}>
+            <Button size="icon" className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-lg" aria-label={userRole === "admin" ? t("ctaAdminAria") : userRole === "brand" ? t("ctaBrandAria") : t("ctaManufacturerAria")}>
               <Plus className="w-5 h-5" />
             </Button>
           </Link>
@@ -355,7 +250,7 @@ export default function Sidebar({
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
               type="text"
-              placeholder={t.searchPlaceholder}
+              placeholder={t("searchPlaceholder")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 bg-gray-50 border-gray-200 rounded-lg"
@@ -376,7 +271,7 @@ export default function Sidebar({
                   : "bg-blue-100 text-blue-700"
             }`}
           >
-            {userRole === "admin" ? t.roleAdmin : userRole === "manufacturer" ? t.roleManufacturer : t.roleBrand}
+            {userRole === "admin" ? t("roleAdmin") : userRole === "manufacturer" ? t("roleManufacturer") : t("roleBrand")}
           </span>
         </div>
       )}
@@ -386,19 +281,19 @@ export default function Sidebar({
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.href);
-          const isExpanded = expandedItems.includes(item.name);
+          const isExpanded = expandedItems.includes(item.key);
           const hasSubItems = item.subItems && item.subItems.length > 0;
-          const itemBadge = item.name === "Mensajes"
+          const itemBadge = item.key === "messages"
             ? unreadCount
-            : item.name === "Oportunidades" && userRole === "manufacturer"
+            : item.key === "opportunities" && userRole === "manufacturer"
               ? opportunitiesCount
               : (item.badge ?? 0);
 
           return (
-            <div key={item.name}>
+            <div key={item.key}>
               {hasSubItems ? (
                 <button
-                  onClick={() => toggleExpand(item.name)}
+                  onClick={() => toggleExpand(item.key)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
                     active ? "bg-[#2563eb] text-white" : "text-gray-700 hover:bg-gray-100"
                   } ${!expanded ? "justify-center" : ""}`}
@@ -406,7 +301,7 @@ export default function Sidebar({
                   <Icon className={`w-5 h-5 flex-shrink-0 ${active ? "text-white" : "text-gray-500"}`} />
                   {expanded && (
                     <>
-                      <span className="flex-1 text-left font-medium text-sm">{translateLabel(item.name)}</span>
+                      <span className="flex-1 text-left font-medium text-sm">{t(`nav.${item.key}`)}</span>
                       {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                     </>
                   )}
@@ -429,7 +324,7 @@ export default function Sidebar({
                   </div>
                   {expanded && (
                     <>
-                      <span className="flex-1 font-medium text-sm">{translateLabel(item.name)}</span>
+                      <span className="flex-1 font-medium text-sm">{t(`nav.${item.key}`)}</span>
                       {itemBadge > 0 && (
                         <span className="w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                           {itemBadge}
@@ -453,7 +348,7 @@ export default function Sidebar({
                           : "text-gray-600 hover:bg-gray-50"
                       }`}
                     >
-                      {translateLabel(subItem.name)}
+                      {t(`nav.${subItem.key}`)}
                     </Link>
                   ))}
                 </div>

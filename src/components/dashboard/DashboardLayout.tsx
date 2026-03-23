@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import Sidebar from "./Sidebar";
 import DashboardHeader from "./DashboardHeader";
 import { useDashboardUser } from "@/contexts/DashboardUserContext";
@@ -17,6 +18,7 @@ const SWIPE_CLOSE_THRESHOLD_PX = 64;
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user, isLoading } = useDashboardUser();
+  const t = useTranslations("DashboardLayout");
   const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -178,7 +180,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-[#2563eb] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-500 text-sm">Cargando dashboard...</p>
+          <p className="text-gray-500 text-sm">{t("loading")}</p>
         </div>
       </div>
     );
@@ -215,7 +217,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {isMobile && mobileSidebarOpen && (
         <button
-          aria-label="Cerrar menu lateral"
+          aria-label={t("closeSidebar")}
           className="fixed inset-0 z-30 bg-black/35 lg:hidden"
           onClick={() => setMobileSidebarOpen(false)}
         />
