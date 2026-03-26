@@ -51,8 +51,8 @@ export default function HelpPage() {
   return (
     <div className="space-y-6">
         <div className="text-center max-w-2xl mx-auto">
-          <div className="w-16 h-16 rounded-full bg-[#2563eb]/10 flex items-center justify-center mx-auto mb-4">
-            <HelpCircle className="w-8 h-8 text-[#2563eb]" />
+          <div className="w-16 h-16 rounded-full bg-brand-100 flex items-center justify-center mx-auto mb-4">
+            <HelpCircle className="w-8 h-8 text-brand-600" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
           <p className="text-gray-500 mt-1">{t("subtitle")}</p>
@@ -64,12 +64,12 @@ export default function HelpPage() {
 
         <div className="flex justify-center gap-2 flex-wrap">
           <Button variant={activeCategory === "all" ? "default" : "outline"} size="sm" onClick={() => setActiveCategory("all")}
-            className={activeCategory === "all" ? "bg-[#2563eb] hover:bg-[#1d4ed8]" : ""}>{t("allCategories")}</Button>
+            className={activeCategory === "all" ? "bg-brand-600 hover:bg-brand-700" : ""}>{t("allCategories")}</Button>
           {categoryKeys.map((key) => {
             const Icon = categoryIcons[key] || HelpCircle;
             return (
               <Button key={key} variant={activeCategory === key ? "default" : "outline"} size="sm" onClick={() => setActiveCategory(key)}
-                className={`gap-1 ${activeCategory === key ? "bg-[#2563eb] hover:bg-[#1d4ed8]" : ""}`}>
+                className={`gap-1 ${activeCategory === key ? "bg-brand-600 hover:bg-brand-700" : ""}`}>
                 <Icon className="w-3.5 h-3.5" /> {t(`categories.${key}`)}
               </Button>
             );
@@ -102,18 +102,18 @@ export default function HelpPage() {
           <h3 className="font-semibold text-lg mb-2">{t("contactTitle")}</h3>
           <p className="text-sm text-gray-500 mb-4">{t("contactSubtitle")}</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <button className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-[#2563eb] hover:bg-[#2563eb]/5 transition-colors">
-              <MessageSquare className="w-6 h-6 text-[#2563eb]" />
+            <button className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-brand-600 hover:bg-brand-600/5 transition-colors">
+              <MessageSquare className="w-6 h-6 text-brand-600" />
               <span className="text-sm font-medium">{t("chatLive")}</span>
               <span className="text-xs text-gray-500">{t("chatDescription")}</span>
             </button>
-            <button className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-[#2563eb] hover:bg-[#2563eb]/5 transition-colors">
-              <Mail className="w-6 h-6 text-[#2563eb]" />
+            <button className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-brand-600 hover:bg-brand-600/5 transition-colors">
+              <Mail className="w-6 h-6 text-brand-600" />
               <span className="text-sm font-medium">{t("email")}</span>
               <span className="text-xs text-gray-500">{t("emailAddress")}</span>
             </button>
-            <button className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-[#2563eb] hover:bg-[#2563eb]/5 transition-colors">
-              <Phone className="w-6 h-6 text-[#2563eb]" />
+            <button className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-brand-600 hover:bg-brand-600/5 transition-colors">
+              <Phone className="w-6 h-6 text-brand-600" />
               <span className="text-sm font-medium">{t("phone")}</span>
               <span className="text-xs text-gray-500">{t("phoneNumber")}</span>
             </button>

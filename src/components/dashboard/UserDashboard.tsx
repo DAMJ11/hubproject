@@ -28,30 +28,30 @@ export default function UserDashboard({ user }: UserDashboardProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
+      <header className="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               {t("welcome", { name: user.firstName })}
             </h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               {t("subtitle")}
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <button className="relative p-2 text-gray-500 hover:text-gray-700 transition-colors">
+            <button className="relative p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
               <Bell className="w-5 h-5" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#2563eb] rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-brand-600 rounded-full flex items-center justify-center">
                 <User className="w-5 h-5 text-white" />
               </div>
               <div className="hidden md:block">
-                <p className="text-sm font-medium text-gray-900">{user.firstName} {user.lastName}</p>
-                <p className="text-xs text-gray-500">{user.email}</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">{user.firstName} {user.lastName}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
               </div>
             </div>
           </div>
@@ -64,12 +64,12 @@ export default function UserDashboard({ user }: UserDashboardProps) {
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500">{stat.label}</p>
-                  <p className="text-3xl font-bold text-gray-900 mt-1">{stat.value}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{stat.value}</p>
                 </div>
                 <div className={`${stat.color} p-3 rounded-lg`}>
                   <stat.icon className="w-6 h-6 text-white" />
@@ -81,42 +81,42 @@ export default function UserDashboard({ user }: UserDashboardProps) {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Recent Activity */}
-          <div className="lg:col-span-2 bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">{t("recentActivity")}</h2>
+          <div className="lg:col-span-2 bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t("recentActivity")}</h2>
             <div className="space-y-4">
               {recentActivity.map((activity, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0"
+                  className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-slate-700 last:border-0"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-[#2563eb] rounded-full"></div>
-                    <p className="text-sm text-gray-700">{activity.action}</p>
+                    <div className="w-2 h-2 bg-brand-600 rounded-full"></div>
+                    <p className="text-sm text-gray-700 dark:text-gray-300">{activity.action}</p>
                   </div>
-                  <span className="text-xs text-gray-400">{activity.time}</span>
+                  <span className="text-xs text-gray-400 dark:text-gray-500">{activity.time}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">{t("quickActions")}</h2>
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t("quickActions")}</h2>
             <div className="space-y-3">
-              <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
-                <Package className="w-5 h-5 text-[#2563eb]" />
+              <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg transition-colors">
+                <Package className="w-5 h-5 text-brand-600" />
                 <span className="text-sm font-medium">{t("actions.createProject")}</span>
               </button>
-              <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
-                <MessageSquare className="w-5 h-5 text-[#2563eb]" />
+              <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg transition-colors">
+                <MessageSquare className="w-5 h-5 text-brand-600" />
                 <span className="text-sm font-medium">{t("actions.sendMessage")}</span>
               </button>
-              <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
-                <BarChart3 className="w-5 h-5 text-[#2563eb]" />
+              <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg transition-colors">
+                <BarChart3 className="w-5 h-5 text-brand-600" />
                 <span className="text-sm font-medium">{t("actions.viewReports")}</span>
               </button>
-              <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
-                <Settings className="w-5 h-5 text-[#2563eb]" />
+              <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg transition-colors">
+                <Settings className="w-5 h-5 text-brand-600" />
                 <span className="text-sm font-medium">{t("actions.settings")}</span>
               </button>
             </div>

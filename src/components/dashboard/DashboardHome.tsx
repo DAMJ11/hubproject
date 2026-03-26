@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
   FileText,
   MessageSquare,
@@ -10,10 +9,11 @@ import {
   Leaf,
   Search,
   Plus,
-  Loader2,
   Send,
   CreditCard,
 } from "lucide-react";
+import { StatusBadge } from "@/components/shared/status-badge";
+import { EmptyState } from "@/components/shared/empty-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
@@ -25,6 +25,8 @@ interface DashboardHomeProps {
     lastName: string;
     role: string;
   };
+  initialStats: StatItem[];
+  initialProjects: ProjectItem[];
 }
 
 interface StatItem {
@@ -46,15 +48,6 @@ interface ProjectItem {
   category_name: string;
 }
 
-const statusColors: Record<string, string> = {
-  draft: "bg-gray-100 text-gray-700",
-  open: "bg-green-100 text-green-700",
-  evaluating: "bg-blue-100 text-blue-700",
-  awarded: "bg-purple-100 text-purple-700",
-  cancelled: "bg-red-100 text-red-700",
-  expired: "bg-yellow-100 text-yellow-700",
-};
-
 const iconMap: Record<string, React.ElementType> = {
   FileText,
   MessageSquare,
@@ -65,41 +58,14 @@ const iconMap: Record<string, React.ElementType> = {
   CreditCard,
 };
 
-export default function DashboardHome({ user }: DashboardHomeProps) {
+export default function DashboardHome({ user, initialStats, initialProjects }: DashboardHomeProps) {
   const t = useTranslations("DashboardHome");
   const locale = useLocale();
   const isBrand = user.role === "brand";
   const isManufacturer = user.role === "manufacturer";
   const isAdmin = user.role === "admin";
-  const [stats, setStats] = useState<StatItem[]>([]);
-  const [projects, setProjects] = useState<ProjectItem[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [statsRes, projectsRes] = await Promise.all([
-          fetch("/api/dashboard/stats"),
-          fetch("/api/rfq"),
-        ]);
-
-        if (statsRes.ok) {
-          const data = await statsRes.json();
-          setStats(data.stats ?? []);
-        }
-        if (projectsRes.ok) {
-          const data = await projectsRes.json();
-          setProjects((data.data ?? []).slice(0, 4));
-        }
-      } catch (err) {
-        console.error("Error loading dashboard data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const stats = initialStats;
+  const projects = initialProjects;
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -111,23 +77,15 @@ export default function DashboardHome({ user }: DashboardHomeProps) {
   const formatCOP = (n: number) =>
     new Intl.NumberFormat(locale, { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
 
-  if (loading) {
-    return (
-      <div className="p-6 flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-[#2563eb]" />
-      </div>
-    );
-  }
-
   return (
     <div className="p-6 space-y-6">
       {/* Welcome Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             {getGreeting()}, {user.firstName}! 👋
           </h1>
-          <p className="text-gray-500 mt-1">
+          <p className="text-gray-500 dark:text-gray-400 mt-1">
             {isAdmin
               ? t("subtitle.admin")
               : isBrand
@@ -137,21 +95,21 @@ export default function DashboardHome({ user }: DashboardHomeProps) {
         </div>
         {isBrand && (
           <Link href="/dashboard/projects/new">
-            <Button className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white">
+            <Button className="bg-brand-600 hover:bg-brand-700 text-white">
               <Plus className="w-4 h-4 mr-2" /> {t("button.createProject")}
             </Button>
           </Link>
         )}
         {isManufacturer && (
           <Link href="/dashboard/opportunities">
-            <Button className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white">
+            <Button className="bg-brand-600 hover:bg-brand-700 text-white">
               <Search className="w-4 h-4 mr-2" /> {t("button.viewOpportunities")}
             </Button>
           </Link>
         )}
         {isAdmin && (
           <Link href="/dashboard/rfq">
-            <Button className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white">
+            <Button className="bg-brand-600 hover:bg-brand-700 text-white">
               <FileText className="w-4 h-4 mr-2" /> {t("button.viewProjects")}
             </Button>
           </Link>
@@ -166,13 +124,13 @@ export default function DashboardHome({ user }: DashboardHomeProps) {
             <Card key={stat.label} className="hover:shadow-md transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 bg-[#2563eb]/10 rounded-xl flex items-center justify-center">
-                    <Icon className="w-6 h-6 text-[#2563eb]" />
+                  <div className="w-12 h-12 bg-brand-100 rounded-xl flex items-center justify-center">
+                    <Icon className="w-6 h-6 text-brand-600" />
                   </div>
                 </div>
                 <div className="mt-4">
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                  <p className="text-sm text-gray-500">{stat.label}</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</p>
                 </div>
               </CardContent>
             </Card>
@@ -190,32 +148,31 @@ export default function DashboardHome({ user }: DashboardHomeProps) {
                 {isAdmin ? t("section.recentProjects") : isBrand ? t("section.myProjects") : t("section.recentOpportunities")}
               </CardTitle>
               <Link href={isAdmin ? "/dashboard/rfq" : isBrand ? "/dashboard/projects" : "/dashboard/opportunities"}>
-                <Button variant="ghost" size="sm" className="text-[#2563eb]">{t("viewAll")}</Button>
+                <Button variant="ghost" size="sm" className="text-brand-600">{t("viewAll")}</Button>
               </Link>
             </CardHeader>
             <CardContent>
               {projects.length === 0 ? (
-                <p className="text-gray-500 text-sm text-center py-8">{t("noProjects")}</p>
+                <EmptyState icon={FileText} title={t("noProjects")} />
               ) : (
                 <div className="space-y-4">
                   {projects.map((p) => {
-                    const st = statusColors[p.status] ?? statusColors.draft;
                     return (
-                      <div key={p.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+                      <div key={p.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <h4 className="font-medium text-gray-900">{p.title}</h4>
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${st}`}>{t(`status.${p.status}`)}</span>
+                            <h4 className="font-medium text-gray-900 dark:text-white">{p.title}</h4>
+                            <StatusBadge entity="projects" status={p.status} />
                           </div>
-                          <div className="flex items-center gap-4 text-sm text-gray-500">
-                            <span className="text-xs text-gray-400">{p.code}</span>
+                          <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                            <span className="text-xs text-gray-400 dark:text-gray-500">{p.code}</span>
                             <span>📦 {p.quantity} {t("units")}</span>
                             <span className="flex items-center gap-1"><Send className="w-3 h-3" /> {p.proposals_count} {t("proposals")}</span>
                             <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {new Date(p.created_at).toLocaleDateString(locale)}</span>
                           </div>
                         </div>
                         {p.budget_max > 0 && (
-                          <span className="font-semibold text-gray-900">{formatCOP(p.budget_max)}</span>
+                          <span className="font-semibold text-gray-900 dark:text-white">{formatCOP(p.budget_max)}</span>
                         )}
                       </div>
                     );

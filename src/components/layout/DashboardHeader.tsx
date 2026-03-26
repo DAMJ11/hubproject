@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import {
   Bell,
   Menu,
@@ -14,6 +14,7 @@ import {
   Home,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +22,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
+import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/navigation";
 
@@ -51,8 +64,12 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
   const t = useTranslations("DashboardHeader");
   const locale = useLocale();
 
+  const [isPending, startTransition] = useTransition();
+
   const switchLocale = (newLocale: string) => {
-    router.replace(pathname, { locale: newLocale });
+    startTransition(() => {
+      router.replace(pathname, { locale: newLocale });
+    });
   };
 
   const selectedLanguage = LANGUAGES.find((l) => l.code === locale) ?? LANGUAGES[0];
@@ -100,12 +117,15 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
       ? t("roleManufacturer")
       : t("roleBrand");
 
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+
   const handleLogout = async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
+      toast.success(t("logoutSuccess"));
       router.push("/login");
-    } catch (error) {
-      console.error("Error al cerrar sesion:", error);
+    } catch {
+      toast.error(t("logoutError"));
     }
   };
 
@@ -116,7 +136,7 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
       <div className="flex items-center gap-4 min-w-0">
         <button
           onClick={onMenuClick}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors lg:hidden"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors lg:hidden"
           aria-label={t("ariaOpenMenu")}
         >
           <Menu className="w-5 h-5 text-gray-500" />
@@ -129,7 +149,7 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
             {breadcrumbs.map((crumb, index) => (
               <span key={`${crumb}-${index}`} className="inline-flex items-center gap-1">
                 {index > 0 && <ChevronRight className="w-3 h-3" />}
-                <span className={index === breadcrumbs.length - 1 ? "text-[#2563eb] font-medium" : ""}>{crumb}</span>
+                <span className={index === breadcrumbs.length - 1 ? "text-brand-600 font-medium" : ""}>{crumb}</span>
               </span>
             ))}
           </div>
@@ -137,25 +157,37 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
       </div>
 
       <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label={theme === "dark" ? t("ariaThemeLight") : t("ariaThemeDark")}
-          onClick={() => setTheme((prev) => (prev === "dark" ? "light" : "dark"))}
-        >
-          {theme === "dark" ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-gray-500" />}
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label={theme === "dark" ? t("ariaThemeLight") : t("ariaThemeDark")}
+              onClick={() => setTheme((prev) => (prev === "dark" ? "light" : "dark"))}
+            >
+              {theme === "dark" ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-gray-500" />}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {theme === "dark" ? t("ariaThemeLight") : t("ariaThemeDark")}
+          </TooltipContent>
+        </Tooltip>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-2 px-3">
-              <img
+            <Button variant="ghost" className={`flex items-center gap-2 px-3 transition-opacity duration-200 ${isPending ? "opacity-50 pointer-events-none" : ""}`}>
+              <Image
                 src={getFlagSrc(selectedLanguage.countryCode)}
                 alt={selectedLanguage.name}
-                className="w-5 h-4 rounded-[2px] object-cover"
-                loading="lazy"
+                width={20}
+                height={16}
+                className={`w-5 h-4 rounded-[2px] object-cover ${isPending ? "animate-pulse" : ""}`}
               />
-              <ChevronDown className="w-4 h-4 text-gray-400" />
+              {isPending ? (
+                <div className="w-4 h-4 border-2 border-gray-300 border-t-brand-600 rounded-full animate-spin" />
+              ) : (
+                <ChevronDown className="w-4 h-4 text-gray-400" />
+              )}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-40">
@@ -165,11 +197,12 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
                 onClick={() => switchLocale(lang.code)}
                 className="flex items-center gap-2 cursor-pointer"
               >
-                <img
+                <Image
                   src={getFlagSrc(lang.countryCode)}
                   alt={lang.name}
+                  width={20}
+                  height={16}
                   className="w-5 h-4 rounded-[2px] object-cover"
-                  loading="lazy"
                 />
                 <span>{lang.name}</span>
               </DropdownMenuItem>
@@ -189,8 +222,8 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-80">
-            <div className="px-4 py-3 border-b border-gray-100">
-              <h3 className="font-semibold text-gray-900">{t("notificationsTitle")}</h3>
+            <div className="px-4 py-3 border-b border-gray-100 dark:border-slate-700">
+              <h3 className="font-semibold text-gray-900 dark:text-white">{t("notificationsTitle")}</h3>
             </div>
             <div className="max-h-80 overflow-y-auto">
               {[0, 1, 2, 3].map((i) => (
@@ -200,7 +233,7 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
                 >
                   <div className="flex items-center gap-2 w-full">
                     {NOTIFICATION_UNREAD[i] && (
-                      <span className="w-2 h-2 bg-[#2563eb] rounded-full flex-shrink-0" />
+                      <span className="w-2 h-2 bg-brand-600 rounded-full flex-shrink-0" />
                     )}
                     <span className={`text-sm ${NOTIFICATION_UNREAD[i] ? "font-medium" : ""}`}>
                       {t(`notifications.${i}.title`)}
@@ -211,7 +244,7 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
               ))}
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="justify-center text-[#2563eb] font-medium cursor-pointer">
+            <DropdownMenuItem className="justify-center text-brand-600 font-medium cursor-pointer">
               {t("viewAllNotifications")}
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -220,20 +253,20 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="flex items-center gap-2 px-2">
-              <div className="w-9 h-9 bg-[#2563eb] rounded-full flex items-center justify-center">
+              <div className="w-9 h-9 bg-brand-600 rounded-full flex items-center justify-center">
                 <span className="text-white font-medium text-sm">{getInitials()}</span>
               </div>
               <div className="hidden sm:block text-left">
-                <p className="text-sm font-medium text-gray-900">{user.firstName}</p>
-                <p className="text-xs text-gray-500">{roleLabel}</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">{user.firstName}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{roleLabel}</p>
               </div>
               <ChevronDown className="w-4 h-4 text-gray-400" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <div className="px-4 py-3 border-b border-gray-100">
-              <p className="font-medium text-gray-900">{user.firstName} {user.lastName}</p>
-              <p className="text-sm text-gray-500">{user.email}</p>
+            <div className="px-4 py-3 border-b border-gray-100 dark:border-slate-700">
+              <p className="font-medium text-gray-900 dark:text-white">{user.firstName} {user.lastName}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
             </div>
             <DropdownMenuItem className="cursor-pointer">
               <User className="w-4 h-4 mr-2" />
@@ -244,12 +277,27 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
               {t("profileSettings")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600">
+            <DropdownMenuItem onClick={() => setShowLogoutDialog(true)} className="cursor-pointer text-red-600 focus:text-red-600">
               <LogOut className="w-4 h-4 mr-2" />
               {t("signOut")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t("logoutConfirmTitle")}</AlertDialogTitle>
+              <AlertDialogDescription>{t("logoutConfirmDescription")}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t("logoutCancel")}</AlertDialogCancel>
+              <AlertDialogAction onClick={handleLogout} className="bg-red-600 hover:bg-red-700 text-white">
+                {t("logoutConfirm")}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </header>
   );

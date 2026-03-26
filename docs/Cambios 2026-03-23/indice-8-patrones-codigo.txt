@@ -1,0 +1,84 @@
+=========================================================
+ ÍNDICE 8 — PATRONES DE CÓDIGO Y ARQUITECTURA
+ Fecha: 2026-03-27
+=========================================================
+
+RESUMEN
+-------
+Se reorganizó la estructura de carpetas del proyecto y se migraron
+4 páginas de dashboard al patrón Server Component → Client Leaf,
+eliminando fetch client-side innecesarios. Se verificó que el patrón
+de status centralizado (status-config.ts) ya estaba completo.
+
+
+8.1 ESTRUCTURA DE CARPETAS (Feature-based)
+==========================================
+
+Nuevos directorios creados:
+
+  components/layout/
+    - Header.tsx        (movido desde components/)
+    - Footer.tsx        (movido desde components/)
+    - DashboardLayout.tsx (movido desde components/dashboard/)
+    - DashboardHeader.tsx (movido desde components/dashboard/)
+    - Sidebar.tsx        (movido desde components/dashboard/)
+
+  components/shared/
+    - empty-state.tsx    (movido desde components/ui/)
+    - skeleton-loader.tsx (movido desde components/ui/)
+    - status-badge.tsx   (movido desde components/ui/)
+    - page-transition.tsx (movido desde components/ui/)
+
+Imports actualizados:
+  - 50+ archivos: @/components/ui/{shared} → @/components/shared/{shared}
+  - 10+ archivos: @/components/Header|Footer → @/components/layout/Header|Footer
+  - dashboard/layout.tsx: @/components/dashboard/DashboardLayout → @/components/layout/DashboardLayout
+  - components/dashboard/index.ts: barrel re-exports actualizados a ../layout/
+
+
+8.2 PATRÓN SERVER/CLIENT COMPONENT
+====================================
+
+4 páginas migradas al patrón: Server Component (page.tsx) que obtiene
+datos en el servidor → Client Leaf Component que recibe props y maneja
+interactividad (filtros, localStorage, etc.)
+
+  1. projects/page.tsx → projects-list.tsx
+     - Data: getRfqList() desde lib/data/rfq.ts
+     - Props: projects: RFQItem[]
+
+  2. manufacturers/page.tsx → manufacturers-list.tsx
+     - Data: getCurrentUser() + query categories
+     - Props: userRole: string, categories: Category[]
+     - Nota: manufacturers sigue fetch dinámico por paginación/debounce
+
+  3. reviews/page.tsx → reviews-list.tsx
+     - Data: getReviewsList() desde lib/data/reviews.ts (NUEVO)
+     - Props: reviews: ReviewItem[], isAdmin: boolean
+
+  4. payments/page.tsx → payments-list.tsx
+     - Data: getPaymentsList() desde lib/data/payments.ts (NUEVO)
+     - Props: payments: PaymentItem[], totals: PaymentTotals
+
+Nuevas funciones de datos (server-only):
+  - src/lib/data/reviews.ts  → getReviewsList()
+  - src/lib/data/payments.ts → getPaymentsList()
+
+
+8.3 PATRÓN DE STATUS CENTRALIZADO
+===================================
+
+Verificado que status-config.ts ya cubre las 4 entidades:
+  - contracts: active, in_production, completed, disputed, cancelled
+  - projects: draft, open, evaluating, awarded, cancelled, expired
+  - proposals: pending, submitted, shortlisted, accepted, rejected
+  - payments: completed, pending, failed, refunded
+
+Incluye fallback genérico (bg-gray-100, text-gray-600).
+StatusBadge component en components/shared/status-badge.tsx consume
+esta configuración vía getStatus().
+
+
+BUILD
+-----
+✅ npx next build — compilación exitosa sin errores

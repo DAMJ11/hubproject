@@ -1,60 +1,20 @@
-"use client";
+import { FileText, DollarSign, CheckCircle, Circle } from "lucide-react";
+import { getTranslations, getLocale } from "next-intl/server";
+import { redirect } from "next/navigation";
+import { StatusBadge } from "@/components/shared/status-badge";
+import { EmptyState } from "@/components/shared/empty-state";
+import { Progress } from "@/components/ui/progress";
+import { getContracts } from "@/lib/data/contracts";
+import { Link } from "@/i18n/navigation";
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { Loader2, FileText, DollarSign, CheckCircle, Circle } from "lucide-react";
-import { useTranslations, useLocale } from "next-intl";
+export default async function ContractsPage() {
+  const contracts = await getContracts();
+  if (!contracts) redirect("/login");
 
-interface ContractItem {
-  id: number;
-  code: string;
-  rfq_title: string;
-  brand_name: string;
-  manufacturer_name: string;
-  total_amount: number;
-  status: string;
-  milestones_count: number;
-  milestones_completed: number;
-  created_at: string;
-}
-
-const statusColors: Record<string, string> = {
-  active: "bg-blue-100 text-blue-700",
-  completed: "bg-green-100 text-green-700",
-  disputed: "bg-red-100 text-red-700",
-  cancelled: "bg-gray-100 text-gray-700",
-};
-
-export default function ContractsPage() {
-  const router = useRouter();
-  const t = useTranslations("Contracts");
-  const locale = useLocale();
+  const t = await getTranslations("Contracts");
+  const locale = await getLocale();
   const formatCOP = (amount: number) =>
     new Intl.NumberFormat(locale, { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(amount);
-  const [contracts, setContracts] = useState<ContractItem[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchContracts = useCallback(async () => {
-    try {
-      const res = await fetch("/api/contracts");
-      const data = await res.json();
-      if (data.success) setContracts(data.data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => { fetchContracts(); }, [fetchContracts]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-[#2563eb]" />
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -64,25 +24,20 @@ export default function ContractsPage() {
       </div>
 
       {contracts.length === 0 ? (
-        <div className="text-center py-16 bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
-          <FileText className="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" />
-          <p className="text-gray-500 dark:text-gray-400">{t("empty")}</p>
-        </div>
+        <EmptyState icon={FileText} title={t("empty")} />
       ) : (
         <div className="grid gap-4">
           {contracts.map((c) => {
-            const stColor = statusColors[c.status] || statusColors.active;
             const progress = c.milestones_count > 0 ? Math.round((c.milestones_completed / c.milestones_count) * 100) : 0;
 
             return (
-              <div key={c.id}
-                onClick={() => router.push(`/dashboard/contracts/${c.id}`)}
-                className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-5 hover:shadow-md transition-shadow cursor-pointer">
+              <Link key={c.id} href={`/dashboard/contracts/${c.id}`}
+                className="block bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-5 hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-1">
                       <span className="text-xs font-mono text-gray-400">{c.code}</span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${stColor}`}>{t(`status.${c.status}`)}</span>
+                      <StatusBadge entity="contracts" status={c.status} />
                     </div>
                     <h3 className="text-base font-semibold text-gray-900 dark:text-white">{c.rfq_title}</h3>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{c.brand_name} ↔ {c.manufacturer_name}</p>
@@ -103,11 +58,11 @@ export default function ContractsPage() {
                     </span>
                     <span>{progress}%</span>
                   </div>
-                  <div className="h-2 bg-gray-100 dark:bg-slate-700 rounded-full overflow-hidden">
-                    <div className="h-full bg-[#2563eb] rounded-full transition-all" style={{ width: `${progress}%` }} />
+                  <div className="h-2 rounded-full overflow-hidden">
+                    <Progress value={progress} className="h-2" />
                   </div>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>

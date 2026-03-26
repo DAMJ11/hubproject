@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import Header from "@/components/layout/Header";
 import Hero from "@/components/Hero";
 import PlatformSection from "@/components/PlatformSection";
 import WhyManufySection from "@/components/WhyManufySection";
@@ -7,11 +7,11 @@ import CTASection from "@/components/CTASection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import PricingSection from "@/components/PricingSection";
 import FinalCTASection from "@/components/FinalCTASection";
-import Footer from "@/components/Footer";
+import Footer from "@/components/layout/Footer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <main id="main-content" className="min-h-screen">
       <Header />
       <Hero />
       <PlatformSection />

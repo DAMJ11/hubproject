@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import Sidebar from "./Sidebar";
 import DashboardHeader from "./DashboardHeader";
@@ -177,10 +176,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#2563eb] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-500 text-sm">{t("loading")}</p>
+          <div className="w-12 h-12 border-4 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-500 dark:text-gray-400 text-sm">{t("loading")}</p>
         </div>
       </div>
     );
@@ -198,7 +197,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {isNavigating && (
         <div className="fixed left-0 right-0 top-0 z-[60] h-1 bg-transparent pointer-events-none">
           <div
-            className="h-full bg-[#2563eb] shadow-[0_0_12px_rgba(13,122,95,0.55)] transition-[width] duration-150"
+            className="h-full bg-brand-600 shadow-[0_0_12px_rgba(13,122,95,0.55)] transition-[width] duration-150"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -236,19 +235,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         />
 
         {/* Contenido de la sección — solo esto cambia al navegar */}
-        <main className="flex-1 overflow-auto">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={pathname}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.22, ease: "easeOut" }}
-              className="px-4 py-5 sm:px-6 lg:px-8"
-            >
-              {children}
-            </motion.div>
-          </AnimatePresence>
+        <main id="main-content" className="flex-1 overflow-auto">
+          <div
+            key={pathname}
+            className="px-4 py-5 sm:px-6 lg:px-8 animate-in fade-in slide-in-from-bottom-2 duration-200"
+          >
+            {children}
+          </div>
         </main>
       </div>
     </div>

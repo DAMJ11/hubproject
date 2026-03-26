@@ -1,5 +1,5 @@
 import { DashboardUserProvider } from "@/contexts/DashboardUserContext";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import DashboardLayout from "@/components/layout/DashboardLayout";
 
 export default function DashboardRootLayout({
   children,

@@ -1,63 +1,14 @@
-"use client";
+import { redirect } from "next/navigation";
+import { Leaf, Award, MapPin, Recycle, Star, TrendingUp } from "lucide-react";
+import { getTranslations, getLocale } from "next-intl/server";
+import { getGreenScoreData } from "@/lib/data/green-score-data";
 
-import { useState, useEffect, useCallback } from "react";
-import { Leaf, Award, MapPin, Recycle, Star, Loader2, TrendingUp } from "lucide-react";
-import { useTranslations, useLocale } from "next-intl";
+export default async function GreenScorePage() {
+  const data = await getGreenScoreData();
+  if (!data) redirect("/login");
 
-interface GreenData {
-  certifications: { id: number; certification_name: string; issued_by: string; expires_at: string | null }[];
-  capabilities: { id: number; capability_name: string; min_order_quantity: number; max_order_quantity: number }[];
-  avgScore: number;
-  totalProposals: number;
-}
-
-export default function GreenScorePage() {
-  const [data, setData] = useState<GreenData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const t = useTranslations("GreenScore");
-  const locale = useLocale();
-
-  const fetchData = useCallback(async () => {
-    try {
-      const [certsRes, capsRes, proposalsRes] = await Promise.all([
-        fetch("/api/manufacturers/certifications"),
-        fetch("/api/manufacturers/capabilities"),
-        fetch("/api/proposals/mine"),
-      ]);
-      const certs = await certsRes.json();
-      const caps = await capsRes.json();
-      const proposals = await proposalsRes.json();
-
-      const proposalsList = proposals.data || [];
-      const scores = proposalsList.map((p: { green_score: number }) => p.green_score).filter((s: number) => s > 0);
-      const avgScore = scores.length > 0 && scores.every((s: number) => !isNaN(s))
-        ? Math.round(scores.reduce((a: number, b: number) => a + b, 0) / scores.length)
-        : 0;
-
-      setData({
-        certifications: certs.data || [],
-        capabilities: caps.data || [],
-        avgScore,
-        totalProposals: proposalsList.length,
-      });
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => { fetchData(); }, [fetchData]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-[#2563eb]" />
-      </div>
-    );
-  }
-
-  if (!data) return null;
+  const t = await getTranslations("GreenScore");
+  const locale = await getLocale();
 
   const scoreColor = data.avgScore >= 70 ? "text-emerald-500" : data.avgScore >= 40 ? "text-yellow-500" : "text-red-400";
   const scoreBg = data.avgScore >= 70 ? "bg-emerald-500" : data.avgScore >= 40 ? "bg-yellow-500" : "bg-red-400";
@@ -90,17 +41,17 @@ export default function GreenScorePage() {
 
         {/* Breakdown */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
-          <ScoreItem label={t("breakdown.proximity")} max={30} icon={<MapPin className="w-4 h-4" />} />
-          <ScoreItem label={t("breakdown.materials")} max={35} icon={<Recycle className="w-4 h-4" />} />
-          <ScoreItem label={t("breakdown.certifications")} max={25} icon={<Award className="w-4 h-4" />} />
-          <ScoreItem label={t("breakdown.history")} max={10} icon={<Star className="w-4 h-4" />} />
+          <ScoreItem label={t("breakdown.proximity")} value={data.breakdown.proximity} max={30} icon={<MapPin className="w-4 h-4" />} />
+          <ScoreItem label={t("breakdown.materials")} value={data.breakdown.materials} max={35} icon={<Recycle className="w-4 h-4" />} />
+          <ScoreItem label={t("breakdown.certifications")} value={data.breakdown.certifications} max={25} icon={<Award className="w-4 h-4" />} />
+          <ScoreItem label={t("breakdown.history")} value={data.breakdown.history} max={10} icon={<Star className="w-4 h-4" />} />
         </div>
       </div>
 
       {/* Certifications */}
       <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-5">
         <h2 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-          <Award className="w-4 h-4 text-[#2563eb]" /> {t("certificationsTitle", { count: data.certifications.length })}
+          <Award className="w-4 h-4 text-brand-600" /> {t("certificationsTitle", { count: data.certifications.length })}
         </h2>
         {data.certifications.length === 0 ? (
           <p className="text-sm text-gray-500">{t("noCertifications")}</p>
@@ -122,7 +73,7 @@ export default function GreenScorePage() {
       {/* Tips */}
       <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-5">
         <h2 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-[#2563eb]" /> {t("howToImprove")}
+          <TrendingUp className="w-4 h-4 text-brand-600" /> {t("howToImprove")}
         </h2>
         <div className="space-y-3">
           {tips.map((tip, i) => (
@@ -137,13 +88,18 @@ export default function GreenScorePage() {
   );
 }
 
-function ScoreItem({ label, max, icon }: { label: string; max: number; icon: React.ReactNode }) {
-  const t = useTranslations("GreenScore");
+function ScoreItem({ label, value, max, icon }: { label: string; value: number; max: number; icon: React.ReactNode }) {
+  const pct = max > 0 ? Math.min(100, (value / max) * 100) : 0;
+  const barColor = pct >= 70 ? "bg-emerald-500" : pct >= 40 ? "bg-yellow-500" : "bg-red-400";
+
   return (
     <div className="text-center">
-      <div className="text-[#2563eb] flex justify-center mb-1">{icon}</div>
+      <div className="text-brand-600 flex justify-center mb-1">{icon}</div>
       <p className="text-xs font-medium text-gray-700 dark:text-gray-300">{label}</p>
-      <p className="text-[10px] text-gray-400">{t("maxPoints", { max })}</p>
+      <p className="text-lg font-bold text-gray-900 dark:text-white">{value}<span className="text-xs font-normal text-gray-400">/{max}</span></p>
+      <div className="w-full h-1.5 bg-gray-200 dark:bg-slate-600 rounded-full mt-1 overflow-hidden">
+        <div className={`h-full rounded-full ${barColor} transition-all`} style={{ width: `${pct}%` }} />
+      </div>
     </div>
   );
 }

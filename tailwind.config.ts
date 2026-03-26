@@ -10,6 +10,7 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Semantic color tokens (mapped to CSS vars in globals.css)
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
@@ -23,6 +24,23 @@ export default {
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))'
+        },
+        brand: {
+          50: '#eef2ff',
+          100: '#e0e7ff',
+          200: '#c7d2fe',
+          500: '#6366f1',
+          600: '#4f46e5',
+          700: '#4338ca',
+          900: '#1e1b4b'
+        },
+        landing: {
+          gradient: 'var(--landing-gradient)',
+          light: 'var(--landing-light)',
+          neutral: 'var(--landing-neutral)',
+          cta: 'var(--landing-cta)',
+          beige: 'var(--landing-beige)',
+          'beige-border': 'var(--landing-beige-border)',
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',

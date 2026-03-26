@@ -15,6 +15,8 @@ import {
   FileText,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { StatusBadge } from "@/components/shared/status-badge";
 
 interface AdminDashboardProps {
   user: {
@@ -114,45 +116,35 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
                 {t("viewAll")}
               </button>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="text-left text-xs text-gray-400 border-b border-gray-700">
-                    <th className="pb-3 font-medium">{t("table.user")}</th>
-                    <th className="pb-3 font-medium">{t("table.email")}</th>
-                    <th className="pb-3 font-medium">{t("table.registered")}</th>
-                    <th className="pb-3 font-medium">{t("table.status")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentUsers.map((user, index) => (
-                    <tr key={index} className="border-b border-gray-700 last:border-0">
-                      <td className="py-3">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
-                            <User className="w-4 h-4 text-gray-300" />
-                          </div>
-                          <span className="text-sm text-white">{user.name}</span>
+            <Table>
+              <TableHeader>
+                <TableRow className="border-gray-700 hover:bg-transparent">
+                  <TableHead className="text-gray-400">{t("table.user")}</TableHead>
+                  <TableHead className="text-gray-400">{t("table.email")}</TableHead>
+                  <TableHead className="text-gray-400">{t("table.registered")}</TableHead>
+                  <TableHead className="text-gray-400">{t("table.status")}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {recentUsers.map((user, index) => (
+                  <TableRow key={index} className="border-gray-700">
+                    <TableCell className="py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+                          <User className="w-4 h-4 text-gray-300" />
                         </div>
-                      </td>
-                      <td className="py-3 text-sm text-gray-400">{user.email}</td>
-                      <td className="py-3 text-sm text-gray-400">{user.date}</td>
-                      <td className="py-3">
-                        <span
-                          className={`text-xs px-2 py-1 rounded-full ${
-                            user.status === "active"
-                              ? "bg-green-500/20 text-green-400"
-                              : "bg-yellow-500/20 text-yellow-400"
-                          }`}
-                        >
-                          {user.status === "active" ? t("statusActive") : t("statusPending")}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                        <span className="text-sm text-white">{user.name}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-sm text-gray-400">{user.email}</TableCell>
+                    <TableCell className="text-sm text-gray-400">{user.date}</TableCell>
+                    <TableCell>
+                      <StatusBadge entity="users" status={user.status} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
 
           {/* System Status & Admin Actions */}

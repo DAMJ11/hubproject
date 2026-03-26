@@ -6,7 +6,22 @@ import { useDashboardUser } from "@/contexts/DashboardUserContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Users, Search, Mail, Phone, Shield, ShieldCheck, Trash2, UserX, UserCheck, Loader2 } from "lucide-react";
+import { CardSkeleton } from "@/components/shared/skeleton-loader";
+import { StatusBadge } from "@/components/shared/status-badge";
+import { EmptyState } from "@/components/shared/empty-state";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface UserRecord {
   id: number;
@@ -30,7 +45,6 @@ export default function UsersPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [passwordError, setPasswordError] = useState("");
-  const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
   const resetPasswordModalState = () => {
     setNewPassword("");
@@ -47,12 +61,6 @@ export default function UsersPage() {
     setShowPasswordModal({ user: null });
     resetPasswordModalState();
   };
-
-  useEffect(() => {
-    if (!toast) return;
-    const timer = window.setTimeout(() => setToast(null), 3200);
-    return () => window.clearTimeout(timer);
-  }, [toast]);
 
   const handleChangePassword = async () => {
     if (!showPasswordModal.user) return;
@@ -82,7 +90,7 @@ export default function UsersPage() {
       }
       const fullName = `${showPasswordModal.user.first_name} ${showPasswordModal.user.last_name}`;
       closePasswordModal();
-      setToast({ type: "success", message: t("passwordUpdated", { name: fullName }) });
+      toast.success(t("passwordUpdated", { name: fullName }));
     } catch (error) {
       setPasswordError(t("networkError"));
     } finally {
@@ -95,8 +103,7 @@ export default function UsersPage() {
   const [users, setUsers] = useState<UserRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
-  const [actionMessage, setActionMessage] = useState("");
-  const [actionError, setActionError] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<UserRecord | null>(null);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -106,7 +113,7 @@ export default function UsersPage() {
       setUsers(data.users ?? []);
     } catch (error) {
       console.error(error);
-      setActionError(t("loadUsersFailed"));
+      toast.error(t("loadUsersFailed"));
     } finally {
       setLoading(false);
     }
@@ -123,14 +130,17 @@ export default function UsersPage() {
     if (actionLoadingId !== null) return;
 
     if (action === "delete") {
-      const confirmed = window.confirm(
-        t("confirmDelete", { name: `${targetUser.first_name} ${targetUser.last_name}` })
-      );
-      if (!confirmed) return;
+      setDeleteTarget(targetUser);
+      return;
     }
 
-    setActionMessage("");
-    setActionError("");
+    await executeUserAction(targetUser, action);
+  };
+
+  const executeUserAction = async (
+    targetUser: UserRecord,
+    action: "activate" | "deactivate" | "grant_admin" | "delete"
+  ) => {
     setActionLoadingId(targetUser.id);
 
     try {
@@ -146,11 +156,11 @@ export default function UsersPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setActionError(data?.error || t("actionFailed"));
+        toast.error(data?.error || t("actionFailed"));
         return;
       }
 
-      setActionMessage(data?.message || t("actionSuccess"));
+      toast.success(data?.message || t("actionSuccess"));
 
       // Actualización local del usuario
       setUsers((prev) => {
@@ -177,7 +187,7 @@ export default function UsersPage() {
       });
     } catch (error) {
       console.error(error);
-      setActionError(t("actionError"));
+      toast.error(t("actionError"));
     } finally {
       setActionLoadingId(null);
     }
@@ -187,8 +197,8 @@ export default function UsersPage() {
 
   if (loading) {
     return (
-      <div className="p-6 flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-[#2563eb]" />
+      <div className="p-6 space-y-4">
+        {[1, 2, 3, 4].map((i) => <CardSkeleton key={i} />)}
       </div>
     );
   }
@@ -205,31 +215,12 @@ export default function UsersPage() {
 
   return (
     <div className="space-y-6">
-      {toast && (
-        <div className="fixed top-5 right-5 z-[70]">
-          <div className={`rounded-lg px-4 py-3 text-sm shadow-lg border ${toast.type === "success" ? "bg-green-50 border-green-200 text-green-700" : "bg-red-50 border-red-200 text-red-700"}`}>
-            {toast.message}
-          </div>
-        </div>
-      )}
-
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
           <p className="text-gray-500 mt-1">{t("registeredClients", { count: users.length })}</p>
         </div>
       </div>
-
-      {actionError && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
-          {actionError}
-        </div>
-      )}
-      {actionMessage && (
-        <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-2 text-sm text-green-700">
-          {actionMessage}
-        </div>
-      )}
 
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
@@ -249,7 +240,7 @@ export default function UsersPage() {
         <div className="flex gap-2">
           {["all", "clients", "admin"].map((role) => (
             <Button key={role} variant={filterRole === role ? "default" : "outline"} size="sm" onClick={() => setFilterRole(role)}
-              className={filterRole === role ? "bg-[#2563eb] hover:bg-[#1d4ed8]" : ""}>
+              className={filterRole === role ? "bg-brand-600 hover:bg-brand-700" : ""}>
               {role === "all" ? t("filterAll") : role === "admin" ? t("filterAdmins") : t("filterClients")}
             </Button>
           ))}
@@ -257,25 +248,31 @@ export default function UsersPage() {
       </div>
 
       <Card className="overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-50 border-b">
-                <th className="text-left p-4 text-sm font-medium text-gray-600">{t("colUser")}</th>
-                <th className="text-left p-4 text-sm font-medium text-gray-600">{t("colContact")}</th>
-                <th className="text-left p-4 text-sm font-medium text-gray-600">{t("colRole")}</th>
-                <th className="text-left p-4 text-sm font-medium text-gray-600">{t("colOrders")}</th>
-                <th className="text-left p-4 text-sm font-medium text-gray-600">{t("colStatus")}</th>
-                <th className="text-left p-4 text-sm font-medium text-gray-600">{t("colRegistration")}</th>
-                <th className="text-right p-4 text-sm font-medium text-gray-600">{t("colActions")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredUsers.map((u) => (
-                <tr key={u.id} className="border-b hover:bg-gray-50 transition-colors">
-                  <td className="p-4">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-gray-50 dark:bg-slate-800">
+              <TableHead className="p-4">{t("colUser")}</TableHead>
+              <TableHead className="p-4">{t("colContact")}</TableHead>
+              <TableHead className="p-4">{t("colRole")}</TableHead>
+              <TableHead className="p-4">{t("colOrders")}</TableHead>
+              <TableHead className="p-4">{t("colStatus")}</TableHead>
+              <TableHead className="p-4">{t("colRegistration")}</TableHead>
+              <TableHead className="p-4 text-right">{t("colActions")}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredUsers.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={7} className="p-0">
+                  <EmptyState icon={Users} title={t("emptyUsers")} description={t("emptyUsersHint")} />
+                </TableCell>
+              </TableRow>
+            )}
+            {filteredUsers.map((u) => (
+              <TableRow key={u.id}>
+                <TableCell className="p-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-[#2563eb] flex items-center justify-center text-white text-sm font-bold">
+                      <div className="w-10 h-10 rounded-full bg-brand-600 flex items-center justify-center text-white text-sm font-bold">
                         {u.first_name[0]}{u.last_name[0]}
                       </div>
                       <div>
@@ -283,8 +280,8 @@ export default function UsersPage() {
                         <p className="text-xs text-gray-500">ID: {u.id}</p>
                       </div>
                     </div>
-                  </td>
-                  <td className="p-4">
+                </TableCell>
+                <TableCell className="p-4">
                     <div className="space-y-1">
                       <div className="flex items-center gap-1 text-sm text-gray-600">
                         <Mail className="w-3 h-3" /> {u.email}
@@ -295,32 +292,29 @@ export default function UsersPage() {
                         </div>
                       )}
                     </div>
-                  </td>
-                  <td className="p-4">
+                </TableCell>
+                <TableCell className="p-4">
                     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${
                       u.role === "admin" ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"
                     }`}>
                       {u.role === "admin" ? <ShieldCheck className="w-3 h-3" /> : <Users className="w-3 h-3" />}
                       {u.role === "admin" ? t("role.admin") : t("role.client")}
                     </span>
-                  </td>
-                  <td className="p-4 text-sm text-gray-700 font-medium">{u.total_bookings}</td>
-                  <td className="p-4">
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                      u.is_active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                    }`}>
-                      {u.is_active ? t("status.active") : t("status.inactive")}
-                    </span>
-                  </td>
-                  <td className="p-4 text-sm text-gray-500">{new Date(u.created_at).toLocaleDateString(locale)}</td>
-                  <td className="p-4 text-right">
+                </TableCell>
+                <TableCell className="p-4 text-sm text-gray-700 font-medium">{u.total_bookings}</TableCell>
+                <TableCell className="p-4">
+                    <StatusBadge entity="users" status={u.is_active ? "active" : "inactive"} />
+                </TableCell>
+                <TableCell className="p-4 text-sm text-gray-500">{new Date(u.created_at).toLocaleDateString(locale)}</TableCell>
+                <TableCell className="p-4 text-right">
                     <div className="flex items-center justify-end gap-1">
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-gray-500 hover:text-[#2563eb]"
+                        className="text-gray-500 hover:text-brand-600"
                         disabled={actionLoadingId === u.id || u.id === user.id}
                         title={u.id === user.id ? t("cannotModifySelf") : u.is_active ? t("deactivateUser") : t("activateUser")}
+                        aria-label={u.id === user.id ? t("cannotModifySelf") : u.is_active ? t("deactivateUser") : t("activateUser")}
                         onClick={() => handleUserAction(u, u.is_active ? "deactivate" : "activate")}
                       >
                         {actionLoadingId === u.id ? (
@@ -334,9 +328,10 @@ export default function UsersPage() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-gray-500 hover:text-[#2563eb]"
+                        className="text-gray-500 hover:text-brand-600"
                         disabled={actionLoadingId === u.id || u.role === "admin" || u.id === user.id}
                         title={u.role === "admin" ? t("alreadyAdmin") : t("grantAdmin")}
+                        aria-label={u.role === "admin" ? t("alreadyAdmin") : t("grantAdmin")}
                         onClick={() => handleUserAction(u, "grant_admin")}
                       >
                         <Shield className="w-4 h-4" />
@@ -347,31 +342,30 @@ export default function UsersPage() {
                         className="text-gray-500 hover:text-red-600"
                         disabled={actionLoadingId === u.id || u.role === "admin" || u.id === user.id}
                         title={u.role === "admin" ? t("cannotDeleteAdmin") : t("deleteUser")}
+                        aria-label={u.role === "admin" ? t("cannotDeleteAdmin") : t("deleteUser")}
                         onClick={() => handleUserAction(u, "delete")}
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
-                      {/* Botón para cambiar contraseña */}
                       <Button
                         variant="ghost"
                         size="sm"
                         className="text-gray-500 hover:text-green-600"
                         disabled={u.role === "admin" || u.id === user.id}
                         title={u.role === "admin" ? t("cannotChangeAdminPassword") : t("changePassword")}
+                        aria-label={u.role === "admin" ? t("cannotChangeAdminPassword") : t("changePassword")}
                         onClick={() => openPasswordModal(u)}
                       >
-                        {/* SVG candado */}
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
                           <path fillRule="evenodd" d="M10 2a4 4 0 0 0-4 4v3H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-1V6a4 4 0 0 0-4-4zm-2 7V6a2 2 0 1 1 4 0v3H8zm-3 2a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-7z" clipRule="evenodd" />
                         </svg>
                       </Button>
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </Card>
           {/* Modal de cambio de contraseña */}
           {showPasswordModal.user && (
@@ -420,6 +414,33 @@ export default function UsersPage() {
               </div>
             </div>
           )}
+
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("confirmDeleteTitle")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {deleteTarget
+                ? t("confirmDelete", { name: `${deleteTarget.first_name} ${deleteTarget.last_name}` })
+                : ""}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-600 hover:bg-red-700"
+              onClick={() => {
+                if (deleteTarget) {
+                  executeUserAction(deleteTarget, "delete");
+                  setDeleteTarget(null);
+                }
+              }}
+            >
+              {t("deleteConfirmAction")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

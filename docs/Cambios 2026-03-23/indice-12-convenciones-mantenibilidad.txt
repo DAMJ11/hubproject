@@ -1,0 +1,118 @@
+ÍNDICE 12 — CONVENCIONES Y MANTENIBILIDAD
+==========================================
+Fecha: 2026-03-26
+Estado: ✅ Completo
+Build: ✅ Verificado
+
+12.1 REGLAS DE CÓDIGO — IMPLEMENTACIÓN
+---------------------------------------
+
+A) COLORES HEX HARDCODEADOS → TOKENS CSS
+  - Creadas 6 CSS vars en globals.css:
+    --landing-gradient (#f0f5f3), --landing-light (#f6fbfb),
+    --landing-neutral (#f8f8f8), --landing-cta (#0d6c5d),
+    --landing-beige (#e9dfd8), --landing-beige-border (#ece5df)
+  - Mapeadas en tailwind.config.ts → landing.gradient, landing.light, etc.
+  - Migrados ~30 usos de hex hardcodeados en 15 archivos:
+    · Hero.tsx (from-[#f6fbfb] → from-landing-light)
+    · PlatformSection.tsx (bg-[#faf9f7] → bg-landing-neutral, etc.)
+    · blog/page.tsx, noticias/page.tsx, contacto/page.tsx
+    · sobre-nosotros/page.tsx, recursos/page.tsx
+    · para-marcas/page.tsx, para-fabricantes/page.tsx
+    · politica-sostenibilidad/page.tsx
+    · ContactForm.tsx (bg-[#f8f8f8] → bg-landing-neutral)
+    · login/page.tsx, register/page.tsx (bg-[#f6fbfb] → bg-landing-light)
+    · MessagesPanel.tsx (backgroundColor inline → bg-white, text-[#dbeafe] → text-blue-100)
+  - NOTA: PlatformSection.tsx y QualitySection.tsx conservan hex en gradients
+    internos de tarjetas (colores únicos no repetidos).
+
+B) STATUSBADGE CENTRALIZADO
+  - Añadidas 2 nuevas entidades a status-config.ts:
+    · users: active, inactive, pending
+    · certifications: verified, expired, pending
+  - Migrados 3 archivos con badges manuales:
+    · users/page.tsx → <StatusBadge entity="users" status={...} />
+    · AdminDashboard.tsx → <StatusBadge entity="users" status={...} />
+    · certifications-manager.tsx → <StatusBadge entity="certifications" status={...} />
+
+C) EMPTYSTATE CENTRALIZADO
+  - Migrados 6 archivos ad-hoc → <EmptyState>:
+    · reviews-list.tsx (Card manual → EmptyState con action clear filters)
+    · payments-list.tsx (TableCell manual → EmptyState en TableRow)
+    · certifications-manager.tsx (div manual → EmptyState)
+    · capabilities-manager.tsx (div manual → EmptyState)
+    · projects/[id]/page.tsx (div manual → EmptyState)
+    · addresses-manager.tsx (sin fallback → EmptyState + condicional)
+  - Añadido EmptyState para tabla vacía en users/page.tsx
+
+D) TRADUCCIONES AGREGADAS (3 idiomas)
+  - Users.status.pending (es/en/fr)
+  - Users.emptyUsers, emptyUsersHint
+  - Addresses.emptyAddresses, emptyAddressesHint
+  - Addresses.deleteConfirmTitle, deleteSuccess
+  - Certifications.status.verified/expired/pending
+  - Certifications.addSuccess/addError/deleteSuccess/deleteError
+
+12.2 NAMING CONVENTIONS — DOCUMENTACIÓN
+-----------------------------------------
+  Auditado y documentado en CONTRIBUTING.md:
+  - Componentes: PascalCase (ui/ excepción por shadcn)
+  - Hooks: camelCase con use
+  - Utils: camelCase
+  - CSS vars: kebab-case
+  - i18n keys: PascalCase.camelCase
+  
+  Violaciones existentes documentadas pero NO renombradas
+  (riesgo de romper imports en 40+ archivos, se requiere
+  migración coordinada con renaming tool en sesión dedicada):
+  - 4 archivos shared/ en kebab-case
+  - 17 archivos app/ client components en kebab-case
+  - 4 archivos lib/ en kebab-case
+
+12.3 CHECKLIST PARA NUEVA FEATURE — CREADA
+---------------------------------------------
+  Documentado en CONTRIBUTING.md sección 4 con 9 ítems:
+  □ Server Component por defecto
+  □ EmptyState
+  □ Skeleton loader (loading.tsx)
+  □ Toast de confirmación/error
+  □ AlertDialog para destructivas
+  □ Colores de status-config
+  □ Traducciones 3 idiomas
+  □ Responsive
+  □ Accesible
+
+ARCHIVOS CREADOS
+-----------------
+  · CONTRIBUTING.md (raíz del proyecto)
+
+ARCHIVOS MODIFICADOS
+---------------------
+  · src/app/globals.css — 6 CSS vars nuevas
+  · tailwind.config.ts — landing color tokens
+  · src/lib/status-config.ts — +2 entidades (users, certifications)
+  · src/components/Hero.tsx — hex → tokens
+  · src/components/PlatformSection.tsx — hex → tokens
+  · src/components/dashboard/MessagesPanel.tsx — hex inline → clases
+  · src/components/dashboard/AdminDashboard.tsx — StatusBadge
+  · src/app/[locale]/blog/page.tsx — hex → token
+  · src/app/[locale]/noticias/page.tsx — hex → token
+  · src/app/[locale]/contacto/page.tsx — hex → token
+  · src/app/[locale]/contacto/ContactForm.tsx — hex → token
+  · src/app/[locale]/sobre-nosotros/page.tsx — hex → token
+  · src/app/[locale]/recursos/page.tsx — hex → token
+  · src/app/[locale]/para-marcas/page.tsx — hex → token
+  · src/app/[locale]/para-fabricantes/page.tsx — hex → token
+  · src/app/[locale]/politica-sostenibilidad/page.tsx — hex → token
+  · src/app/[locale]/login/page.tsx — hex → token
+  · src/app/[locale]/register/page.tsx — hex → token
+  · src/app/[locale]/dashboard/users/page.tsx — StatusBadge + EmptyState
+  · src/app/[locale]/dashboard/reviews/reviews-list.tsx — EmptyState
+  · src/app/[locale]/dashboard/payments/payments-list.tsx — EmptyState
+  · src/app/[locale]/dashboard/company/certifications/certifications-manager.tsx — StatusBadge + EmptyState
+  · src/app/[locale]/dashboard/company/capabilities/capabilities-manager.tsx — EmptyState
+  · src/app/[locale]/dashboard/projects/[id]/page.tsx — EmptyState
+  · src/app/[locale]/dashboard/addresses/addresses-manager.tsx — EmptyState
+  · messages/es.json — nuevas traducciones
+  · messages/en.json — nuevas traducciones
+  · messages/fr.json — nuevas traducciones

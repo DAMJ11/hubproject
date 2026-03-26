@@ -1,0 +1,68 @@
+================================================================================
+  ÍNDICE 6 — COMPONENTES Y ESTADOS UI
+  Estado: ✅ COMPLETADO
+  Implementado en: Fase 2 + Sesión 26 Marzo 2026
+================================================================================
+
+RESUMEN
+───────
+  Se implementaron los 4 subsistemas: loading states (21 loading.tsx),
+  toasts (Sonner en login/logout + 8 páginas CRUD), empty states
+  (EmptyState componente en 8+ páginas), y diálogos de confirmación
+  (AlertDialog en users, addresses y logout).
+
+================================================================================
+6.1 LOADING STATES — 21 loading.tsx
+================================================================================
+
+  Componente base: src/components/ui/skeleton-loader.tsx
+  5 variantes: Pulse, CardSkeleton, PageSkeleton, TableSkeleton, StatsSkeleton
+
+  Fase 3 (8 archivos):
+    dashboard/, contracts/, reports/, green-score/,
+    opportunities/, companies/, proposals/, rfq/
+
+  Sesión 26 Mar (13 archivos):
+    projects/ (PageSkeleton cards=4), messages/ (Custom sidebar),
+    settings/ (PageSkeleton cards=2), payments/ (Stats+Table),
+    addresses/ (CardSkeleton grid), company/ (PageSkeleton cards=2),
+    help/ (PageSkeleton cards=4), manufacturers/ (PageSkeleton cards=4),
+    onboarding/ (Custom progress+inputs), reviews/ (PageSkeleton cards=3),
+    users/ (Search+Table), company/capabilities/ (Table),
+    company/certifications/ (Table)
+
+================================================================================
+6.2 TOASTS — SONNER
+================================================================================
+
+  Configuración: providers.tsx → <Toaster position="bottom-right" richColors />
+
+  Páginas con toast:
+    - settings, users, addresses, company, certifications (Fase 2)
+    - contracts/[id], projects/[id], opportunities/[id] (Fase 2)
+    - login/page.tsx, DashboardHeader logout (Sesión 26 Mar)
+
+================================================================================
+6.3 EMPTY STATES
+================================================================================
+
+  Componente: src/components/ui/empty-state.tsx
+  Props: icon, title, description?, action?
+
+  Integrado en: contracts, projects, proposals, rfq, opportunities,
+  companies, manufacturers, DashboardHome, payments (mejorado 26 Mar)
+
+================================================================================
+6.4 DIÁLOGOS DE CONFIRMACIÓN — AlertDialog
+================================================================================
+
+  Componente: src/components/ui/alert-dialog.tsx (shadcn/Radix)
+
+  Integrado en:
+    - users/page.tsx (eliminar usuario)
+    - addresses/page.tsx (eliminar dirección)
+    - DashboardHeader.tsx (cerrar sesión — Sesión 26 Mar)
+
+================================================================================
+  BUILD: ✅ 0 errores
+================================================================================

@@ -6,7 +6,10 @@
     "plans": "Plans",
     "cases": "Cases",
     "login": "Log in",
-    "register": "Create account"
+    "register": "Create account",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "selectLanguage": "Select language"
   },
   "Footer": {
     "brandText": "B2B platform connecting brands and manufacturers across design, development and fashion production workflows.",
@@ -443,7 +446,9 @@
     "needHelp": "Need help?",
     "error": "An error occurred. Please try again.",
     "hidePassword": "Hide password",
-    "showPassword": "Show password"
+    "showPassword": "Show password",
+    "loginSuccess": "Signed in successfully",
+    "loginError": "Invalid credentials"
   },
   "Register": {
     "accountType": "Account type",
@@ -477,6 +482,12 @@
       "passwordLength": "Password must be at least 8 characters",
       "passwordMismatch": "Passwords do not match",
       "termsRequired": "You must accept terms and conditions"
+    },
+    "passwordStrength": {
+      "weak": "Weak",
+      "fair": "Fair",
+      "good": "Good",
+      "strong": "Strong"
     }
   },
   "Sidebar": {
@@ -507,6 +518,7 @@
     },
     "closeMenu": "Close menu",
     "collapseMenu": "Collapse menu",
+    "navigationLabel": "Dashboard navigation",
     "searchPlaceholder": "Search...",
     "roleAdmin": "Administrator",
     "roleManufacturer": "Manufacturer",
@@ -557,7 +569,13 @@
     "roleManufacturer": "Manufacturer",
     "roleBrand": "Brand",
     "profileSettings": "Settings",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "logoutConfirmTitle": "Sign out?",
+    "logoutConfirmDescription": "Your current session will be closed. You can sign in again at any time.",
+    "logoutCancel": "Cancel",
+    "logoutConfirm": "Sign out",
+    "logoutSuccess": "Signed out",
+    "logoutError": "Error signing out"
   },
   "Companies": {
     "title": "Companies",
@@ -789,7 +807,11 @@
     "postalCodeLabel": "PC: {code}",
     "edit": "Edit",
     "setDefault": "Set as Default",
-    "deleteAriaLabel": "Delete address {label}"
+    "deleteAriaLabel": "Delete address {label}",
+    "deleteConfirmTitle": "Delete address",
+    "deleteSuccess": "Address deleted",
+    "emptyAddresses": "You have no addresses registered",
+    "emptyAddressesHint": "Add your first shipping or delivery address"
   },
   "Contracts": {
     "title": "My Contracts",
@@ -798,6 +820,7 @@
     "milestones": "{completed}/{total} milestones",
     "status": {
       "active": "Active",
+      "in_production": "In production",
       "completed": "Completed",
       "disputed": "Disputed",
       "cancelled": "Cancelled"
@@ -819,6 +842,7 @@
     "completedMessage": "This contract has been completed successfully",
     "status": {
       "active": "Active",
+      "in_production": "In production",
       "completed": "Completed",
       "disputed": "Disputed",
       "cancelled": "Cancelled"
@@ -1015,6 +1039,45 @@
       "draft": "Drafts"
     }
   },
+  "Onboarding": {
+    "title": "Complete your profile",
+    "subtitle": "A few more details so you can get the most out of the platform",
+    "step1Title": "About your company",
+    "step1Description": "Tell us a bit more so manufacturers and brands can learn about you.",
+    "step2Title": "Location",
+    "step2Description": "Your address helps us connect you with nearby partners.",
+    "step3Title": "Additional details",
+    "step3Description": "Optional information that improves your profile visibility.",
+    "fields": {
+      "description": "Company description",
+      "phone": "Phone",
+      "website": "Website",
+      "address": "Address",
+      "city": "City",
+      "state": "State / Province",
+      "country": "Country",
+      "employees": "Number of employees",
+      "foundedYear": "Year founded",
+      "legalId": "Tax ID / Legal ID"
+    },
+    "placeholders": {
+      "description": "Describe your company's activity…",
+      "phone": "+1 555 000 0000",
+      "address": "123 Main St",
+      "city": "New York",
+      "state": "New York",
+      "legalId": "12-3456789",
+      "select": "Select…"
+    },
+    "next": "Next",
+    "back": "Back",
+    "finish": "Complete profile",
+    "skipForNow": "Skip for now",
+    "completed": "Profile completed successfully!",
+    "saveError": "Error saving",
+    "connectionError": "Connection error",
+    "stepOf": "Step {current} of {total}"
+  },
   "ProjectNew": {
     "title": "Publish New Project",
     "subtitle": "Describe your needs and receive proposals from manufacturers",
@@ -1046,11 +1109,22 @@
       "recycledPercent": "% recycled"
     },
     "addMaterial": "+ Add material",
+    "removeMaterial": "Remove material",
     "requiresSample": "Requires prior sample",
     "sustainabilityPriority": "🌿 Prioritize sustainability",
     "cancel": "Cancel",
+    "back": "Back",
+    "next": "Next",
     "submitting": "Publishing...",
-    "submit": "Publish Project"
+    "submit": "Publish Project",
+    "createdSuccess": "Project published successfully!",
+    "reviewDescription": "Review the information before publishing your project.",
+    "steps": {
+      "basic": "Basic information",
+      "budget": "Budget & dates",
+      "materials": "Materials & sustainability",
+      "review": "Review"
+    }
   },
   "ProjectDetail": {
     "notFound": "Project not found",
@@ -1084,6 +1158,27 @@
     "accept": "Accept",
     "reject": "Reject",
     "award": "Award",
+    "compare": {
+      "manufacturer": "Manufacturer",
+      "distance": "Distance",
+      "status": "Status",
+      "cardsView": "Cards view",
+      "tableView": "Comparison view"
+    },
+    "actionSuccess": "Action completed successfully",
+    "actionError": "Error performing the action",
+    "confirmAccept": {
+      "title": "Accept this proposal?",
+      "description": "You are about to accept the proposal from {name}. This will assign the project to this manufacturer.",
+      "cancel": "Cancel",
+      "confirm": "Yes, accept"
+    },
+    "confirmReject": {
+      "title": "Reject this proposal?",
+      "description": "You are about to reject the proposal from {name}. The manufacturer will be notified.",
+      "cancel": "Cancel",
+      "confirm": "Yes, reject"
+    },
     "messageSubject": "Project {code}: initial conversation",
     "messageBody": "Hello {name}, I'd like to discuss your proposal for project {code}.",
     "status": {
@@ -1201,7 +1296,17 @@
     "expired": "Expired",
     "by": "By: {issuer}",
     "from": "From: {date}",
-    "until": "Until: {date}"
+    "until": "Until: {date}",
+    "delete": "Delete certification",
+    "addSuccess": "Certification added",
+    "addError": "Error adding certification",
+    "deleteSuccess": "Certification deleted",
+    "deleteError": "Error deleting certification",
+    "status": {
+      "verified": "Verified",
+      "expired": "Expired",
+      "pending": "Pending"
+    }
   },
   "Capabilities": {
     "title": "Capabilities",
@@ -1230,7 +1335,12 @@
     "capacity": "Capacity: {qty} units/month",
     "delivery": "Delivery: {days} days",
     "priceFrom": "From {price} / garment",
-    "wholesaleFrom": "Wholesale from {price}"
+    "wholesaleFrom": "Wholesale from {price}",
+    "addSuccess": "Capability added successfully",
+    "addError": "Failed to add capability",
+    "deleteSuccess": "Capability deleted",
+    "deleteError": "Failed to delete capability",
+    "delete": "Delete capability"
   },
   "Manufacturers": {
     "title": "Manufacturer directory",
@@ -1345,7 +1455,9 @@
     "pushPromos": "Flash offers",
     "pushPromosDesc": "Limited-time promotions",
     "notificationsSaved": "Preferences saved.",
-    "savePreferences": "Save Preferences"
+    "savePreferences": "Save Preferences",
+    "hidePassword": "Hide password",
+    "showPassword": "Show password"
   },
   "Users": {
     "title": "Client Management",
@@ -1367,7 +1479,8 @@
     },
     "status": {
       "active": "Active",
-      "inactive": "Inactive"
+      "inactive": "Inactive",
+      "pending": "Pending"
     },
     "cannotModifySelf": "You cannot modify your own user",
     "deactivateUser": "Deactivate user",
@@ -1392,7 +1505,9 @@
     "confirmDelete": "Are you sure you want to delete {name}? This action cannot be undone.",
     "actionFailed": "Could not complete the action.",
     "actionSuccess": "Action applied successfully.",
-    "actionError": "An error occurred while executing the action."
+    "actionError": "An error occurred while executing the action.",
+    "emptyUsers": "No users found",
+    "emptyUsersHint": "Try adjusting your search filters"
   },
   "Metadata": {
     "title": "FASHIONS DEN - Fashion design and production",

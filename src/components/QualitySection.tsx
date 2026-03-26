@@ -1,7 +1,5 @@
-"use client";
-
 import { Shirt, Layers, Move, Tag, User, ShoppingBag } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
 const services = [
   {
@@ -76,22 +74,22 @@ const services = [
   },
 ];
 
-export default function QualitySection() {
-  const t = useTranslations("Quality");
+export default async function QualitySection() {
+  const t = await getTranslations("Quality");
 
   return (
-    <section id="servicios" className="bg-white py-20">
+    <section id="servicios" className="bg-white dark:bg-slate-900 py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-[#1f2937] lg:text-4xl">{t("title")}</h2>
-          <p className="mx-auto mt-4 max-w-3xl text-base text-gray-600 lg:text-lg">{t("subtitle")}</p>
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 lg:text-4xl">{t("title")}</h2>
+          <p className="mx-auto mt-4 max-w-3xl text-base text-gray-600 dark:text-gray-400 lg:text-lg">{t("subtitle")}</p>
         </div>
 
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
           {services.map((service, index) => (
             <div
               key={index}
-              className={`${service.cardBg} group flex min-h-[170px] flex-col rounded-2xl border border-[#ebe6e1] px-4 py-5 text-center shadow-[0_18px_40px_-34px_rgba(15,23,42,0.35)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_44px_-30px_rgba(15,23,42,0.28)] md:min-h-[184px] md:px-5`}
+              className={`${service.cardBg} dark:!bg-slate-800 group flex min-h-[170px] flex-col rounded-2xl border border-[#ebe6e1] dark:border-slate-700 px-4 py-5 text-center shadow-[0_18px_40px_-34px_rgba(15,23,42,0.35)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_44px_-30px_rgba(15,23,42,0.28)] md:min-h-[184px] md:px-5`}
             >
               {(() => {
                 const Icon = service.icon;
@@ -101,10 +99,10 @@ export default function QualitySection() {
                   </div>
                 );
               })()}
-              <h3 className="text-[1rem] font-semibold leading-6 text-[#1f2937] transition-colors duration-300 group-hover:text-[#111827]">
+              <h3 className="text-[1rem] font-semibold leading-6 text-gray-800 dark:text-gray-100 transition-colors duration-300 group-hover:text-brand-900 dark:group-hover:text-brand-400">
                 {t(`services.${index}.name`)}
               </h3>
-              <p className="mt-2 text-xs leading-5 text-gray-500 md:text-[13px]">
+              <p className="mt-2 text-xs leading-5 text-gray-500 dark:text-gray-400 md:text-[13px]">
                 {t(`services.${index}.shortDesc`)}
               </p>
               <p className={`mt-auto pt-4 text-sm font-semibold ${service.accent}`}>{t(`services.${index}.detail`)}</p>

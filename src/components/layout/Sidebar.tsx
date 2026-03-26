@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { useUnreadMessagesCount } from "@/hooks/useUnreadMessagesCount";
@@ -166,14 +167,14 @@ export default function Sidebar({
       <div className="h-16 flex items-center justify-between px-4 border-b border-gray-100 dark:border-slate-800">
         {expanded ? (
           <Link href="/dashboard" onClick={() => handleNavigate("/dashboard")} className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#2563eb] rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
               <ShieldCheck className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-xl text-[#1a365d] dark:text-slate-100">FASHIONS DEN</span>
+            <span className="font-bold text-xl text-brand-900 dark:text-slate-100">FASHIONS DEN</span>
           </Link>
         ) : (
           <Link href="/dashboard" onClick={() => handleNavigate("/dashboard")} className="mx-auto">
-            <div className="w-10 h-10 bg-[#2563eb] rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-brand-600 rounded-lg flex items-center justify-center">
               <ShieldCheck className="w-6 h-6 text-white" />
             </div>
           </Link>
@@ -181,18 +182,18 @@ export default function Sidebar({
         {isMobile ? (
           <button
             onClick={onMobileClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
             aria-label={t("closeMenu")}
           >
-            <X className="w-5 h-5 text-gray-500" />
+            <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
           </button>
         ) : (
           <button
             onClick={onToggle}
-            className={`p-2 hover:bg-gray-100 rounded-lg transition-colors ${!isOpen ? "hidden" : ""}`}
+            className={`p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors ${!isOpen ? "hidden" : ""}`}
             aria-label={t("collapseMenu")}
           >
-            <Menu className="w-5 h-5 text-gray-500" />
+            <Menu className="w-5 h-5 text-gray-500 dark:text-gray-400" />
           </button>
         )}
       </div>
@@ -214,7 +215,7 @@ export default function Sidebar({
               )
             }
           >
-            <Button className="w-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-lg flex items-center justify-center gap-2">
+            <Button className="w-full bg-brand-600 hover:bg-brand-700 text-white rounded-lg flex items-center justify-center gap-2">
               <Plus className="w-4 h-4" />
               {userRole === "admin" ? t("ctaAdmin") : userRole === "brand" ? t("ctaBrand") : t("ctaManufacturer")}
             </Button>
@@ -236,9 +237,16 @@ export default function Sidebar({
               )
             }
           >
-            <Button size="icon" className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-lg" aria-label={userRole === "admin" ? t("ctaAdminAria") : userRole === "brand" ? t("ctaBrandAria") : t("ctaManufacturerAria")}>
-              <Plus className="w-5 h-5" />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button size="icon" className="bg-brand-600 hover:bg-brand-700 text-white rounded-lg" aria-label={userRole === "admin" ? t("ctaAdminAria") : userRole === "brand" ? t("ctaBrandAria") : t("ctaManufacturerAria")}>
+                  <Plus className="w-5 h-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                {userRole === "admin" ? t("ctaAdmin") : userRole === "brand" ? t("ctaBrand") : t("ctaManufacturer")}
+              </TooltipContent>
+            </Tooltip>
           </Link>
         </div>
       )}
@@ -253,7 +261,7 @@ export default function Sidebar({
               placeholder={t("searchPlaceholder")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-gray-50 border-gray-200 rounded-lg"
+              className="pl-10 bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700 rounded-lg"
             />
           </div>
         </div>
@@ -277,7 +285,7 @@ export default function Sidebar({
       )}
 
       {/* Navigation */}
-      <nav className="px-2 py-2 space-y-1 overflow-y-auto max-h-[calc(100vh-260px)]">
+      <nav aria-label={t("navigationLabel")} className="px-2 py-2 space-y-1 overflow-y-auto max-h-[calc(100vh-260px)]">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.href);
@@ -295,10 +303,10 @@ export default function Sidebar({
                 <button
                   onClick={() => toggleExpand(item.key)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                    active ? "bg-[#2563eb] text-white" : "text-gray-700 hover:bg-gray-100"
+                    active ? "bg-brand-600 text-white" : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800"
                   } ${!expanded ? "justify-center" : ""}`}
                 >
-                  <Icon className={`w-5 h-5 flex-shrink-0 ${active ? "text-white" : "text-gray-500"}`} />
+                  <Icon className={`w-5 h-5 flex-shrink-0 ${active ? "text-white" : "text-gray-500 dark:text-gray-400"}`} />
                   {expanded && (
                     <>
                       <span className="flex-1 text-left font-medium text-sm">{t(`nav.${item.key}`)}</span>
@@ -311,11 +319,11 @@ export default function Sidebar({
                   href={item.href}
                   onClick={() => handleNavigate(item.href)}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                    active ? "bg-[#2563eb] text-white" : "text-gray-700 hover:bg-gray-100"
+                    active ? "bg-brand-600 text-white" : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800"
                   } ${!expanded ? "justify-center" : ""}`}
                 >
                   <div className="relative">
-                    <Icon className={`w-5 h-5 flex-shrink-0 ${active ? "text-white" : "text-gray-500"}`} />
+                    <Icon className={`w-5 h-5 flex-shrink-0 ${active ? "text-white" : "text-gray-500 dark:text-gray-400"}`} />
                     {itemBadge > 0 && !expanded && (
                       <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                         {itemBadge}
@@ -344,8 +352,8 @@ export default function Sidebar({
                       onClick={() => handleNavigate(subItem.href)}
                       className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
                         pathname === subItem.href
-                          ? "bg-gray-100 text-[#2563eb] font-medium"
-                          : "text-gray-600 hover:bg-gray-50"
+                          ? "bg-gray-100 dark:bg-slate-800 text-brand-600 font-medium"
+                          : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800"
                       }`}
                     >
                       {t(`nav.${subItem.key}`)}

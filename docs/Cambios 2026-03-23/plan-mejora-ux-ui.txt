@@ -1,0 +1,920 @@
+================================================================================
+  FASHIONS DEN — PLAN DE MEJORA UX/UI INTEGRAL
+  Fecha: 23 Marzo 2026
+  Versión: 1.0
+================================================================================
+
+ÍNDICE
+------
+  1. DIAGNÓSTICO ACTUAL
+  2. SISTEMA DE DISEÑO — PALETA DE COLORES
+  3. TIPOGRAFÍA Y ESCALA
+  4. SISTEMA DE ESPACIADO Y LAYOUT
+  5. ANIMACIONES Y TRANSICIONES
+  6. COMPONENTES Y ESTADOS UI
+  7. TECNOLOGÍAS — OPCIONES Y RECOMENDACIONES
+  8. PATRONES DE CÓDIGO Y ARQUITECTURA
+  9. RENDIMIENTO Y OPTIMIZACIÓN
+  10. MEJORAS UX POR FLUJO DE NEGOCIO
+  11. ROADMAP DE IMPLEMENTACIÓN
+  12. CONVENCIONES Y MANTENIBILIDAD
+
+================================================================================
+1. DIAGNÓSTICO ACTUAL
+================================================================================
+
+1.1 STACK ACTUAL
+────────────────
+  Framework:       Next.js 15.5.12 (App Router + Turbopack)
+  React:           18.3.1
+  Estilos:         Tailwind CSS 3.4.17
+  Componentes UI:  shadcn/ui (Radix primitives)
+  Animaciones:     Framer Motion 12.34 (~30KB gzip) + tailwindcss-animate
+  Iconos:          Lucide React 0.475
+  i18n:            next-intl 4.8.3 (ES, EN, FR)
+  DB:              MySQL (mysql2) + Prisma 5.22
+  Auth:            JWT custom (cookies HTTP-only, 7 días)
+  Realtime:        Pusher/Pusher-js
+  Tipografías:     Google Fonts — Karla (body) + Passion One (headings)
+
+1.2 PROBLEMAS DETECTADOS
+─────────────────────────
+
+  [CRÍTICO] 81% de componentes son "use client" — hydration excesiva
+  [CRÍTICO] 18+ páginas hacen data-fetching con useEffect en vez de Server Components
+  [CRÍTICO] Image optimization deshabilitada (unoptimized: true en next.config.js)
+  [CRÍTICO] Zero code-splitting / lazy loading — todo se bundlea junto
+  [ALTO]   50+ usos de #2563eb hardcodeado en vez de variables de diseño
+  [ALTO]   Colores inconsistentes: #2563eb, #1a365d, #111827 sin relación clara
+  [ALTO]   Dark mode parcial — solo sidebar y header, resto incompleto
+  [ALTO]   Sin feedback visual: botones sin spinner, sin toasts, sin confirmaciones
+  [MEDIO]  Framer Motion importada globalmente (~30KB) en todas las rutas
+  [MEDIO]  Animaciones duplicadas: page-transition.tsx vs page-template.tsx vs transitions.css
+  [MEDIO]  Sin empty states — tablas vacías muestran blanco
+  [MEDIO]  Filtros pierden estado al navegar
+  [BAJO]   Accesibilidad: botones de iconos sin aria-label, roles incorrectos
+  [BAJO]   Raw <img> tags en 5 ubicaciones (Header, banners, etc.)
+
+================================================================================
+2. SISTEMA DE DISEÑO — PALETA DE COLORES
+================================================================================
+
+2.1 DIAGNÓSTICO DE COLORES ACTUALES
+────────────────────────────────────
+  Actualmente se usan colores dispersos sin un sistema:
+
+  ACTUAL (problemático):
+    #2563eb  → Azul primario (hardcodeado 50+ veces)
+    #1d4ed8  → Hover del primario (hardcodeado)
+    #111827  → Negro para featured cards, tabs activos
+    #1f2937  → Gris oscuro para títulos
+    #1a365d  → Azul marino (solo Footer)
+    Gradientes ad-hoc entre estos valores
+    70+ clases Tailwind color inline sin organización
+
+  PROBLEMA:
+    → Cambiar el color de marca requiere buscar y reemplazar 50+ archivos
+    → No existe escala semántica (qué es "éxito", "peligro", "información")
+    → El footer usa un azul distinto al resto → ruptura visual
+
+2.2 PROPUESTA — PALETA SEMÁNTICA CENTRALIZADA
+──────────────────────────────────────────────
+
+  OPCIÓN A — Paleta Azul Profesional (conservadora, actual refinada)
+  ─────────────────────────────────────────────────────────────────
+  Mantiene el azul #2563eb como base pero la organiza en escala:
+
+    --brand-50:  #eff6ff     (fondos hover sutiles)
+    --brand-100: #dbeafe     (fondos de badges, alerts info)
+    --brand-200: #bfdbfe     (bordes activos)
+    --brand-500: #3b82f6     (iconos, links)
+    --brand-600: #2563eb     (botones primarios, accents)
+    --brand-700: #1d4ed8     (hover de botones)
+    --brand-900: #1e3a5f     (footer, headers oscuros, reemplaza #1a365d y #111827)
+
+    Neutros:
+    --gray-50:   #f8fafc     (fondos de página)
+    --gray-100:  #f1f5f9     (fondos de cards, tablas)
+    --gray-200:  #e2e8f0     (bordes)
+    --gray-400:  #94a3b8     (texto placeholder)
+    --gray-500:  #64748b     (texto secundario)
+    --gray-700:  #334155     (texto principal body)
+    --gray-900:  #0f172a     (títulos, texto máximo contraste)
+
+    Semánticos — para estados del negocio:
+    --success-50:  #f0fdf4   --success-500: #22c55e   --success-700: #15803d
+    --warning-50:  #fffbeb   --warning-500: #f59e0b   --warning-700: #b45309
+    --danger-50:   #fef2f2   --danger-500:  #ef4444   --danger-700:  #b91c1c
+    --info-50:     #eff6ff   --info-500:    #3b82f6   --info-700:    #1d4ed8
+
+    Pros: Mínimo cambio visual, evolución natural
+    Contras: Sigue siendo azul corporativo genérico, menos diferenciación
+
+  OPCIÓN B — Paleta Índigo + Acentos Cálidos (moderna, diferenciadora)
+  ────────────────────────────────────────────────────────────────────
+  Mueve la marca hacia índigo (más premium, moda) con acentos ámbar:
+
+    --brand-50:  #eef2ff     (fondos sutiles)
+    --brand-100: #e0e7ff     (badges info)
+    --brand-500: #6366f1     (iconos, links)
+    --brand-600: #4f46e5     (botones primarios)
+    --brand-700: #4338ca     (hover)
+    --brand-900: #1e1b4b     (footer, fondos premium)
+
+    Acento cálido (CTA secundario, destacar elementos):
+    --accent-400: #fbbf24    (badges premium, estrellas)
+    --accent-500: #f59e0b    (botones de acción secundaria)
+    --accent-600: #d97706    (hover acento)
+
+    Neutros: misma escala slate (más fría, combina con índigo)
+
+    Pros: Más premium, diferenciador en el sector moda, visual moderno
+    Contras: Requiere rediseño visual completo de botones y branded elements
+
+  OPCIÓN C — Paleta Azul + Verde Sostenibilidad (storytelling de marca)
+  ────────────────────────────────────────────────────────────────────
+  El negocio tiene Green Score / sostenibilidad como diferenciador.
+  La paleta refleja esto: azul confianza + verde intención ecológica.
+
+    --brand-600: #2563eb     (primario — confianza, profesional)
+    --eco-500:   #10b981     (acento verde — sostenibilidad)
+    --eco-600:   #059669     (hover verde)
+    --eco-50:    #ecfdf5     (fondos eco)
+
+    Se usan ambos con intención:
+    → Azul: acciones de negocio (crear proyecto, enviar propuesta)
+    → Verde: acciones de impacto (green score, certificaciones, filtro eco)
+
+    Pros: Cuenta una historia, refuerza el pilar de sostenibilidad
+    Contras: Dos colores primarios pueden confundir si no se definen reglas claras
+
+  ★ RECOMENDACIÓN: Opción A si se quiere ir conservador y rápido.
+    Opción C si se quiere reforzar el diferenciador de marca (sostenibilidad).
+    Opción B si se busca un rebranding visual completo.
+
+2.3 MAPEO DE COLORES PARA ESTADOS DEL NEGOCIO
+──────────────────────────────────────────────
+
+  Estado RFQ:
+    draft       → gray-100/gray-700       (neutro, borrador)
+    open        → success-50/success-700   (disponible, activo)
+    evaluating  → info-50/info-700         (en proceso)
+    awarded     → brand-50/brand-700       (logro)
+    cancelled   → danger-50/danger-700     (negativo)
+    expired     → warning-50/warning-700   (atención)
+
+  Estado Propuesta:
+    submitted   → info-50/info-700
+    shortlisted → warning-50/warning-700   (destacado, en revisión)
+    accepted    → success-50/success-700
+    rejected    → danger-50/danger-700
+    withdrawn   → gray-100/gray-500
+
+  Estado Contrato:
+    active         → info-50/info-700
+    in_production  → warning-50/warning-700
+    completed      → success-50/success-700
+    disputed       → danger-50/danger-700
+    cancelled      → gray-100/gray-500
+
+  Estado Pago:
+    pending    → warning-50/warning-700
+    processing → info-50/info-700
+    completed  → success-50/success-700
+    failed     → danger-50/danger-700
+    refunded   → gray-100/gray-500
+
+  → IMPLEMENTACIÓN: Crear un objeto statusConfig centralizado en un archivo
+    de utils que mapee cada (entity, status) → { bg, text, icon, label_key }.
+    Así cualquier badge de status se renderiza igual en toda la app.
+
+================================================================================
+3. TIPOGRAFÍA Y ESCALA
+================================================================================
+
+3.1 ESTADO ACTUAL
+─────────────────
+  Fuentes cargadas externamente (Google Fonts):
+    → Karla (300, 400, 500, 600, 700) — body
+    → Passion One (400, 700, 900) — headings
+
+  Problema: Google Fonts CDN añade latencia de red + privacy concerns.
+  Se cargan 8 pesos tipográficos cuando se usan máximo 4 en la práctica.
+
+3.2 OPCIONES DE TIPOGRAFÍA
+──────────────────────────
+
+  OPCIÓN A — Inter + Google Fonts (estándar actual)
+  ──────────────────────────────────────────────────
+    → Inter como body (la fuente más usada en SaaS/dashboards)
+    → Mantener Passion One en headings
+    → Migrar a next/font/google para optimización automática
+    Pros: Universalmente legible, excelente soporte de idiomas
+    Contras: Genérica, la usa el 40% de las startups
+
+  OPCIÓN B — Geist (familia de Vercel) + next/font/local
+  ──────────────────────────────────────────────────────
+    → Geist Sans (body) + Geist Mono (código, datos numéricos)
+    → Viene optimizada para Next.js, zero-config con next/font
+    → Self-hosted (sin CDN externo → más rápido, GDPR-compliant)
+    Pros: Moderna, optimizada para dashboards, 0 latencia de fuentes
+    Contras: Menos personalidad que Passion One en headings
+
+  OPCIÓN C — Mantenerse con Karla/Passion One pero self-hosted
+  ────────────────────────────────────────────────────────────
+    → Descargar Karla + Passion One y servir desde /public/fonts
+    → Configurar con next/font/local → variable fonts si disponibles
+    → Reducir pesos cargados: Karla 400,500,700 / Passion One 700
+    Pros: Sin cambio visual, solo optimización técnica
+    Contras: Passion One no tiene variable font, 3 archivos estáticos
+
+  ★ RECOMENDACIÓN: Opción C para mínimo impacto visual + ganancia de rendimiento.
+    Opción B si se quiere modernizar la identidad visual.
+
+3.3 ESCALA TIPOGRÁFICA PROPUESTA
+────────────────────────────────
+  Reducir de 10 tamaños a 7 consistentes (4:5 ratio — "major third"):
+
+    --text-xs:    0.75rem / 12px   → Labels, badges, metadata
+    --text-sm:    0.875rem / 14px  → Texto secundario, tablas, sidebar
+    --text-base:  1rem / 16px      → Texto body principal, botones
+    --text-lg:    1.125rem / 18px  → Subtítulos de cards, nombres
+    --text-xl:    1.25rem / 20px   → Títulos de sección (dashboard)
+    --text-2xl:   1.5rem / 24px    → Títulos de página
+    --text-4xl:   2.25rem / 36px   → Hero headlines (solo landing)
+
+  → Eliminar text-3xl, text-5xl, text-6xl del uso interno.
+  → Headings de marketing (landing) pueden escapar la escala.
+
+================================================================================
+4. SISTEMA DE ESPACIADO Y LAYOUT
+================================================================================
+
+4.1 ESCALA DE ESPACIADO — BASE 4px
+───────────────────────────────────
+  Unificar a escala 4px en Tailwind (ya es el default):
+
+    1  = 4px    → Micro-spacing (dentro de badges)
+    2  = 8px    → Entre elementos inline, gap mínimo
+    3  = 12px   → Padding interno de inputs
+    4  = 16px   → Padding de cards, gap estándar entre elementos
+    6  = 24px   → Separación entre secciones dentro de una card
+    8  = 32px   → Separación entre cards/secciones
+    12 = 48px   → Padding de sección (vertical)
+    16 = 64px   → Separación entre secciones de página
+
+  REGLA: Usar solo estos valores. Evitar p-5, p-7, p-10, p-14, etc.
+
+4.2 GRID SYSTEM — BREAKPOINTS
+──────────────────────────────
+  Mantener los breakpoints de Tailwind (consistentes con ancho estándar):
+
+    sm:  640px   → Mobile landscape
+    md:  768px   → Tablet
+    lg:  1024px  → Desktop estándar
+    xl:  1280px  → Desktop ancho
+    2xl: 1536px  → Desktop ultra-wide
+
+  REGLA para grids:
+    Stat cards:   1 col → md:2 → lg:4
+    Listas:       1 col → md:2 → lg:3
+    Dashboard:    Sidebar (64/80px collapsado, 256px expandido) + contenido fluido
+    Landing:      max-w-7xl (1280px) centrado
+
+4.3 SOMBRAS — ESCALA REDUCIDA
+──────────────────────────────
+  Eliminar sombras custom inline. Usar solo esta escala:
+
+    shadow-sm    → Elementos en reposo (cards, inputs)
+    shadow-md    → Elementos hover / elevados (dropdowns)
+    shadow-lg    → Modales, overlays
+    shadow-none  → Elementos planos
+
+  → BORRAR: shadow-[0_18px_40px_-34px_...] y similares de QualitySection, etc.
+
+4.4 BORDER-RADIUS — ESCALA
+───────────────────────────
+    rounded-md   → Inputs, badges
+    rounded-lg   → Cards, botones
+    rounded-xl   → Cards grandes, contenedores
+    rounded-full → Avatares, pills
+
+  → Estandarizar: todos los botones = rounded-lg
+  → Todas las cards = rounded-xl
+  → Eliminar rounded-[2px], rounded-2xl (consolidar)
+
+================================================================================
+5. ANIMACIONES Y TRANSICIONES
+================================================================================
+
+5.1 DIAGNÓSTICO
+───────────────
+  ACTUAL: 3 sistemas de animación conviviendo:
+    1. Framer Motion (30KB gzip) — Header, DashboardLayout, Login, PageTemplate
+    2. tailwindcss-animate — Shadcn dropdowns, sheets
+    3. CSS custom (transitions.css) — 15+ keyframes, clases de utilidad
+
+  PROBLEMA: Redundancia, peso innecesario, comportamiento impredecible.
+
+5.2 OPCIONES DE LIBRERÍA DE ANIMACIÓN
+──────────────────────────────────────
+
+  OPCIÓN A — Eliminar Framer Motion, usar solo CSS + tailwindcss-animate
+  ───────────────────────────────────────────────────────────────────────
+    → CSS animations/transitions nativas para todo
+    → tailwindcss-animate ya cubre: fade, zoom, slide, spin, pulse
+    → Crear keyframes custom para transiciones de página vía CSS
+    
+    Ahorro: ~30KB gzip del bundle
+    Pros: Zero runtime overhead, mejor rendimiento, más ligero
+    Contras: Sin AnimatePresence (exit animations), sin spring physics
+    Complejidad de migración: MEDIA (hay ~15 componentes con motion)
+
+  OPCIÓN B — Reemplazar Framer Motion por motion (lite, 2.5KB)
+  ────────────────────────────────────────────────────────────
+    → motion es un fork oficial ultra-ligero de Framer Motion
+    → Mismo API: <motion.div>, animate, exit, etc.
+    → Paquete: npm install motion
+    → Soporta AnimatePresence, springs, gestures
+
+    Ahorro: ~27KB gzip (de 30KB a ~3KB)
+    Pros: Misma API, migración trivial (cambiar imports), springs reales
+    Contras: Aún es una dependencia adicional
+    Complejidad de migración: BAJA (solo cambiar import paths)
+
+  OPCIÓN C — View Transitions API (nativa del navegador)
+  ─────────────────────────────────────────────────────
+    → API nativa del browser para transiciones entre vistas
+    → Next.js experimental: unstable_ViewTransition
+    → Sin JavaScript para transiciones de página
+    → Fallback graceful en browsers que no soportan
+
+    Ahorro: Total (0KB de librería)
+    Pros: Sin JS, rendimiento máximo, es el estándar futuro
+    Contras: Soporte parcial (~75% browsers), API aún experimental en Next.js
+    Complejidad: ALTA (requiere repensar todas las transiciones)
+
+  ★ RECOMENDACIÓN: Opción B (motion lite) para migración inmediata con mínimo
+    esfuerzo. A futuro, migrar progresivamente a View Transitions API cuando
+    Next.js la estabilice.
+
+5.3 CATÁLOGO DE ANIMACIONES PROPUESTO
+──────────────────────────────────────
+
+  TRANSICIONES DE PÁGINA:
+    → Fade + slide-up suave (opacity 0→1, y 8px→0, 200ms ease-out)
+    → NO exit animations — agregan latencia perceptible sin valor
+
+  MICROINTERACCIONES:
+    → Botones: scale(0.97) en :active, 100ms
+    → Cards hover: translateY(-2px) + shadow-md, 200ms
+    → Toggles/switches: 150ms ease-in-out
+    → Links: color transition 150ms
+
+  FEEDBACK:
+    → Skeleton loaders: animate-pulse (ya implementado)
+    → Progress bar top: width transition 150ms (ya implementado)
+    → Toast enter: slide-in from right + fade, 300ms
+    → Toast exit: fade-out, 200ms
+
+  ELIMINAR:
+    → transitions.css completo → mover lo necesario a globals.css
+    → page-template.tsx → consolidar con DashboardLayout
+    → page-transition.tsx → ya no necesario con motion lite
+
+  REGLA: Ninguna animación > 400ms. Máximo 300ms para la mayoría.
+  @media (prefers-reduced-motion: reduce) siempre respetado.
+
+================================================================================
+6. COMPONENTES Y ESTADOS UI
+================================================================================
+
+6.1 SISTEMA DE LOADING STATES
+──────────────────────────────
+  ACTUAL: 11 spinners diferentes (ruedas de carga circulares por toda la app)
+  
+  PROPUESTA — 3 patrones estandarizados:
+
+    1. SKELETON LOADER (para contenido que se conoce la estructura)
+       → Cards, tablas, listas, dashboards
+       → Ya implementado en DashboardHome — replicar patrón
+       → animate-pulse + bg-gray-200 rounded
+
+    2. INLINE SPINNER (para acciones del usuario)
+       → Botones submit, enviar mensaje, guardar
+       → Mini spinner (16px) dentro del botón, reemplaza el texto
+       → Botón deshabilitado mientras carga
+
+    3. PROGRESS BAR (para navegación entre páginas)
+       → Barra top azul (ya implementada en DashboardLayout)
+       → Solo aparece si la navegación tarda >200ms
+
+    ELIMINAR:
+       → Spinner de pantalla completa "Loading dashboard..."
+       → Loader2 icon genérico centrado en pantalla
+
+6.2 SISTEMA DE FEEDBACK — TOASTS
+─────────────────────────────────
+  Actualmente NO hay feedback al usuario tras acciones.
+
+  OPCIONES:
+
+    OPCIÓN A — Sonner (2.5KB, standalone)
+    ───────────────────────────────────
+      → Librería de toasts más ligera y popular para React
+      → API simple: toast.success("Proyecto creado")
+      → Animaciones nativas, posición configurable
+      → Zero config con Tailwind
+      Pros: Muy ligera, excelente DX, themeable
+      Contras: Una dependencia más
+
+    OPCIÓN B — React Hot Toast (5KB)
+    ──────────────────────────────
+      → Similar a Sonner pero más pesada
+      → Más opciones de customización
+      Pros: Más configuraciones, promise toasts
+      Contras: Más pesada, API más verbose
+
+    OPCIÓN C — Toast custom con Radix Toast primitive
+    ────────────────────────────────────────────────
+      → Ya tenemos Radix (shadcn base)
+      → Toast = accesible, keyboard-navigable
+      → Más control total pero más código
+      Pros: Sin dependencias extra, máximo control
+      Contras: Más código que mantener
+
+    ★ RECOMENDACIÓN: Opción A (Sonner). 2.5KB, excelente DX, el estándar
+      de facto en apps Next.js con shadcn.
+
+  DÓNDE IMPLEMENTAR TOASTS:
+    → Crear proyecto / RFQ → "Proyecto publicado exitosamente"
+    → Enviar propuesta → "Propuesta enviada"
+    → Aceptar propuesta → "Contrato creado automáticamente"
+    → Cambiar idioma → NO (la transición visual ya da feedback)
+    → Error de red → "Error de conexión, intenta de nuevo"
+    → Login / Logout → "Sesión iniciada" / "Sesión cerrada"
+
+6.3 EMPTY STATES
+─────────────────
+  Actualmente las tablas vacías muestran espacio blanco.
+
+  PROPUESTA: Componente EmptyState reutilizable:
+    → Ilustración simple (SVG inline o icono Lucide grande)
+    → Título: "No hay propuestas aún"
+    → Subtítulo: "Cuando los fabricantes envíen propuestas, aparecerán aquí"
+    → CTA opcional: "Explorar fabricantes"
+
+  DÓNDE:
+    → Lista de proyectos (brand sin proyectos) → CTA "Crear primer proyecto"
+    → Lista de propuestas (sin bids) → CTA "Explorar oportunidades"
+    → Mensajes (sin conversaciones) → CTA "Iniciar conversación"
+    → Contratos vacíos → Info "Los contratos se crean al aceptar una propuesta"
+    → Pagos vacíos → Info "Aún no tienes transacciones registradas"
+
+6.4 DIÁLOGOS DE CONFIRMACIÓN
+─────────────────────────────
+  Acciones destructivas sin confirmación actualmente:
+    → Cancelar proyecto, rechazar propuesta, cerrar sesión
+
+  PROPUESTA: AlertDialog de Radix (ya disponible en shadcn):
+    → Título: "¿Cancelar este proyecto?"
+    → Descripción: "Esta acción no se puede deshacer..."
+    → Botones: "Cancelar" (neutro) + "Confirmar" (destructive red)
+
+================================================================================
+7. TECNOLOGÍAS — OPCIONES Y RECOMENDACIONES
+================================================================================
+
+7.1 FRAMEWORK — MANTENER Next.js 15 (App Router)
+─────────────────────────────────────────────────
+  ¿Por qué no cambiar?
+    → App Router ya es el estándar de la industria
+    → Turbopack acelerando dev builds
+    → Server Components + Server Actions = patrón actual
+    → Migrar a otro framework (Remix, Nuxt) no aporta valor
+
+  ¿Qué versión apuntar?
+    → Mantener Next.js 15.x estable. No saltar a 16 hasta que sea stable.
+    → Cuando lo sea, la migración es incremental (no breaking changes mayores)
+
+7.2 CSS — EVALUAR TAILWIND v4
+──────────────────────────────
+  ACTUAL: Tailwind 3.4.17
+
+    OPCIÓN A — Mantener Tailwind 3.x
+    ──────────────────────────────
+      Pros: Estable, todo funciona, shadcn compatible
+      Contras: PostCSS pipeline, archivo tailwind.config.ts separado
+
+    OPCIÓN B — Migrar a Tailwind v4
+    ────────────────────────────
+      → CSS-first configuration (adiós tailwind.config.ts)
+      → Themes con @theme en CSS directamente
+      → Engine reescrito en Rust (10x más rápido)
+      → Oxide engine integrado
+      → Cambios de naming: shadow-sm → shadow-xs, etc.
+
+      Pros: Más rápido, config en CSS nativo, futuro de Tailwind
+      Contras: Rompe compatibilidad con plugins v3, shadcn necesita adaptarse
+      shadcn/ui ya tiene compatibilidad con v4 en su última versión.
+
+    ★ RECOMENDACIÓN: Evaluar migración a Tailwind v4 en la siguiente iteración.
+      Por ahora, estandarizar colores y tokens en v3 para que la migración sea
+      más fácil después (ya que v4 usa variables CSS nativas).
+
+7.3 COMPONENTES UI — shadcn/ui
+───────────────────────────────
+  MANTENER. Razones:
+    → Copy-paste ownership (no dependencia de versiones)
+    → Radix primitives = accesibilidad nativa
+    → Personalizable con Tailwind
+    → Comunidad enorme, componentes actualizados
+
+  COMPONENTES A AGREGAR (que no tenemos):
+    → Toast (shadcn/sonner integration)
+    → AlertDialog (confirmaciones)
+    → Table (reemplazar tablas custom)
+    → Tabs (reemplazar implementaciones custom)
+    → Skeleton (componente reutilizable)
+    → Badge (estandarizar los status badges)
+    → Avatar (reemplazar divs con iniciales)
+    → Progress (barras de progreso de milestones)
+    → Tooltip (para iconos sin texto)
+
+7.4 DATA FETCHING — OPCIONES
+─────────────────────────────
+
+  ACTUAL: useEffect + fetch en 18+ páginas client-side
+
+    OPCIÓN A — Server Components + Server Actions (nativos Next.js)
+    ────────────────────────────────────────────────────────────
+      → async/await directo en componentes server
+      → Server Actions para mutations (POST, PUT, DELETE)
+      → No necesita estado client-side para datos iniciales
+      → Streaming con Suspense boundaries
+
+      Pros: Zero client JS para data-fetching, fastest FCP, built-in
+      Contras: Requiere refactoring de cada página, learning curve del pattern
+      Complejidad: ALTA pero resultado óptimo
+
+    OPCIÓN B — React Query (TanStack Query)
+    ──────────────────────────────────────
+      → Caching inteligente, invalidation, revalidation
+      → Optimistic updates para mutations
+      → Soporte para SSR hydration
+      → Stale-while-revalidate automático
+
+      Pros: Resuelve cache, loading, error states automáticamente
+      Contras: +12KB bundle, una dependencia más, redundante con Server Components
+      Complejidad: MEDIA
+
+    OPCIÓN C — SWR (Vercel, ligero)
+    ─────────────────────────────
+      → Similar a React Query pero más simple y ligero (~4KB)
+      → stale-while-revalidate nativo
+      → Buena integración con Next.js
+
+      Pros: Ligero, simple API, de Vercel
+      Contras: Menos features que React Query, sigue siendo client-side
+
+    ★ RECOMENDACIÓN: Opción A (Server Components) para páginas de listado
+      (dashboard home, projects, contracts, companies) donde los datos son
+      de solo lectura al cargar. Opción C (SWR) como complemento para datos
+      que necesitan polling/revalidación en tiempo real (mensajes, notificaciones).
+
+7.5 VALIDACIÓN DE FORMULARIOS
+──────────────────────────────
+  ACTUAL: Validación manual ad-hoc (no hay un patrón)
+  
+    OPCIÓN A — React Hook Form + Zod
+    ──────────────────────────────
+      → React Hook Form: rendimiento óptimo (controlled inputs sin re-renders)
+      → Zod: ya está en el proyecto (^4.3.6)
+      → zodResolver conecta ambos
+      → Server Actions pueden validar con el mismo schema Zod
+
+      Pros: Schemas compartidos cliente/servidor, mínimo re-renders
+      Ya tenemos Zod instalado.
+
+    OPCIÓN B — Conform (server-first)
+    ────────────────────────────
+      → Diseñado para Server Actions primero
+      → Progressive enhancement (funciona sin JS)
+      → Zod adapter disponible
+
+      Pros: Más aligned con Server Actions, progressive enhancement
+      Contras: Menos ecosistema, curva de aprendizaje
+
+    ★ RECOMENDACIÓN: Opción A (React Hook Form + Zod).
+      Zod ya está instalado. Agregar react-hook-form (~8KB) + @hookform/resolvers.
+
+7.6 ESTADO GLOBAL
+──────────────────
+  ACTUAL: Contextos React (DashboardUserContext) + module-level cache
+
+    NO agregar ninguna librería de estado global.
+    → Server Components eliminan la mayoría de necesidades de estado client
+    → Contextos React son suficientes para: usuario, tema, sidebar state
+    → Module-level cache (ya implementado) para datos temporales
+
+    Mantener este enfoque. No agregar Redux, Zustand, Jotai.
+
+7.7 AUTENTICACIÓN — EVALUAR A FUTURO
+─────────────────────────────────────
+  ACTUAL: JWT custom con bcryptjs + HTTP-only cookies
+
+    OPCIONES FUTURAS (no urgente):
+    → Auth.js v5 (NextAuth) — si se necesita OAuth (Google, GitHub login)
+    → Clerk — si se necesita user management completo (invite, org, MFA)
+
+    POR AHORA: Mantener JWT custom. Funciona, es simple, sin vendor lock-in.
+
+================================================================================
+8. PATRONES DE CÓDIGO Y ARQUITECTURA
+================================================================================
+
+8.1 ESTRUCTURA DE CARPETAS — PROPUESTA
+───────────────────────────────────────
+  ACTUAL: Plana (todo en components/, types/)
+  
+  PROPUESTA: Feature-based architecture:
+
+    src/
+    ├── app/[locale]/                    (rutas — no cambia)
+    ├── components/
+    │   ├── ui/                          (primitivos shadcn — botón, input, card)
+    │   ├── layout/                      (Header, Footer, Sidebar, DashboardLayout)
+    │   └── shared/                      (EmptyState, StatusBadge, SkeletonCard)
+    ├── features/
+    │   ├── auth/                        (login, register, context, hooks)
+    │   ├── projects/                    (componentes de RFQ, formularios, cards)
+    │   ├── proposals/                   (lista, detalle, formulario)
+    │   ├── contracts/                   (contratos, milestones, timeline)
+    │   ├── messaging/                   (MessagesPanel, hooks de chat)
+    │   ├── companies/                   (perfiles, capabilities, certifications)
+    │   └── payments/                    (transacciones, estados)
+    ├── lib/                             (utilidades: auth, db, utils, statusConfig)
+    ├── hooks/                           (hooks compartidos)
+    ├── types/                           (tipos compartidos)
+    └── i18n/                            (routing, request, navigation)
+
+  BENEFICIO: Cada feature es auto-contenida. Se puede trabajar en una sin
+  afectar las demás. Los imports son más claros: @/features/proposals/ProposalCard.
+
+8.2 PATRONES PARA SERVER/CLIENT COMPONENTS
+──────────────────────────────────────────
+
+  REGLA 1: Server Component por defecto. Solo "use client" si necesita:
+    → useState, useEffect, event handlers (onClick, onChange)
+    → Browser APIs (localStorage, window)
+    → hooks de terceros (useTranslations, useRouter client)
+
+  REGLA 2: Empujar "use client" hacia las hojas del árbol:
+    → En vez de hacer toda la página client, extraer solo la parte interactiva
+    
+    ACTUAL (malo):
+      "use client"
+      page.tsx → fetch datos + useEffect → renderizar todo client-side
+    
+    PROPUESTA (bueno):
+      page.tsx (server) → fetch datos en el servidor
+        └── InteractiveFilters.tsx ("use client") → solo los filtros
+        └── DataTable (server rendered) → la tabla es server component
+
+  REGLA 3: Pasar datos de server → client como props, no re-fetch:
+    → Server Component obtiene datos → los pasa como props al client component
+    → El client component NO necesita useEffect para cargar los mismos datos
+
+8.3 PATRÓN DE STATUS CENTRALIZADO
+──────────────────────────────────
+  Crear un archivo de configuración de estados:
+
+    // lib/status-config.ts
+    // Mapeo: (entity, status) → { bg, text, icon, i18nKey }
+    // Un solo lugar para cambiar colores de todos los badges
+    // Se usa en: DashboardHome, Contracts, Proposals, Projects, Admin
+
+  BENEFICIO: Cambiar el color de "cancelled" se hace en 1 archivo,
+  no en 6 componentes diferentes.
+
+================================================================================
+9. RENDIMIENTO Y OPTIMIZACIÓN
+================================================================================
+
+9.1 ACCIONES INMEDIATAS (sin refactoring)
+─────────────────────────────────────────
+
+  [1] HABILITAR IMAGE OPTIMIZATION
+      → next.config.js: quitar `unoptimized: true`
+      → Reemplazar <img> tags por next/image en 5 ubicaciones
+      → Resultado: imágenes WebP automáticas, lazy loading, sized
+
+  [2] SELF-HOST FONTS
+      → Mover Karla + Passion One a /public/fonts
+      → Usar next/font/local en layout.tsx
+      → Eliminar @import de Google Fonts CDN
+      → Resultado: fin de requests externos para fuentes
+
+  [3] DYNAMIC IMPORT FRAMER MOTION
+      → const MotionDiv = dynamic(() => import('framer-motion').then(m => m.motion.div))
+      → O migrar a "motion" lite (Opción B de sección 5)
+      → Resultado: 27-30KB menos en el bundle inicial
+
+  [4] AGREGAR SUSPENSE BOUNDARIES
+      → Envolver contenido de dashboard pages con <Suspense fallback={<Skeleton/>}>
+      → Permite streaming SSR mientras se cargan datos
+      → Resultado: FCP más rápido
+
+9.2 ACCIONES A MEDIANO PLAZO
+─────────────────────────────
+
+  [5] MIGRAR PÁGINAS A SERVER COMPONENTS
+      → Empezar por las de solo lectura: companies, manufacturers, contracts list
+      → Datos cargados en servidor → pasados como props
+      → Elimina useEffect + loading state en cada página
+
+  [6] CONSOLIDAR CSS
+      → Eliminar transitions.css (mover lo esencial a globals.css)
+      → Eliminar page-template.tsx y page-transition.tsx
+      → Una sola fuente de verdad para transiciones
+
+  [7] TREE-SHAKE LUCIDE
+      → Ya importa por nombre (import { Bell } from "lucide-react") → OK
+      → Verificar que no hay `import * from "lucide-react"` en ningún lado
+
+================================================================================
+10. MEJORAS UX POR FLUJO DE NEGOCIO
+================================================================================
+
+10.1 FLUJO: ONBOARDING (Login/Register)
+────────────────────────────────────────
+  ACTUAL: Form básica, sin feedback, sin validación en tiempo real
+  
+  MEJORAS:
+    → Validación inline campo por campo (Zod + React Hook Form)
+    → Indicador de fortaleza de contraseña
+    → Selección de rol (Brand/Manufacturer) con cards visuales, no dropdown
+    → Onboarding post-registro: wizard guiado "Completa tu perfil" (3 pasos)
+    → Redirect inteligente según rol tras login
+
+10.2 FLUJO: CREAR PROYECTO (RFQ) — BRAND
+─────────────────────────────────────────
+  ACTUAL: Formulario largo de un solo paso
+  
+  MEJORAS:
+    → Multi-step form: 1. Básico → 2. Materiales → 3. Sostenibilidad → 4. Revisión
+    → Progress stepper visual arriba
+    → Guardado automático como borrador (no perder datos)
+    → Preview antes de publicar
+    → Toast de confirmación: "Proyecto publicado — 12 fabricantes notificados"
+
+10.3 FLUJO: EXPLORAR OPORTUNIDADES — MANUFACTURER
+──────────────────────────────────────────────────
+  ACTUAL: Lista de RFQs con filtros que se pierden
+  
+  MEJORAS:
+    → Filtros persistentes en URL (searchParams) → shareable, no se pierden
+    → Cards más informativas: mostrar budget range, deadline, green badge
+    → "Match score" basado en capabilities del manufacturer vs RFQ requirements
+    → Quick-bid: poder enviar propuesta directamente desde la lista
+
+10.4 FLUJO: PROPUESTAS Y EVALUACIÓN — BRAND
+────────────────────────────────────────────
+  ACTUAL: Lista de propuestas, aprobación/rechazo sin contexto
+  
+  MEJORAS:
+    → Vista comparativa: tabla side-by-side de propuestas (precio, lead time, green score)
+    → Ranking automático por criterios configurables
+    → Notas privadas del brand en cada propuesta
+    → Notificación al manufacturer cuando es shortlisted
+    → Diálogo de confirmación al aceptar/rechazar
+
+10.5 FLUJO: CONTRATOS Y MILESTONES
+───────────────────────────────────
+  ACTUAL: Lista de contratos, sin visualización de progreso
+  
+  MEJORAS:
+    → Timeline visual de milestones (Design → Sample → Production → Delivery)
+    → Barra de progreso por contrato
+    → Upload de evidencia por milestone (fotos de muestras, etc.)
+    → Alertas de deadline próximo
+    → Botón de "Aprobar milestone" + confirmación → trigger payment
+
+10.6 FLUJO: MENSAJERÍA
+───────────────────────
+  ACTUAL: Panel funcional con realtime (Pusher), ya contextual por RFQ/contrato
+  
+  MEJORAS:
+    → Indicador "escribiendo..." (typing indicator via Pusher)
+    → Preview de archivos adjuntos (imágenes inline)
+    → Búsqueda dentro de conversaciones
+    → Notificación push opcional (Web Notifications API)
+    → Unread badge más visible en sidebar
+
+10.7 FLUJO: PAGOS
+──────────────────
+  ACTUAL: Mock data, no integrado con pasarela real
+  
+  MEJORAS:
+    → Integración con pasarela real (Stripe, PayU, Wompi para Colombia)
+    → Estado visual claro por pago (iconos + colores semánticos)
+    → Recibo descargable (PDF generado server-side)
+    → Historial filtrable por estado, rango de fecha
+
+10.8 FLUJO: GREEN SCORE
+────────────────────────
+  ACTUAL: Calculado pero poco visible
+  
+  MEJORAS:
+    → Widget de Green Score prominente en perfil del manufacturer
+    → Gráfico radial o gauge visual
+    → Breakdown por categoría (materiales, certificaciones, procesos)
+    → Badge en resultados de búsqueda y propuestas
+    → Filtro "Solo fabricantes eco-certificados" en explorador
+
+================================================================================
+11. ROADMAP DE IMPLEMENTACIÓN
+================================================================================
+
+  FASE 1 — FUNDAMENTOS (1-2 semanas)
+  ────────────────────────────────────
+    □ Centralizar paleta de colores en CSS variables
+    □ Crear statusConfig centralizado (colores de estados)
+    □ Self-host fonts con next/font
+    □ Habilitar image optimization
+    □ Migrar Framer Motion → motion lite (o CSS)
+    □ Eliminar transitions.css, consolidar en globals.css
+    □ Instalar Sonner para toasts
+
+  FASE 2 — COMPONENTES BASE (1-2 semanas)
+  ────────────────────────────────────────
+    □ Componente EmptyState reutilizable
+    □ Componente StatusBadge centralizado
+    □ Componente SkeletonLoader por tipo de contenido
+    □ AlertDialog para confirmaciones destructivas
+    □ Agregar toasts a todas las acciones del usuario
+    □ Agregar shadcn: Table, Tabs, Avatar, Progress, Tooltip, Badge
+
+  FASE 3 — SERVER COMPONENTS (2-3 semanas)
+  ────────────────────────────────────────
+    □ Migrar páginas de listado a Server Components
+    □ Implementar filtros en URL (searchParams)
+    □ Agregar Suspense boundaries con Skeleton fallbacks
+    □ Eliminar useEffect data-fetching donde sea posible
+    □ Reducir "use client" components al mínimo necesario
+
+  FASE 4 — FLUJOS UX CLAVE (2-3 semanas)
+  ──────────────────────────────────────
+    □ Multi-step form para crear RFQ
+    □ Vista comparativa de propuestas
+    □ Timeline visual de milestones
+    □ Onboarding post-registro
+    □ Dark mode completo
+    □ Formulario validación con React Hook Form + Zod
+
+  FASE 5 — OPTIMIZACIÓN Y POLISH (1-2 semanas)
+  ─────────────────────────────────────────────
+    □ Auditoría de accesibilidad (aria-labels, keyboard navigation)
+    □ Lighthouse audit → optimizar hasta score 90+
+    □ Evaluar Tailwind v4 migration
+    □ Code-split con dynamic imports donde haga falta
+    □ Pruebas cross-browser y responsive
+
+================================================================================
+12. CONVENCIONES Y MANTENIBILIDAD
+================================================================================
+
+12.1 REGLAS DE CÓDIGO
+─────────────────────
+  → NO hardcodear colores hex (#2563eb) → usar clases de utilidad o CSS vars
+  → NO crear componentes "use client" sin justificación documentada
+  → NO agregar dependencias sin evaluar peso (bundlephobia.com)
+  → SÍ usar el StatusBadge centralizado para cualquier badge de estado
+  → SÍ usar EmptyState para cualquier lista que pueda estar vacía
+  → SÍ usar Sonner toast para cualquier acción que cambie estado
+
+12.2 NAMING CONVENTIONS
+────────────────────────
+  Componentes:  PascalCase (StatusBadge.tsx, EmptyState.tsx)
+  Hooks:        camelCase prefijo use (useProposals.ts, useContractStatus.ts)
+  Utils:        camelCase (statusConfig.ts, formatCurrency.ts)
+  CSS vars:     kebab-case con prefijo (--brand-600, --success-500)
+  i18n keys:    PascalCase.camelCase (Contracts.status.inProduction)
+
+12.3 CHECKLIST PARA CADA NUEVA FEATURE
+───────────────────────────────────────
+  □ ¿Es Server Component por defecto? Si no, ¿por qué?
+  □ ¿Tiene empty state?
+  □ ¿Tiene skeleton loader mientras carga?
+  □ ¿Las acciones muestran toast de confirmación/error?
+  □ ¿Las acciones destructivas piden confirmación?
+  □ ¿Usa colores del status-config, no hardcodeados?
+  □ ¿Traducciones en los 3 idiomas?
+  □ ¿Responsive (mobile → desktop)?
+  □ ¿Accesible (keyboard nav, aria-labels)?
+
+================================================================================
+  FIN DEL DOCUMENTO
+  Próximo paso: Revisar opciones marcadas con ★ y decidir cada una.
+  Una vez decididas, se implementan por fases (Sección 11).
+================================================================================

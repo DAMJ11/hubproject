@@ -1,17 +1,15 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { Building2, ShieldCheck, Handshake } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
 const icons = [Building2, ShieldCheck, Handshake];
 
-export default function CTASection() {
-  const t = useTranslations("CTA");
+export default async function CTASection() {
+  const t = await getTranslations("CTA");
 
   return (
-    <section id="manufacturers" className="py-20 bg-[#111827] text-white">
+    <section id="manufacturers" className="py-20 bg-brand-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
@@ -29,7 +27,7 @@ export default function CTASection() {
             </div>
             <div className="mt-10">
               <Link href="/register">
-                <Button size="lg" className="bg-[#2563eb] text-white hover:bg-[#1d4ed8] rounded-lg px-8 h-12">
+                <Button size="lg" className="bg-brand-600 text-white hover:bg-brand-700 rounded-lg px-8 h-12">
                   {t("cta")}
                 </Button>
               </Link>

@@ -1,0 +1,55 @@
+ÍNDICE 7 — TECNOLOGÍAS: OPCIONES Y RECOMENDACIONES
+====================================================
+Fecha: 2025-06-23
+
+RESUMEN
+-------
+Integración de 5 componentes shadcn/ui faltantes y migración de implementaciones
+personalizadas (tablas, tabs, avatar, progress, tooltips) a los primitivos oficiales
+de shadcn. TooltipProvider agregado a nivel global.
+
+COMPONENTES SHADCN CREADOS (5)
+-------------------------------
+1. src/components/ui/table.tsx — Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption
+2. src/components/ui/tabs.tsx — Tabs, TabsList, TabsTrigger, TabsContent (Radix)
+3. src/components/ui/avatar.tsx — Avatar, AvatarImage, AvatarFallback (Radix)
+4. src/components/ui/progress.tsx — Progress con barra animada (Radix)
+5. src/components/ui/tooltip.tsx — Tooltip, TooltipTrigger, TooltipContent, TooltipProvider (Radix)
+
+DEPENDENCIAS INSTALADAS
+------------------------
+- @radix-ui/react-tabs
+- @radix-ui/react-avatar
+- @radix-ui/react-progress
+- @radix-ui/react-tooltip
+
+MIGRACIONES DE TABLA (4 archivos)
+----------------------------------
+- src/components/dashboard/AdminDashboard.tsx → <Table> shadcn
+- src/app/[locale]/dashboard/users/page.tsx → <Table> shadcn
+- src/app/[locale]/dashboard/payments/page.tsx → <Table> shadcn
+- src/app/[locale]/dashboard/projects/[id]/proposals-compare.tsx → <Table> shadcn
+
+MIGRACIÓN DE TABS (1 archivo)
+------------------------------
+- src/app/[locale]/dashboard/settings/page.tsx:
+  - useState("perfil") + botones custom → <Tabs defaultValue="perfil"> + <TabsList>/<TabsTrigger>/<TabsContent>
+  - Estilo border-bottom con data-[state=active] para mantener diseño original
+
+MIGRACIÓN DE AVATAR (1 archivo)
+---------------------------------
+- src/app/[locale]/dashboard/settings/page.tsx:
+  - div rounded-full custom → <Avatar><AvatarFallback> con iniciales del usuario
+
+MIGRACIÓN DE PROGRESS (2 archivos)
+------------------------------------
+- src/app/[locale]/dashboard/contracts/page.tsx: barra de progreso de hitos
+- src/app/[locale]/dashboard/contracts/[id]/milestone-timeline.tsx: barra de progreso global
+
+TOOLTIPS (3 archivos)
+----------------------
+- src/app/providers.tsx: TooltipProvider envuelve toda la app (delayDuration=300)
+- src/components/dashboard/DashboardHeader.tsx: Tooltip en botón de tema (Moon/Sun)
+- src/components/dashboard/Sidebar.tsx: Tooltip en botón CTA colapsado (Plus)
+
+BUILD: ✅ Verificado sin errores

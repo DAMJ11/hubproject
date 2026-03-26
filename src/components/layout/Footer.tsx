@@ -1,6 +1,4 @@
-"use client";
-
-import { useTranslations, useLocale } from "next-intl";
+import { getTranslations, getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Sparkles } from "lucide-react";
 
@@ -9,17 +7,17 @@ const companyHrefs = ["/sobre-nosotros", "/blog", "/para-fabricantes", "/contact
 const manufacturerHrefs = ["/register", "/#manufacturers", "/contacto"];
 const legalHrefs = ["/terminos", "/privacidad", "/privacidad"];
 
-export default function Footer() {
-  const t = useTranslations("Footer");
-  const locale = useLocale();
+export default async function Footer() {
+  const t = await getTranslations("Footer");
+  const locale = await getLocale();
 
   return (
-    <footer className="bg-[#1a365d] text-white">
+    <footer className="bg-brand-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-[#2563eb] rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
               <span className="font-bold text-xl">FASHIONS DEN</span>
@@ -32,7 +30,7 @@ export default function Footer() {
             <ul className="space-y-3">
               {serviceHrefs.map((href, idx) => (
                 <li key={idx}>
-                  <Link href={href} className="text-sm text-gray-300 hover:text-[#2563eb] transition-colors">
+                  <Link href={href} className="text-sm text-gray-300 hover:text-brand-600 transition-colors">
                     {t(`serviceLinks.${idx}`)}
                   </Link>
                 </li>
@@ -45,7 +43,7 @@ export default function Footer() {
             <ul className="space-y-3">
               {companyHrefs.map((href, idx) => (
                 <li key={idx}>
-                  <Link href={href} className="text-sm text-gray-300 hover:text-[#2563eb] transition-colors">
+                  <Link href={href} className="text-sm text-gray-300 hover:text-brand-600 transition-colors">
                     {t(`companyLinks.${idx}`)}
                   </Link>
                 </li>
@@ -58,7 +56,7 @@ export default function Footer() {
             <ul className="space-y-3">
               {manufacturerHrefs.map((href, idx) => (
                 <li key={idx}>
-                  <Link href={href} className="text-sm text-gray-300 hover:text-[#2563eb] transition-colors">
+                  <Link href={href} className="text-sm text-gray-300 hover:text-brand-600 transition-colors">
                     {t(`manufacturerLinks.${idx}`)}
                   </Link>
                 </li>
@@ -71,7 +69,7 @@ export default function Footer() {
             <ul className="space-y-3">
               {legalHrefs.map((href, idx) => (
                 <li key={idx}>
-                  <Link href={href} className="text-sm text-gray-300 hover:text-[#2563eb] transition-colors">
+                  <Link href={href} className="text-sm text-gray-300 hover:text-brand-600 transition-colors">
                     {t(`legalLinks.${idx}`)}
                   </Link>
                 </li>

@@ -1,0 +1,165 @@
+═══════════════════════════════════════════════════════════
+  FASE 2 — COMPONENTES BASE  ·  Fashions Den
+  Completada: 25 de marzo 2026
+═══════════════════════════════════════════════════════════
+
+▸ RESUMEN
+  Se crearon los componentes reutilizables base del sistema de diseño
+  y se integraron en TODAS las páginas del dashboard, eliminando
+  código duplicado, patrones inline y mejorando la coherencia visual.
+
+═══════════════════════════════════════════════════════════
+▸ COMPONENTES CREADOS
+═══════════════════════════════════════════════════════════
+
+1. StatusBadge  (src/components/ui/status-badge.tsx)
+   - Badge reutilizable con colores semánticos por entidad/estado
+   - Usa statusConfig centralizado + i18n automática via useTranslations()
+   - Props: entity (StatusEntity), status (string), className?
+   - Entidades soportadas: contracts, projects, proposals, payments
+
+2. EmptyState  (src/components/ui/empty-state.tsx)
+   - Componente vacío centrado con ícono, título, descripción y acción opcional
+   - Props: icon (LucideIcon), title, description?, action? ({label, href?, onClick?})
+   - Reemplaza 8+ patrones inline en todo el dashboard
+
+3. SkeletonLoader  (src/components/ui/skeleton-loader.tsx)
+   - 5 variantes exportadas:
+     · Pulse (animación base)
+     · CardSkeleton (tarjeta con barras pulse)
+     · PageSkeleton (header + tabs + N cards)
+     · TableSkeleton (header row + N data rows)
+     · StatsSkeleton (grid de tarjetas estadísticas)
+   - Reemplaza todos los Loader2 spinners de page-level loading
+
+4. AlertDialog  (src/components/ui/alert-dialog.tsx)
+   - Componente shadcn basado en @radix-ui/react-alert-dialog
+   - Incluye: Dialog, Overlay, Content, Header, Footer, Title,
+     Description, Action, Cancel, Trigger, Portal
+   - Reemplaza window.confirm() en acciones destructivas
+
+5. Sonner Toaster  (src/app/providers.tsx)
+   - Toaster configurado: position="bottom-right", richColors, closeButton
+   - Wrapper <Providers> en layout del locale
+
+═══════════════════════════════════════════════════════════
+▸ CONFIGURACIÓN CENTRALIZADA
+═══════════════════════════════════════════════════════════
+
+status-config.ts REESCRITO COMPLETAMENTE:
+  - type StatusEntity = "contracts" | "projects" | "proposals" | "payments"
+  - Colores reales de Tailwind (blue-100/700, amber-100/700,
+    emerald-100/700, red-100/700, gray-100/600)
+  - Claves i18n por entidad: "Contracts.status.X", "Projects.status.X", etc.
+  - Función getStatus(entity, status) con fallback neutral
+
+═══════════════════════════════════════════════════════════
+▸ INTEGRACIONES POR PÁGINA
+═══════════════════════════════════════════════════════════
+
+Páginas migradas a componentes reutilizables:
+
+  Página                     StatusBadge  EmptyState  Skeleton  Toasts  AlertDialog
+  ─────────────────────────  ──────────   ──────────  ────────  ──────  ───────────
+  contracts/page.tsx            ✓            ✓          ✓
+  contracts/[id]/page.tsx       ✓                       ✓        ✓
+  projects/page.tsx             ✓            ✓          ✓
+  projects/[id]/page.tsx        ✓                       ✓        ✓
+  proposals/page.tsx            ✓            ✓          ✓
+  payments/page.tsx             ✓                       ✓
+  companies/page.tsx                         ✓          ✓
+  users/page.tsx                                        ✓        ✓        ✓
+  addresses/page.tsx                                    ✓        ✓        ✓
+  settings/page.tsx                                              ✓
+  green-score/page.tsx                                  ✓
+  reviews/page.tsx                                      ✓
+  reports/page.tsx                                      ✓
+  rfq/page.tsx                  ✓            ✓          ✓
+  opportunities/page.tsx                     ✓          ✓
+  opportunities/[id]/page.tsx                           ✓        ✓
+  manufacturers/page.tsx                     ✓          ✓
+  company/page.tsx                                      ✓        ✓
+  company/certifications.tsx                            ✓        ✓
+  DashboardHome.tsx             ✓            ✓          ✓*
+
+  * DashboardHome usa su propio DashboardSkeleton personalizado
+
+═══════════════════════════════════════════════════════════
+▸ ELIMINACIONES DE CÓDIGO DUPLICADO
+═══════════════════════════════════════════════════════════
+
+• 7 objetos locales statusColors/statusConfig eliminados
+  (contracts, projects, projects/[id], proposals, payments,
+   rfq, DashboardHome)
+
+• 1 proposalStatusConfig (projects/[id]) eliminado
+
+• 8+ empty states inline → EmptyState componente
+
+• 15+ Loader2 page-level spinners → CardSkeleton/PageSkeleton
+
+• 2 window.confirm() → AlertDialog (addresses, users)
+
+• 15 hex colors hardcoded #0d7a5f/#0a6b52 → brand-600/brand-700
+  (contracts/[id], projects/[id], opportunities/[id])
+
+• Custom toast state en users → Sonner toast.success/toast.error
+
+═══════════════════════════════════════════════════════════
+▸ SONNER TOASTS AGREGADOS
+═══════════════════════════════════════════════════════════
+
+  Página                   Acciones con toast
+  ────────────────────     ──────────────────────────────
+  settings/page.tsx        Guardar perfil, guardar notificaciones
+  users/page.tsx           Activar/desactivar, eliminar, cambiar contraseña
+  addresses/page.tsx       Eliminar dirección
+  company/page.tsx         Guardar perfil empresa
+  certifications/page.tsx  Agregar/eliminar certificación
+  contracts/[id]/page.tsx  Actualizar milestone
+  projects/[id]/page.tsx   Aceptar/rechazar/preseleccionar propuesta
+  opportunities/[id].tsx   Enviar propuesta
+
+═══════════════════════════════════════════════════════════
+▸ DEPENDENCIAS INSTALADAS
+═══════════════════════════════════════════════════════════
+
+  sonner ^2.0.0                     → Toasts notifications
+  @radix-ui/react-alert-dialog      → AlertDialog primitivo
+
+═══════════════════════════════════════════════════════════
+▸ BUGS CORREGIDOS DURANTE LA FASE
+═══════════════════════════════════════════════════════════
+
+  • providers.tsx no estaba conectado al layout → ahora wrappea children
+  • dynamic-motion.tsx usaba @ts-ignore + any → corregido a
+    @ts-expect-error + Record<string, unknown>
+  • DashboardHome cachedStats/cachedProjects null assertion → añadido !
+  • status-config.ts usaba clases CSS inexistentes (info-50, success-50)
+    → corregido a clases reales de Tailwind (blue-100, emerald-100, etc.)
+
+═══════════════════════════════════════════════════════════
+▸ BUILD STATUS
+═══════════════════════════════════════════════════════════
+
+  ✓ Compiled successfully
+  ✓ Linting passed (0 errors, 2 pre-existing warnings)
+  ✓ Type checking passed
+
+═══════════════════════════════════════════════════════════
+▸ NOTAS: Loader2 RESIDUALES (USO LEGÍTIMO)
+═══════════════════════════════════════════════════════════
+
+  Los siguientes usos de Loader2 son CORRECTOS — no son page-level
+  loading sino indicadores inline en botones de acción:
+
+  • proposals/page.tsx       → spinner "cargando capacidades" inline
+  • settings/page.tsx        → spinner en botón "Guardar"
+  • users/page.tsx           → spinner en botón de acción por fila
+  • manufacturers/page.tsx   → spinner "actualizando filtros"
+  • company/page.tsx         → spinner en botón "Guardar"
+  • certifications/page.tsx  → spinner en botón "Agregar"
+  • contracts/[id]/page.tsx  → spinner en acción de milestone
+  • opportunities/[id].tsx   → spinner en botón "Enviar propuesta"
+
+═══════════════════════════════════════════════════════════

@@ -1,0 +1,94 @@
+FASE 3 — Migración a Server Components
+========================================
+Fecha: 2026-03-23
+
+RESUMEN
+-------
+Se migraron 8 páginas del dashboard de "use client" + useEffect data-fetching
+a Server Components asincrónicos con data layer directo a DB.
+Se crearon 8 funciones de datos en src/lib/data/ y 8 archivos loading.tsx
+como Suspense fallbacks.
+
+PATRÓN APLICADO
+---------------
+1. EASY SC (4 páginas): Página completa como async Server Component.
+   - Llama getCurrentUser() + query() directamente desde el server.
+   - Usa getTranslations/getLocale de next-intl/server.
+   - Elimina "use client", useState, useEffect, useCallback, CardSkeleton.
+   - redirect("/login") si no hay usuario.
+
+2. PARTIAL SC (4 páginas): Server page + Client list component.
+   - Server page: async, lee searchParams, llama data function, pasa datos como props.
+   - Client component: recibe datos iniciales, maneja búsqueda/filtros interactivos.
+   - Filtros de URL (status, type) se implementan vía searchParams → router.push.
+
+3. KEEP CLIENT (9 páginas): Sin cambios, mantienen "use client".
+   - Razones: localStorage persistence, CRUD mutations, formularios complejos,
+     paginación con debounce, expand-on-demand.
+
+ARCHIVOS CREADOS
+----------------
+Data layer (src/lib/data/):
+  - contracts.ts      → getContracts()
+  - reports.ts        → getReports()
+  - green-score-data.ts → getGreenScoreData()
+  - dashboard.ts      → getDashboardData(), getStatsForRole(), getRecentProjects()
+  - opportunities.ts  → getOpportunities()
+  - companies.ts      → getCompanies(type?)
+  - proposals.ts      → getProposalsData() (proposals + capability offers)
+  - rfq.ts            → getRfqList(status?)
+
+Loading skeletons:
+  - dashboard/loading.tsx
+  - dashboard/contracts/loading.tsx
+  - dashboard/reports/loading.tsx
+  - dashboard/green-score/loading.tsx
+  - dashboard/opportunities/loading.tsx
+  - dashboard/companies/loading.tsx
+  - dashboard/proposals/loading.tsx
+  - dashboard/rfq/loading.tsx
+
+Client list components (PARTIAL SC):
+  - dashboard/opportunities/opportunities-list.tsx
+  - dashboard/companies/companies-list.tsx
+  - dashboard/proposals/proposals-list.tsx
+  - dashboard/rfq/rfq-list.tsx
+
+ARCHIVOS MODIFICADOS
+--------------------
+EASY SC (eliminaron "use client", useState, useEffect):
+  - dashboard/page.tsx           → async SC → getDashboardData()
+  - dashboard/contracts/page.tsx → async SC → getContracts()
+  - dashboard/reports/page.tsx   → async SC → getReports()
+  - dashboard/green-score/page.tsx → async SC → getGreenScoreData()
+
+PARTIAL SC (reescritos como SC wrapper + client list):
+  - dashboard/opportunities/page.tsx → async SC → getOpportunities() → <OpportunitiesList>
+  - dashboard/companies/page.tsx     → async SC → getCompanies(type) → <CompaniesList>
+  - dashboard/proposals/page.tsx     → async SC → getProposalsData() → <ProposalsList>
+  - dashboard/rfq/page.tsx           → async SC → getRfqList(status) → <RfqList>
+
+Componentes refactorizados:
+  - DashboardHome.tsx → Recibe initialStats + initialProjects como props
+    (eliminó useEffect, useState, module cache, DashboardSkeleton)
+  - green-score ScoreItem → Recibe maxLabel como prop (compatible con SC parent)
+
+PÁGINAS SIN CAMBIOS (KEEP CLIENT)
+----------------------------------
+  - settings, help, messages (sin data-fetching benefit)
+  - reviews, payments (localStorage filter persistence)
+  - users, addresses (heavy CRUD mutations + AlertDialog)
+  - company (form editing + PUT)
+  - manufacturers (debounced pagination + expand-on-demand capabilities)
+
+BENEFICIOS
+----------
+- 8 páginas ya no envían skeleton → se renderizan con datos desde el server
+- Eliminados ~24 useEffect hooks y ~16 useState para loading/data
+- Filtros de URL (searchParams) en companies y rfq = URLs compartibles
+- loading.tsx Suspense boundaries para todas las páginas migradas
+- Data layer centralizado: 8 funciones reutilizables en src/lib/data/
+
+BUILD
+-----
+✅ next build exitoso sin errores ni warnings

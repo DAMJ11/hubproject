@@ -1,6 +1,10 @@
-"use client";
+import dynamic from "next/dynamic";
+import MessagesLoading from "./loading";
 
-import { MessagesPanel } from "@/components/dashboard";
+const MessagesPanel = dynamic(
+  () => import("@/components/dashboard/MessagesPanel"),
+  { loading: () => <MessagesLoading /> }
+);
 
 export default function MessagesPage() {
   return <MessagesPanel />;

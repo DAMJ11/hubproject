@@ -5,12 +5,13 @@ export const loginSchema = z.object({
   password: z.string().min(1, "La contraseña es requerida"),
 });
 
-export const registerSchema = z.object({
+const registerBase = z.object({
   email: z.email("Email inválido"),
   password: z
     .string()
     .min(8, "La contraseña debe tener al menos 8 caracteres")
     .max(128, "La contraseña es demasiado larga"),
+  confirmPassword: z.string().min(1, "Confirma tu contraseña"),
   firstName: z
     .string()
     .min(1, "El nombre es requerido")
@@ -26,6 +27,11 @@ export const registerSchema = z.object({
     .max(200, "Nombre de empresa demasiado largo"),
   termsAccepted: z.literal(true, "Debes aceptar los términos y condiciones"),
 });
+
+export const registerSchema = registerBase.refine(
+  (data) => data.password === data.confirmPassword,
+  { message: "Las contraseñas no coinciden", path: ["confirmPassword"] },
+);
 
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;

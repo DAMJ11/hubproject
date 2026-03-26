@@ -1,0 +1,100 @@
+ÍNDICE 10 — MEJORAS UX POR FLUJO DE NEGOCIO
+=============================================
+Fecha: 2026-03-23
+
+RESUMEN
+-------
+Se mejoraron 6 de los 8 flujos de negocio principales con validación reactiva,
+persistencia de filtros en URL, diálogos de confirmación y desglose real del
+Green Score. Los ítems de alta complejidad (OAuth real, tipeo en tiempo real,
+carga de archivos, PDF, auto-guardado borrador, match score) quedan pendientes.
+
+CAMBIOS REALIZADOS
+------------------
+
+10.1  ONBOARDING (Login + Registro)
+  ✅ Login migrado a react-hook-form + Zod + zodResolver
+     - Archivo: src/app/[locale]/login/page.tsx
+     - Eliminado: useState manual para email/password
+     - Agregado: useForm<LoginInput> con resolver zodResolver(loginSchema)
+     - Errores inline por campo (border-red-400 + mensaje bajo cada input)
+     - Error de servidor separado de errores de validación (serverError)
+
+  ✅ Registro migrado a react-hook-form + Zod + zodResolver
+     - Archivo: src/app/[locale]/register/page.tsx
+     - Eliminado: formData useState, handleChange(), validateForm() con regex manual
+     - Agregado: useForm<RegisterInput> con mode:"onTouched"
+     - Campos: register(), watch(), setValue() para role y termsAccepted
+     - Layout: firstName/lastName en grid 2 columnas
+
+  ✅ Indicador de fortaleza de contraseña
+     - Función getPasswordStrength(): puntaje 0-5 (longitud, mayúscula, número, especial)
+     - UI: 5 barras (rojo→naranja→amarillo→verde) + etiqueta (débil/regular/buena/fuerte)
+     - Traducciones: Register.passwordStrength en es/en/fr
+
+  ✅ Schema de validación extendido
+     - Archivo: src/lib/validations/auth.ts
+     - Agregado campo confirmPassword a registerSchema
+     - .refine() para validar que las contraseñas coincidan
+
+10.3  OPORTUNIDADES — FILTROS URL
+  ✅ Filtro de búsqueda persistido en URL (?q=...)
+     - Archivo: src/app/[locale]/dashboard/opportunities/opportunities-list.tsx
+     - Reemplazado: useState("") → useSearchParams().get("q")
+     - Input: defaultValue + onChange actualiza URL via router.replace()
+     - Los filtros sobreviven recarga de página y se pueden compartir
+
+10.4  PROPUESTAS — DIÁLOGO DE CONFIRMACIÓN
+  ✅ AlertDialog en acciones de aceptar/rechazar propuestas
+     - Archivo: src/app/[locale]/dashboard/projects/[id]/page.tsx
+     - 4 botones envueltos en AlertDialog (accept×2, reject×2)
+     - Diálogos con título, descripción (incluye nombre del fabricante), cancelar/confirmar
+     - Botón aceptar: verde. Botón rechazar: rojo.
+     - Shortlist mantiene acción directa (no destructiva)
+     - Traducciones: ProjectDetail.confirmAccept/confirmReject en es/en/fr
+
+10.7  PAGOS — FILTROS URL
+  ✅ Filtros persistidos en URL (?q=...&status=...)
+     - Archivo: src/app/[locale]/dashboard/payments/payments-list.tsx
+     - Eliminado: localStorage para persistir filtros (2 useEffect removidos)
+     - Reemplazado: useState → useSearchParams() para q y status
+     - Helper updateParams() centraliza actualización de URL
+     - Beneficio: filtros compartibles, sin efecto localStorage
+
+10.8  GREEN SCORE — DESGLOSE REAL POR SUBCATEGORÍA
+  ✅ Cálculo real del desglose usando calculateGreenScore()
+     - Archivo: src/lib/data/green-score-data.ts
+     - Nuevas queries: avg(distance_km), avg(recycled_percentage), avg(rating)
+     - Interfaz GreenScoreBreakdown: { proximity, materials, certifications, history }
+     - Se calcula puntos reales ponderados (score × weight) por categoría
+
+  ✅ UI actualizada con valor real vs máximo + barra de progreso
+     - Archivo: src/app/[locale]/dashboard/green-score/page.tsx
+     - ScoreItem ahora recibe value y max: muestra "15/30" con barra visual
+     - Barra coloreada: ≥70% verde, ≥40% amarillo, <40% rojo
+     - Se eliminó prop maxLabel (redundante con el nuevo diseño)
+
+ÍTEMS NO IMPLEMENTADOS (Alta complejidad)
+------------------------------------------
+- 10.1: OAuth real (Google/GitHub) — requiere configuración OAuth providers
+- 10.2: Auto-guardado borrador de RFQ — requiere tabla drafts + debounce
+- 10.3: Match score por oportunidad — requiere algoritmo de matching
+- 10.5: Carga de evidencias + PDF — requiere storage + librería PDF
+- 10.6: Indicador de escritura + adjuntos — requiere Pusher events adicionales
+- 10.7: Descarga de recibos — requiere generación PDF server-side
+
+ARCHIVOS MODIFICADOS
+--------------------
+src/lib/validations/auth.ts
+src/app/[locale]/login/page.tsx
+src/app/[locale]/register/page.tsx
+src/app/[locale]/dashboard/opportunities/opportunities-list.tsx
+src/app/[locale]/dashboard/payments/payments-list.tsx
+src/app/[locale]/dashboard/projects/[id]/page.tsx
+src/app/[locale]/dashboard/green-score/page.tsx
+src/lib/data/green-score-data.ts
+messages/es.json
+messages/en.json
+messages/fr.json
+
+BUILD: ✅ Verificado sin errores

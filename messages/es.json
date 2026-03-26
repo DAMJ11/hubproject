@@ -6,7 +6,10 @@
     "plans": "Planes",
     "cases": "Casos",
     "login": "Iniciar sesión",
-    "register": "Crear cuenta"
+    "register": "Crear cuenta",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "selectLanguage": "Seleccionar idioma"
   },
   "Footer": {
     "brandText": "Plataforma B2B para conectar brands y manufacturers en procesos de diseño, desarrollo y producción de moda.",
@@ -443,7 +446,9 @@
     "needHelp": "¿Necesitas ayuda?",
     "error": "Ocurrió un error. Por favor intenta de nuevo.",
     "hidePassword": "Ocultar contraseña",
-    "showPassword": "Mostrar contraseña"
+    "showPassword": "Mostrar contraseña",
+    "loginSuccess": "Sesión iniciada correctamente",
+    "loginError": "Credenciales incorrectas"
   },
   "Register": {
     "accountType": "Tipo de cuenta",
@@ -477,6 +482,12 @@
       "passwordLength": "La contraseña debe tener al menos 8 caracteres",
       "passwordMismatch": "Las contraseñas no coinciden",
       "termsRequired": "Debes aceptar términos y condiciones"
+    },
+    "passwordStrength": {
+      "weak": "Débil",
+      "fair": "Regular",
+      "good": "Buena",
+      "strong": "Fuerte"
     }
   },
   "Sidebar": {
@@ -507,6 +518,7 @@
     },
     "closeMenu": "Cerrar menú",
     "collapseMenu": "Colapsar menú",
+    "navigationLabel": "Navegación del dashboard",
     "searchPlaceholder": "Buscar...",
     "roleAdmin": "Administrador",
     "roleManufacturer": "Fabricante",
@@ -557,7 +569,13 @@
     "roleManufacturer": "Fabricante",
     "roleBrand": "Marca",
     "profileSettings": "Configuración",
-    "signOut": "Cerrar sesión"
+    "signOut": "Cerrar sesión",
+    "logoutConfirmTitle": "¿Cerrar sesión?",
+    "logoutConfirmDescription": "Se cerrará tu sesión actual. Podrás volver a iniciar sesión en cualquier momento.",
+    "logoutCancel": "Cancelar",
+    "logoutConfirm": "Cerrar sesión",
+    "logoutSuccess": "Sesión cerrada",
+    "logoutError": "Error al cerrar sesión"
   },
   "Companies": {
     "title": "Empresas",
@@ -789,7 +807,11 @@
     "postalCodeLabel": "CP: {code}",
     "edit": "Editar",
     "setDefault": "Predeterminar",
-    "deleteAriaLabel": "Eliminar dirección {label}"
+    "deleteAriaLabel": "Eliminar dirección {label}",
+    "deleteConfirmTitle": "Eliminar dirección",
+    "deleteSuccess": "Dirección eliminada",
+    "emptyAddresses": "No tienes direcciones registradas",
+    "emptyAddressesHint": "Agrega tu primera dirección de envío o entrega"
   },
   "Contracts": {
     "title": "Mis Contratos",
@@ -798,6 +820,7 @@
     "milestones": "{completed}/{total} hitos",
     "status": {
       "active": "Activo",
+      "in_production": "En producción",
       "completed": "Completado",
       "disputed": "En disputa",
       "cancelled": "Cancelado"
@@ -819,6 +842,7 @@
     "completedMessage": "Este contrato ha sido completado exitosamente",
     "status": {
       "active": "Activo",
+      "in_production": "En producción",
       "completed": "Completado",
       "disputed": "En disputa",
       "cancelled": "Cancelado"
@@ -1015,6 +1039,45 @@
       "draft": "Borradores"
     }
   },
+  "Onboarding": {
+    "title": "Completa tu perfil",
+    "subtitle": "Unos datos más para que puedas aprovechar al máximo la plataforma",
+    "step1Title": "Sobre tu empresa",
+    "step1Description": "Cuéntanos un poco más para que fabricantes y marcas te conozcan.",
+    "step2Title": "Ubicación",
+    "step2Description": "Tu dirección nos ayuda a conectarte con socios cercanos.",
+    "step3Title": "Detalles adicionales",
+    "step3Description": "Información opcional que mejora la visibilidad de tu perfil.",
+    "fields": {
+      "description": "Descripción de la empresa",
+      "phone": "Teléfono",
+      "website": "Sitio web",
+      "address": "Dirección",
+      "city": "Ciudad",
+      "state": "Departamento / Estado",
+      "country": "País",
+      "employees": "Número de empleados",
+      "foundedYear": "Año de fundación",
+      "legalId": "NIT / ID Legal"
+    },
+    "placeholders": {
+      "description": "Describe la actividad de tu empresa…",
+      "phone": "+57 300 000 0000",
+      "address": "Calle 100 #15-20",
+      "city": "Bogotá",
+      "state": "Cundinamarca",
+      "legalId": "900.123.456-7",
+      "select": "Seleccionar…"
+    },
+    "next": "Siguiente",
+    "back": "Atrás",
+    "finish": "Completar perfil",
+    "skipForNow": "Omitir por ahora",
+    "completed": "¡Perfil completado con éxito!",
+    "saveError": "Error al guardar",
+    "connectionError": "Error de conexión",
+    "stepOf": "Paso {current} de {total}"
+  },
   "ProjectNew": {
     "title": "Publicar Nuevo Proyecto",
     "subtitle": "Describe tu necesidad y recibe propuestas de fabricantes",
@@ -1046,11 +1109,22 @@
       "recycledPercent": "% recicl."
     },
     "addMaterial": "+ Agregar material",
+    "removeMaterial": "Eliminar material",
     "requiresSample": "Requiere muestra previa",
     "sustainabilityPriority": "🌿 Priorizar sostenibilidad",
     "cancel": "Cancelar",
+    "back": "Atrás",
+    "next": "Siguiente",
     "submitting": "Publicando...",
-    "submit": "Publicar Proyecto"
+    "submit": "Publicar Proyecto",
+    "createdSuccess": "¡Proyecto publicado exitosamente!",
+    "reviewDescription": "Revisa la información antes de publicar tu proyecto.",
+    "steps": {
+      "basic": "Información básica",
+      "budget": "Presupuesto y fechas",
+      "materials": "Materiales y sostenibilidad",
+      "review": "Revisión"
+    }
   },
   "ProjectDetail": {
     "notFound": "Proyecto no encontrado",
@@ -1084,6 +1158,27 @@
     "accept": "Aceptar",
     "reject": "Rechazar",
     "award": "Adjudicar",
+    "compare": {
+      "manufacturer": "Fabricante",
+      "distance": "Distancia",
+      "status": "Estado",
+      "cardsView": "Vista de tarjetas",
+      "tableView": "Vista comparativa"
+    },
+    "actionSuccess": "Acción realizada correctamente",
+    "actionError": "Error al realizar la acción",
+    "confirmAccept": {
+      "title": "¿Aceptar esta propuesta?",
+      "description": "Vas a aceptar la propuesta de {name}. Esta acción asignará el proyecto a este fabricante.",
+      "cancel": "Cancelar",
+      "confirm": "Sí, aceptar"
+    },
+    "confirmReject": {
+      "title": "¿Rechazar esta propuesta?",
+      "description": "Vas a rechazar la propuesta de {name}. El fabricante será notificado.",
+      "cancel": "Cancelar",
+      "confirm": "Sí, rechazar"
+    },
     "messageSubject": "Proyecto {code}: conversación inicial",
     "messageBody": "Hola {name}, quiero conversar sobre tu propuesta para el proyecto {code}.",
     "status": {
@@ -1201,7 +1296,17 @@
     "expired": "Expirada",
     "by": "Por: {issuer}",
     "from": "Desde: {date}",
-    "until": "Hasta: {date}"
+    "until": "Hasta: {date}",
+    "delete": "Eliminar certificación",
+    "addSuccess": "Certificación agregada",
+    "addError": "Error al agregar certificación",
+    "deleteSuccess": "Certificación eliminada",
+    "deleteError": "Error al eliminar certificación",
+    "status": {
+      "verified": "Verificada",
+      "expired": "Expirada",
+      "pending": "Pendiente"
+    }
   },
   "Capabilities": {
     "title": "Capacidades",
@@ -1230,7 +1335,12 @@
     "capacity": "Capacidad: {qty} uds/mes",
     "delivery": "Entrega: {days} días",
     "priceFrom": "Desde {price} / prenda",
-    "wholesaleFrom": "Mayorista desde {price}"
+    "wholesaleFrom": "Mayorista desde {price}",
+    "addSuccess": "Capacidad agregada correctamente",
+    "addError": "Error al agregar la capacidad",
+    "deleteSuccess": "Capacidad eliminada",
+    "deleteError": "Error al eliminar la capacidad",
+    "delete": "Eliminar capacidad"
   },
   "Manufacturers": {
     "title": "Directorio de fabricantes",
@@ -1345,7 +1455,9 @@
     "pushPromos": "Ofertas flash",
     "pushPromosDesc": "Promociones por tiempo limitado",
     "notificationsSaved": "Preferencias guardadas.",
-    "savePreferences": "Guardar Preferencias"
+    "savePreferences": "Guardar Preferencias",
+    "hidePassword": "Ocultar contraseña",
+    "showPassword": "Mostrar contraseña"
   },
   "Users": {
     "title": "Gestión de Clientes",
@@ -1367,7 +1479,8 @@
     },
     "status": {
       "active": "Activo",
-      "inactive": "Inactivo"
+      "inactive": "Inactivo",
+      "pending": "Pendiente"
     },
     "cannotModifySelf": "No puedes modificar tu propio usuario",
     "deactivateUser": "Desactivar usuario",
@@ -1392,7 +1505,9 @@
     "confirmDelete": "¿Seguro que deseas eliminar a {name}? Esta acción no se puede deshacer.",
     "actionFailed": "No se pudo completar la acción.",
     "actionSuccess": "Acción aplicada correctamente.",
-    "actionError": "Ocurrió un error al ejecutar la acción."
+    "actionError": "Ocurrió un error al ejecutar la acción.",
+    "emptyUsers": "No se encontraron usuarios",
+    "emptyUsersHint": "Prueba ajustando los filtros de búsqueda"
   },
   "Metadata": {
     "title": "FASHIONS DEN - Diseño y producción de moda",

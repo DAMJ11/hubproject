@@ -1,5 +1,5 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
@@ -27,23 +27,23 @@ export default async function ParaMarcasPage() {
     <main className="min-h-screen">
       <Header />
 
-      <section className="bg-gradient-to-b from-[#f0f5f3] to-white py-16 md:py-24">
+      <section className="bg-gradient-to-b from-landing-gradient to-white dark:from-slate-900 dark:to-slate-800 py-16 md:py-24">
         <div className="container-custom mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-[#1a365d] mb-6">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-brand-900 dark:text-white mb-6">
             {t("heroTitle")}
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">
             {t("heroSubtitle")}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="https://app.projecthub.com/register">
-              <Button className="bg-[#1a365d] hover:bg-[#152d4f] text-white rounded-full px-8 py-6 text-lg font-medium">
+              <Button className="bg-brand-900 hover:bg-brand-900 text-white rounded-full px-8 py-6 text-lg font-medium">
                 {t("joinNow")}
               </Button>
             </Link>
             <Button
               variant="outline"
-              className="border-2 border-[#1a365d] text-[#1a365d] hover:bg-[#1a365d] hover:text-white rounded-full px-8 py-6 text-lg font-medium"
+              className="border-2 border-brand-900 text-brand-900 hover:bg-brand-900 hover:text-white rounded-full px-8 py-6 text-lg font-medium"
             >
               {t("learnMore")}
             </Button>
@@ -60,21 +60,21 @@ export default async function ParaMarcasPage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-white dark:bg-slate-900">
         <div className="container-custom mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <h2 className="text-4xl md:text-5xl font-bold text-[#1a365d] leading-tight">
+              <h2 className="text-4xl md:text-5xl font-bold text-brand-900 dark:text-white leading-tight">
                 {t("platformTitle")}
               </h2>
-              <p className="text-gray-600 leading-relaxed text-lg">
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
                 {t("platformText1")}
               </p>
-              <p className="text-gray-600 leading-relaxed text-lg">
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
                 {t("platformText2")}
               </p>
               <Link href="https://app.projecthub.com/register">
-                <Button className="bg-[#1a365d] hover:bg-[#152d4f] text-white rounded-full px-8 py-6 text-lg font-medium">
+                <Button className="bg-brand-900 hover:bg-brand-900 text-white rounded-full px-8 py-6 text-lg font-medium">
                   {t("joinNow")}
                 </Button>
               </Link>
@@ -92,7 +92,7 @@ export default async function ParaMarcasPage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-[#0d6c5d]">
+      <section className="py-16 md:py-24 bg-landing-cta">
         <div className="container-custom mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -106,7 +106,7 @@ export default async function ParaMarcasPage() {
             {stepIcons.map((icon, index) => (
               <Card
                 key={index}
-                className="bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300"
+                className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300"
               >
                 <CardContent className="p-8 text-center">
                   <div className="w-24 h-24 mx-auto mb-6 relative">
@@ -117,10 +117,10 @@ export default async function ParaMarcasPage() {
                       className="object-contain"
                     />
                   </div>
-                  <h3 className="text-xl font-bold text-[#1a365d] mb-4">
+                  <h3 className="text-xl font-bold text-brand-900 dark:text-white mb-4">
                     {t(`steps.${index}.title`)}
                   </h3>
-                  <p className="text-gray-600">{t(`steps.${index}.desc`)}</p>
+                  <p className="text-gray-600 dark:text-gray-400">{t(`steps.${index}.desc`)}</p>
                 </CardContent>
               </Card>
             ))}
@@ -128,7 +128,7 @@ export default async function ParaMarcasPage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-white dark:bg-slate-900">
         <div className="container-custom mx-auto px-4 space-y-20">
           {featureImages.map((image, index) => (
             <div
@@ -140,10 +140,10 @@ export default async function ParaMarcasPage() {
               <div
                 className={`space-y-4 ${featureReverse[index] ? "lg:order-2" : ""}`}
               >
-                <h3 className="text-2xl md:text-3xl font-bold text-[#1a365d]">
+                <h3 className="text-2xl md:text-3xl font-bold text-brand-900 dark:text-white">
                   {t(`features.${index}.title`)}
                 </h3>
-                <p className="text-gray-600 leading-relaxed text-lg">
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
                   {t(`features.${index}.desc`)}
                 </p>
               </div>
@@ -161,18 +161,18 @@ export default async function ParaMarcasPage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-white dark:bg-slate-900">
         <div className="container-custom mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1a365d] mb-8 max-w-4xl mx-auto leading-tight">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-brand-900 dark:text-white mb-8 max-w-4xl mx-auto leading-tight">
             {t("ctaTitle")}
           </h2>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="https://app.projecthub.com/register">
-              <Button className="bg-[#1a365d] hover:bg-[#152d4f] text-white rounded-full px-8 py-6 text-lg font-medium">
+              <Button className="bg-brand-900 hover:bg-brand-900 text-white rounded-full px-8 py-6 text-lg font-medium">
                 {t("ctaExplore")}
               </Button>
             </Link>
-            <Button variant="link" className="text-[#1a365d] font-medium text-lg">
+            <Button variant="link" className="text-brand-900 font-medium text-lg">
               {t("ctaCall")}
             </Button>
           </div>

@@ -1,7 +1,5 @@
-"use client";
-
 import { FileText, Search, ClipboardCheck, Truck } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
 const icons = [FileText, Search, ClipboardCheck, Truck];
 const stepColors = [
@@ -39,19 +37,19 @@ const stepColors = [
   },
 ];
 
-export default function PlatformSection() {
-  const t = useTranslations("Platform");
+export default async function PlatformSection() {
+  const t = await getTranslations("Platform");
 
   return (
-    <section id="como-funciona" className="py-20 bg-[#faf9f7]">
+    <section id="como-funciona" className="py-20 bg-landing-neutral dark:bg-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-[#1f2937]">{t("title")}</h2>
-          <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">{t("subtitle")}</p>
+          <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 dark:text-gray-100">{t("title")}</h2>
+          <p className="mt-4 text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">{t("subtitle")}</p>
         </div>
 
         <div className="relative">
-          <div className="absolute left-[12.5%] right-[12.5%] top-4 hidden h-px bg-[#e9dfd8] md:block" />
+          <div className="absolute left-[12.5%] right-[12.5%] top-4 hidden h-px bg-landing-beige dark:bg-slate-700 md:block" />
 
           <div className="grid gap-6 md:grid-cols-4 md:gap-5 lg:gap-7">
             {icons.map((Icon, index) => {
@@ -65,12 +63,12 @@ export default function PlatformSection() {
                   </span>
                   <div className={`h-6 w-px ${color.line} opacity-90`} />
                   <div className="w-full flex-1">
-                    <div className={`${color.cardBg} flex h-full flex-col rounded-[22px] border border-[#ece5df] px-5 py-6 shadow-[0_22px_45px_-38px_rgba(15,23,42,0.45)] transition-shadow hover:shadow-[0_24px_50px_-36px_rgba(15,23,42,0.42)] md:px-6`}>
+                    <div className={`${color.cardBg} dark:!bg-slate-800 flex h-full flex-col rounded-[22px] border border-landing-beige-border dark:border-slate-700 px-5 py-6 shadow-[0_22px_45px_-38px_rgba(15,23,42,0.45)] transition-shadow hover:shadow-[0_24px_50px_-36px_rgba(15,23,42,0.42)] md:px-6`}>
                       <div className={`mx-auto mb-5 grid h-12 w-12 place-items-center rounded-2xl ${color.iconBg} shadow-[0_16px_30px_-24px_rgba(15,23,42,0.35)]`}>
                         <Icon className={`block h-6 w-6 ${color.iconColor}`} />
                       </div>
-                      <h3 className="mb-3 text-[1.05rem] font-semibold leading-8 text-[#1f2937]">{t(`steps.${index}.title`)}</h3>
-                      <p className="text-sm leading-7 text-gray-600">{t(`steps.${index}.desc`)}</p>
+                      <h3 className="mb-3 text-[1.05rem] font-semibold leading-8 text-gray-800 dark:text-gray-100">{t(`steps.${index}.title`)}</h3>
+                      <p className="text-sm leading-7 text-gray-600 dark:text-gray-400">{t(`steps.${index}.desc`)}</p>
                     </div>
                   </div>
                 </div>

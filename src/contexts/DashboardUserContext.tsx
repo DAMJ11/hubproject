@@ -22,22 +22,29 @@ const DashboardUserContext = createContext<DashboardUserContextType>({
   isLoading: true,
 });
 
+let cachedUser: DashboardUser | null = null;
+
 export function DashboardUserProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [user, setUser] = useState<DashboardUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<DashboardUser | null>(cachedUser);
+  const [isLoading, setIsLoading] = useState(cachedUser === null);
 
   useEffect(() => {
     fetch("/api/auth/me", { credentials: "same-origin" })
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.user) {
+          cachedUser = data.user;
           setUser(data.user);
         } else {
+          cachedUser = null;
           router.push("/login");
         }
       })
-      .catch(() => router.push("/login"))
+      .catch(() => {
+        cachedUser = null;
+        router.push("/login");
+      })
       .finally(() => setIsLoading(false));
   }, [router]);
 

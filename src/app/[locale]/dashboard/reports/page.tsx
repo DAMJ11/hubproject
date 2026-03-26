@@ -1,51 +1,23 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { useDashboardUser } from "@/contexts/DashboardUserContext";
+import { redirect } from "next/navigation";
 import { Card } from "@/components/ui/card";
-import { BarChart3, TrendingUp, Users, CalendarCheck, DollarSign, Star, ArrowUpRight, Loader2 } from "lucide-react";
-import { useTranslations, useLocale } from "next-intl";
+import { BarChart3, TrendingUp, Users, CalendarCheck, DollarSign, Star, ArrowUpRight } from "lucide-react";
+import { getTranslations, getLocale } from "next-intl/server";
+import { getReports } from "@/lib/data/reports";
 
-interface MonthlyData { month: string; bookings: number; revenue: number; }
-interface TopService { name: string; bookings: number; revenue: number; growth: number; }
-interface TopProfessional { name: string; jobs: number; rating: number; revenue: number; }
-interface Totals { total_bookings: number; total_revenue: number; new_users: number; avg_rating: number; }
+export default async function ReportsPage() {
+  const data = await getReports();
+  if (!data) redirect("/login");
 
-export default function ReportsPage() {
-  const { user } = useDashboardUser();
-  const t = useTranslations("Reports");
-  const locale = useLocale();
-  const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
-  const [topServices, setTopServices] = useState<TopService[]>([]);
-  const [topProfessionals, setTopProfessionals] = useState<TopProfessional[]>([]);
-  const [totals, setTotals] = useState<Totals>({ total_bookings: 0, total_revenue: 0, new_users: 0, avg_rating: 0 });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("/api/dashboard/reports")
-      .then((r) => r.json())
-      .then((data) => {
-        setMonthlyData(data.monthlyData ?? []);
-        setTopServices(data.topServices ?? []);
-        setTopProfessionals(data.topProfessionals ?? []);
-        if (data.totals) setTotals(data.totals);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (!user) return null;
+  const t = await getTranslations("Reports");
+  const locale = await getLocale();
+  const { monthlyData, topServices, topProfessionals, totals } = {
+    monthlyData: data.monthlyData.map((d) => ({ month: d.month, bookings: d.projects, revenue: d.revenue })),
+    topServices: data.topManufacturers.map((m) => ({ name: m.name, bookings: m.contracts_count, revenue: m.revenue, growth: Math.round(m.avg_green_score) })),
+    topProfessionals: data.topManufacturers.map((m) => ({ name: m.name, jobs: m.contracts_count, rating: Math.round(m.avg_green_score * 10) / 10, revenue: m.revenue })),
+    totals: { total_bookings: data.totals.total_projects, total_revenue: data.totals.total_revenue, new_users: data.totals.total_companies, avg_rating: Math.round(data.totals.avg_rating * 10) / 10 },
+  };
 
   const formatCOP = (n: number) => new Intl.NumberFormat(locale, { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
-
-  if (loading) {
-    return (
-      <div className="p-6 flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-[#2563eb]" />
-      </div>
-    );
-  }
-
   const maxBookings = Math.max(...monthlyData.map((d) => d.bookings), 1);
 
   return (
@@ -79,7 +51,7 @@ export default function ReportsPage() {
       {monthlyData.length > 0 && (
         <Card className="p-6">
           <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-[#2563eb]" />
+            <TrendingUp className="w-5 h-5 text-brand-600" />
             {t("monthlyOrdersChart")}
           </h3>
           <div className="flex items-end gap-3 h-48">
@@ -87,7 +59,7 @@ export default function ReportsPage() {
               <div key={d.month} className="flex-1 flex flex-col items-center gap-2">
                 <span className="text-xs font-medium text-gray-700">{d.bookings}</span>
                 <div
-                  className="w-full bg-[#2563eb] rounded-t-md transition-all hover:bg-[#1d4ed8]"
+                  className="w-full bg-brand-600 rounded-t-md transition-all hover:bg-brand-700"
                   style={{ height: `${(d.bookings / maxBookings) * 100}%` }}
                 />
                 <span className="text-xs text-gray-500">{d.month}</span>
@@ -101,7 +73,7 @@ export default function ReportsPage() {
         {topServices.length > 0 && (
           <Card className="p-6">
             <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-[#2563eb]" />
+              <BarChart3 className="w-5 h-5 text-brand-600" />
               {t("topServices")}
             </h3>
             <div className="space-y-4">
@@ -120,7 +92,7 @@ export default function ReportsPage() {
                       <span>{formatCOP(s.revenue)}</span>
                     </div>
                     <div className="w-full bg-gray-100 rounded-full h-1.5 mt-1">
-                      <div className="bg-[#2563eb] h-1.5 rounded-full" style={{ width: `${(s.bookings / topServices[0].bookings) * 100}%` }} />
+                      <div className="bg-brand-600 h-1.5 rounded-full" style={{ width: `${(s.bookings / topServices[0].bookings) * 100}%` }} />
                     </div>
                   </div>
                 </div>
@@ -132,13 +104,13 @@ export default function ReportsPage() {
         {topProfessionals.length > 0 && (
           <Card className="p-6">
             <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-              <Users className="w-5 h-5 text-[#2563eb]" />
+              <Users className="w-5 h-5 text-brand-600" />
               {t("topSpecialists")}
             </h3>
             <div className="space-y-4">
               {topProfessionals.map((p) => (
                 <div key={p.name} className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#2563eb] flex items-center justify-center text-white text-sm font-bold">
+                  <div className="w-10 h-10 rounded-full bg-brand-600 flex items-center justify-center text-white text-sm font-bold">
                     {p.name.split(" ").map((n) => n[0]).join("")}
                   </div>
                   <div className="flex-1">

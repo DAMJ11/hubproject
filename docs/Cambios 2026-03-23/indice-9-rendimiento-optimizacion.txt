@@ -1,0 +1,111 @@
+=========================================================
+ ÍNDICE 9 — RENDIMIENTO Y OPTIMIZACIÓN
+ Fecha: 2026-03-28
+=========================================================
+
+RESUMEN
+-------
+Se eliminó completamente framer-motion del proyecto (~30 KB menos
+en el bundle), migrando todas las animaciones a CSS puro con
+tailwindcss-animate. Se verificó que imágenes, fuentes, Suspense
+(loading.tsx), tree-shaking de Lucide y CSS ya estaban optimizados.
+
+
+9.1 AUDITORÍA DE ESTADO ACTUAL
+==============================
+
+Elementos ya optimizados (no requirieron cambios):
+
+  - Imágenes: todas usan next/image, sin <img> ni unoptimized
+  - Fuentes: GeistSans via paquete npm `geist` (self-hosted)
+  - Suspense: 21 archivos loading.tsx (Next.js automatic Suspense)
+  - Lucide: todos los imports son named (tree-shaking correcto)
+  - CSS: sin archivos de estilos duplicados
+
+
+9.2 ELIMINACIÓN DE FRAMER-MOTION
+=================================
+
+Archivos migrados a CSS puro (tailwindcss-animate):
+
+  components/shared/page-transition.tsx
+    - PageTransition: motion.div → div con animate-in fade-in
+      slide-in-from-bottom-4 duration-300
+    - AuthTransition: motion.div → div con animate-in fade-in
+      zoom-in-95 slide-in-from-bottom-2 duration-350
+    - StaggeredTransition: motion.div → div con animationDelay +
+      animate-in fade-in slide-in-from-bottom-6 duration-400 fill-mode-both
+    - useButtonAnimation(): retorna { className } en lugar de
+      { whileHover, whileTap, transition }
+
+  app/[locale]/login/page.tsx
+    - Eliminado import { motion } from "framer-motion"
+    - motion.div (error) → div con animate-in fade-in zoom-in-95
+    - motion.div/button (buttonAnimation) → div/button con className
+    - motion.div (hover) → div con transition-transform hover:scale-105
+
+  app/[locale]/register/page.tsx
+    - Mismo patrón que login: 4 reemplazos de motion.* a CSS
+
+  components/layout/Header.tsx
+    - Eliminado import { motion, AnimatePresence }
+    - motion.header → header con animate-in slide-in-from-top
+    - motion.div (logo) → div con transition-transform hover:scale-105
+    - motion.div (desktop actions) → div con animate-in fade-in
+      slide-in-from-right-4 duration-500
+    - motion.div (login/register) → div con transition-transform
+    - motion.button (mobile toggle) → button con transition-transform
+    - AnimatePresence (icon swap) → conditional render simple
+    - AnimatePresence (mobile menu) → conditional con animate-in
+      fade-in slide-in-from-top-2
+    - motion.a (nav links) → a con animationDelay staggered +
+      animate-in fade-in slide-in-from-left-4 fill-mode-both
+    - motion.div (mobile footer) → div con animate-in + delay 0.3s
+
+  components/layout/DashboardLayout.tsx
+    - Eliminado import de @/lib/dynamic-motion
+    - DynamicAnimatePresence + MotionDiv (route transition) →
+      div con key={pathname} + animate-in fade-in
+      slide-in-from-bottom-2 duration-200
+
+
+9.3 ARCHIVOS ELIMINADOS
+========================
+
+  lib/dynamic-motion.tsx — wrapper de dynamic import para
+    framer-motion, ya sin consumidores
+
+
+9.4 DEPENDENCIA ELIMINADA
+==========================
+
+  npm uninstall framer-motion (^12.34.5)
+    - 3 paquetes eliminados del node_modules
+    - ~30 KB menos en bundle del cliente
+
+
+9.5 CLASES CSS UTILIZADAS (tailwindcss-animate)
+================================================
+
+  animate-in          — activa animación de entrada
+  fade-in             — opacidad 0 → 1
+  zoom-in-95          — scale 0.95 → 1
+  slide-in-from-top   — translateY(-100%) → 0
+  slide-in-from-top-2 — translateY(-0.5rem) → 0
+  slide-in-from-bottom-2 — translateY(0.5rem) → 0
+  slide-in-from-bottom-4 — translateY(1rem) → 0
+  slide-in-from-bottom-6 — translateY(1.5rem) → 0
+  slide-in-from-left-4  — translateX(-1rem) → 0
+  slide-in-from-right-4 — translateX(1rem) → 0
+  duration-200/300/400/500 — duración de animación
+  fill-mode-both      — mantiene estado final de animación
+  transition-transform — habilita transiciones CSS en transform
+  hover:scale-105     — escala al 105% en hover
+  active:scale-95     — escala al 95% al presionar
+
+
+VERIFICACIÓN
+============
+Build exitoso: npx next build — Compiled successfully
+Shared JS: 102 kB (First Load)
+Sin errores de compilación ni warnings nuevos.

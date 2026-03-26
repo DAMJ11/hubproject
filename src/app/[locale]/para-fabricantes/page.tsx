@@ -1,5 +1,5 @@
-﻿import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
@@ -29,23 +29,23 @@ export default async function ParaFabricantesPage() {
     <main className="min-h-screen">
       <Header />
 
-      <section className="bg-gradient-to-b from-[#f0f5f3] to-white py-16 md:py-24">
+      <section className="bg-gradient-to-b from-landing-gradient to-white dark:from-slate-900 dark:to-slate-800 py-16 md:py-24">
         <div className="container-custom mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-[#1a365d] mb-6">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-brand-900 dark:text-white mb-6">
             {t("heroTitle")}
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">
             {t("heroSubtitle")}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="https://app.projecthub.com/register">
-              <Button className="bg-[#1a365d] hover:bg-[#152d4f] text-white rounded-full px-8 py-6 text-lg font-medium">
+              <Button className="bg-brand-900 hover:bg-brand-900 text-white rounded-full px-8 py-6 text-lg font-medium">
                 {t("joinNow")}
               </Button>
             </Link>
             <Button
               variant="outline"
-              className="border-2 border-[#1a365d] text-[#1a365d] hover:bg-[#1a365d] hover:text-white rounded-full px-8 py-6 text-lg font-medium"
+              className="border-2 border-brand-900 text-brand-900 hover:bg-brand-900 hover:text-white rounded-full px-8 py-6 text-lg font-medium"
             >
               {t("learnMore")}
             </Button>
@@ -62,21 +62,21 @@ export default async function ParaFabricantesPage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-white dark:bg-slate-900">
         <div className="container-custom mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <h2 className="text-4xl md:text-5xl font-bold text-[#1a365d] leading-tight">
+              <h2 className="text-4xl md:text-5xl font-bold text-brand-900 dark:text-white leading-tight">
                 {t("platformTitle")}
               </h2>
-              <p className="text-gray-600 leading-relaxed text-lg">
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
                 {t("platformText1")}
               </p>
-              <p className="text-gray-600 leading-relaxed text-lg">
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
                 {t("platformText2")}
               </p>
               <Link href="https://app.projecthub.com/register">
-                <Button className="bg-[#1a365d] hover:bg-[#152d4f] text-white rounded-full px-8 py-6 text-lg font-medium">
+                <Button className="bg-brand-900 hover:bg-brand-900 text-white rounded-full px-8 py-6 text-lg font-medium">
                   {t("joinNow")}
                 </Button>
               </Link>
@@ -94,7 +94,7 @@ export default async function ParaFabricantesPage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-[#0d6c5d]">
+      <section className="py-16 md:py-24 bg-landing-cta">
         <div className="container-custom mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -108,7 +108,7 @@ export default async function ParaFabricantesPage() {
             {stepIcons.map((icon, index) => (
               <Card
                 key={index}
-                className="bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300"
+                className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300"
               >
                 <CardContent className="p-8 text-center">
                   <div className="w-24 h-24 mx-auto mb-6 relative">
@@ -119,10 +119,10 @@ export default async function ParaFabricantesPage() {
                       className="object-contain"
                     />
                   </div>
-                  <h3 className="text-xl font-bold text-[#1a365d] mb-4">
+                  <h3 className="text-xl font-bold text-brand-900 dark:text-white mb-4">
                     {t(`steps.${index}.title`)}
                   </h3>
-                  <p className="text-gray-600">{t(`steps.${index}.desc`)}</p>
+                  <p className="text-gray-600 dark:text-gray-400">{t(`steps.${index}.desc`)}</p>
                 </CardContent>
               </Card>
             ))}
@@ -130,7 +130,7 @@ export default async function ParaFabricantesPage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-white dark:bg-slate-900">
         <div className="container-custom mx-auto px-4 space-y-20">
           {featureImages.map((image, index) => (
             <div
@@ -142,10 +142,10 @@ export default async function ParaFabricantesPage() {
               <div
                 className={`space-y-4 ${featureReverse[index] ? "lg:order-2" : ""}`}
               >
-                <h3 className="text-2xl md:text-3xl font-bold text-[#1a365d]">
+                <h3 className="text-2xl md:text-3xl font-bold text-brand-900 dark:text-white">
                   {t(`features.${index}.title`)}
                 </h3>
-                <p className="text-gray-600 leading-relaxed text-lg">
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
                   {t(`features.${index}.desc`)}
                 </p>
               </div>
@@ -163,18 +163,18 @@ export default async function ParaFabricantesPage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-white dark:bg-slate-900">
         <div className="container-custom mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-[#1a365d] mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-brand-900 dark:text-white mb-4">
               {t("pricingTitle")}
             </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-8">
+            <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto mb-8">
               {t("pricingSubtitle")}
             </p>
             <Button
               variant="outline"
-              className="rounded-full px-8 py-6 border-2 border-[#1a365d] text-[#1a365d] hover:bg-[#1a365d] hover:text-white"
+              className="rounded-full px-8 py-6 border-2 border-brand-900 text-brand-900 hover:bg-brand-900 hover:text-white"
             >
               {t("viewComparison")}
             </Button>
@@ -186,7 +186,7 @@ export default async function ParaFabricantesPage() {
                 key={index}
                 className={`relative overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-2 ${
                   planHighlighted[index]
-                    ? "border-2 border-[#2563eb] shadow-xl"
+                    ? "border-2 border-brand-600 shadow-xl"
                     : "border shadow-lg"
                 }`}
               >
@@ -200,7 +200,7 @@ export default async function ParaFabricantesPage() {
                     >
                       <path
                         d="M20 5L35 15V30L20 40L5 30V15L20 5Z"
-                        fill={planHighlighted[index] ? "#2563eb" : "#1a365d"}
+                        fill={planHighlighted[index] ? "#4f46e5" : "#1e1b4b"}
                       />
                       <path
                         d="M20 12L28 17V27L20 32L12 27V17L20 12Z"
@@ -208,24 +208,24 @@ export default async function ParaFabricantesPage() {
                       />
                       <path
                         d="M20 18L24 21V27L20 30L16 27V21L20 18Z"
-                        fill={planHighlighted[index] ? "#2563eb" : "#1a365d"}
+                        fill={planHighlighted[index] ? "#4f46e5" : "#1e1b4b"}
                       />
                     </svg>
                   </div>
 
-                  <h3 className="text-sm font-bold tracking-wider text-gray-500 mb-4">
+                  <h3 className="text-sm font-bold tracking-wider text-gray-500 dark:text-gray-400 mb-4">
                     {t(`plans.${index}.name`)}
                   </h3>
 
                   <div className="flex items-baseline justify-center mb-4">
-                    <span className="text-4xl font-bold text-[#2563eb]">
+                    <span className="text-4xl font-bold text-brand-600">
                       {t(`plans.${index}.price`)}
                     </span>
-                    <span className="text-xl text-[#2563eb] ml-1">â‚¬</span>
-                    <span className="text-gray-600 ml-1">{t("perMonth")}</span>
+                    <span className="text-xl text-brand-600 ml-1">â‚¬</span>
+                    <span className="text-gray-600 dark:text-gray-400 ml-1">{t("perMonth")}</span>
                   </div>
 
-                  <p className="text-gray-600 mb-6 min-h-[48px]">
+                  <p className="text-gray-600 dark:text-gray-400 mb-6 min-h-[48px]">
                     {t(`plans.${index}.desc`)}
                   </p>
 
@@ -233,8 +233,8 @@ export default async function ParaFabricantesPage() {
                     variant="outline"
                     className={`rounded-full px-8 py-6 w-full font-medium transition-all ${
                       planHighlighted[index]
-                        ? "border-2 border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
-                        : "border-2 border-[#1a365d] text-[#1a365d] hover:bg-[#1a365d] hover:text-white"
+                        ? "border-2 border-brand-600 text-brand-600 hover:bg-brand-600 hover:text-white"
+                        : "border-2 border-brand-900 text-brand-900 hover:bg-brand-900 hover:text-white"
                     }`}
                   >
                     {t("learnMorePlan")}
@@ -246,20 +246,20 @@ export default async function ParaFabricantesPage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-[#f8f8f8]">
+      <section className="py-16 md:py-24 bg-landing-neutral dark:bg-slate-800">
         <div className="container-custom mx-auto px-4">
-          <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12 max-w-4xl mx-auto">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-lg p-8 md:p-12 max-w-4xl mx-auto">
             <div className="flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="space-y-4">
-                <h2 className="text-3xl md:text-4xl font-bold text-[#1a365d]">
+                <h2 className="text-3xl md:text-4xl font-bold text-brand-900 dark:text-white">
                   {t("ctaTitle")}
                 </h2>
-                <p className="text-gray-600 text-lg">
+                <p className="text-gray-600 dark:text-gray-400 text-lg">
                   {t("ctaSubtitle")}
                 </p>
               </div>
               <Link href="https://app.projecthub.com/register">
-                <Button className="bg-[#1a365d] hover:bg-[#152d4f] text-white rounded-full px-8 py-6 text-lg font-medium whitespace-nowrap">
+                <Button className="bg-brand-900 hover:bg-brand-900 text-white rounded-full px-8 py-6 text-lg font-medium whitespace-nowrap">
                   {t("ctaButton")}
                 </Button>
               </Link>

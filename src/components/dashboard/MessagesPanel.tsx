@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 import {
   Send,
   Search,
@@ -571,27 +572,27 @@ export default function MessagesPanel() {
 
   if (loading) {
     return (
-      <div className="h-[calc(100vh-64px)] flex items-center justify-center bg-[#f8fafc]">
-        <Loader2 className="w-8 h-8 animate-spin text-[#2563eb]" />
+      <div className="h-[calc(100vh-64px)] flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+        <Loader2 className="w-8 h-8 animate-spin text-brand-600" />
       </div>
     );
   }
 
   return (
-    <div className="h-[calc(100vh-64px)] flex bg-[#f8fafc]">
+    <div className="h-[calc(100vh-64px)] flex bg-slate-50 dark:bg-slate-900">
       {/* ============ LEFT SIDEBAR (WhatsApp dark) ============ */}
-      <div className="w-[420px] flex flex-col border-r border-[#e2e8f0]">
+      <div className={`w-full md:w-[420px] flex flex-col border-r border-slate-200 dark:border-slate-700 ${selectedConv || (tab === "search" && newChatTarget) ? "hidden md:flex" : "flex"}`}>
         {/* Sidebar Header */}
-        <div className="bg-[#ffffff] px-4 py-3">
+        <div className="bg-white dark:bg-slate-800 px-4 py-3">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold text-[#0f172a]">{t("header.title")}</h2>
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">{t("header.title")}</h2>
             <Button
               size="sm"
               onClick={() => {
                 setTab("search");
                 setSelectedConv(null);
               }}
-              className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white gap-1 rounded-lg text-xs h-8"
+              className="bg-brand-600 hover:bg-brand-700 text-white gap-1 rounded-lg text-xs h-8"
             >
               <Plus className="w-3.5 h-3.5" /> {t("header.newButton")}
             </Button>
@@ -604,8 +605,8 @@ export default function MessagesPanel() {
                   onClick={() => setTab("chats")}
                   className={`px-3 py-1 text-xs rounded-full transition-colors ${
                     tab === "chats"
-                      ? "bg-[#2563eb] text-white"
-                      : "bg-[#f1f5f9] text-[#64748b] hover:bg-[#e2e8f0]"
+                      ? "bg-brand-600 text-white"
+                      : "bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
                   }`}
                 >
                   {t("tabs.active", { count: openConversations.length })}
@@ -614,20 +615,20 @@ export default function MessagesPanel() {
                   onClick={() => setTab("pending")}
                   className={`px-3 py-1 text-xs rounded-full transition-colors flex items-center gap-1 ${
                     tab === "pending"
-                      ? "bg-[#f59e0b] text-white"
-                      : "bg-[#f1f5f9] text-[#64748b] hover:bg-[#e2e8f0]"
+                      ? "bg-amber-500 text-white"
+                      : "bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
                   }`}
                 >
                   <Clock className="w-3 h-3" /> {t("tabs.pending", { count: pendingConversations.length })}
                 </button>
               </div>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748b]" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 dark:text-slate-400" />
                 <input
                   placeholder={t("search.placeholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-3 py-1.5 bg-[#f1f5f9] text-[#1e293b] text-sm rounded-lg border-none outline-none placeholder:text-[#64748b] focus:ring-1 focus:ring-[#2563eb]"
+                  className="w-full pl-10 pr-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white text-sm rounded-lg border-none outline-none placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:ring-1 focus:ring-brand-600"
                 />
               </div>
             </>
@@ -636,8 +637,8 @@ export default function MessagesPanel() {
 
         {/* Search: buscar empresas */}
         {tab === "search" && (
-          <div className="flex-1 flex flex-col bg-[#f8fafc]">
-            <div className="p-4 bg-[#ffffff] border-b border-[#e2e8f0]">
+          <div className="flex-1 flex flex-col bg-slate-50 dark:bg-slate-900">
+            <div className="p-4 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
               <button
                 onClick={() => {
                   setTab("chats");
@@ -646,24 +647,24 @@ export default function MessagesPanel() {
                   setRfqOptions([]);
                   setCreateChatError("");
                 }}
-                className="text-xs text-[#2563eb] hover:text-[#1e40af] flex items-center gap-1 mb-3"
+                className="text-xs text-brand-600 hover:text-brand-700 flex items-center gap-1 mb-3"
               >
                 <ArrowLeft className="w-3.5 h-3.5" /> {t("search.back")}
               </button>
-              <p className="text-xs text-[#64748b] mb-2">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
                 {user?.role === "admin"
                   ? t("search.hintAdmin")
                   : user?.role === "brand" ? t("search.hintBrand") : t("search.hintManufacturer")}
               </p>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748b]" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 dark:text-slate-400" />
                 <input
                   placeholder={user?.role === "admin"
                     ? t("search.inputAdmin")
                     : user?.role === "brand" ? t("search.inputBrand") : t("search.inputManufacturer")}
                   value={companySearch}
                   onChange={(e) => setCompanySearch(e.target.value)}
-                  className="w-full pl-10 pr-3 py-1.5 bg-[#f1f5f9] text-[#1e293b] text-sm rounded-lg border-none outline-none placeholder:text-[#64748b] focus:ring-1 focus:ring-[#2563eb]"
+                  className="w-full pl-10 pr-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white text-sm rounded-lg border-none outline-none placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:ring-1 focus:ring-brand-600"
                   autoFocus
                 />
               </div>
@@ -671,11 +672,11 @@ export default function MessagesPanel() {
             <div className="flex-1 overflow-y-auto">
               {companySearching && (
                 <div className="flex justify-center py-8">
-                  <Loader2 className="w-5 h-5 animate-spin text-[#64748b]" />
+                  <Loader2 className="w-5 h-5 animate-spin text-slate-500 dark:text-slate-400" />
                 </div>
               )}
               {!companySearching && companyResults.length === 0 && companySearch.trim().length >= 2 && (
-                <div className="text-center py-8 text-xs text-[#64748b]">{t("search.noResults")}</div>
+                <div className="text-center py-8 text-xs text-slate-500 dark:text-slate-400">{t("search.noResults")}</div>
               )}
               {companyResults.map((company) => (
                 <button
@@ -684,25 +685,25 @@ export default function MessagesPanel() {
                     setNewChatTarget(company);
                     setCreateChatError("");
                   }}
-                  className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left border-b border-[#e2e8f0] ${
+                  className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left border-b border-slate-200 dark:border-slate-700 ${
                     newChatTarget?.id === company.id
-                      ? "bg-[#f1f5f9]"
-                      : "hover:bg-[#ffffff]"
+                      ? "bg-slate-100 dark:bg-slate-800"
+                      : "hover:bg-white dark:hover:bg-slate-800"
                   }`}
                 >
-                  <div className="w-12 h-12 bg-[#f1f5f9] rounded-full flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center flex-shrink-0">
                     {company.logo_url ? (
-                      <img src={company.logo_url} alt="" className="w-12 h-12 rounded-full object-cover" />
+                      <Image src={company.logo_url} alt={`${company.name} logo`} width={48} height={48} className="w-12 h-12 rounded-full object-cover" />
                     ) : (
-                      <Building2 className="w-5 h-5 text-[#64748b]" />
+                      <Building2 className="w-5 h-5 text-slate-500 dark:text-slate-400" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-sm text-[#0f172a] truncate">{company.name}</span>
-                      {company.is_verified && <CheckCircle2 className="w-3.5 h-3.5 text-[#2563eb] flex-shrink-0" />}
+                      <span className="font-medium text-sm text-slate-900 dark:text-white truncate">{company.name}</span>
+                      {company.is_verified && <CheckCircle2 className="w-3.5 h-3.5 text-brand-600 flex-shrink-0" />}
                     </div>
-                    <p className="text-xs text-[#64748b]">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       {company.city ?? t("defaults.location")} &bull; {company.type === "manufacturer" ? t("companyType.manufacturer") : t("companyType.brand")}
                     </p>
                   </div>
@@ -714,9 +715,9 @@ export default function MessagesPanel() {
 
         {/* Lista de conversaciones */}
         {tab !== "search" && (
-          <div className="flex-1 overflow-y-auto bg-[#f8fafc]">
+          <div className="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-900">
             {filteredConversations.length === 0 && (
-              <div className="text-center py-12 text-xs text-[#64748b]">
+              <div className="text-center py-12 text-xs text-slate-500 dark:text-slate-400">
                 {tab === "pending" ? t("list.emptyPending") : t("list.emptyActive")}
               </div>
             )}
@@ -724,16 +725,16 @@ export default function MessagesPanel() {
               <button
                 key={conv.id}
                 onClick={() => setSelectedConv(conv)}
-                className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left border-b border-[#e2e8f0] ${
+                className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left border-b border-slate-200 dark:border-slate-700 ${
                   selectedConv?.id === conv.id
-                    ? "bg-[#f1f5f9]"
-                    : "hover:bg-[#ffffff]"
+                    ? "bg-slate-100 dark:bg-slate-800"
+                    : "hover:bg-white dark:hover:bg-slate-800"
                 }`}
               >
                 <div className="relative flex-shrink-0">
                   <div
                     className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                      conv.status === "pending" ? "bg-[#f59e0b]" : "bg-[#2563eb]"
+                      conv.status === "pending" ? "bg-amber-500" : "bg-brand-600"
                     }`}
                   >
                     <span className="text-white font-medium text-sm">
@@ -741,38 +742,38 @@ export default function MessagesPanel() {
                     </span>
                   </div>
                   {conv.status === "pending" && (
-                    <Clock className="absolute -bottom-0.5 -right-0.5 w-4 h-4 text-[#f59e0b] bg-[#f8fafc] rounded-full" />
+                    <Clock className="absolute -bottom-0.5 -right-0.5 w-4 h-4 text-amber-500 bg-slate-50 dark:bg-slate-900 rounded-full" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
-                    <span className="font-medium text-[15px] text-[#0f172a] truncate">
+                    <span className="font-medium text-[15px] text-slate-900 dark:text-white truncate">
                       {getOtherPartyName(conv)}
                     </span>
-                    <span className={`text-xs flex-shrink-0 ${conv.unread_count > 0 ? "text-[#2563eb]" : "text-[#64748b]"}`}>
+                    <span className={`text-xs flex-shrink-0 ${conv.unread_count > 0 ? "text-brand-600" : "text-slate-500 dark:text-slate-400"}`}>
                       {formatTime(conv.last_message_at || conv.created_at)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between mt-0.5">
                     <div className="flex-1 min-w-0">
                       {conv.status === "pending" ? (
-                        <span className="text-xs text-[#f59e0b] font-medium">
+                        <span className="text-xs text-amber-500 font-medium">
                           {isPendingForMe(conv) ? t("list.requestReceived") : t("list.waitingAcceptance")}
                         </span>
                       ) : conv.last_message ? (
-                        <p className="text-sm text-[#64748b] truncate">
+                        <p className="text-sm text-slate-500 dark:text-slate-400 truncate">
                           {conv.rfq_code ? `[${conv.rfq_code}] ` : ""}
                           {conv.last_message}
                         </p>
                       ) : (
-                        <p className="text-xs text-[#64748b] italic">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 italic">
                           {conv.rfq_code ? `[${conv.rfq_code}] ` : ""}
                           {conv.subject}
                         </p>
                       )}
                     </div>
                     {conv.unread_count > 0 && (
-                      <span className="ml-2 min-w-[20px] h-5 bg-[#2563eb] text-white text-xs rounded-full flex items-center justify-center px-1.5 flex-shrink-0">
+                      <span className="ml-2 min-w-[20px] h-5 bg-brand-600 text-white text-xs rounded-full flex items-center justify-center px-1.5 flex-shrink-0">
                         {conv.unread_count}
                       </span>
                     )}
@@ -785,32 +786,32 @@ export default function MessagesPanel() {
       </div>
 
       {/* ============ RIGHT PANEL ============ */}
-      <div className="flex-1 flex flex-col">
+      <div className={`flex-1 flex flex-col ${!selectedConv && !(tab === "search" && newChatTarget) ? "hidden md:flex" : "flex"}`}>
         {/* Nuevo chat: formulario */}
         {tab === "search" && newChatTarget && (
-          <div className="flex-1 flex items-center justify-center bg-[#ffffff]"
+          <div className="flex-1 flex items-center justify-center bg-white dark:bg-slate-900"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e2e8f0' fill-opacity='0.6'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
             }}
           >
-            <div className="bg-[#ffffff] rounded-xl shadow-lg border border-[#f1f5f9] p-6 w-full max-w-md">
-              <h3 className="text-lg font-semibold text-[#0f172a] mb-1">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 p-6 w-full max-w-md">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">
                 {user?.role === "admin" ? t("newChat.titleAdmin") : t("newChat.titleUser")}
               </h3>
-              <div className="flex items-center gap-3 mb-4 bg-[#f1f5f9] rounded-lg p-3">
-                <div className="w-10 h-10 bg-[#2563eb] rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="flex items-center gap-3 mb-4 bg-slate-100 dark:bg-slate-700 rounded-lg p-3">
+                <div className="w-10 h-10 bg-brand-600 rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-white font-medium text-sm">
                     {getInitials(newChatTarget.name)}
                   </span>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-[#0f172a]">{newChatTarget.name}</p>
-                  <p className="text-xs text-[#64748b]">
+                  <p className="text-sm font-medium text-slate-900 dark:text-white">{newChatTarget.name}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     {newChatTarget.type === "manufacturer" ? t("companyType.manufacturer") : t("companyType.brand")} &bull; {newChatTarget.city ?? t("defaults.location")}
                   </p>
                 </div>
               </div>
-              <p className="text-xs text-[#64748b] mb-4">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
                 {user?.role === "admin"
                   ? t("newChat.infoAdmin")
                   : t("newChat.infoUser")}
@@ -818,15 +819,15 @@ export default function MessagesPanel() {
               <div className="space-y-3">
                 {user?.role !== "admin" && (
                   <div>
-                    <label className="block text-xs font-medium text-[#64748b] mb-1">
+                    <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
                       {user?.role === "brand" ? t("newChat.rfqLabelBrand") : t("newChat.rfqLabelManufacturer")}
                     </label>
                     {rfqLoading ? (
-                      <div className="w-full px-3 py-2 bg-[#f1f5f9] rounded-lg text-xs text-[#64748b] flex items-center gap-2">
+                      <div className="w-full px-3 py-2 bg-slate-100 dark:bg-slate-700 rounded-lg text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
                         <Loader2 className="w-3.5 h-3.5 animate-spin" /> {t("newChat.loadingProjects")}
                       </div>
                     ) : rfqOptions.length === 0 ? (
-                      <div className="w-full px-3 py-2 bg-[#fef3c7] text-[#92400e] rounded-lg text-xs">
+                      <div className="w-full px-3 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-900 dark:text-amber-300 rounded-lg text-xs">
                         {user?.role === "brand"
                           ? t("newChat.noProjectsBrand")
                           : t("newChat.noProjectsManufacturer")}
@@ -835,7 +836,7 @@ export default function MessagesPanel() {
                       <select
                         value={selectedRfqId ?? ""}
                         onChange={(e) => setSelectedRfqId(Number(e.target.value))}
-                        className="w-full px-3 py-2 bg-[#f1f5f9] text-[#1e293b] text-sm rounded-lg border-none outline-none focus:ring-1 focus:ring-[#2563eb]"
+                        className="w-full px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white text-sm rounded-lg border-none outline-none focus:ring-1 focus:ring-brand-600"
                       >
                         {rfqOptions.map((rfq) => (
                           <option key={rfq.id} value={rfq.id}>
@@ -847,22 +848,22 @@ export default function MessagesPanel() {
                   </div>
                 )}
                 <div>
-                  <label className="block text-xs font-medium text-[#64748b] mb-1">{t("newChat.subjectLabel")}</label>
+                  <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">{t("newChat.subjectLabel")}</label>
                   <input
                     placeholder={t("newChat.subjectPlaceholder")}
                     value={newChatSubject}
                     onChange={(e) => setNewChatSubject(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#f1f5f9] text-[#1e293b] text-sm rounded-lg border-none outline-none placeholder:text-[#64748b] focus:ring-1 focus:ring-[#2563eb]"
+                    className="w-full px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white text-sm rounded-lg border-none outline-none placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:ring-1 focus:ring-brand-600"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#64748b] mb-1">{t("newChat.messageLabel")}</label>
+                  <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">{t("newChat.messageLabel")}</label>
                   <textarea
                     placeholder={t("newChat.messagePlaceholder")}
                     value={newChatMessage}
                     onChange={(e) => setNewChatMessage(e.target.value)}
                     rows={3}
-                    className="w-full rounded-lg border-none px-3 py-2 bg-[#f1f5f9] text-[#1e293b] text-sm outline-none placeholder:text-[#64748b] focus:ring-1 focus:ring-[#2563eb] resize-none"
+                    className="w-full rounded-lg border-none px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white text-sm outline-none placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:ring-1 focus:ring-brand-600 resize-none"
                   />
                 </div>
                 {createChatError && (
@@ -873,7 +874,7 @@ export default function MessagesPanel() {
                 <Button
                   onClick={handleCreateChat}
                   disabled={!newChatSubject.trim() || creatingChat || (user?.role !== "admin" && (!selectedRfqId || rfqOptions.length === 0))}
-                  className="w-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-lg"
+                  className="w-full bg-brand-600 hover:bg-brand-700 text-white rounded-lg"
                 >
                   {creatingChat ? (
                     <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -888,11 +889,11 @@ export default function MessagesPanel() {
         )}
 
         {tab === "search" && !newChatTarget && (
-          <div className="flex-1 flex items-center justify-center bg-[#ffffff]">
+          <div className="flex-1 flex items-center justify-center bg-white dark:bg-slate-900">
             <div className="text-center">
-              <Building2 className="w-12 h-12 text-[#cbd5e1] mx-auto mb-3" />
-              <h3 className="text-lg font-medium text-[#0f172a]">{t("searchEmpty.title")}</h3>
-              <p className="text-sm text-[#64748b] mt-1">
+              <Building2 className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+              <h3 className="text-lg font-medium text-slate-900 dark:text-white">{t("searchEmpty.title")}</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                 {user?.role === "admin" ? t("searchEmpty.subtitleAdmin") : user?.role === "brand" ? t("searchEmpty.subtitleBrand") : t("searchEmpty.subtitleManufacturer")}
               </p>
             </div>
@@ -903,47 +904,50 @@ export default function MessagesPanel() {
         {tab !== "search" && selectedConv && selectedConv.status === "pending" && (
           <div className="flex-1 flex flex-col">
             {/* Pending Header */}
-            <div className="h-[60px] px-4 flex items-center gap-3 bg-[#ffffff] border-b border-[#e2e8f0]">
-              <div className="w-10 h-10 bg-[#f59e0b] rounded-full flex items-center justify-center">
+            <div className="h-[60px] px-4 flex items-center gap-3 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+              <button onClick={() => setSelectedConv(null)} className="md:hidden p-1 -ml-1 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200">
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+              <div className="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center">
                 <span className="text-white font-medium text-sm">
                   {getInitials(getOtherPartyName(selectedConv))}
                 </span>
               </div>
               <div className="flex-1">
-                <h3 className="font-medium text-[#0f172a] text-[15px]">{getOtherPartyName(selectedConv)}</h3>
-                <p className="text-xs text-[#f59e0b] flex items-center gap-1">
+                <h3 className="font-medium text-slate-900 dark:text-white text-[15px]">{getOtherPartyName(selectedConv)}</h3>
+                <p className="text-xs text-amber-500 flex items-center gap-1">
                   <Clock className="w-3 h-3" /> {t("pending.headerStatus")}
                 </p>
               </div>
             </div>
-            <div className="flex-1 flex items-center justify-center bg-[#ffffff]"
+            <div className="flex-1 flex items-center justify-center bg-white dark:bg-slate-900"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e2e8f0' fill-opacity='0.6'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
               }}
             >
-              <div className="bg-[#ffffff] rounded-xl shadow-lg border border-[#f1f5f9] p-6 text-center max-w-md">
-                <Clock className="w-12 h-12 text-[#f59e0b] mx-auto mb-3" />
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 p-6 text-center max-w-md">
+                <Clock className="w-12 h-12 text-amber-500 mx-auto mb-3" />
                 {isPendingForMe(selectedConv) ? (
                   <>
-                    <h3 className="text-lg font-semibold text-[#0f172a] mb-1">
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">
                       {t("pending.incomingTitle", { name: selectedConv.initiator_name })}
                     </h3>
-                    <p className="text-sm text-[#64748b] mb-1">
-                      {t("pending.subjectLabel")} <span className="font-medium text-[#1e293b]">{selectedConv.subject}</span>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">
+                      {t("pending.subjectLabel")} <span className="font-medium text-slate-800 dark:text-slate-200">{selectedConv.subject}</span>
                     </p>
-                    <p className="text-sm text-[#64748b] mb-4">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
                       {t("pending.acceptPrompt")}
                     </p>
                     <div className="flex gap-3 justify-center">
                       <button
                         onClick={() => handleRespond(selectedConv.id, "reject")}
-                        className="px-4 py-2 rounded-lg text-sm bg-[#f1f5f9] text-red-400 hover:bg-[#e2e8f0] transition-colors flex items-center gap-1"
+                        className="px-4 py-2 rounded-lg text-sm bg-slate-100 dark:bg-slate-700 text-red-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors flex items-center gap-1"
                       >
                         <XCircle className="w-4 h-4" /> {t("pending.reject")}
                       </button>
                       <button
                         onClick={() => handleRespond(selectedConv.id, "accept")}
-                        className="px-4 py-2 rounded-lg text-sm bg-[#2563eb] text-white hover:bg-[#1d4ed8] transition-colors flex items-center gap-1"
+                        className="px-4 py-2 rounded-lg text-sm bg-brand-600 text-white hover:bg-brand-700 transition-colors flex items-center gap-1"
                       >
                         <CheckCircle2 className="w-4 h-4" /> {t("pending.accept")}
                       </button>
@@ -951,11 +955,11 @@ export default function MessagesPanel() {
                   </>
                 ) : (
                   <>
-                    <h3 className="text-lg font-semibold text-[#0f172a] mb-1">{t("pending.sentTitle")}</h3>
-                    <p className="text-sm text-[#64748b] mb-1">
-                      {t("pending.subjectLabel")} <span className="font-medium text-[#1e293b]">{selectedConv.subject}</span>
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">{t("pending.sentTitle")}</h3>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">
+                      {t("pending.subjectLabel")} <span className="font-medium text-slate-800 dark:text-slate-200">{selectedConv.subject}</span>
                     </p>
-                    <p className="text-sm text-[#64748b]">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                       {t("pending.waitingMessage", { name: getOtherPartyName(selectedConv) })}
                     </p>
                   </>
@@ -969,41 +973,43 @@ export default function MessagesPanel() {
         {tab !== "search" && selectedConv && selectedConv.status === "open" && (
           <div className="flex-1 flex flex-col">
             {/* Chat Header */}
-            <div className="h-[60px] px-4 flex items-center justify-between bg-[#ffffff] border-b border-[#e2e8f0]">
+            <div className="h-[60px] px-4 flex items-center justify-between bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-[#2563eb] rounded-full flex items-center justify-center">
+                <button onClick={() => setSelectedConv(null)} className="md:hidden p-1 -ml-1 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200">
+                  <ArrowLeft className="w-5 h-5" />
+                </button>
+                <div className="w-10 h-10 bg-brand-600 rounded-full flex items-center justify-center">
                   <span className="text-white font-medium text-sm">
                     {getInitials(getOtherPartyName(selectedConv))}
                   </span>
                 </div>
                 <div>
-                  <h3 className="font-medium text-[#0f172a] text-[15px]">{getOtherPartyName(selectedConv)}</h3>
-                  <p className="text-xs text-[#64748b]">
+                  <h3 className="font-medium text-slate-900 dark:text-white text-[15px]">{getOtherPartyName(selectedConv)}</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     {getOtherPartyType(selectedConv)} &bull; {selectedConv.subject}
                   </p>
                 </div>
               </div>
-              <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#f1f5f9] transition-colors">
-                <MoreVertical className="w-5 h-5 text-[#64748b]" />
+              <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                <MoreVertical className="w-5 h-5 text-slate-500 dark:text-slate-400" />
               </button>
             </div>
 
             {/* Messages area with WhatsApp wallpaper */}
             <div
-              className="flex-1 overflow-y-auto px-[6%] py-4 space-y-1"
+              className="flex-1 overflow-y-auto px-[6%] py-4 space-y-1 bg-white dark:bg-slate-900"
               style={{
-                backgroundColor: "#ffffff",
                 backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e2e8f0' fill-opacity='0.6'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
               }}
             >
               {messagesLoading && (
                 <div className="flex justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-[#2563eb]" />
+                  <Loader2 className="w-6 h-6 animate-spin text-brand-600" />
                 </div>
               )}
               {!messagesLoading && messages.length === 0 && (
                 <div className="flex justify-center py-8">
-                  <div className="bg-[#eff6ff] text-[#64748b] text-xs px-4 py-2 rounded-lg shadow">
+                  <div className="bg-blue-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs px-4 py-2 rounded-lg shadow">
                     {t("chat.noMessages")}
                   </div>
                 </div>
@@ -1020,7 +1026,7 @@ export default function MessagesPanel() {
                 if (isSystem) {
                   return (
                     <div key={msg.id} className="flex justify-center py-1">
-                      <span className="text-xs text-[#64748b] bg-[#eff6ff] px-3 py-1 rounded-lg shadow">
+                      <span className="text-xs text-slate-500 dark:text-slate-400 bg-blue-50 dark:bg-slate-800 px-3 py-1 rounded-lg shadow">
                         {msg.content}
                       </span>
                     </div>
@@ -1031,7 +1037,7 @@ export default function MessagesPanel() {
                   <div key={msg.id}>
                     {showDateSep && (
                       <div className="flex justify-center py-2">
-                        <span className="text-xs text-[#64748b] bg-[#eff6ff] px-3 py-1 rounded-lg shadow">
+                        <span className="text-xs text-slate-500 dark:text-slate-400 bg-blue-50 dark:bg-slate-800 px-3 py-1 rounded-lg shadow">
                           {new Date(msg.created_at).toLocaleDateString(locale, {
                             day: "numeric",
                             month: "long",
@@ -1044,8 +1050,8 @@ export default function MessagesPanel() {
                       <div
                         className={`relative max-w-[65%] rounded-lg px-[9px] pt-2 pb-2 shadow grid gap-1 ${
                           isMe
-                            ? "bg-[#2563eb] text-white justify-items-end"
-                            : "bg-[#ffffff] text-[#0f172a] justify-items-start"
+                            ? "bg-brand-600 text-white justify-items-end"
+                            : "bg-white dark:bg-slate-800 text-slate-900 dark:text-white justify-items-start"
                         }`}
                         style={isMe
                           ? { borderTopRightRadius: "0px" }
@@ -1053,7 +1059,7 @@ export default function MessagesPanel() {
                         }
                       >
                         {!isMe && (
-                          <p className="text-xs font-medium text-[#1e40af] mb-0.5">{msg.sender_name}</p>
+                          <p className="text-xs font-medium text-blue-800 dark:text-blue-400 mb-0.5">{msg.sender_name}</p>
                         )}
                         <div className="w-full">
                           <p className="text-[14.2px] leading-[19px] whitespace-pre-wrap">
@@ -1061,14 +1067,14 @@ export default function MessagesPanel() {
                           </p>
                         </div>
                         <div className="w-full flex items-center justify-end text-[11px] gap-1 mt-0.5">
-                          <span className={`${isMe ? "text-[#dbeafe]" : "text-[#64748b]"}`}>{formatTime(msg.created_at)}</span>
+                          <span className={`${isMe ? "text-blue-100" : "text-slate-500 dark:text-slate-400"}`}>{formatTime(msg.created_at)}</span>
                           {isMe && (
                             msg.pending ? (
                               <Loader2 className="w-4 h-4 animate-spin ml-0.5 text-white" />
                             ) : msg.failed ? (
                               <XCircle className="w-4 h-4 text-red-400 ml-0.5" />
                             ) : msg.is_read ? (
-                              <CheckCheck className="w-[16px] h-[16px] text-[#1d4ed8] ml-0.5" />
+                              <CheckCheck className="w-[16px] h-[16px] text-brand-700 ml-0.5" />
                             ) : (
                               <Check className="w-[16px] h-[16px] ml-0.5" />
                             )
@@ -1083,8 +1089,8 @@ export default function MessagesPanel() {
             </div>
 
             {/* Message Input Bar (WhatsApp style) */}
-            <div className="px-3 py-2 bg-[#ffffff] flex items-end gap-2">
-              <div className="flex-1 bg-[#f1f5f9] rounded-lg flex items-end">
+            <div className="px-3 py-2 bg-white dark:bg-slate-800 flex items-end gap-2">
+              <div className="flex-1 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-end">
                 <input
                   placeholder={t("chat.inputPlaceholder")}
                   value={newMessage}
@@ -1095,13 +1101,13 @@ export default function MessagesPanel() {
                       handleSend();
                     }
                   }}
-                  className="flex-1 bg-transparent text-[#1e293b] text-sm px-3 py-[9px] outline-none border-none placeholder:text-[#64748b]"
+                  className="flex-1 bg-transparent text-slate-800 dark:text-white text-sm px-3 py-[9px] outline-none border-none placeholder:text-slate-500 dark:placeholder:text-slate-400"
                 />
               </div>
               <button
                 onClick={handleSend}
                 disabled={!newMessage.trim() || sending}
-                className="w-10 h-10 rounded-full bg-[#2563eb] hover:bg-[#1d4ed8] flex items-center justify-center text-white disabled:opacity-40 disabled:hover:bg-[#2563eb] transition-colors flex-shrink-0"
+                className="w-10 h-10 rounded-full bg-brand-600 hover:bg-brand-700 flex items-center justify-center text-white disabled:opacity-40 disabled:hover:bg-brand-600 transition-colors flex-shrink-0"
               >
                 {sending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5 ml-0.5" />}
               </button>
@@ -1111,13 +1117,13 @@ export default function MessagesPanel() {
 
         {/* Empty state */}
         {tab !== "search" && !selectedConv && (
-          <div className="flex-1 flex items-center justify-center bg-[#ffffff] border-b-[6px] border-[#2563eb]">
+          <div className="flex-1 flex items-center justify-center bg-white dark:bg-slate-900 border-b-[6px] border-brand-600">
             <div className="text-center max-w-md">
-              <div className="w-[72px] h-[72px] mx-auto mb-5 rounded-full bg-[#cbd5e1] flex items-center justify-center">
-                <MessageSquare className="w-9 h-9 text-[#64748b]" />
+              <div className="w-[72px] h-[72px] mx-auto mb-5 rounded-full bg-slate-300 dark:bg-slate-700 flex items-center justify-center">
+                <MessageSquare className="w-9 h-9 text-slate-500 dark:text-slate-400" />
               </div>
-              <h3 className="text-[28px] font-light text-[#0f172a] mb-2">{t("emptyState.title")}</h3>
-              <p className="text-sm text-[#64748b] leading-relaxed">
+              <h3 className="text-[28px] font-light text-slate-900 dark:text-white mb-2">{t("emptyState.title")}</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
                 {t("emptyState.line1")}
                 <br />
                 {t("emptyState.line2")}
@@ -1128,11 +1134,11 @@ export default function MessagesPanel() {
 
         {/* Conversation closed/archived */}
         {tab !== "search" && selectedConv && selectedConv.status !== "open" && selectedConv.status !== "pending" && (
-          <div className="flex-1 flex items-center justify-center bg-[#ffffff]">
+          <div className="flex-1 flex items-center justify-center bg-white dark:bg-slate-900">
             <div className="text-center">
-              <XCircle className="w-12 h-12 text-[#cbd5e1] mx-auto mb-3" />
-              <h3 className="text-lg font-medium text-[#0f172a]">{t("closed.title")}</h3>
-              <p className="text-sm text-[#64748b] mt-1">{t("closed.subtitle")}</p>
+              <XCircle className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+              <h3 className="text-lg font-medium text-slate-900 dark:text-white">{t("closed.title")}</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{t("closed.subtitle")}</p>
             </div>
           </div>
         )}

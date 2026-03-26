@@ -1,12 +1,16 @@
-"use client";
-
+import { redirect } from "next/navigation";
 import DashboardHome from "@/components/dashboard/DashboardHome";
-import { useDashboardUser } from "@/contexts/DashboardUserContext";
+import { getDashboardData } from "@/lib/data/dashboard";
 
-export default function DashboardPage() {
-  const { user } = useDashboardUser();
+export default async function DashboardPage() {
+  const data = await getDashboardData();
+  if (!data) redirect("/login");
 
-  if (!user) return null;
-
-  return <DashboardHome user={user} />;
+  return (
+    <DashboardHome
+      user={{ firstName: data.user.firstName, lastName: data.user.lastName, role: data.user.role }}
+      initialStats={data.stats}
+      initialProjects={data.projects}
+    />
+  );
 }

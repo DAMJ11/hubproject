@@ -7,6 +7,8 @@ import Link from "next/link";
 import { ArrowLeft, Package, Clock, DollarSign, Leaf, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { CardSkeleton } from "@/components/shared/skeleton-loader";
+import { toast } from "sonner";
 
 interface RFQDetail {
   id: number;
@@ -96,11 +98,14 @@ export default function OpportunityDetailPage() {
       const data = await res.json();
       if (data.success) {
         setSubmitted(true);
+        toast.success(t("proposalSent"));
       } else {
         setError(data.message || t("submitError"));
+        toast.error(data.message || t("submitError"));
       }
     } catch {
       setError(t("connectionError"));
+      toast.error(t("connectionError"));
     } finally {
       setSubmitting(false);
     }
@@ -108,8 +113,9 @@ export default function OpportunityDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-[#0d7a5f]" />
+      <div className="space-y-6">
+        <CardSkeleton />
+        <CardSkeleton />
       </div>
     );
   }
@@ -131,14 +137,14 @@ export default function OpportunityDetailPage() {
         </div>
         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t("submitted.title")}</h2>
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{t("submitted.description")}</p>
-        <Button onClick={() => router.push("/dashboard/proposals")} className="bg-[#0d7a5f] hover:bg-[#0a6b52] text-white">
+        <Button onClick={() => router.push("/dashboard/proposals")} className="bg-brand-600 hover:bg-brand-700 text-white">
           {t("submitted.viewProposals")}
         </Button>
       </div>
     );
   }
 
-  const inputClass = "h-11 rounded-lg border-gray-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-[#0d7a5f] focus:ring-[#0d7a5f]";
+  const inputClass = "h-11 rounded-lg border-gray-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-brand-600 focus:ring-brand-600";
   const contactBrandParams = new URLSearchParams({
     targetCompanyId: String(rfq.brand_company_id),
     rfqId: String(rfq.id),
@@ -149,7 +155,7 @@ export default function OpportunityDetailPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-start gap-3">
-        <button onClick={() => router.back()} className="p-2 mt-1 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg">
+        <button onClick={() => router.back()} className="p-2 mt-1 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg" aria-label={t("back")}>
           <ArrowLeft className="w-5 h-5 text-gray-500" />
         </button>
         <div>
@@ -230,10 +236,10 @@ export default function OpportunityDetailPage() {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("notesLabel")}</label>
-          <textarea name="notes" value={form.notes} onChange={handleChange} rows={3} placeholder={t("notesPlaceholder")} className="w-full rounded-lg border-gray-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white px-3 py-2 focus:border-[#0d7a5f] focus:ring-[#0d7a5f]" />
+          <textarea name="notes" value={form.notes} onChange={handleChange} rows={3} placeholder={t("notesPlaceholder")} className="w-full rounded-lg border-gray-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white px-3 py-2 focus:border-brand-600 focus:ring-brand-600" />
         </div>
 
-        <Button type="submit" className="w-full bg-[#0d7a5f] hover:bg-[#0a6b52] text-white h-11" disabled={submitting}>
+        <Button type="submit" className="w-full bg-brand-600 hover:bg-brand-700 text-white h-11" disabled={submitting}>
           {submitting ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> {t("submitting")}</> : t("submitProposal")}
         </Button>
       </form>

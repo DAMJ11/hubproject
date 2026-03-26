@@ -4,8 +4,28 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Clock, Package, DollarSign, Leaf, MapPin, Shield, Loader2, Check, X, Star } from "lucide-react";
+import { ArrowLeft, Clock, Package, DollarSign, Leaf, MapPin, Shield, Loader2, Check, X, Star, LayoutGrid, Table2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { EmptyState } from "@/components/shared/empty-state";
+import { StatusBadge } from "@/components/shared/status-badge";
+import { CardSkeleton } from "@/components/shared/skeleton-loader";
+import { toast } from "sonner";
+import dynamic from "next/dynamic";
+
+const ProposalsCompare = dynamic(() => import("./proposals-compare"), {
+  loading: () => <div className="h-40 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-brand-600" /></div>,
+});
 
 interface RFQDetail {
   id: number;
@@ -49,20 +69,6 @@ interface Proposal {
   submitted_at: string;
 }
 
-const statusConfig: Record<string, { color: string }> = {
-  draft: { color: "bg-gray-100 text-gray-700" },
-  open: { color: "bg-blue-100 text-blue-700" },
-  evaluating: { color: "bg-yellow-100 text-yellow-700" },
-  awarded: { color: "bg-green-100 text-green-700" },
-  cancelled: { color: "bg-red-100 text-red-700" },
-};
-
-const proposalStatusConfig: Record<string, { color: string }> = {
-  submitted: { color: "bg-gray-100 text-gray-700" },
-  shortlisted: { color: "bg-blue-100 text-blue-700" },
-  accepted: { color: "bg-green-100 text-green-700" },
-  rejected: { color: "bg-red-100 text-red-700" },
-};
 
 function formatCurrency(amount: number, locale: string) {
   return new Intl.NumberFormat(locale, { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(amount);
@@ -77,6 +83,8 @@ export default function ProjectDetailPage() {
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
+  const [viewMode, setViewMode] = useState<"cards" | "compare">("cards");
+  const [sortKey, setSortKey] = useState<"total_price" | "lead_time_days" | "green_score" | "distance_km">("green_score");
 
   const fetchData = useCallback(async () => {
     try {
@@ -106,9 +114,15 @@ export default function ProjectDetailPage() {
         body: JSON.stringify({ action }),
       });
       const data = await res.json();
-      if (data.success) fetchData();
+      if (data.success) {
+        fetchData();
+        toast.success(t("actionSuccess"));
+      } else {
+        toast.error(t("actionError"));
+      }
     } catch (err) {
       console.error(err);
+      toast.error(t("actionError"));
     } finally {
       setActionLoading(null);
     }
@@ -116,8 +130,9 @@ export default function ProjectDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-[#0d7a5f]" />
+      <div className="max-w-4xl mx-auto space-y-6">
+        <CardSkeleton />
+        <CardSkeleton />
       </div>
     );
   }
@@ -131,19 +146,17 @@ export default function ProjectDetailPage() {
     );
   }
 
-  const st = statusConfig[rfq.status] || statusConfig.draft;
-
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-start gap-3">
-        <button onClick={() => router.push("/dashboard/projects")} className="p-2 mt-1 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg">
+        <button onClick={() => router.push("/dashboard/projects")} className="p-2 mt-1 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg" aria-label={t("back")}>
           <ArrowLeft className="w-5 h-5 text-gray-500" />
         </button>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs font-mono text-gray-400">{rfq.code}</span>
-            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${st.color}`}>{t(`status.${rfq.status}`)}</span>
+            <StatusBadge entity="projects" status={rfq.status} />
             {rfq.sustainability_priority && <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">{t("sustainable")}</span>}
           </div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{rfq.title}</h1>
@@ -195,18 +208,39 @@ export default function ProjectDetailPage() {
 
       {/* Proposals */}
       <div>
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-          {t("proposalsTitle", { count: proposals.length })}
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+            {t("proposalsTitle", { count: proposals.length })}
+          </h2>
+          {proposals.length >= 2 && (
+            <div className="flex gap-1 bg-gray-100 dark:bg-slate-700 rounded-lg p-0.5">
+              <button
+                onClick={() => setViewMode("cards")}
+                className={`p-1.5 rounded-md transition-colors ${viewMode === "cards" ? "bg-white dark:bg-slate-600 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+                aria-label={t("compare.cardsView")}
+              >
+                <LayoutGrid className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setViewMode("compare")}
+                className={`p-1.5 rounded-md transition-colors ${viewMode === "compare" ? "bg-white dark:bg-slate-600 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+                aria-label={t("compare.tableView")}
+              >
+                <Table2 className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
 
         {proposals.length === 0 ? (
-          <div className="text-center py-10 bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
-            <p className="text-gray-500 dark:text-gray-400 text-sm">{t("noProposals")}</p>
+          <EmptyState icon={Package} title={t("noProposals")} />
+        ) : viewMode === "compare" ? (
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-4">
+            <ProposalsCompare proposals={proposals} sortKey={sortKey} onSortChange={setSortKey} />
           </div>
         ) : (
           <div className="space-y-4">
             {proposals.map((p) => {
-              const ps = proposalStatusConfig[p.status] || proposalStatusConfig.submitted;
               const isAwarded = rfq.status === "awarded";
               return (
                 <div key={p.id} className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-5">
@@ -215,7 +249,7 @@ export default function ProjectDetailPage() {
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-semibold text-gray-900 dark:text-white">{p.manufacturer_name}</span>
                         {p.manufacturer_is_verified && <Shield className="w-4 h-4 text-blue-500" />}
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${ps.color}`}>{t(`proposalStatus.${p.status}`)}</span>
+                        <StatusBadge entity="proposals" status={p.status} />
                       </div>
                       {p.manufacturer_city && (
                         <p className="flex items-center gap-1 text-xs text-gray-500 mt-1">
@@ -283,29 +317,85 @@ export default function ProjectDetailPage() {
                         className="text-blue-600 border-blue-200 hover:bg-blue-50">
                         <Star className="w-3.5 h-3.5 mr-1" /> {t("shortlist")}
                       </Button>
-                      <Button size="sm" onClick={() => handleAction(p.id, "accept")} disabled={actionLoading === p.id}
-                        className="bg-[#0d7a5f] hover:bg-[#0a6b52] text-white">
-                        <Check className="w-3.5 h-3.5 mr-1" /> {t("accept")}
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={() => handleAction(p.id, "reject")} disabled={actionLoading === p.id}
-                        className="text-red-600 border-red-200 hover:bg-red-50">
-                        <X className="w-3.5 h-3.5 mr-1" /> {t("reject")}
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button size="sm" disabled={actionLoading === p.id}
+                            className="bg-brand-600 hover:bg-brand-700 text-white">
+                            <Check className="w-3.5 h-3.5 mr-1" /> {t("accept")}
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>{t("confirmAccept.title")}</AlertDialogTitle>
+                            <AlertDialogDescription>{t("confirmAccept.description", { name: p.manufacturer_name })}</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>{t("confirmAccept.cancel")}</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleAction(p.id, "accept")} className="bg-brand-600 hover:bg-brand-700">{t("confirmAccept.confirm")}</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button size="sm" variant="outline" disabled={actionLoading === p.id}
+                            className="text-red-600 border-red-200 hover:bg-red-50">
+                            <X className="w-3.5 h-3.5 mr-1" /> {t("reject")}
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>{t("confirmReject.title")}</AlertDialogTitle>
+                            <AlertDialogDescription>{t("confirmReject.description", { name: p.manufacturer_name })}</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>{t("confirmReject.cancel")}</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleAction(p.id, "reject")} className="bg-red-600 hover:bg-red-700">{t("confirmReject.confirm")}</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   )}
                   {p.status === "shortlisted" && !isAwarded && (
                     <div className="flex gap-2 mt-4 pt-3 border-t border-gray-100 dark:border-slate-700">
-                      <Button size="sm" onClick={() => handleAction(p.id, "accept")} disabled={actionLoading === p.id}
-                        className="bg-[#0d7a5f] hover:bg-[#0a6b52] text-white">
-                        <Check className="w-3.5 h-3.5 mr-1" /> {t("award")}
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={() => handleAction(p.id, "reject")} disabled={actionLoading === p.id}
-                        className="text-red-600 border-red-200 hover:bg-red-50">
-                        <X className="w-3.5 h-3.5 mr-1" /> {t("reject")}
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button size="sm" disabled={actionLoading === p.id}
+                            className="bg-brand-600 hover:bg-brand-700 text-white">
+                            <Check className="w-3.5 h-3.5 mr-1" /> {t("award")}
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>{t("confirmAccept.title")}</AlertDialogTitle>
+                            <AlertDialogDescription>{t("confirmAccept.description", { name: p.manufacturer_name })}</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>{t("confirmAccept.cancel")}</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleAction(p.id, "accept")} className="bg-brand-600 hover:bg-brand-700">{t("confirmAccept.confirm")}</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button size="sm" variant="outline" disabled={actionLoading === p.id}
+                            className="text-red-600 border-red-200 hover:bg-red-50">
+                            <X className="w-3.5 h-3.5 mr-1" /> {t("reject")}
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>{t("confirmReject.title")}</AlertDialogTitle>
+                            <AlertDialogDescription>{t("confirmReject.description", { name: p.manufacturer_name })}</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>{t("confirmReject.cancel")}</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleAction(p.id, "reject")} className="bg-red-600 hover:bg-red-700">{t("confirmReject.confirm")}</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   )}
-                  {actionLoading === p.id && <Loader2 className="w-4 h-4 animate-spin text-[#0d7a5f] mt-2" />}
+                  {actionLoading === p.id && <Loader2 className="w-4 h-4 animate-spin text-brand-600 mt-2" />}
                 </div>
               );
             })}
@@ -319,7 +409,7 @@ export default function ProjectDetailPage() {
 function InfoCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-4 flex items-center gap-3">
-      <div className="text-[#0d7a5f]">{icon}</div>
+      <div className="text-brand-600">{icon}</div>
       <div>
         <p className="text-xs text-gray-500 dark:text-gray-400">{label}</p>
         <p className="text-sm font-medium text-gray-900 dark:text-white">{value}</p>

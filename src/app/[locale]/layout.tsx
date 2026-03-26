@@ -2,6 +2,8 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing, type AppLocale } from "@/i18n/routing";
+import { GeistSans } from "geist/font/sans";
+import Providers from "@/app/providers";
 import type { ReactNode } from "react";
 
 export default async function LocaleLayout({
@@ -20,18 +22,18 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-      </head>
-      <body className="antialiased">
+    <html lang={locale} className={GeistSans.variable}>
+      <body className={`${GeistSans.className} antialiased`}>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-brand-600 focus:text-white focus:rounded-lg focus:text-sm"
+        >
+          Skip to content
+        </a>
         <NextIntlClientProvider messages={messages}>
-          {children}
+          <Providers>
+            {children}
+          </Providers>
         </NextIntlClientProvider>
       </body>
     </html>

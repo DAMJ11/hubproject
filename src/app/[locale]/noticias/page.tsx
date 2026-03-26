@@ -1,5 +1,5 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
@@ -22,15 +22,15 @@ export default async function NoticiasPage() {
     <main className="min-h-screen">
       <Header />
 
-      <section className="bg-gradient-to-b from-[#f0f5f3] to-white py-12 md:py-16">
+      <section className="bg-gradient-to-b from-landing-gradient to-white dark:from-slate-900 dark:to-slate-800 py-12 md:py-16">
         <div className="container-custom mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-[#1a365d]">
+          <h1 className="text-5xl md:text-6xl font-bold text-brand-900 dark:text-white">
             {t("title")}
           </h1>
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-white dark:bg-slate-900">
         <div className="container-custom mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {newsImages.map((image, index) => (
@@ -47,14 +47,14 @@ export default async function NoticiasPage() {
                   />
                 </div>
                 <CardContent className="p-6">
-                  <p className="text-sm text-gray-500 mb-2">{t(`posts.${index}.date`)}</p>
-                  <h3 className="text-xl font-bold text-[#1a365d] mb-4 line-clamp-2">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{t(`posts.${index}.date`)}</p>
+                  <h3 className="text-xl font-bold text-brand-900 dark:text-white mb-4 line-clamp-2">
                     {t(`posts.${index}.title`)}
                   </h3>
                   <Link href="#">
                     <Button
                       variant="outline"
-                      className="rounded-full px-6 border-2 border-[#1a365d] text-[#1a365d] hover:bg-[#1a365d] hover:text-white"
+                      className="rounded-full px-6 border-2 border-brand-900 text-brand-900 hover:bg-brand-900 hover:text-white"
                     >
                       {t("readMore")}
                     </Button>
