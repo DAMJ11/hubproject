@@ -1,0 +1,232 @@
+================================================================================
+  FASHIONS DEN — GUÍA DE DESPLIEGUE EN RAILWAY
+  Fecha: 27 Marzo 2026
+  Estado: En proceso
+================================================================================
+
+ARQUITECTURA DE REPOSITORIOS
+─────────────────────────────
+
+  Repo de desarrollo (personal):
+    URL:    https://github.com/DAMJ11/hubproject
+    Remote: origin
+    Uso:    Desarrollo, features, pruebas
+
+  Repo de producción (corporativo):
+    URL:    https://github.com/web2-spec/FashionsDen
+    Remote: production
+    Uso:    Despliegue en Railway, versión estable
+    Tipo:   Fork del repo de desarrollo
+
+
+CONFIGURACIÓN LOCAL
+───────────────────
+
+  El repo local tiene 2 remotes configurados:
+
+    origin      → https://github.com/DAMJ11/hubproject.git       (dev)
+    production  → https://github.com/web2-spec/FashionsDen.git   (prod)
+
+  Comandos de push:
+
+    git push origin main         → Subir cambios al repo de desarrollo
+    git push production main     → Subir cambios al repo de producción
+
+  Configurar identidad por repo (opcional):
+
+    # En el repo local de desarrollo
+    git config user.email "correo-personal@ejemplo.com"
+    git config user.name "Tu Nombre"
+
+    # Si clonas el repo de producción aparte
+    git config user.email "correo@corporativo.com"
+    git config user.name "Tu Nombre"
+
+
+FLUJO DE TRABAJO DEV → PRODUCCIÓN
+──────────────────────────────────
+
+  1. Desarrollar en el repo local (origin/main o branches)
+  2. Probar localmente (npm run dev, npm run build)
+  3. Push a origin (dev):         git push origin main
+  4. Push a production (deploy):  git push production main
+  5. Railway detecta el push y hace deploy automático
+
+  Diagrama:
+
+    [Local] ──push──→ [DAMJ11/hubproject]        (desarrollo)
+       │
+       └────push──→ [web2-spec/FashionsDen]       (producción)
+                            │
+                      [Railway] → Deploy automático
+
+
+VARIABLES DE ENTORNO PARA RAILWAY
+─────────────────────────────────
+
+  Las siguientes variables deben configurarse en el panel de Railway
+  (Settings → Variables) del servicio de la app:
+
+  ┌─────────────────────────────────┬───────────────────────────────────┐
+  │ Variable                        │ Descripción                       │
+  ├─────────────────────────────────┼───────────────────────────────────┤
+  │ DATABASE_URL                    │ URL de conexión MySQL completa    │
+  │                                 │ (Prisma la usa directamente)      │
+  │                                 │ Formato: mysql://user:pass@host:  │
+  │                                 │ port/dbname                       │
+  ├─────────────────────────────────┼───────────────────────────────────┤
+  │ MYSQLHOST                      │ Host de la BD MySQL               │
+  ├─────────────────────────────────┼───────────────────────────────────┤
+  │ MYSQLPORT                      │ Puerto de MySQL (default: 3306)   │
+  ├─────────────────────────────────┼───────────────────────────────────┤
+  │ MYSQLUSER                      │ Usuario de la BD                  │
+  ├─────────────────────────────────┼───────────────────────────────────┤
+  │ MYSQLPASSWORD                  │ Contraseña de la BD               │
+  ├─────────────────────────────────┼───────────────────────────────────┤
+  │ MYSQLDATABASE                  │ Nombre de la BD                   │
+  ├─────────────────────────────────┼───────────────────────────────────┤
+  │ JWT_SECRET                     │ Clave secreta para tokens JWT     │
+  │                                 │ (generar una larga y aleatoria)   │
+  ├─────────────────────────────────┼───────────────────────────────────┤
+  │ PUSHER_APP_ID                  │ App ID de Pusher (chat realtime)  │
+  ├─────────────────────────────────┼───────────────────────────────────┤
+  │ PUSHER_SECRET                  │ Secret de Pusher                  │
+  ├─────────────────────────────────┼───────────────────────────────────┤
+  │ NEXT_PUBLIC_PUSHER_KEY         │ Key pública de Pusher             │
+  ├─────────────────────────────────┼───────────────────────────────────┤
+  │ NEXT_PUBLIC_PUSHER_CLUSTER     │ Cluster de Pusher (ej: us2, eu)   │
+  ├─────────────────────────────────┼───────────────────────────────────┤
+  │ NODE_ENV                       │ production                        │
+  └─────────────────────────────────┴───────────────────────────────────┘
+
+  NOTA: Si agregas MySQL como servicio en Railway, las variables MYSQL*
+  se crean automáticamente. Solo necesitas construir DATABASE_URL a partir
+  de ellas y agregar JWT_SECRET + las de Pusher manualmente.
+
+
+PASOS PARA CONFIGURAR RAILWAY
+──────────────────────────────
+
+  PASO 1 — Crear proyecto en Railway
+  ───────────────────────────────────
+    1. Ir a https://railway.app y crear cuenta (o login)
+    2. Click "New Project"
+    3. Seleccionar "Deploy from GitHub repo"
+    4. Conectar la cuenta de GitHub (web2-spec)
+    5. Seleccionar el repo "web2-spec/FashionsDen"
+    6. Railway detectará que es un proyecto Next.js automáticamente
+
+  PASO 2 — Agregar base de datos MySQL
+  ─────────────────────────────────────
+    1. En el proyecto de Railway, click "+ New"
+    2. Seleccionar "Database" → "MySQL"
+    3. Railway creará una instancia MySQL y generará variables automáticas:
+       MYSQLHOST, MYSQLPORT, MYSQLUSER, MYSQLPASSWORD, MYSQLDATABASE
+    4. Conectar el servicio MySQL con la app (Railway lo hace automáticamente
+       si están en el mismo proyecto)
+
+  PASO 3 — Configurar DATABASE_URL
+  ─────────────────────────────────
+    En las variables del servicio de la app, agregar:
+
+      DATABASE_URL = mysql://${{MySQL.MYSQLUSER}}:${{MySQL.MYSQLPASSWORD}}@${{MySQL.MYSQLHOST}}:${{MySQL.MYSQLPORT}}/${{MySQL.MYSQLDATABASE}}
+
+    Railway interpola las variables de referencia automáticamente.
+
+  PASO 4 — Agregar variables manuales
+  ────────────────────────────────────
+    En Settings → Variables del servicio de la app, agregar:
+
+      JWT_SECRET              = (generar con: openssl rand -base64 64)
+      PUSHER_APP_ID           = (tu app id de pusher.com)
+      PUSHER_SECRET           = (tu secret de pusher.com)
+      NEXT_PUBLIC_PUSHER_KEY  = (tu key de pusher.com)
+      NEXT_PUBLIC_PUSHER_CLUSTER = (tu cluster, ej: us2)
+      NODE_ENV                = production
+
+  PASO 5 — Configurar el build
+  ─────────────────────────────
+    Railway debería detectar automáticamente:
+      Build command:  npm run build  (o npx next build)
+      Start command:  npm start      (o npx next start)
+
+    Si no, ir a Settings → Build & Deploy y configurarlos manualmente.
+
+  PASO 6 — Inicializar la base de datos
+  ──────────────────────────────────────
+    Opción A — Desde la terminal de Railway:
+      1. En el servicio MySQL, click "Connect" → copiar el connection string
+      2. Usar un cliente MySQL (DBeaver, MySQL Workbench, terminal)
+      3. Ejecutar database/schema.sql para crear tablas + datos iniciales
+
+    Opción B — Con Prisma:
+      1. En la terminal de Railway del servicio de la app:
+         npx prisma db push
+      2. Luego ejecutar el seed manualmente:
+         mysql -h HOST -P PORT -u USER -p DATABASE < database/seed.sql
+
+  PASO 7 — Verificar despliegue
+  ──────────────────────────────
+    1. Railway asignará un dominio temporal (*.up.railway.app)
+    2. Verificar que la app carga correctamente
+    3. Probar login con usuarios de prueba:
+
+       admin@tidyhubb.test          / Test1234!   (admin)
+       laura@lunacollection.co      / Test1234!   (brand)
+       ricardo@textilesantioquia.co / Test1234!   (manufacturer)
+
+  PASO 8 — Dominio personalizado (opcional)
+  ──────────────────────────────────────────
+    1. En Settings → Domains → "Custom Domain"
+    2. Agregar tu dominio (ej: app.fashionsden.com)
+    3. Configurar DNS: CNAME apuntando al dominio de Railway
+    4. Railway generará un certificado SSL automáticamente
+
+
+ESTRUCTURA DE COSTOS DE RAILWAY (referencia)
+─────────────────────────────────────────────
+
+  Plan Hobby: $5/mes
+    → Incluye $5 de créditos de uso
+    → Suficiente para app + MySQL en etapa inicial
+
+  Plan Pro: $20/mes
+    → Incluye $20 de créditos de uso
+    → Más recursos, SLAs, equipos
+
+  MySQL en Railway:
+    → Se cobra por uso de RAM + almacenamiento
+    → Para una app pequeña: ~$2-5/mes
+
+
+TROUBLESHOOTING COMÚN
+─────────────────────
+
+  Error: "Cannot connect to database"
+    → Verificar que DATABASE_URL está correctamente formada
+    → Verificar que el servicio MySQL está corriendo
+    → Verificar que las variables MYSQL* están referenciadas correctamente
+
+  Error: "Build failed"
+    → Revisar logs de build en Railway
+    → Verificar que package.json tiene script "build": "next build"
+    → Verificar que no hay errores de TypeScript (correr npm run build local)
+
+  Error: "Prisma client not generated"
+    → Agregar "postinstall": "prisma generate" en package.json scripts
+    → O agregar "build": "prisma generate && next build"
+
+  La app carga pero no conecta a la BD:
+    → Verificar que NODE_ENV=production está configurado
+    → Verificar que la cookie de auth tiene secure: true en producción
+
+  Chat en tiempo real no funciona:
+    → Verificar las 4 variables de Pusher están configuradas
+    → NEXT_PUBLIC_* se inyectan en build time, requieren re-deploy si cambian
+
+
+================================================================================
+  FIN — Guía de despliegue Railway
+  Proyecto: Fashions Den
+  Repo producción: web2-spec/FashionsDen
+================================================================================
