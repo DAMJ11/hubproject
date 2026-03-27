@@ -1,102 +1,268 @@
-SISTEMA DE TRADUCCION DE LA PAGINA (ES / EN / FR)
+========================================================================
+SISTEMA DE TRADUCCION DE TIDYHUBB
+Documento actualizado: 27 de marzo de 2026
+========================================================================
 
-Resumen rapido
-- La app usa un contexto global de idioma en cliente: LanguageContext.
-- El idioma activo se guarda en localStorage para persistir entre visitas.
-- Cada componente define sus textos en objetos por idioma (es, en, fr).
-- El componente lee language desde useLanguage() y renderiza el bloque correspondiente.
+PARTE 1: SISTEMA ACTUAL (en produccion)
+========================================================================
+
+Resumen
+-------
+La plataforma usa un sistema de traduccion manual basado en un contexto
+global de React (LanguageContext). Soporta 3 idiomas: ES / EN / FR.
+Cada componente define sus propios textos en objetos literales por idioma.
+Es un enfoque estatico: si se crea contenido nuevo (secciones, textos,
+campos de formulario), hay que escribir manualmente las 3 versiones
+del texto para que aparezcan traducidos.
+
+NO traduce automaticamente contenido nuevo ni contenido dinamico
+generado por usuarios (nombres de productos, descripciones de RFQ,
+mensajes de chat, etc.).
+
+Idiomas soportados: Espanol (es), Ingles (en), Frances (fr).
 
 1) Punto central: LanguageContext
-Archivo: src/contexts/LanguageContext.tsx
+   Archivo: src/contexts/LanguageContext.tsx
 
-Que define:
-- Tipo AppLanguage: "es" | "en" | "fr".
-- Opciones de idioma (LANGUAGE_OPTIONS) con codigo, nombre y bandera.
-- Estado global language + funcion setLanguage.
+   Que define:
+   - Tipo AppLanguage: "es" | "en" | "fr".
+   - Opciones de idioma (LANGUAGE_OPTIONS) con codigo, nombre y bandera.
+   - Estado global language + funcion setLanguage.
 
-Como inicializa el idioma:
-- Primero revisa localStorage con la clave dashboard-language.
-- Si existe un valor valido (es/en/fr), lo usa.
-- Si no existe, detecta el idioma del navegador:
-  - fr* -> fr
-  - en* -> en
-  - cualquier otro -> es
-- Tambien actualiza document.documentElement.lang.
+   Como inicializa el idioma:
+   - Primero revisa localStorage con la clave dashboard-language.
+   - Si existe un valor valido (es/en/fr), lo usa.
+   - Si no existe, detecta el idioma del navegador:
+     - fr* -> fr
+     - en* -> en
+     - cualquier otro -> es
+   - Tambien actualiza document.documentElement.lang.
 
-Como persiste cambios:
-- setLanguage(next) actualiza estado,
-- guarda en localStorage,
-- y vuelve a actualizar <html lang="..."> en runtime.
+   Como persiste cambios:
+   - setLanguage(next) actualiza estado,
+   - guarda en localStorage,
+   - y vuelve a actualizar <html lang="..."> en runtime.
 
 2) Inyeccion global del provider
-Archivos:
-- src/app/providers.tsx
-- src/app/layout.tsx
+   Archivos:
+   - src/app/providers.tsx
+   - src/app/layout.tsx
 
-Flujo:
-- Providers envuelve toda la app con <LanguageProvider>.
-- layout.tsx monta <Providers>{children}</Providers>.
-- Resultado: cualquier componente cliente puede usar useLanguage().
+   Flujo:
+   - Providers envuelve toda la app con <LanguageProvider>.
+   - layout.tsx monta <Providers>{children}</Providers>.
+   - Resultado: cualquier componente cliente puede usar useLanguage().
 
 3) Patron de traduccion en componentes
-Patron usado en componentes de UI (Hero, QualitySection, Footer, etc.):
+   Patron usado en componentes de UI (Hero, QualitySection, Footer, etc.):
 
-A. Definir copy por idioma:
-  const copy = {
-    es: { ... },
-    en: { ... },
-    fr: { ... }
-  };
+   A. Definir copy por idioma:
+     const copy = {
+       es: { title: "Hola", subtitle: "Bienvenido" },
+       en: { title: "Hello", subtitle: "Welcome" },
+       fr: { title: "Bonjour", subtitle: "Bienvenue" }
+     };
 
-B. Leer idioma actual:
-  const { language } = useLanguage();
+   B. Leer idioma actual:
+     const { language } = useLanguage();
 
-C. Resolver textos:
-  const t = copy[language];
+   C. Resolver textos:
+     const t = copy[language];
 
-D. Renderizar:
-  <h2>{t.title}</h2>
+   D. Renderizar:
+     <h2>{t.title}</h2>
 
-Para arrays o campos puntuales tambien se usa:
-- language === "en" ? valueEn : language === "fr" ? valueFr : valueEs
+   Para arrays o campos puntuales tambien se usa:
+   - language === "en" ? valueEn : language === "fr" ? valueFr : valueEs
 
 4) Selectores de idioma en la UI
-Lugares principales:
-- Header publico: src/components/Header.tsx
-- DashboardHeader: src/components/dashboard/DashboardHeader.tsx
-- Login/Register: paginas con dropdown de idioma.
+   Lugares principales:
+   - Header publico: src/components/Header.tsx
+   - DashboardHeader: src/components/dashboard/DashboardHeader.tsx
+   - Login/Register: paginas con dropdown de idioma.
 
-Comportamiento esperado:
-- Al seleccionar idioma, se llama setLanguage(...).
-- El contexto notifica a componentes suscritos y se rerenderiza el texto.
-- El idioma queda persistido para futuras visitas.
+   Comportamiento:
+   - Al seleccionar idioma, se llama setLanguage(...).
+   - El contexto notifica a componentes suscritos y se rerenderiza.
+   - El idioma queda persistido en localStorage para futuras visitas.
 
-Nota tecnica importante
-- Header.tsx maneja su propio estado local de idioma con localStorage (no usa useLanguage()).
-- Esto funciona porque comparte la misma clave dashboard-language,
-  pero no es la forma mas consistente del proyecto.
+   Nota tecnica:
+   - Header.tsx maneja su propio estado local con localStorage
+     (no usa useLanguage()). Funciona porque comparte la misma clave
+     "dashboard-language", pero no es la forma mas consistente.
+   - Pendiente: unificar Header.tsx para usar useLanguage().
 
-Recomendacion de mantenimiento
-- Unificar Header.tsx para usar useLanguage() como el resto.
-- Ventaja: una sola fuente de verdad y menos riesgo de desincronizacion.
+5) Alcance y limitaciones del sistema actual
+   Lo que SI hace:
+   - Traduce textos estaticos de interfaz (botones, titulos, labels).
+   - Persiste la preferencia de idioma entre sesiones.
+   - Detecta idioma del navegador como fallback inicial.
 
-5) Alcance real del sistema actual
-- Traduce textos de interfaz definidos en componentes cliente.
-- No usa i18n routing por URL (/es, /en, /fr).
-- No usa archivos JSON externos ni libreria i18n dedicada.
-- Es un enfoque manual y directo, facil de mantener en apps medianas.
+   Lo que NO hace:
+   - No traduce contenido dinamico (datos de BD: descripciones de
+     productos, mensajes, nombres de empresa, RFQs, propuestas).
+   - No traduce contenido nuevo automáticamente. Si un desarrollador
+     agrega una seccion, debe escribir los 3 idiomas manualmente.
+   - No usa routing i18n por URL (/es, /en, /fr).
+   - No usa archivos JSON externos ni libreria i18n dedicada.
+   - No tiene validacion de traducciones faltantes (si falta un
+     idioma, simplemente muestra undefined o texto en blanco).
 
-6) Como agregar nuevas traducciones correctamente
-Paso 1: En el componente, agrega claves es/en/fr en el objeto copy.
-Paso 2: Consume copy[language] para render.
-Paso 3: Si hay datos con campos separados (name, nameEn, nameFr), aplica fallback:
-  en -> nameEn
-  fr -> nameFr
-  default -> name
-Paso 4: Evita hardcodear strings fuera del objeto de traduccion.
+6) Como agregar traducciones hoy (proceso manual)
+   Paso 1: En el componente, agregar claves es/en/fr en el objeto copy.
+   Paso 2: Consumir copy[language] para render.
+   Paso 3: Si hay datos con campos separados (name, nameEn, nameFr):
+     en -> nameEn
+     fr -> nameFr
+     default -> name
+   Paso 4: Evitar hardcodear strings fuera del objeto de traduccion.
 
 7) Checklist de validacion
-- Cambiar idioma desde dropdown actualiza los textos visibles.
-- Recargar pagina mantiene idioma seleccionado.
-- <html lang="..."> cambia correctamente.
-- No quedan textos quemados en un solo idioma en nuevas secciones.
+   - Cambiar idioma desde dropdown actualiza los textos visibles.
+   - Recargar pagina mantiene idioma seleccionado.
+   - <html lang="..."> cambia correctamente.
+   - No quedan textos en un solo idioma en secciones nuevas.
+
+
+========================================================================
+PARTE 2: SISTEMA RECOMENDADO A IMPLEMENTAR (futuro)
+========================================================================
+
+Objetivo
+--------
+Implementar traduccion automatica de contenido dinamico usando una API
+de traduccion profesional. Esto complementa al sistema actual (que
+seguiria manejando los textos estaticos de la UI) y resuelve el
+problema de que el contenido generado por usuarios no se traduce.
+
+Ejemplo de contenido que necesita traduccion automatica:
+- Descripciones de RFQs creadas por marcas
+- Propuestas escritas por fabricantes
+- Nombres y descripciones de productos/servicios
+- Mensajes de chat (opcional, bajo demanda)
+- Resenas y comentarios
+
+
+API recomendada: DeepL
+----------------------
+Se recomienda DeepL sobre Google Translate por las siguientes razones:
+
+  | Criterio           | Google Translate      | DeepL                  |
+  |--------------------|-----------------------|------------------------|
+  | Calidad            | Buena                 | Superior (mas natural) |
+  | Plan gratuito      | 500K chars/mes        | 500K chars/mes         |
+  | Costo despues      | $20 / 1M caracteres   | €5.49/mes (1M chars)   |
+  | Idiomas            | 130+                  | 33 (incluye ES/EN/FR)  |
+  | API key            | Requiere billing      | Solo email             |
+  | Mejor para         | Volumen masivo        | Calidad en EU idiomas  |
+
+Para la necesidad de TidyHubb (ES/EN/FR, contenido profesional B2B),
+DeepL ofrece mejor calidad en el trio de idiomas que manejamos.
+
+
+Estrategia de implementacion: "Traducir al guardar"
+----------------------------------------------------
+La traduccion se ejecuta cuando el usuario guarda contenido, no cuando
+otro usuario lo lee. Esto garantiza:
+- Tiempo de respuesta rapido al leer (ya esta traducido).
+- Sin limite de llamadas a la API por lecturas repetidas.
+- Contenido siempre disponible en los 3 idiomas.
+
+Flujo:
+1. Usuario escribe descripcion en su idioma (ej: espanol).
+2. Al hacer clic en "Guardar", el backend detecta el idioma fuente.
+3. Backend llama a DeepL API para traducir a los otros 2 idiomas.
+4. Se guardan los 3 textos en BD (original + 2 traducciones).
+5. Al mostrar contenido, se usa la version del idioma activo del lector.
+
+
+Cambios necesarios en la base de datos
+---------------------------------------
+Para cada campo que necesite traduccion automatica, agregar columnas
+por idioma. Ejemplo para la tabla rfq_requests:
+
+  Actual:
+    description TEXT
+
+  Propuesto:
+    description TEXT          -- texto original (idioma del autor)
+    description_en TEXT       -- traduccion al ingles
+    description_fr TEXT       -- traduccion al frances
+    description_es TEXT       -- traduccion al espanol
+    description_source_lang VARCHAR(2)  -- idioma original
+
+Tablas que necesitarian este cambio:
+- rfq_requests (description, requirements)
+- proposals (message, details)
+- companies (description, specialties)
+- products (name, description) si se agregan en el futuro
+- reviews (comment) si se agregan en el futuro
+
+
+Componentes tecnicos a desarrollar
+-----------------------------------
+1. Funcion helper de traduccion (src/lib/translate.ts):
+   - Recibe texto + idioma fuente + idiomas destino.
+   - Llama a DeepL API (POST https://api-free.deepl.com/v2/translate).
+   - Retorna objeto con traducciones: { en: "...", fr: "...", es: "..." }.
+   - Maneja errores y fallback (si falla, guarda texto original).
+
+2. Middleware de traduccion en server actions / API routes:
+   - Antes de insertar/actualizar en BD, pasar campos traducibles
+     por la funcion helper.
+   - Guardar todas las versiones.
+
+3. Helper de lectura multiidioma (src/lib/getTranslatedField.ts):
+   - Recibe el objeto de la BD + idioma activo del usuario.
+   - Retorna el campo en el idioma correcto con fallback al original.
+   - Ejemplo: getTranslatedField(rfq, 'description', 'en')
+     -> retorna rfq.description_en || rfq.description
+
+4. Variable de entorno nueva:
+   - DEEPL_API_KEY (solo backend, nunca exponer al cliente).
+
+
+Estimacion de esfuerzo
+-----------------------
+- Crear funcion helper + integrar DeepL API: 2-3 horas
+- Migracion de BD (agregar columnas): 1-2 horas
+- Integrar en flujos de guardado (RFQ, propuestas, empresas): 4-6 horas
+- Ajustar lectura en componentes para usar campo por idioma: 2-3 horas
+- Testing y ajustes: 2-3 horas
+- Total estimado: 1-2 dias de desarrollo
+
+Costos operativos:
+- Plan gratuito DeepL: 500,000 caracteres/mes (suficiente para MVP).
+- Si se supera: DeepL Pro API desde €5.49/mes.
+- Estimacion para TidyHubb: ~50K-100K chars/mes en fase inicial.
+
+
+Plan de implementacion por fases
+---------------------------------
+Fase 1 (MVP - prioridad alta):
+  - Crear src/lib/translate.ts con DeepL API.
+  - Migrar tabla rfq_requests (description, requirements).
+  - Integrar traduccion automatica al crear/editar RFQ.
+  - Agregar helper de lectura multiidioma.
+
+Fase 2 (expansion):
+  - Migrar tabla proposals (message, details).
+  - Migrar tabla companies (description).
+  - Integrar en flujos de guardado correspondientes.
+
+Fase 3 (opcional):
+  - Traduccion de mensajes de chat bajo demanda (boton "Traducir").
+  - Cache de traducciones frecuentes para reducir llamadas API.
+  - Panel admin para revisar/corregir traducciones automaticas.
+
+
+Notas importantes
+-----------------
+- El sistema actual de LanguageContext para textos estaticos de UI
+  NO se reemplaza. Sigue funcionando para botones, labels, titulos.
+- La traduccion automatica es COMPLEMENTARIA: solo para contenido
+  dinamico que los usuarios crean desde la plataforma.
+- Siempre guardar el texto original + idioma fuente como respaldo.
+- Nunca exponer DEEPL_API_KEY en el cliente (solo server-side).
+- DeepL detecta automaticamente el idioma fuente, no hace falta
+  que el usuario lo indique manualmente.
