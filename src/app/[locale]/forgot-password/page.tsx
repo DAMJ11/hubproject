@@ -51,7 +51,7 @@ export default function ForgotPasswordPage() {
               <div className="flex items-center justify-center mb-6">
                 <Link href="/">
                   <Image
-                    src="/images/brand/logo-dark.png"
+                    src="/images/brand/logo-dark.svg"
                     alt="FashionsDen"
                     width={200}
                     height={44}

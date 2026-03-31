@@ -118,7 +118,7 @@ export default function RegisterPage() {
               <div className="flex items-center justify-between mb-6">
                 <Link href="/" className="flex items-center gap-2">
                   <Image
-                    src="/images/brand/logo-dark.png"
+                    src="/images/brand/logo-dark.svg"
                     alt="FashionsDen"
                     width={200}
                     height={44}
