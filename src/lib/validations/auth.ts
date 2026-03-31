@@ -10,7 +10,9 @@ const registerBase = z.object({
   password: z
     .string()
     .min(8, "La contraseña debe tener al menos 8 caracteres")
-    .max(128, "La contraseña es demasiado larga"),
+    .max(128, "La contraseña es demasiado larga")
+    .regex(/[A-Z]/, "La contraseña debe tener al menos una mayúscula")
+    .regex(/[0-9]/, "La contraseña debe tener al menos un número"),
   confirmPassword: z.string().min(1, "Confirma tu contraseña"),
   firstName: z
     .string()

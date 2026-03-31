@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query } from "@/lib/db";
 import { getSessionUser, hasRole } from "@/lib/session";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 // GET /api/companies/search?q=texto&type=manufacturer|brand
 // Brand busca manufacturers, manufacturer busca brands, admin busca cualquiera
@@ -9,6 +10,15 @@ export async function GET(request: NextRequest) {
     const user = await getSessionUser(request);
     if (!user) {
       return NextResponse.json({ success: false, message: "No autorizado" }, { status: 401 });
+    }
+
+    // Rate limit: 30 búsquedas por usuario cada 5 minutos
+    const rl = checkRateLimit(`search:${user.id}`, 30, 5 * 60 * 1000);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { success: false, message: `Demasiadas búsquedas. Intenta en ${rl.retryAfterSeconds}s` },
+        { status: 429 }
+      );
     }
 
     const { searchParams } = new URL(request.url);

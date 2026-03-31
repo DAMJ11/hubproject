@@ -3,7 +3,22 @@ import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import type { UserRole } from "@/types/user";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+let _jwtSecret: string | null = null;
+
+function getJwtSecret(): string {
+  if (!_jwtSecret) {
+    const secret = process.env.JWT_SECRET;
+    if (!secret || secret === "your-secret-key" || secret === "your-super-secret-jwt-key-change-in-production") {
+      if (process.env.NODE_ENV === "production") {
+        throw new Error("JWT_SECRET must be set to a secure random value in production");
+      }
+      _jwtSecret = "dev-only-insecure-key-do-not-use-in-prod";
+    } else {
+      _jwtSecret = secret;
+    }
+  }
+  return _jwtSecret;
+}
 
 export interface UserPayload {
   id: number;
@@ -35,7 +50,7 @@ export async function comparePassword(
 
 // Generate JWT token
 export function generateToken(payload: UserPayload): string {
-  return jwt.sign(payload, JWT_SECRET, {
+  return jwt.sign(payload, getJwtSecret(), {
     expiresIn: "7d",
   });
 }
@@ -43,7 +58,7 @@ export function generateToken(payload: UserPayload): string {
 // Verify JWT token
 export function verifyToken(token: string): JWTPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as JWTPayload;
+    return jwt.verify(token, getJwtSecret()) as JWTPayload;
   } catch {
     return null;
   }

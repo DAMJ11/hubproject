@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Block dashboard, API, and auth routes
+Disallow: /dashboard
+Disallow: /api/
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+
+# Sitemap
+# Sitemap: https://fashionsden.com/sitemap.xml
