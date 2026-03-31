@@ -3,6 +3,7 @@ import { query, queryOne } from "@/lib/db";
 import { getSessionUser, hasRole } from "@/lib/session";
 import { notifyConversationParticipants } from "@/lib/realtime/notifyConversation";
 import { sendMessageSchema } from "@/lib/validations/conversations";
+import { createNotification } from "@/lib/notifications";
 
 // GET /api/conversations/[id]/messages - Obtener mensajes de una conversación
 export async function GET(
@@ -184,6 +185,31 @@ export async function POST(
       messageId,
       senderUserId: user.id,
     });
+
+    // In-app notification for other participants
+    const otherCompanyIds = [
+      conversation.brand_company_id,
+      conversation.manufacturer_company_id,
+      conversation.target_company_id,
+    ].filter((cid): cid is number => cid != null && cid !== user.companyId);
+
+    if (otherCompanyIds.length > 0) {
+      const placeholders = otherCompanyIds.map(() => "?").join(",");
+      const recipients = await query<{ id: number }[]>(
+        `SELECT id FROM users WHERE company_id IN (${placeholders})`,
+        otherCompanyIds
+      );
+      for (const r of (recipients as unknown as { id: number }[])) {
+        createNotification({
+          userId: r.id,
+          title: "Nuevo mensaje",
+          message: `${user.firstName} ${user.lastName}: ${content.trim().slice(0, 80)}${content.trim().length > 80 ? "..." : ""}`,
+          type: "message",
+          referenceType: "conversation",
+          referenceId: conversationId,
+        }).catch(() => {});
+      }
+    }
 
     return NextResponse.json({
       success: true,

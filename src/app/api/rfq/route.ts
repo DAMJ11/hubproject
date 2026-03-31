@@ -137,8 +137,8 @@ export async function POST(request: NextRequest) {
       const [rfqResult] = await connection.execute(
         `INSERT INTO rfq_projects (code, brand_company_id, created_by_user_id, category_id, title, description,
           quantity, budget_min, budget_max, deadline, proposals_deadline, status, requires_sample,
-          preferred_materials, sustainability_priority)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'open', ?, ?, ?)`,
+          preferred_materials, sustainability_priority, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'open', ?, ?, ?, NOW(), NOW())`,
         [code, user.companyId, user.id, categoryId, title.trim(), description.trim(),
           quantity, budgetMin || null, budgetMax || null, deadline || null, proposalsDeadline || null,
           requiresSample ?? false, preferredMaterials || null, sustainabilityPriority ?? false]

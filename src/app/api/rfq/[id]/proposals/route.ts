@@ -3,6 +3,7 @@ import { query, queryOne } from "@/lib/db";
 import pool from "@/lib/db";
 import { getSessionUser, hasRole } from "@/lib/session";
 import { calculateGreenScore, haversineKm } from "@/lib/green-score";
+import { createNotification } from "@/lib/notifications";
 
 // GET /api/rfq/[id]/proposals - Ver propuestas de un RFQ
 export async function GET(
@@ -155,6 +156,26 @@ export async function POST(
       throw txError;
     } finally {
       connection.release();
+    }
+
+    // Notify brand owner about new proposal
+    const brandUser = await queryOne<{ id: number }>(
+      "SELECT id FROM users WHERE company_id = ? LIMIT 1",
+      [rfq.brand_company_id]
+    );
+    if (brandUser) {
+      const mfrName = await queryOne<{ name: string }>(
+        "SELECT name FROM companies WHERE id = ?",
+        [user.companyId]
+      );
+      createNotification({
+        userId: brandUser.id,
+        title: "Nueva propuesta recibida",
+        message: `${mfrName?.name || "Un fabricante"} envió una propuesta para tu RFQ.`,
+        type: "proposal",
+        referenceType: "rfq",
+        referenceId: rfqId,
+      }).catch(() => {});
     }
 
     return NextResponse.json({

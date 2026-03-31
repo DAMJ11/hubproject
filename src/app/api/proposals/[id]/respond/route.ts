@@ -3,6 +3,7 @@ import { query, queryOne } from "@/lib/db";
 import pool from "@/lib/db";
 import { getSessionUser, hasRole } from "@/lib/session";
 import { proposalRespondSchema } from "@/lib/validations/proposals";
+import { createNotification } from "@/lib/notifications";
 
 // PUT /api/proposals/[id]/respond - Marca acepta o rechaza propuesta
 export async function PUT(
@@ -139,6 +140,22 @@ export async function PUT(
 
         await connection.commit();
 
+        // Notify manufacturer: proposal accepted + contract created
+        const mfgUser = await queryOne<{ id: number }>(
+          "SELECT id FROM users WHERE company_id = ? LIMIT 1",
+          [p.manufacturer_company_id]
+        );
+        if (mfgUser) {
+          createNotification({
+            userId: mfgUser.id,
+            title: "¡Tu propuesta fue aceptada!",
+            message: `Se creó el contrato ${code}. Revisa los detalles en la sección de contratos.`,
+            type: "proposal",
+            referenceType: "contract",
+            referenceId: contractId,
+          }).catch(() => {});
+        }
+
         return NextResponse.json({
           success: true,
           message: "Proposal accepted, contract created",
@@ -157,6 +174,23 @@ export async function PUT(
         `UPDATE proposals SET status = 'rejected', responded_at = NOW(), updated_at = NOW() WHERE id = ?`,
         [proposalId]
       );
+
+      // Notify manufacturer
+      const mfgUser = await queryOne<{ id: number }>(
+        "SELECT id FROM users WHERE company_id = ? LIMIT 1",
+        [p.manufacturer_company_id]
+      );
+      if (mfgUser) {
+        createNotification({
+          userId: mfgUser.id,
+          title: "Propuesta no seleccionada",
+          message: "Tu propuesta no fue seleccionada en esta ocasión.",
+          type: "proposal",
+          referenceType: "proposal",
+          referenceId: proposalId,
+        }).catch(() => {});
+      }
+
       return NextResponse.json({ success: true, message: "Proposal rejected" });
     }
 
@@ -165,6 +199,23 @@ export async function PUT(
         `UPDATE proposals SET status = 'shortlisted', updated_at = NOW() WHERE id = ?`,
         [proposalId]
       );
+
+      // Notify manufacturer
+      const mfgUser = await queryOne<{ id: number }>(
+        "SELECT id FROM users WHERE company_id = ? LIMIT 1",
+        [p.manufacturer_company_id]
+      );
+      if (mfgUser) {
+        createNotification({
+          userId: mfgUser.id,
+          title: "Propuesta preseleccionada",
+          message: "¡Tu propuesta fue preseleccionada! La marca está evaluando las opciones.",
+          type: "proposal",
+          referenceType: "proposal",
+          referenceId: proposalId,
+        }).catch(() => {});
+      }
+
       return NextResponse.json({ success: true, message: "Proposal shortlisted" });
     }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import {
   Bell,
   Menu,
@@ -12,6 +12,7 @@ import {
   Moon,
   Sun,
   Home,
+  CheckCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
@@ -56,7 +57,16 @@ interface DashboardHeaderProps {
   onMenuClick: () => void;
 }
 
-const NOTIFICATION_UNREAD = [true, true, false, false];
+interface Notification {
+  id: number;
+  title: string;
+  message: string;
+  type: string;
+  reference_type: string | null;
+  reference_id: number | null;
+  is_read: boolean;
+  created_at: string;
+}
 
 export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderProps) {
   const router = useRouter();
@@ -65,6 +75,48 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
   const locale = useLocale();
 
   const [isPending, startTransition] = useTransition();
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const fetchNotifications = useCallback(async () => {
+    try {
+      const res = await fetch("/api/notifications?limit=10");
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.success) {
+        setNotifications(data.data);
+        setUnreadCount(data.unreadCount);
+      }
+    } catch { /* silent */ }
+  }, []);
+
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30_000);
+    return () => clearInterval(interval);
+  }, [fetchNotifications]);
+
+  const markAllRead = async () => {
+    try {
+      await fetch("/api/notifications", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ all: true }),
+      });
+      setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
+      setUnreadCount(0);
+    } catch { /* silent */ }
+  };
+
+  const timeAgo = (dateStr: string) => {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return t("justNow");
+    if (mins < 60) return `${mins}m`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h`;
+    return `${Math.floor(hrs / 24)}d`;
+  };
 
   const switchLocale = (newLocale: string) => {
     startTransition(() => {
@@ -73,7 +125,6 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
   };
 
   const selectedLanguage = LANGUAGES.find((l) => l.code === locale) ?? LANGUAGES[0];
-  const unreadCount = NOTIFICATION_UNREAD.filter(Boolean).length;
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
@@ -216,32 +267,45 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
               <Bell className="w-5 h-5 text-gray-500" />
               {unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                  {unreadCount}
+                  {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               )}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-80">
-            <div className="px-4 py-3 border-b border-gray-100 dark:border-slate-700">
+            <div className="px-4 py-3 border-b border-gray-100 dark:border-slate-700 flex items-center justify-between">
               <h3 className="font-semibold text-gray-900 dark:text-white">{t("notificationsTitle")}</h3>
+              {unreadCount > 0 && (
+                <button onClick={markAllRead} className="text-xs text-brand-600 hover:text-brand-700 flex items-center gap-1">
+                  <CheckCheck className="w-3.5 h-3.5" />
+                  {t("markAllRead")}
+                </button>
+              )}
             </div>
             <div className="max-h-80 overflow-y-auto">
-              {[0, 1, 2, 3].map((i) => (
-                <DropdownMenuItem
-                  key={i}
-                  className="flex flex-col items-start gap-1 px-4 py-3 cursor-pointer"
-                >
-                  <div className="flex items-center gap-2 w-full">
-                    {NOTIFICATION_UNREAD[i] && (
-                      <span className="w-2 h-2 bg-brand-600 rounded-full flex-shrink-0" />
-                    )}
-                    <span className={`text-sm ${NOTIFICATION_UNREAD[i] ? "font-medium" : ""}`}>
-                      {t(`notifications.${i}.title`)}
-                    </span>
-                  </div>
-                  <span className="text-xs text-gray-400 ml-4">{t(`notifications.${i}.time`)}</span>
-                </DropdownMenuItem>
-              ))}
+              {notifications.length === 0 ? (
+                <div className="px-4 py-8 text-center text-sm text-gray-400">
+                  {t("noNotifications")}
+                </div>
+              ) : (
+                notifications.map((n) => (
+                  <DropdownMenuItem
+                    key={n.id}
+                    className="flex flex-col items-start gap-1 px-4 py-3 cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2 w-full">
+                      {!n.is_read && (
+                        <span className="w-2 h-2 bg-brand-600 rounded-full flex-shrink-0" />
+                      )}
+                      <span className={`text-sm truncate ${!n.is_read ? "font-medium" : ""}`}>
+                        {n.title}
+                      </span>
+                    </div>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 ml-4 line-clamp-1">{n.message}</span>
+                    <span className="text-xs text-gray-400 ml-4">{timeAgo(n.created_at)}</span>
+                  </DropdownMenuItem>
+                ))
+              )}
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="justify-center text-brand-600 font-medium cursor-pointer">
