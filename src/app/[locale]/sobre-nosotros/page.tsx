@@ -31,10 +31,10 @@ export default async function SobreNosotrosPage() {
                 </Button>
               </Link>
             </div>
-            <div className="relative h-[400px] rounded-2xl overflow-hidden">
+            <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
               <Image
-                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=400&fit=crop"
-                alt={t("title")}
+                src="/images/mockups/gorra.jpg"
+                alt="FashionsDen Cap Mockup"
                 fill
                 className="object-cover"
               />

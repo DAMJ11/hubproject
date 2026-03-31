@@ -200,7 +200,7 @@ export default async function ParaFabricantesPage() {
                     >
                       <path
                         d="M20 5L35 15V30L20 40L5 30V15L20 5Z"
-                        fill={planHighlighted[index] ? "#4f46e5" : "#1e1b4b"}
+                        fill={planHighlighted[index] ? "#4b5869" : "#2d3748"}
                       />
                       <path
                         d="M20 12L28 17V27L20 32L12 27V17L20 12Z"
@@ -208,7 +208,7 @@ export default async function ParaFabricantesPage() {
                       />
                       <path
                         d="M20 18L24 21V27L20 30L16 27V21L20 18Z"
-                        fill={planHighlighted[index] ? "#4f46e5" : "#1e1b4b"}
+                        fill={planHighlighted[index] ? "#4b5869" : "#2d3748"}
                       />
                     </svg>
                   </div>
