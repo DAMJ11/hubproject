@@ -13,6 +13,7 @@ import {
   CreditCard,
 } from "lucide-react";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { formatCurrency } from "@/lib/currency";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -74,8 +75,7 @@ export default function DashboardHome({ user, initialStats, initialProjects }: D
     return t("greeting.evening");
   };
 
-  const formatCOP = (n: number) =>
-    new Intl.NumberFormat(locale, { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
+  const formatPrice = (n: number) => formatCurrency(n, locale);
 
   return (
     <div className="p-6 space-y-6">
@@ -172,7 +172,7 @@ export default function DashboardHome({ user, initialStats, initialProjects }: D
                           </div>
                         </div>
                         {p.budget_max > 0 && (
-                          <span className="font-semibold text-gray-900 dark:text-white">{formatCOP(p.budget_max)}</span>
+                          <span className="font-semibold text-gray-900 dark:text-white">{formatPrice(p.budget_max)}</span>
                         )}
                       </div>
                     );

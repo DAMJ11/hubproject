@@ -22,6 +22,7 @@ import { StatusBadge } from "@/components/shared/status-badge";
 import { CardSkeleton } from "@/components/shared/skeleton-loader";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
+import { formatCurrency } from "@/lib/currency";
 
 const ProposalsCompare = dynamic(() => import("./proposals-compare"), {
   loading: () => <div className="h-40 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-brand-600" /></div>,
@@ -70,8 +71,8 @@ interface Proposal {
 }
 
 
-function formatCurrency(amount: number, locale: string) {
-  return new Intl.NumberFormat(locale, { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(amount);
+function formatPrice(amount: number, locale: string) {
+  return formatCurrency(amount, locale);
 }
 
 export default function ProjectDetailPage() {

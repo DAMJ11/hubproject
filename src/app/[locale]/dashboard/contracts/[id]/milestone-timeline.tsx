@@ -3,6 +3,7 @@
 import { useTranslations, useLocale } from "next-intl";
 import { CheckCircle, Circle, Clock, DollarSign } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { formatCurrency } from "@/lib/currency";
 
 interface Milestone {
   id: number;
@@ -39,12 +40,7 @@ export default function MilestoneTimeline({
   const intlLocale = useLocale();
   const locale = localeProp ?? intlLocale;
 
-  const fmt = (amount: number) =>
-    new Intl.NumberFormat(locale, {
-      style: "currency",
-      currency: "COP",
-      minimumFractionDigits: 0,
-    }).format(amount);
+  const fmt = (amount: number) => formatCurrency(amount, locale);
 
   const completedCount = milestones.filter((m) => m.status === "completed").length;
   const progress = milestones.length > 0 ? Math.round((completedCount / milestones.length) * 100) : 0;

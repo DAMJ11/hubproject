@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/shared/empty-state";
 import type { OpportunityItem } from "@/lib/data/opportunities";
+import { formatCurrency } from "@/lib/currency";
 
 export default function OpportunitiesList({ rfqs }: { rfqs: OpportunityItem[] }) {
   const router = useRouter();
@@ -29,8 +30,7 @@ export default function OpportunitiesList({ rfqs }: { rfqs: OpportunityItem[] })
     ? rfqs.filter((r) => r.title.toLowerCase().includes(search.toLowerCase()) || r.category_name.toLowerCase().includes(search.toLowerCase()))
     : rfqs;
 
-  const formatCOP = (amount: number) =>
-    new Intl.NumberFormat(locale, { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(amount);
+  const formatPrice = (amount: number) => formatCurrency(amount, locale);
 
   return (
     <div className="space-y-6">
@@ -89,7 +89,7 @@ export default function OpportunitiesList({ rfqs }: { rfqs: OpportunityItem[] })
                 <div className="flex flex-wrap gap-4 mt-4 text-sm text-gray-600 dark:text-gray-300">
                   <span className="flex items-center gap-1"><Package className="w-4 h-4 text-gray-400" /> {t("units", { count: rfq.quantity.toLocaleString() })}</span>
                   {rfq.budget_min && rfq.budget_max && (
-                    <span className="flex items-center gap-1"><DollarSign className="w-4 h-4 text-gray-400" /> {formatCOP(rfq.budget_min)} - {formatCOP(rfq.budget_max)}</span>
+                    <span className="flex items-center gap-1"><DollarSign className="w-4 h-4 text-gray-400" /> {formatPrice(rfq.budget_min)} - {formatPrice(rfq.budget_max)}</span>
                   )}
                   {rfq.deadline && (
                     <span className="flex items-center gap-1"><Clock className="w-4 h-4 text-gray-400" /> {t("delivery", { date: new Date(rfq.deadline).toLocaleDateString(locale) })}</span>

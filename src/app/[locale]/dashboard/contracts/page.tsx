@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { Progress } from "@/components/ui/progress";
 import { getContracts } from "@/lib/data/contracts";
 import { Link } from "@/i18n/navigation";
+import { formatCurrency } from "@/lib/currency";
 
 export default async function ContractsPage() {
   const contracts = await getContracts();
@@ -13,8 +14,7 @@ export default async function ContractsPage() {
 
   const t = await getTranslations("Contracts");
   const locale = await getLocale();
-  const formatCOP = (amount: number) =>
-    new Intl.NumberFormat(locale, { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(amount);
+  const formatPrice = (amount: number) => formatCurrency(amount, locale);
 
   return (
     <div className="space-y-6">
@@ -44,7 +44,7 @@ export default async function ContractsPage() {
                   </div>
                   <div className="text-right">
                     <p className="flex items-center gap-1 text-sm font-semibold text-gray-900 dark:text-white">
-                      <DollarSign className="w-4 h-4 text-gray-400" /> {formatCOP(c.total_amount)}
+                      <DollarSign className="w-4 h-4 text-gray-400" /> {formatPrice(c.total_amount)}
                     </p>
                   </div>
                 </div>

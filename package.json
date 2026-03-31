@@ -4,14 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev -H 0.0.0.0 --turbopack",
-    "build": "prisma generate && next build",
+    "build": "prisma generate && prisma migrate deploy && next build",
     "postinstall": "prisma generate",
     "start": "next start",
     "lint": "bunx tsc --noEmit && next lint",
     "format": "bunx biome format --write",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:deploy": "prisma db push",
+    "prisma:deploy": "prisma migrate deploy",
     "prisma:push": "prisma db push"
   },
   "dependencies": {
@@ -27,7 +27,6 @@
     "@radix-ui/react-switch": "^1.2.6",
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-tooltip": "^1.2.8",
-    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -43,8 +42,10 @@
     "react-dom": "^18.3.1",
     "react-grab": "latest",
     "react-hook-form": "^7.72.0",
+    "resend": "^6.10.0",
     "same-runtime": "^0.0.1",
     "sonner": "^2.0.0",
+    "stripe": "^21.0.1",
     "tailwind-merge": "^3.3.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^4.3.6"

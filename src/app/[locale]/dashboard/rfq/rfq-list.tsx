@@ -10,10 +10,7 @@ import { StatusBadge } from "@/components/shared/status-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import type { RFQItem } from "@/lib/data/rfq";
 
-function formatCurrency(n: number | null, locale: string) {
-  if (n === null) return "—";
-  return new Intl.NumberFormat(locale, { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
-}
+import { formatCurrency } from "@/lib/currency";
 
 export default function RfqList({ rfqs, initialStatus }: { rfqs: RFQItem[]; initialStatus: string }) {
   const t = useTranslations("RFQ");

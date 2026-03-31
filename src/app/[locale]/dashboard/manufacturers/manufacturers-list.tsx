@@ -9,6 +9,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { EmptyState } from "@/components/shared/empty-state";
 import { CardSkeleton } from "@/components/shared/skeleton-loader";
 import { Link } from "@/i18n/navigation";
+import { formatCurrency } from "@/lib/currency";
 
 interface Manufacturer {
   id: number;
@@ -152,8 +153,7 @@ export default function ManufacturersList({
     setPage(1);
   };
 
-  const formatCOP = (value: number) =>
-    new Intl.NumberFormat(locale, { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(value);
+  const formatPrice = (value: number) => formatCurrency(value, locale);
 
   const toggleOfferDetails = async (companyId: number) => {
     if (expandedOfferCompanyId === companyId) {
@@ -380,9 +380,9 @@ export default function ManufacturersList({
                               </p>
                               {(offer.unit_price_from !== null || offer.wholesale_price_from !== null) && (
                                 <p className="text-xs text-blue-700 mt-1">
-                                  {offer.unit_price_from !== null ? t("offerPriceFrom", { price: formatCOP(offer.unit_price_from) }) : ""}
+                                  {offer.unit_price_from !== null ? t("offerPriceFrom", { price: formatPrice(offer.unit_price_from) }) : ""}
                                   {offer.unit_price_from !== null && offer.wholesale_price_from !== null ? " · " : ""}
-                                  {offer.wholesale_price_from !== null ? t("offerWholesaleFrom", { price: formatCOP(offer.wholesale_price_from) }) : ""}
+                                  {offer.wholesale_price_from !== null ? t("offerWholesaleFrom", { price: formatPrice(offer.wholesale_price_from) }) : ""}
                                 </p>
                               )}
                               {offer.commercial_notes && (

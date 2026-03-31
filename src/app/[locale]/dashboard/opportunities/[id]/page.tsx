@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CardSkeleton } from "@/components/shared/skeleton-loader";
 import { toast } from "sonner";
+import { formatCurrency } from "@/lib/currency";
 
 interface RFQDetail {
   id: number;
@@ -50,8 +51,7 @@ export default function OpportunityDetailPage() {
     notes: "",
   });
 
-  const formatCOP = (amount: number) =>
-    new Intl.NumberFormat(locale, { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(amount);
+  const formatPrice = (amount: number) => formatCurrency(amount, locale);
 
   const fetchRfq = useCallback(async () => {
     try {
@@ -174,7 +174,7 @@ export default function OpportunityDetailPage() {
         <div className="flex flex-wrap gap-4 text-sm">
           <span className="flex items-center gap-1 text-gray-600 dark:text-gray-300"><Package className="w-4 h-4 text-gray-400" /> {t("units", { count: rfq.quantity.toLocaleString() })}</span>
           {rfq.budget_min && rfq.budget_max && (
-            <span className="flex items-center gap-1 text-gray-600 dark:text-gray-300"><DollarSign className="w-4 h-4 text-gray-400" /> {formatCOP(rfq.budget_min)} - {formatCOP(rfq.budget_max)}</span>
+            <span className="flex items-center gap-1 text-gray-600 dark:text-gray-300"><DollarSign className="w-4 h-4 text-gray-400" /> {formatPrice(rfq.budget_min)} - {formatPrice(rfq.budget_max)}</span>
           )}
           {rfq.deadline && (
             <span className="flex items-center gap-1 text-gray-600 dark:text-gray-300"><Clock className="w-4 h-4 text-gray-400" /> {t("delivery", { date: new Date(rfq.deadline).toLocaleDateString(locale) })}</span>
@@ -214,7 +214,7 @@ export default function OpportunityDetailPage() {
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("unitPriceLabel")}</label>
             <Input name="unitPrice" type="number" min="1" value={form.unitPrice} onChange={handleChange} placeholder="15000" className={inputClass} required />
             {form.unitPrice && rfq.quantity && (
-              <p className="text-xs text-gray-400 mt-1">{t("total", { amount: formatCOP(Number(form.unitPrice) * rfq.quantity) })}</p>
+              <p className="text-xs text-gray-400 mt-1">{t("total", { amount: formatPrice(Number(form.unitPrice) * rfq.quantity) })}</p>
             )}
           </div>
           <div>

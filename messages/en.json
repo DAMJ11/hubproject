@@ -79,7 +79,7 @@
     }
   },
   "Platform": {
-    "title": "How Fashions Den works",
+    "title": "How Fashion Hubb works",
     "subtitle": "From first idea to final production, manage every step with the right partners, clear communication, and full visibility.",
     "steps": {
       "0": {
@@ -102,7 +102,7 @@
   },
   "WhyManufy": {
     "title": "A better way to build your collection",
-    "subtitle": "Fashions Den gives brands one place to find the right partners, manage the process, and move from first idea to final production with more clarity and control.",
+    "subtitle": "Fashion Hubb gives brands one place to find the right partners, manage the process, and move from first idea to final production with more clarity and control.",
     "items": {
       "0": {
         "title": "Verified fashion partners",
@@ -131,7 +131,7 @@
     }
   },
   "Quality": {
-    "title": "What can you build on Fashions Den",
+    "title": "What can you build on Fashion Hubb",
     "subtitle": "From first sample to full production, find the right partners for every stage of your collection.",
     "services": {
       "0": { "name": "Tees & tops", "shortDesc": "Jersey, rib, premium blends", "detail": "From 10 units" },
@@ -432,6 +432,87 @@
     "ctaContact": "Contact",
     "ctaCreate": "Create Account"
   },
+  "Legal": {
+    "termsTitle": "Terms and Conditions",
+    "privacyTitle": "Privacy Policy",
+    "lastUpdated": "Last updated",
+    "terms": {
+      "acceptance": {
+        "title": "1. Acceptance of Terms",
+        "text": "By accessing and using FashionsDen (\"the Platform\"), you agree to comply with these Terms and Conditions. If you disagree, do not use the Platform. We reserve the right to modify these terms at any time."
+      },
+      "services": {
+        "title": "2. Description of Services",
+        "text": "FashionsDen is a B2B platform connecting fashion brands with manufacturers. We facilitate posting requests for quotation (RFQ), managing proposals, contracts and communication between parties. We are not a party to commercial transactions between brands and manufacturers."
+      },
+      "accounts": {
+        "title": "3. User Accounts",
+        "text": "You must provide truthful information and keep it updated. You are responsible for the security of your account and password. You must notify us immediately of any unauthorized use. We reserve the right to suspend or delete accounts that violate these terms."
+      },
+      "payments": {
+        "title": "4. Payments and Subscriptions",
+        "text": "Some features require a paid subscription processed through Stripe. Prices are displayed in the indicated currency and may be subject to taxes. Subscriptions renew automatically unless cancelled before the next billing period. No refunds are issued for partial periods."
+      },
+      "ip": {
+        "title": "5. Intellectual Property",
+        "text": "All Platform content (design, code, logos, text) is owned by FashionsDen or its licensors. Users retain rights to content they publish but grant FashionsDen a license to display it within the Platform. Copying, modifying or distributing Platform content without authorization is prohibited."
+      },
+      "liability": {
+        "title": "6. Limitation of Liability",
+        "text": "FashionsDen acts as a technology intermediary. We do not guarantee the quality, compliance or legality of products or services offered by users. We are not responsible for disputes between brands and manufacturers. Our maximum liability is limited to the amount paid by the user in the last 12 months."
+      },
+      "termination": {
+        "title": "7. Termination",
+        "text": "You can cancel your account at any time from settings. We reserve the right to suspend or terminate accounts that violate these terms, with or without prior notice. After termination, your data will be retained according to our Privacy Policy."
+      },
+      "changes": {
+        "title": "8. Modifications",
+        "text": "We may update these Terms periodically. We will notify you of significant changes via email or through a notice on the Platform. Continued use after changes constitutes acceptance of the new terms."
+      },
+      "contact": {
+        "title": "9. Contact",
+        "text": "For inquiries about these Terms, contact us at legal@fashionsden.com or through our contact form."
+      }
+    },
+    "privacy": {
+      "collection": {
+        "title": "1. Information We Collect",
+        "text": "We collect information you provide directly: name, email, company data, payment information (processed by Stripe). We also automatically collect usage data: IP address, browser type, pages visited and session cookies."
+      },
+      "usage": {
+        "title": "2. Use of Information",
+        "text": "We use your information to: operate and improve the Platform, process transactions and subscriptions, send transactional communications (verification, password reset), connect brands with manufacturers, comply with legal obligations and prevent fraud or misuse."
+      },
+      "sharing": {
+        "title": "3. Sharing Information",
+        "text": "We do not sell your personal information. We share data with: other Platform users as necessary for B2B transactions, service providers (Stripe for payments, Resend for emails), authorities when required by law. International transfers are protected with standard contractual clauses."
+      },
+      "cookies": {
+        "title": "4. Cookies",
+        "text": "We use essential cookies for Platform operation (authentication, language preferences). We do not use third-party advertising tracking cookies. You can configure your browser to reject cookies, but some features may not be available."
+      },
+      "retention": {
+        "title": "5. Data Retention",
+        "text": "We retain your information while your account is active. After account deletion, we retain data necessary for legal obligations for the legally required period (generally 5 years for financial records). Anonymized data may be kept indefinitely for statistical purposes."
+      },
+      "rights": {
+        "title": "6. Your Rights (GDPR)",
+        "text": "You have the right to: access your personal data, rectify inaccurate information, request deletion of your data, object to processing, request data portability and withdraw consent. To exercise these rights, contact privacy@fashionsden.com. We will respond within 30 days."
+      },
+      "security": {
+        "title": "7. Security",
+        "text": "We implement technical and organizational security measures: password encryption with bcrypt, HTTPS connections, JWT tokens with expiration, security headers (CSP, HSTS), rate limiting to prevent abuse. However, no system is 100% secure and we cannot guarantee absolute security."
+      },
+      "changes": {
+        "title": "8. Changes to this Policy",
+        "text": "We may update this Privacy Policy periodically. We will notify you of significant changes via email. The last updated date is indicated at the beginning of the document."
+      },
+      "contact": {
+        "title": "9. Contact",
+        "text": "For privacy inquiries: privacy@fashionsden.com. Data Protection Officer: dpo@fashionsden.com. You may also file a complaint with your country's data protection authority."
+      }
+    }
+  },
   "Login": {
     "email": "Email",
     "password": "Password",
@@ -448,7 +529,15 @@
     "hidePassword": "Hide password",
     "showPassword": "Show password",
     "loginSuccess": "Signed in successfully",
-    "loginError": "Invalid credentials"
+    "loginError": "Invalid credentials",
+    "emailNotVerified": "Your email has not been verified yet. Check your inbox.",
+    "resendVerification": "Resend verification email",
+    "resendingVerification": "Resending...",
+    "verificationResent": "Verification email resent",
+    "verifySuccess": "Email verified! You can now sign in.",
+    "verifyAlready": "Your email was already verified.",
+    "verifyExpired": "Verification link expired. Sign in to resend.",
+    "verifyInvalid": "Invalid verification link."
   },
   "Register": {
     "accountType": "Account type",
@@ -471,6 +560,9 @@
     "create": "Create account",
     "hasAccount": "Already have an account?",
     "logIn": "Log in",
+    "checkEmailTitle": "Check your email!",
+    "checkEmailDescription": "We've sent you a verification link. Confirm it to activate your account.",
+    "goToLogin": "Go to sign in",
     "error": "An error occurred. Please try again.",
     "validation": {
       "emailRequired": "Email is required",
@@ -489,6 +581,34 @@
       "good": "Good",
       "strong": "Strong"
     }
+  },
+  "ForgotPassword": {
+    "title": "Forgot password",
+    "description": "Enter your email and we'll send you a link to reset your password.",
+    "email": "Email",
+    "send": "Send link",
+    "sending": "Sending...",
+    "sentTitle": "Email sent!",
+    "sentDescription": "If an account with that email exists, you'll receive a password reset link.",
+    "backToLogin": "Back to sign in",
+    "error": "An error occurred. Please try again."
+  },
+  "ResetPassword": {
+    "title": "New password",
+    "description": "Enter your new password.",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "showPassword": "Show password",
+    "reset": "Reset password",
+    "resetting": "Resetting...",
+    "passwordMin": "Password must be at least 8 characters",
+    "passwordMismatch": "Passwords do not match",
+    "successTitle": "Password updated!",
+    "successDescription": "Your password has been reset successfully. You can now sign in.",
+    "successToast": "Password reset",
+    "backToLogin": "Go to sign in",
+    "invalidToken": "Invalid or expired link",
+    "error": "An error occurred. Please try again."
   },
   "Sidebar": {
     "nav": {
@@ -554,12 +674,9 @@
       "green-score": "Green Score"
     },
     "notificationsTitle": "Notifications",
-    "notifications": {
-      "0": { "title": "Your cleaning booking was confirmed", "time": "5 min ago" },
-      "1": { "title": "Carlos M. is on the way to your address", "time": "1 hour ago" },
-      "2": { "title": "A new professional is available in your area", "time": "2 hours ago" },
-      "3": { "title": "Rate your gardening service", "time": "3 hours ago" }
-    },
+    "markAllRead": "Mark all read",
+    "noNotifications": "No notifications",
+    "justNow": "Just now",
     "ariaOpenMenu": "Open or close sidebar menu",
     "ariaThemeDark": "Switch to dark mode",
     "ariaThemeLight": "Switch to light mode",
@@ -612,7 +729,7 @@
       "evening": "Good evening"
     },
     "subtitle": {
-      "admin": "Here's a summary of FASHIONS DEN activity.",
+      "admin": "Here's a summary of FASHION HUBB activity.",
       "brand": "What fashion project do you need to produce today?",
       "manufacturer": "Check available opportunities."
     },
@@ -1457,7 +1574,31 @@
     "notificationsSaved": "Preferences saved.",
     "savePreferences": "Save Preferences",
     "hidePassword": "Hide password",
-    "showPassword": "Show password"
+    "showPassword": "Show password",
+    "tabBilling": "Subscription",
+    "billingTitle": "Plan & billing",
+    "currentPlan": "Current plan",
+    "noPlan": "No active plan",
+    "noPlanDesc": "You don't have an active subscription. Choose a plan to get started.",
+    "status": "Status",
+    "statusActive": "Active",
+    "statusTrial": "Trial",
+    "statusCancelled": "Cancelled",
+    "statusExpired": "Expired",
+    "statusPastDue": "Past due",
+    "nextBilling": "Next billing",
+    "trialEnds": "Trial ends",
+    "manageBilling": "Manage billing",
+    "manageBillingDesc": "Change plan, update card, or view invoices",
+    "changePlan": "Change plan",
+    "cancelSubscription": "Cancel subscription",
+    "cancelConfirm": "Are you sure? Your plan will remain active until the end of the period.",
+    "cancelSuccess": "Subscription cancelled. It will remain active until the end of the period.",
+    "choosePlan": "Choose plan",
+    "monthly": "/month",
+    "free": "Free",
+    "loadingBilling": "Loading billing information...",
+    "billingError": "Error loading billing information"
   },
   "Users": {
     "title": "Client Management",
@@ -1510,7 +1651,7 @@
     "emptyUsersHint": "Try adjusting your search filters"
   },
   "Metadata": {
-    "title": "FASHIONS DEN - Fashion design and production",
-    "description": "FASHIONS DEN is your platform for professional fashion design: sketches, tech packs, digital pattern making, samples and production."
+    "title": "FASHION HUBB - Fashion design and production",
+    "description": "FASHION HUBB is your platform for professional fashion design: sketches, tech packs, digital pattern making, samples and production."
   }
 }

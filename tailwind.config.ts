@@ -26,13 +26,15 @@ export default {
           foreground: 'hsl(var(--primary-foreground))'
         },
         brand: {
-          50: '#eef2ff',
-          100: '#e0e7ff',
-          200: '#c7d2fe',
-          500: '#6366f1',
-          600: '#4f46e5',
-          700: '#4338ca',
-          900: '#1e1b4b'
+          50: '#f4f7fb',
+          100: '#dfe8f2',
+          200: '#b4c9e5',
+          300: '#7e8fa6',
+          500: '#5a6b7d',
+          600: '#4b5869',
+          700: '#3d4a57',
+          900: '#2d3748',
+          gold: '#a28b6e',
         },
         landing: {
           gradient: 'var(--landing-gradient)',

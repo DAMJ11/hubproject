@@ -8,6 +8,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/shared/empty-state";
 import type { CapabilityItem, CategoryItem } from "@/lib/data/capabilities";
+import { formatCurrency } from "@/lib/currency";
 
 interface Props {
   initialCapabilities: CapabilityItem[];
@@ -32,8 +33,7 @@ export default function CapabilitiesManager({ initialCapabilities, categories }:
     description: "",
   });
 
-  const formatCOP = (amount: number) =>
-    new Intl.NumberFormat(locale, { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(amount);
+  const formatPrice = (amount: number) => formatCurrency(amount, locale);
 
   const refreshCapabilities = async () => {
     try {
@@ -206,12 +206,12 @@ export default function CapabilitiesManager({ initialCapabilities, categories }:
                       <div className="flex flex-wrap gap-2 mt-2 text-xs">
                         {cap.unit_price_from !== null && (
                           <span className="rounded-full bg-blue-50 text-blue-700 px-2 py-1">
-                            {t("priceFrom", { price: formatCOP(cap.unit_price_from) })}
+                            {t("priceFrom", { price: formatPrice(cap.unit_price_from) })}
                           </span>
                         )}
                         {cap.wholesale_price_from !== null && (
                           <span className="rounded-full bg-indigo-50 text-indigo-700 px-2 py-1">
-                            {t("wholesaleFrom", { price: formatCOP(cap.wholesale_price_from) })}
+                            {t("wholesaleFrom", { price: formatPrice(cap.wholesale_price_from) })}
                           </span>
                         )}
                       </div>

@@ -1,16 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
-import { CheckCircle2, Shirt, Factory, Clock3, Move, Layers, Tag, User, ShoppingBag } from "lucide-react";
+import { CheckCircle2, Shirt, Layers, Tag, Move, User } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
-const categoryIcons = [
-  Shirt,    // Camisetas y tops
-  Tag,      // Private label
-  Move,     // Activewear
-  Layers,   // Outerwear
-  Tag,      // Vestidos y sets
-  User      // Accesorios
-];
+const categoryIcons = [Shirt, Tag, Move, Layers, Tag, User];
 const categoryColors = [
   "bg-amber-50 border-amber-100 dark:bg-amber-950/40 dark:border-amber-900",
   "bg-sky-50 border-sky-100 dark:bg-sky-950/40 dark:border-sky-900",

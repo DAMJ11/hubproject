@@ -13,8 +13,8 @@
     --popover-foreground: 220 20% 20%;
     --radius: 0.5rem;
 
-    /* Primary — Indigo 600 */
-    --primary: 243 75% 59%;
+    /* Primary — FashionsDen 600 (#4b5869) */
+    --primary: 210 17% 35%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary */
@@ -36,7 +36,7 @@
     /* Borders & inputs */
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 243 75% 59%;
+    --ring: 210 17% 35%;
 
     /* Charts */
     --chart-1: 12 76% 61%;
@@ -45,19 +45,23 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
 
-    /* Brand tokens (Indigo) — use via Tailwind: bg-brand-600, text-brand-500, etc. */
-    --brand-50: #eef2ff;
-    --brand-100: #e0e7ff;
-    --brand-200: #c7d2fe;
-    --brand-500: #6366f1;
-    --brand-600: #4f46e5;
-    --brand-700: #4338ca;
-    --brand-900: #1e1b4b;
+    /* Brand tokens (FashionsDen BrandBook palette) */
+    --brand-50: #f4f7fb;
+    --brand-100: #dfe8f2;
+    --brand-200: #b4c9e5;
+    --brand-300: #7e8fa6;
+    --brand-500: #5a6b7d;
+    --brand-600: #4b5869;
+    --brand-700: #3d4a57;
+    --brand-900: #2d3748;
+
+    /* Brand gold accent (BrandBook) */
+    --brand-gold: #a28b6e;
 
     /* Warm accent tokens */
-    --warm-400: #fbbf24;
-    --warm-500: #f59e0b;
-    --warm-600: #d97706;
+    --warm-400: #c4a882;
+    --warm-500: #a28b6e;
+    --warm-600: #8a7560;
 
     /* Landing page tokens */
     --landing-gradient: #f0f5f3;
@@ -84,7 +88,7 @@
     --card-foreground: 0 0% 95%;
     --popover: 220 20% 12%;
     --popover-foreground: 0 0% 95%;
-    --primary: 243 75% 59%;
+    --primary: 210 17% 35%;
     --primary-foreground: 0 0% 100%;
     --secondary: 217 33% 18%;
     --secondary-foreground: 0 0% 100%;
@@ -96,7 +100,7 @@
     --destructive-foreground: 0 0% 100%;
     --border: 220 13% 20%;
     --input: 220 13% 20%;
-    --ring: 243 75% 59%;
+    --ring: 210 17% 35%;
   }
 }
 
@@ -135,11 +139,11 @@
   background: var(--gray-100, #f1f5f9);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--brand-600, #4f46e5);
+  background: var(--brand-600, #4b5869);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--brand-700, #4338ca);
+  background: var(--brand-700, #3d4a57);
 }
 
 /* Keyframe animations (consolidated from transitions.css) */

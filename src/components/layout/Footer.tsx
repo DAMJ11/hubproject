@@ -1,6 +1,6 @@
 import { getTranslations, getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { Sparkles } from "lucide-react";
+import Image from "next/image";
 
 const serviceHrefs = ["/#servicios", "/#servicios", "/#servicios", "/#servicios", "/#servicios", "/#servicios"];
 const companyHrefs = ["/sobre-nosotros", "/blog", "/para-fabricantes", "/contacto"];
@@ -17,10 +17,13 @@ export default async function Footer() {
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
-              </div>
-              <span className="font-bold text-xl">FASHIONS DEN</span>
+              <Image
+                src="/images/brand/logo-light.png"
+                alt="FashionsDen"
+                width={180}
+                height={40}
+                className="h-8 w-auto"
+              />
             </Link>
             <p className="text-sm text-gray-300 mt-3">{t("brandText")}</p>
           </div>
@@ -79,7 +82,7 @@ export default async function Footer() {
         </div>
 
         <div className="border-t border-gray-700 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-400">&copy; {new Date().getFullYear()} FASHIONS DEN. {t("copyright")}</p>
+          <p className="text-sm text-gray-400">&copy; {new Date().getFullYear()} FashionsDen. {t("copyright")}</p>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1 px-3 py-1 rounded-full text-sm bg-white/10">🌍 {locale.toUpperCase()}</span>
           </div>

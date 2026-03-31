@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
 import { Link, useRouter, usePathname } from "@/i18n/navigation";
-import { ChevronDown, Menu, X, Sparkles } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -51,13 +51,17 @@ export default function Header() {
       className="sticky top-0 z-50 bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border-b border-brand-900/10 dark:border-slate-700 animate-in slide-in-from-top duration-300"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="transition-transform hover:scale-105 active:scale-95">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-brand-900 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
-              </div>
-              <span className="font-bold text-xl text-brand-900">FASHIONS DEN</span>
+        <div className="flex items-center justify-between h-20">
+          <div className="-ml-2 transition-transform hover:scale-105 active:scale-95">
+            <Link href="/" className="flex items-center gap-1">
+              <Image
+                src="/images/brand/logo.svg"
+                alt="FashionsDen"
+                width={280}
+                height={44}
+                className="h-14 w-auto"
+                priority
+              />
             </Link>
           </div>
 

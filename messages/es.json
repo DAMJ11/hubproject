@@ -79,7 +79,7 @@
     }
   },
   "Platform": {
-    "title": "Como funciona Fashions Den",
+    "title": "Como funciona Fashion Hubb",
     "subtitle": "Desde la primera idea hasta la produccion final, gestiona cada paso con los partners correctos, comunicacion clara y visibilidad total.",
     "steps": {
       "0": {
@@ -102,7 +102,7 @@
   },
   "WhyManufy": {
     "title": "Una mejor forma de crear tu coleccion",
-    "subtitle": "Fashions Den le da a las marcas un solo lugar para encontrar los partners correctos, gestionar el proceso, y pasar de la primera idea a la produccion final con mas claridad y control.",
+    "subtitle": "Fashion Hubb le da a las marcas un solo lugar para encontrar los partners correctos, gestionar el proceso, y pasar de la primera idea a la produccion final con mas claridad y control.",
     "items": {
       "0": {
         "title": "Partners de moda verificados",
@@ -131,7 +131,7 @@
     }
   },
   "Quality": {
-    "title": "Que puedes desarrollar en Fashions Den",
+    "title": "Que puedes desarrollar en Fashion Hubb",
     "subtitle": "Desde la primera muestra hasta la produccion completa, encuentra los socios adecuados para cada etapa de tu coleccion.",
     "services": {
       "0": { "name": "Camisetas y tops", "shortDesc": "Jersey, rib y mezclas premium", "detail": "Desde 10 unidades" },
@@ -432,6 +432,87 @@
     "ctaContact": "Contactar",
     "ctaCreate": "Crear Cuenta"
   },
+  "Legal": {
+    "termsTitle": "Términos y Condiciones",
+    "privacyTitle": "Política de Privacidad",
+    "lastUpdated": "Última actualización",
+    "terms": {
+      "acceptance": {
+        "title": "1. Aceptación de los Términos",
+        "text": "Al acceder y utilizar FashionsDen (\"la Plataforma\"), aceptas cumplir con estos Términos y Condiciones. Si no estás de acuerdo, no utilices la Plataforma. Nos reservamos el derecho de modificar estos términos en cualquier momento."
+      },
+      "services": {
+        "title": "2. Descripción del Servicio",
+        "text": "FashionsDen es una plataforma B2B que conecta marcas de moda con fabricantes. Facilitamos la publicación de solicitudes de cotización (RFQ), la gestión de propuestas, contratos y comunicación entre las partes. No somos parte en las transacciones comerciales entre marcas y fabricantes."
+      },
+      "accounts": {
+        "title": "3. Cuentas de Usuario",
+        "text": "Debes proporcionar información veraz y mantenerla actualizada. Eres responsable de la seguridad de tu cuenta y contraseña. Debes notificarnos inmediatamente sobre cualquier uso no autorizado. Nos reservamos el derecho de suspender o eliminar cuentas que violen estos términos."
+      },
+      "payments": {
+        "title": "4. Pagos y Suscripciones",
+        "text": "Algunas funcionalidades requieren una suscripción de pago procesada mediante Stripe. Los precios se muestran en la moneda indicada y pueden estar sujetos a impuestos. Las suscripciones se renuevan automáticamente salvo que se cancelen antes del siguiente periodo de facturación. No se realizan reembolsos por periodos parciales."
+      },
+      "ip": {
+        "title": "5. Propiedad Intelectual",
+        "text": "Todo el contenido de la Plataforma (diseño, código, logos, textos) es propiedad de FashionsDen o sus licenciantes. Los usuarios conservan los derechos sobre el contenido que publican pero otorgan a FashionsDen una licencia para mostrarlo dentro de la Plataforma. Está prohibido copiar, modificar o distribuir contenido de la Plataforma sin autorización."
+      },
+      "liability": {
+        "title": "6. Limitación de Responsabilidad",
+        "text": "FashionsDen actúa como intermediario tecnológico. No garantizamos la calidad, cumplimiento o legalidad de los productos o servicios ofrecidos por los usuarios. No somos responsables de disputas entre marcas y fabricantes. Nuestra responsabilidad máxima se limita al monto pagado por el usuario en los últimos 12 meses."
+      },
+      "termination": {
+        "title": "7. Terminación",
+        "text": "Puedes cancelar tu cuenta en cualquier momento desde la configuración. Nos reservamos el derecho de suspender o terminar cuentas que violen estos términos, con o sin previo aviso. Tras la terminación, tus datos serán retenidos según nuestra Política de Privacidad."
+      },
+      "changes": {
+        "title": "8. Modificaciones",
+        "text": "Podemos actualizar estos Términos periódicamente. Te notificaremos sobre cambios significativos por correo electrónico o mediante un aviso en la Plataforma. El uso continuado después de los cambios constituye aceptación de los nuevos términos."
+      },
+      "contact": {
+        "title": "9. Contacto",
+        "text": "Para consultas sobre estos Términos, contáctanos en legal@fashionsden.com o a través de nuestro formulario de contacto."
+      }
+    },
+    "privacy": {
+      "collection": {
+        "title": "1. Información que Recopilamos",
+        "text": "Recopilamos información que proporcionas directamente: nombre, correo electrónico, datos de empresa, información de pago (procesada por Stripe). También recopilamos datos de uso automáticamente: dirección IP, tipo de navegador, páginas visitadas y cookies de sesión."
+      },
+      "usage": {
+        "title": "2. Uso de la Información",
+        "text": "Utilizamos tu información para: operar y mejorar la Plataforma, procesar transacciones y suscripciones, enviar comunicaciones transaccionales (verificación, restablecimiento de contraseña), conectar marcas con fabricantes, cumplir con obligaciones legales y prevenir fraude o uso indebido."
+      },
+      "sharing": {
+        "title": "3. Compartir Información",
+        "text": "No vendemos tu información personal. Compartimos datos con: otros usuarios de la Plataforma según sea necesario para las transacciones B2B, proveedores de servicios (Stripe para pagos, Resend para emails), autoridades cuando sea requerido por ley. Las transferencias internacionales se protegen con cláusulas contractuales estándar."
+      },
+      "cookies": {
+        "title": "4. Cookies",
+        "text": "Utilizamos cookies esenciales para el funcionamiento de la Plataforma (autenticación, preferencias de idioma). No utilizamos cookies de seguimiento publicitario de terceros. Puedes configurar tu navegador para rechazar cookies, pero algunas funcionalidades pueden no estar disponibles."
+      },
+      "retention": {
+        "title": "5. Retención de Datos",
+        "text": "Conservamos tu información mientras tu cuenta esté activa. Tras la eliminación de tu cuenta, retenemos datos necesarios para obligaciones legales durante el periodo requerido por ley (generalmente 5 años para registros financieros). Los datos anonimizados pueden conservarse indefinidamente con fines estadísticos."
+      },
+      "rights": {
+        "title": "6. Tus Derechos (GDPR / RGPD)",
+        "text": "Tienes derecho a: acceder a tus datos personales, rectificar información inexacta, solicitar la eliminación de tus datos, oponerte al procesamiento, solicitar portabilidad de datos y retirar tu consentimiento. Para ejercer estos derechos, contacta a privacy@fashionsden.com. Responderemos en un plazo máximo de 30 días."
+      },
+      "security": {
+        "title": "7. Seguridad",
+        "text": "Implementamos medidas de seguridad técnicas y organizativas: cifrado de contraseñas con bcrypt, conexiones HTTPS, tokens JWT con expiración, headers de seguridad (CSP, HSTS), rate limiting para prevenir abusos. Sin embargo, ningún sistema es 100% seguro y no podemos garantizar seguridad absoluta."
+      },
+      "changes": {
+        "title": "8. Cambios en esta Política",
+        "text": "Podemos actualizar esta Política de Privacidad periódicamente. Te notificaremos sobre cambios significativos por correo electrónico. La fecha de última actualización se indica al inicio del documento."
+      },
+      "contact": {
+        "title": "9. Contacto",
+        "text": "Para consultas sobre privacidad: privacy@fashionsden.com. Delegado de Protección de Datos: dpo@fashionsden.com. También puedes presentar una reclamación ante la autoridad de protección de datos de tu país."
+      }
+    }
+  },
   "Login": {
     "email": "Correo electrónico",
     "password": "Contraseña",
@@ -448,7 +529,15 @@
     "hidePassword": "Ocultar contraseña",
     "showPassword": "Mostrar contraseña",
     "loginSuccess": "Sesión iniciada correctamente",
-    "loginError": "Credenciales incorrectas"
+    "loginError": "Credenciales incorrectas",
+    "emailNotVerified": "Tu correo aún no ha sido verificado. Revisa tu bandeja de entrada.",
+    "resendVerification": "Reenviar correo de verificación",
+    "resendingVerification": "Reenviando...",
+    "verificationResent": "Correo de verificación reenviado",
+    "verifySuccess": "¡Correo verificado! Ya puedes iniciar sesión.",
+    "verifyAlready": "Tu correo ya estaba verificado.",
+    "verifyExpired": "El enlace de verificación ha expirado. Inicia sesión para reenviar.",
+    "verifyInvalid": "Enlace de verificación inválido."
   },
   "Register": {
     "accountType": "Tipo de cuenta",
@@ -471,6 +560,9 @@
     "create": "Crear cuenta",
     "hasAccount": "¿Ya tienes cuenta?",
     "logIn": "Inicia sesión",
+    "checkEmailTitle": "¡Revisa tu correo!",
+    "checkEmailDescription": "Te hemos enviado un enlace de verificación. Confírmalo para activar tu cuenta.",
+    "goToLogin": "Ir a iniciar sesión",
     "error": "Ocurrió un error. Por favor intenta de nuevo.",
     "validation": {
       "emailRequired": "El email es obligatorio",
@@ -489,6 +581,34 @@
       "good": "Buena",
       "strong": "Fuerte"
     }
+  },
+  "ForgotPassword": {
+    "title": "Recuperar contraseña",
+    "description": "Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",
+    "email": "Correo electrónico",
+    "send": "Enviar enlace",
+    "sending": "Enviando...",
+    "sentTitle": "¡Correo enviado!",
+    "sentDescription": "Si existe una cuenta con ese correo, recibirás un enlace para restablecer tu contraseña.",
+    "backToLogin": "Volver a iniciar sesión",
+    "error": "Ocurrió un error. Intenta de nuevo."
+  },
+  "ResetPassword": {
+    "title": "Nueva contraseña",
+    "description": "Ingresa tu nueva contraseña.",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "showPassword": "Mostrar contraseña",
+    "reset": "Restablecer contraseña",
+    "resetting": "Restableciendo...",
+    "passwordMin": "La contraseña debe tener al menos 8 caracteres",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "successTitle": "¡Contraseña actualizada!",
+    "successDescription": "Tu contraseña se ha restablecido correctamente. Ya puedes iniciar sesión.",
+    "successToast": "Contraseña restablecida",
+    "backToLogin": "Ir a iniciar sesión",
+    "invalidToken": "Enlace inválido o expirado",
+    "error": "Ocurrió un error. Intenta de nuevo."
   },
   "Sidebar": {
     "nav": {
@@ -554,12 +674,9 @@
       "green-score": "Puntuación Verde"
     },
     "notificationsTitle": "Notificaciones",
-    "notifications": {
-      "0": { "title": "Tu reserva de limpieza fue confirmada", "time": "Hace 5 min" },
-      "1": { "title": "Carlos M. está en camino a tu dirección", "time": "Hace 1 hora" },
-      "2": { "title": "Nuevo profesional disponible en tu zona", "time": "Hace 2 horas" },
-      "3": { "title": "Califica tu servicio de jardinería", "time": "Hace 3 horas" }
-    },
+    "markAllRead": "Marcar todas",
+    "noNotifications": "No tienes notificaciones",
+    "justNow": "Ahora",
     "ariaOpenMenu": "Abrir o cerrar menú lateral",
     "ariaThemeDark": "Cambiar a modo oscuro",
     "ariaThemeLight": "Cambiar a modo claro",
@@ -612,7 +729,7 @@
       "evening": "Buenas noches"
     },
     "subtitle": {
-      "admin": "Aquí tienes un resumen de la actividad de FASHIONS DEN.",
+      "admin": "Aquí tienes un resumen de la actividad de FASHION HUBB.",
       "brand": "¿Qué proyecto de moda necesitas producir hoy?",
       "manufacturer": "Revisa las oportunidades disponibles."
     },
@@ -1457,7 +1574,31 @@
     "notificationsSaved": "Preferencias guardadas.",
     "savePreferences": "Guardar Preferencias",
     "hidePassword": "Ocultar contraseña",
-    "showPassword": "Mostrar contraseña"
+    "showPassword": "Mostrar contraseña",
+    "tabBilling": "Suscripción",
+    "billingTitle": "Plan y facturación",
+    "currentPlan": "Plan actual",
+    "noPlan": "Sin plan activo",
+    "noPlanDesc": "No tienes una suscripción activa. Elige un plan para comenzar.",
+    "status": "Estado",
+    "statusActive": "Activo",
+    "statusTrial": "Prueba",
+    "statusCancelled": "Cancelado",
+    "statusExpired": "Expirado",
+    "statusPastDue": "Pago pendiente",
+    "nextBilling": "Próxima facturación",
+    "trialEnds": "Prueba termina",
+    "manageBilling": "Gestionar facturación",
+    "manageBillingDesc": "Cambiar plan, actualizar tarjeta o ver facturas",
+    "changePlan": "Cambiar plan",
+    "cancelSubscription": "Cancelar suscripción",
+    "cancelConfirm": "¿Estás seguro? Tu plan seguirá activo hasta el final del periodo.",
+    "cancelSuccess": "Suscripción cancelada. Seguirá activa hasta el final del periodo.",
+    "choosePlan": "Elegir plan",
+    "monthly": "/mes",
+    "free": "Gratis",
+    "loadingBilling": "Cargando información de facturación...",
+    "billingError": "Error al cargar la información de facturación"
   },
   "Users": {
     "title": "Gestión de Clientes",
@@ -1510,7 +1651,7 @@
     "emptyUsersHint": "Prueba ajustando los filtros de búsqueda"
   },
   "Metadata": {
-    "title": "FASHIONS DEN - Diseño y producción de moda",
-    "description": "FASHIONS DEN es tu plataforma para diseño de moda profesional: bocetos, fichas técnicas, patronaje digital, muestras y producción."
+    "title": "FASHION HUBB - Diseño y producción de moda",
+    "description": "FASHION HUBB es tu plataforma para diseño de moda profesional: bocetos, fichas técnicas, patronaje digital, muestras y producción."
   }
 }

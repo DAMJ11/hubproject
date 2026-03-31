@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "FASHIONS DEN - Diseño y producción de moda",
+  title: "FASHION HUBB - Diseño y producción de moda",
   description:
-    "FASHIONS DEN es tu plataforma para diseño de moda profesional: bocetos, fichas técnicas, patronaje digital, muestras y producción.",
+    "FASHION HUBB es tu plataforma para diseño de moda profesional: bocetos, fichas técnicas, patronaje digital, muestras y producción.",
   keywords: [
     "diseño de moda",
     "bocetos de moda",
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "colecciones de moda",
   ],
   openGraph: {
-    title: "FASHIONS DEN - Diseño y producción de moda",
+    title: "FASHION HUBB - Diseño y producción de moda",
     description:
       "Plataforma profesional de diseño, patronaje y producción de moda",
     type: "website",

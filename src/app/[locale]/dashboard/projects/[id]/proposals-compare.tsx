@@ -4,6 +4,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Leaf, Shield, MapPin, ArrowUpDown } from "lucide-react";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { formatCurrency } from "@/lib/currency";
 
 interface Proposal {
   id: number;
@@ -38,12 +39,7 @@ export default function ProposalsCompare({
   const t = useTranslations("ProjectDetail");
   const locale = useLocale();
 
-  const fmt = (amount: number) =>
-    new Intl.NumberFormat(locale, {
-      style: "currency",
-      currency: "COP",
-      minimumFractionDigits: 0,
-    }).format(amount);
+  const fmt = (amount: number) => formatCurrency(amount, locale);
 
   const sorted = [...proposals].sort((a, b) => {
     if (sortKey === "green_score") return b.green_score - a.green_score;

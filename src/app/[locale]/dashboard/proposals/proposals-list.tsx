@@ -10,9 +10,7 @@ import { StatusBadge } from "@/components/shared/status-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import type { MyProposal, CapabilityOffer } from "@/lib/data/proposals";
 
-function formatCurrency(amount: number, locale: string) {
-  return new Intl.NumberFormat(locale, { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(amount);
-}
+import { formatCurrency } from "@/lib/currency";
 
 export default function ProposalsList({
   proposals,
@@ -27,8 +25,7 @@ export default function ProposalsList({
   const [filter, setFilter] = useState("all");
 
   const filtered = filter === "all" ? proposals : proposals.filter((p) => p.status === filter);
-  const formatCurrencyLocal = (value: number) =>
-    new Intl.NumberFormat(locale, { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(value);
+  const formatCurrencyLocal = (value: number) => formatCurrency(value, locale);
   const tabs = [
     { key: "all", label: t("tabs.all") },
     { key: "pending", label: t("tabs.pending") },

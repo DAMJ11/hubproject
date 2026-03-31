@@ -7,12 +7,9 @@ import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Link } from "@/i18n/navigation";
+import { formatCurrency } from "@/lib/currency";
 import type { RFQItem } from "@/lib/data/rfq";
 
-function formatCurrency(n: number | null, locale: string) {
-  if (n === null) return "—";
-  return new Intl.NumberFormat(locale, { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
-}
 
 export default function ProjectsList({ projects }: { projects: RFQItem[] }) {
   const t = useTranslations("Projects");

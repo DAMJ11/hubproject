@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { BarChart3, TrendingUp, Users, CalendarCheck, DollarSign, Star, ArrowUpRight } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 import { getReports } from "@/lib/data/reports";
+import { formatCurrency } from "@/lib/currency";
 
 export default async function ReportsPage() {
   const data = await getReports();
@@ -17,7 +18,7 @@ export default async function ReportsPage() {
     totals: { total_bookings: data.totals.total_projects, total_revenue: data.totals.total_revenue, new_users: data.totals.total_companies, avg_rating: Math.round(data.totals.avg_rating * 10) / 10 },
   };
 
-  const formatCOP = (n: number) => new Intl.NumberFormat(locale, { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
+  const formatPrice = (n: number) => formatCurrency(n, locale);
   const maxBookings = Math.max(...monthlyData.map((d) => d.bookings), 1);
 
   return (
@@ -30,7 +31,7 @@ export default async function ReportsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: t("monthlyOrders"), value: String(totals.total_bookings), icon: CalendarCheck, color: "bg-blue-100 text-blue-600" },
-          { label: t("monthlyRevenue"), value: formatCOP(totals.total_revenue), icon: DollarSign, color: "bg-green-100 text-green-600" },
+          { label: t("monthlyRevenue"), value: formatPrice(totals.total_revenue), icon: DollarSign, color: "bg-green-100 text-green-600" },
           { label: t("newClients"), value: String(totals.new_users), icon: Users, color: "bg-purple-100 text-purple-600" },
           { label: t("avgRating"), value: String(totals.avg_rating), icon: Star, color: "bg-yellow-100 text-yellow-600" },
         ].map((stat) => (
@@ -89,7 +90,7 @@ export default async function ReportsPage() {
                     </div>
                     <div className="flex items-center justify-between text-xs text-gray-500">
                       <span>{t("orders", { count: s.bookings })}</span>
-                      <span>{formatCOP(s.revenue)}</span>
+                      <span>{formatPrice(s.revenue)}</span>
                     </div>
                     <div className="w-full bg-gray-100 rounded-full h-1.5 mt-1">
                       <div className="bg-brand-600 h-1.5 rounded-full" style={{ width: `${(s.bookings / topServices[0].bookings) * 100}%` }} />
@@ -123,7 +124,7 @@ export default async function ReportsPage() {
                     </div>
                     <div className="flex items-center justify-between text-xs text-gray-500 mt-1">
                       <span>{t("jobs", { count: p.jobs })}</span>
-                      <span>{formatCOP(p.revenue)}</span>
+                      <span>{formatPrice(p.revenue)}</span>
                     </div>
                   </div>
                 </div>

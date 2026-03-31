@@ -24,9 +24,9 @@ import {
   Award,
   Briefcase,
   Send,
-  ShieldCheck,
   Building2,
 } from "lucide-react";
+import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
@@ -68,7 +68,7 @@ const adminNavItems: NavItem[] = [
 
 const brandNavItems: NavItem[] = [
   { key: "home", href: "/dashboard", icon: Home },
-  { key: "myProjects", href: "/dashboard/projects", icon: FileText, badge: 2 },
+  { key: "myProjects", href: "/dashboard/projects", icon: FileText },
   { key: "myContracts", href: "/dashboard/contracts", icon: Briefcase },
   { key: "manufacturers", href: "/dashboard/manufacturers", icon: Factory },
   { key: "messages", href: "/dashboard/messages", icon: MessageSquare },
@@ -167,16 +167,23 @@ export default function Sidebar({
       <div className="h-16 flex items-center justify-between px-4 border-b border-gray-100 dark:border-slate-800">
         {expanded ? (
           <Link href="/dashboard" onClick={() => handleNavigate("/dashboard")} className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5 text-white" />
-            </div>
-            <span className="font-bold text-xl text-brand-900 dark:text-slate-100">FASHIONS DEN</span>
+            <Image
+              src="/images/brand/logo.svg"
+              alt="FashionsDen"
+              width={180}
+              height={30}
+              className="h-8 w-auto"
+            />
           </Link>
         ) : (
           <Link href="/dashboard" onClick={() => handleNavigate("/dashboard")} className="mx-auto">
-            <div className="w-10 h-10 bg-brand-600 rounded-lg flex items-center justify-center">
-              <ShieldCheck className="w-6 h-6 text-white" />
-            </div>
+            <Image
+              src="/images/brand/icon-primary.png"
+              alt="FH"
+              width={40}
+              height={40}
+              className="w-10 h-10"
+            />
           </Link>
         )}
         {isMobile ? (

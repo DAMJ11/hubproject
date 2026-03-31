@@ -8,6 +8,7 @@ import { StatusBadge } from "@/components/shared/status-badge";
 import { useTranslations, useLocale } from "next-intl";
 import { toast } from "sonner";
 import MilestoneTimeline from "./milestone-timeline";
+import { formatCurrency } from "@/lib/currency";
 import type { ContractDetail, Milestone } from "@/lib/data/contracts";
 
 interface Props {
@@ -19,8 +20,7 @@ export default function ContractDetailClient({ contract: initial, userRole }: Pr
   const router = useRouter();
   const t = useTranslations("ContractDetail");
   const locale = useLocale();
-  const formatCOP = (amount: number) =>
-    new Intl.NumberFormat(locale, { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(amount);
+  const formatPrice = (amount: number) => formatCurrency(amount, locale);
 
   const [contract, setContract] = useState<ContractDetail>(initial);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
@@ -79,11 +79,11 @@ export default function ContractDetailClient({ contract: initial, userRole }: Pr
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-4">
           <p className="text-xs text-gray-500 dark:text-gray-400">{t("totalValue")}</p>
-          <p className="text-lg font-bold text-gray-900 dark:text-white">{formatCOP(contract.total_amount)}</p>
+          <p className="text-lg font-bold text-gray-900 dark:text-white">{formatPrice(contract.total_amount)}</p>
         </div>
         <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-4">
           <p className="text-xs text-gray-500 dark:text-gray-400">{t("paid")}</p>
-          <p className="text-lg font-bold text-emerald-600">{formatCOP(totalPaid)}</p>
+          <p className="text-lg font-bold text-emerald-600">{formatPrice(totalPaid)}</p>
         </div>
         <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-4">
           <p className="text-xs text-gray-500 dark:text-gray-400">{t("progress")}</p>

@@ -10,6 +10,7 @@ import { CreditCard, Search, DollarSign, TrendingUp, Clock } from "lucide-react"
 import { StatusBadge } from "@/components/shared/status-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import type { PaymentItem, PaymentTotals } from "@/lib/data/payments";
+import { formatCurrency } from "@/lib/currency";
 
 interface PaymentsListProps {
   payments: PaymentItem[];
@@ -37,7 +38,7 @@ export default function PaymentsList({ payments, totals }: PaymentsListProps) {
   const setSearchQuery = (v: string) => updateParams("q", v, "");
   const setFilterStatus = (v: string) => updateParams("status", v, "all");
 
-  const formatCOP = (n: number) => new Intl.NumberFormat(locale, { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
+  const formatPrice = (n: number) => formatCurrency(n, locale);
 
   const successRate = totals.total_transactions > 0
     ? Math.round((totals.completed_count / totals.total_transactions) * 100)
@@ -61,7 +62,7 @@ export default function PaymentsList({ payments, totals }: PaymentsListProps) {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-500">{t("totalRevenue")}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{formatCOP(totals.total_revenue)}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{formatPrice(totals.total_revenue)}</p>
             </div>
             <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
               <DollarSign className="w-5 h-5 text-green-600" />
@@ -72,7 +73,7 @@ export default function PaymentsList({ payments, totals }: PaymentsListProps) {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-500">{t("pending")}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{formatCOP(totals.pending_amount)}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{formatPrice(totals.pending_amount)}</p>
             </div>
             <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
               <Clock className="w-5 h-5 text-yellow-600" />
@@ -156,7 +157,7 @@ export default function PaymentsList({ payments, totals }: PaymentsListProps) {
                   <TableCell className="font-mono text-sm font-medium text-brand-600">{p.contract_code}</TableCell>
                   <TableCell className="text-sm text-gray-700">{p.payer_name}</TableCell>
                   <TableCell className="text-sm text-gray-700">{p.payee_name}</TableCell>
-                  <TableCell className="text-sm font-semibold text-gray-900">{formatCOP(p.amount)}</TableCell>
+                  <TableCell className="text-sm font-semibold text-gray-900">{formatPrice(p.amount)}</TableCell>
                   <TableCell className="text-sm text-gray-600">{p.payment_method}</TableCell>
                   <TableCell>
                     <StatusBadge entity="payments" status={p.status} />
