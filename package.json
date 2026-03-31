@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev -H 0.0.0.0 --turbopack",
-    "build": "prisma generate && prisma migrate deploy && next build",
+    "build": "prisma generate && next build",
     "postinstall": "prisma generate",
-    "start": "next start",
+    "start": "prisma migrate deploy && next start",
     "lint": "bunx tsc --noEmit && next lint",
     "format": "bunx biome format --write",
     "prisma:generate": "prisma generate",
