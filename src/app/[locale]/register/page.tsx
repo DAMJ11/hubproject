@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
 import Image from "next/image";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, MailCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -71,6 +71,7 @@ export default function RegisterPage() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState("");
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const buttonAnimation = useButtonAnimation();
 
   const onSubmit = async (data: RegisterInput) => {
@@ -80,7 +81,10 @@ export default function RegisterPage() {
     try {
       const response = await fetch("/api/auth/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-locale": locale,
+        },
         body: JSON.stringify({
           email: data.email,
           password: data.password,
@@ -94,8 +98,7 @@ export default function RegisterPage() {
 
       const result: AuthResponse = await response.json();
       if (result.success) {
-        router.push("/dashboard/onboarding");
-        router.refresh();
+        setRegistrationSuccess(true);
       } else {
         setServerError(result.message);
       }
@@ -114,10 +117,14 @@ export default function RegisterPage() {
             <StaggeredTransition delay={0.1}>
               <div className="flex items-center justify-between mb-6">
                 <Link href="/" className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white text-lg">✨</span>
-                  </div>
-                  <span className="font-bold text-2xl text-brand-900">FASHIONS DEN</span>
+                  <Image
+                    src="/images/brand/logo-dark.png"
+                    alt="FashionsDen"
+                    width={200}
+                    height={44}
+                    className="h-9 w-auto"
+                    priority
+                  />
                 </Link>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -146,6 +153,16 @@ export default function RegisterPage() {
               </StaggeredTransition>
             )}
 
+            {registrationSuccess ? (
+              <div className="text-center space-y-4 py-4">
+                <MailCheck className="w-14 h-14 text-brand-600 mx-auto" />
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{t("checkEmailTitle")}</h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{t("checkEmailDescription")}</p>
+                <Link href="/login" className="inline-block text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors">
+                  {t("goToLogin")}
+                </Link>
+              </div>
+            ) : (
             <form onSubmit={rhfSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t("accountType")}<span className="text-red-400">*</span></label>
@@ -252,6 +269,7 @@ export default function RegisterPage() {
                 </div>
               </StaggeredTransition>
             </form>
+            )}
           </div>
         </AuthTransition>
       </main>

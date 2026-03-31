@@ -28,9 +28,9 @@ export async function POST(request: NextRequest) {
     const { email, password } = parsed.data;
 
     // Find user by email (include company info)
-    const user = await queryOne<User & { company_name?: string }>(
+    const user = await queryOne<User & { company_name?: string; email_verified: boolean }>(
       `SELECT u.id, u.email, u.password, u.first_name, u.last_name, u.role, u.company_id,
-              c.name as company_name
+              u.email_verified, c.name as company_name
        FROM users u LEFT JOIN companies c ON u.company_id = c.id
        WHERE u.email = ?`,
       [email.toLowerCase()]
@@ -56,6 +56,17 @@ export async function POST(request: NextRequest) {
           message: "Invalid email or password",
         },
         { status: 401 }
+      );
+    }
+
+    // Check email verification
+    if (!user.email_verified) {
+      return NextResponse.json<AuthResponse>(
+        {
+          success: false,
+          message: "EMAIL_NOT_VERIFIED",
+        },
+        { status: 403 }
       );
     }
 

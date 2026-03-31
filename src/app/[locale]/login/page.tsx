@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginInput } from "@/lib/validations/auth";
@@ -19,6 +19,7 @@ import { AuthTransition, StaggeredTransition, useButtonAnimation } from "@/compo
 import { toast } from "sonner";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, useRouter, usePathname } from "@/i18n/navigation";
+import { useSearchParams } from "next/navigation";
 
 interface AuthResponse {
   success: boolean;
@@ -38,6 +39,7 @@ export default function LoginPage() {
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations("Login");
+  const searchParams = useSearchParams();
   const selectedLanguage = LANGUAGES.find((lang) => lang.code === locale) ?? LANGUAGES[0];
 
   const { register, handleSubmit: rhfSubmit, formState: { errors: fieldErrors } } = useForm<LoginInput>({
@@ -48,7 +50,20 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState("");
+  const [emailNotVerified, setEmailNotVerified] = useState(false);
+  const [lastEmail, setLastEmail] = useState("");
+  const [resendingVerification, setResendingVerification] = useState(false);
   const buttonAnimation = useButtonAnimation();
+
+  // Handle verify email query params
+  useEffect(() => {
+    const verify = searchParams.get("verify");
+    if (verify === "success") toast.success(t("verifySuccess"));
+    else if (verify === "already") toast.info(t("verifyAlready"));
+    else if (verify === "expired") toast.error(t("verifyExpired"));
+    else if (verify === "invalid") toast.error(t("verifyInvalid"));
+    else if (verify === "error") toast.error(t("error"));
+  }, [searchParams, t]);
 
   const switchLocale = (newLocale: string) => {
     router.replace(pathname, { locale: newLocale as "es" | "en" | "fr" });
@@ -57,6 +72,7 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginInput) => {
     setIsLoading(true);
     setServerError("");
+    setEmailNotVerified(false);
 
     try {
       const response = await fetch("/api/auth/login", {
@@ -71,6 +87,10 @@ export default function LoginPage() {
         toast.success(t("loginSuccess"));
         router.push("/dashboard");
         router.refresh();
+      } else if (result.message === "EMAIL_NOT_VERIFIED") {
+        setEmailNotVerified(true);
+        setLastEmail(data.email);
+        setServerError(t("emailNotVerified"));
       } else {
         setServerError(result.message);
         toast.error(t("loginError"));
@@ -83,6 +103,28 @@ export default function LoginPage() {
     }
   };
 
+  const handleResendVerification = async () => {
+    if (!lastEmail) return;
+    setResendingVerification(true);
+    try {
+      const res = await fetch("/api/auth/resend-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: lastEmail, locale }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success(t("verificationResent"));
+      } else {
+        toast.error(data.message);
+      }
+    } catch {
+      toast.error(t("error"));
+    } finally {
+      setResendingVerification(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-landing-light dark:bg-slate-900 flex flex-col">
       <main className="flex-1 flex items-center justify-center p-4">
@@ -91,10 +133,14 @@ export default function LoginPage() {
             <StaggeredTransition delay={0.1}>
               <div className="flex items-center justify-between mb-6">
                 <Link href="/" className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white text-lg">✨</span>
-                  </div>
-                  <span className="font-bold text-2xl text-brand-900">FASHIONS DEN</span>
+                  <Image
+                    src="/images/brand/logo-dark.png"
+                    alt="FashionsDen"
+                    width={200}
+                    height={44}
+                    className="h-9 w-auto"
+                    priority
+                  />
                 </Link>
 
                 <DropdownMenu>
@@ -126,6 +172,16 @@ export default function LoginPage() {
               <StaggeredTransition delay={0.2}>
                 <div className="animate-in fade-in zoom-in-95 duration-200 mb-4 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg">
                   <p className="text-sm text-red-600">{serverError}</p>
+                  {emailNotVerified && (
+                    <button
+                      type="button"
+                      onClick={handleResendVerification}
+                      disabled={resendingVerification}
+                      className="mt-2 text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors disabled:opacity-50"
+                    >
+                      {resendingVerification ? t("resendingVerification") : t("resendVerification")}
+                    </button>
+                  )}
                 </div>
               </StaggeredTransition>
             )}
@@ -168,7 +224,7 @@ export default function LoginPage() {
                 </button>
                 {fieldErrors.password && <p className="text-xs text-red-400">{fieldErrors.password.message}</p>}
                 <div className="flex justify-end">
-                  <button type="button" className="text-sm text-brand-600 hover:text-brand-700 font-medium transition-colors">{t("forgotPassword")}</button>
+                  <Link href="/forgot-password" className="text-sm text-brand-600 hover:text-brand-700 font-medium transition-colors">{t("forgotPassword")}</Link>
                 </div>
               </div>
 
