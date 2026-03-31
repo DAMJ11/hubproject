@@ -6,7 +6,7 @@
     "dev": "next dev -H 0.0.0.0 --turbopack",
     "build": "prisma generate && next build",
     "postinstall": "prisma generate",
-    "start": "prisma migrate deploy && next start",
+    "start": "node prisma/migrate-prod.mjs && next start",
     "lint": "bunx tsc --noEmit && next lint",
     "format": "bunx biome format --write",
     "prisma:generate": "prisma generate",
