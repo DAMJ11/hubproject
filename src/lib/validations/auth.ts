@@ -5,7 +5,7 @@ export const loginSchema = z.object({
   password: z.string().min(1, "La contraseña es requerida"),
 });
 
-const registerBase = z.object({
+export const registerBase = z.object({
   email: z.email("Email inválido"),
   password: z
     .string()
@@ -29,6 +29,8 @@ const registerBase = z.object({
     .max(200, "Nombre de empresa demasiado largo"),
   termsAccepted: z.literal(true, "Debes aceptar los términos y condiciones"),
 });
+
+export const registerServerSchema = registerBase.omit({ confirmPassword: true });
 
 export const registerSchema = registerBase.refine(
   (data) => data.password === data.confirmPassword,

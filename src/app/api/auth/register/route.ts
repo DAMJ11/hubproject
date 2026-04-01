@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { query, queryOne } from "@/lib/db";
 import pool from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
-import { registerSchema } from "@/lib/validations/auth";
+import { registerServerSchema } from "@/lib/validations/auth";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { sendVerificationEmail } from "@/lib/email";
 import { randomBytes } from "crypto";
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const parsed = registerSchema.safeParse(body);
+    const parsed = registerServerSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json<AuthResponse>(
         { success: false, message: parsed.error.issues[0]?.message || "Datos inválidos" },

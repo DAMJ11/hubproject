@@ -5,12 +5,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
+import { Rocket, MessageSquare, Factory } from "lucide-react";
 
-const stepIcons = [
-  "https://ext.same-assets.com/1292233952/2736336818.png",
-  "https://ext.same-assets.com/1292233952/2052961348.png",
-  "https://ext.same-assets.com/1292233952/3200581809.png",
-];
+const stepIcons = [Rocket, MessageSquare, Factory];
 
 const featureImages = [
   "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=600&h=400&fit=crop",
@@ -29,23 +26,23 @@ export default async function ParaFabricantesPage() {
     <main className="min-h-screen">
       <Header />
 
-      <section className="bg-gradient-to-b from-landing-gradient to-white dark:from-slate-900 dark:to-slate-800 py-16 md:py-24">
+      <section className="bg-gradient-to-b from-[#E7DDFF] to-white dark:from-slate-900 dark:to-slate-800 py-16 md:py-24">
         <div className="container-custom mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-brand-900 dark:text-white mb-6">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#745E96] dark:text-white mb-6">
             {t("heroTitle")}
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">
+          <p className="text-lg md:text-xl text-[#9279BA] dark:text-gray-400 max-w-2xl mx-auto mb-8">
             {t("heroSubtitle")}
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link href="https://app.projecthub.com/register">
-              <Button className="bg-brand-900 hover:bg-brand-900 text-white rounded-full px-8 py-6 text-lg font-medium">
+          <div className="flex flex-wrap justify-center gap-4 mt-8">
+            <Link href="/register">
+              <Button className="bg-[#7e7cf3] hover:bg-[#6a68e0] text-white rounded-full px-8 py-6 text-lg font-medium">
                 {t("joinNow")}
               </Button>
             </Link>
             <Button
               variant="outline"
-              className="border-2 border-brand-900 text-brand-900 hover:bg-brand-900 hover:text-white rounded-full px-8 py-6 text-lg font-medium"
+              className="border-2 border-[#7e7cf3] text-[#7e7cf3] hover:bg-[#7e7cf3] hover:text-white rounded-full px-8 py-6 text-lg font-medium"
             >
               {t("learnMore")}
             </Button>
@@ -66,20 +63,22 @@ export default async function ParaFabricantesPage() {
         <div className="container-custom mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <h2 className="text-4xl md:text-5xl font-bold text-brand-900 dark:text-white leading-tight">
+              <h2 className="text-3xl md:text-4xl font-bold text-[#745E96] dark:text-white leading-tight">
                 {t("platformTitle")}
               </h2>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
+              <p className="text-[#9279BA] dark:text-gray-400 leading-relaxed text-base">
                 {t("platformText1")}
               </p>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
+              <p className="text-[#9279BA] dark:text-gray-400 leading-relaxed text-base">
                 {t("platformText2")}
               </p>
-              <Link href="https://app.projecthub.com/register">
-                <Button className="bg-brand-900 hover:bg-brand-900 text-white rounded-full px-8 py-6 text-lg font-medium">
+              <div className="mt-8">
+              <Link href="/register">
+                <Button className="bg-[#7e7cf3] hover:bg-[#6a68e0] text-white rounded-full px-8 py-6 text-lg font-medium">
                   {t("joinNow")}
                 </Button>
               </Link>
+              </div>
             </div>
             <div className="relative">
               <Image
@@ -94,10 +93,10 @@ export default async function ParaFabricantesPage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-landing-cta">
+      <section className="py-16 md:py-24 bg-[#7e7cf3]">
         <div className="container-custom mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
               {t("howItWorksTitle")}
             </h2>
             <p className="text-white/80 text-lg">
@@ -105,24 +104,19 @@ export default async function ParaFabricantesPage() {
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            {stepIcons.map((icon, index) => (
+            {stepIcons.map((StepIcon, index) => (
               <Card
                 key={index}
                 className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300"
               >
                 <CardContent className="p-8 text-center">
-                  <div className="w-24 h-24 mx-auto mb-6 relative">
-                    <Image
-                      src={icon}
-                      alt={t(`steps.${index}.title`)}
-                      fill
-                      className="object-contain"
-                    />
+                  <div className="w-24 h-24 mx-auto mb-6 flex items-center justify-center">
+                    <StepIcon size={64} color="#7e7cf3" strokeWidth={1.5} />
                   </div>
-                  <h3 className="text-xl font-bold text-brand-900 dark:text-white mb-4">
+                  <h3 className="text-xl font-bold text-[#745E96] dark:text-white mb-4">
                     {t(`steps.${index}.title`)}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400">{t(`steps.${index}.desc`)}</p>
+                  <p className="text-[#9279BA] dark:text-gray-400 text-base">{t(`steps.${index}.desc`)}</p>
                 </CardContent>
               </Card>
             ))}
@@ -142,10 +136,10 @@ export default async function ParaFabricantesPage() {
               <div
                 className={`space-y-4 ${featureReverse[index] ? "lg:order-2" : ""}`}
               >
-                <h3 className="text-2xl md:text-3xl font-bold text-brand-900 dark:text-white">
+                <h3 className="text-2xl md:text-3xl font-bold text-[#745E96] dark:text-white">
                   {t(`features.${index}.title`)}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
+                <p className="text-[#9279BA] dark:text-gray-400 leading-relaxed text-base">
                   {t(`features.${index}.desc`)}
                 </p>
               </div>
@@ -163,82 +157,55 @@ export default async function ParaFabricantesPage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-white dark:bg-slate-900">
+      <section className="py-16 md:py-24 bg-[#E7DDFF]/30 dark:bg-slate-900">
         <div className="container-custom mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-brand-900 dark:text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#745E96] dark:text-white mb-4">
               {t("pricingTitle")}
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto mb-8">
+            <p className="text-[#9279BA] dark:text-gray-400 text-lg max-w-2xl mx-auto">
               {t("pricingSubtitle")}
             </p>
-            <Button
-              variant="outline"
-              className="rounded-full px-8 py-6 border-2 border-brand-900 text-brand-900 hover:bg-brand-900 hover:text-white"
-            >
-              {t("viewComparison")}
-            </Button>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 mt-12">
+          <div className="grid md:grid-cols-3 gap-8">
             {[0, 1, 2].map((index) => (
               <Card
                 key={index}
                 className={`relative overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-2 ${
                   planHighlighted[index]
-                    ? "border-2 border-brand-600 shadow-xl"
-                    : "border shadow-lg"
+                    ? "border-2 border-[#7e7cf3] shadow-xl"
+                    : "border border-[#D1C1F2] shadow-lg"
                 }`}
               >
                 <CardContent className="p-8 text-center">
-                  <div className="flex justify-center mb-6">
-                    <svg
-                      className="w-12 h-12"
-                      viewBox="0 0 40 40"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M20 5L35 15V30L20 40L5 30V15L20 5Z"
-                        fill={planHighlighted[index] ? "#4b5869" : "#2d3748"}
-                      />
-                      <path
-                        d="M20 12L28 17V27L20 32L12 27V17L20 12Z"
-                        fill="white"
-                      />
-                      <path
-                        d="M20 18L24 21V27L20 30L16 27V21L20 18Z"
-                        fill={planHighlighted[index] ? "#4b5869" : "#2d3748"}
-                      />
-                    </svg>
-                  </div>
-
-                  <h3 className="text-sm font-bold tracking-wider text-gray-500 dark:text-gray-400 mb-4">
+                  <h3 className="text-sm font-bold tracking-wider text-[#9279BA] dark:text-gray-400 mb-4">
                     {t(`plans.${index}.name`)}
                   </h3>
 
                   <div className="flex items-baseline justify-center mb-4">
-                    <span className="text-4xl font-bold text-brand-600">
+                    <span className="text-lg text-[#7e7cf3] mr-1">$</span>
+                    <span className="text-4xl font-bold text-[#7e7cf3]">
                       {t(`plans.${index}.price`)}
                     </span>
-                    <span className="text-xl text-brand-600 ml-1">â‚¬</span>
-                    <span className="text-gray-600 dark:text-gray-400 ml-1">{t("perMonth")}</span>
+                    <span className="text-[#9279BA] dark:text-gray-400 ml-1">{t("perMonth")}</span>
                   </div>
 
-                  <p className="text-gray-600 dark:text-gray-400 mb-6 min-h-[48px]">
+                  <p className="text-[#9279BA] dark:text-gray-400 mb-6 min-h-[48px] text-base">
                     {t(`plans.${index}.desc`)}
                   </p>
 
-                  <Button
-                    variant="outline"
-                    className={`rounded-full px-8 py-6 w-full font-medium transition-all ${
-                      planHighlighted[index]
-                        ? "border-2 border-brand-600 text-brand-600 hover:bg-brand-600 hover:text-white"
-                        : "border-2 border-brand-900 text-brand-900 hover:bg-brand-900 hover:text-white"
-                    }`}
-                  >
-                    {t("learnMorePlan")}
-                  </Button>
+                  <Link href="/register">
+                    <Button
+                      className={`rounded-full px-8 py-6 w-full font-medium transition-all ${
+                        planHighlighted[index]
+                          ? "bg-[#7e7cf3] hover:bg-[#6a68e0] text-white"
+                          : "bg-white border-2 border-[#7e7cf3] text-[#7e7cf3] hover:bg-[#7e7cf3] hover:text-white"
+                      }`}
+                    >
+                      {t("learnMorePlan")}
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             ))}
@@ -246,23 +213,25 @@ export default async function ParaFabricantesPage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-landing-neutral dark:bg-slate-800">
+      <section className="py-16 md:py-24 bg-[#E7DDFF]/20 dark:bg-slate-800">
         <div className="container-custom mx-auto px-4">
           <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-lg p-8 md:p-12 max-w-4xl mx-auto">
             <div className="flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="space-y-4">
-                <h2 className="text-3xl md:text-4xl font-bold text-brand-900 dark:text-white">
+                <h2 className="text-3xl md:text-4xl font-bold text-[#745E96] dark:text-white">
                   {t("ctaTitle")}
                 </h2>
-                <p className="text-gray-600 dark:text-gray-400 text-lg">
+                <p className="text-[#9279BA] dark:text-gray-400 text-base">
                   {t("ctaSubtitle")}
                 </p>
               </div>
-              <Link href="https://app.projecthub.com/register">
-                <Button className="bg-brand-900 hover:bg-brand-900 text-white rounded-full px-8 py-6 text-lg font-medium whitespace-nowrap">
+              <div className="mt-8">
+              <Link href="/register">
+                <Button className="bg-[#7e7cf3] hover:bg-[#6a68e0] text-white rounded-full px-8 py-6 text-lg font-medium whitespace-nowrap">
                   {t("ctaButton")}
                 </Button>
               </Link>
+              </div>
             </div>
           </div>
         </div>

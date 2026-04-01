@@ -1,0 +1,157 @@
+ANÁLISIS DE CAMBIOS — 1 Abril 2026
+===================================
+Solicitante: Duber
+Archivos afectados: messages/en.json · messages/es.json · messages/fr.json
+                    src/app/[locale]/sobre-nosotros/page.tsx
+                    src/components/PricingSection.tsx (solo si hay cambio estructural)
+
+Estado: PENDIENTE DE AUTORIZACIÓN
+================================================================================
+
+## BLOQUE 1 — About > Our Mission
+Archivo: messages/en.json, es.json, fr.json → clave "About.missionText"
+
+  ACTUAL (EN): "Simplify the sustainable fashion production process by connecting brands
+               with the best European manufacturers and providing the tools needed to
+               create conscious and ethical collections."
+
+  NUEVO  (EN): "Our mission is to remove the complexity of building a fashion brand.
+               Connecting every stage of the process into one seamless platform."
+
+  NUEVO  (ES): "Nuestra misión es eliminar la complejidad de construir una marca de moda.
+               Conectando cada etapa del proceso en una sola plataforma integrada."
+
+  NUEVO  (FR): "Notre mission est de supprimer la complexité de la construction d'une
+               marque de mode. En connectant chaque étape du processus sur une seule
+               plateforme intégrée."
+
+--------------------------------------------------------------------------------
+
+## BLOQUE 2 — About > Our Values (quitar puntos finales)
+Archivo: messages/en.json, es.json, fr.json → clave "About.values[0-3].desc"
+
+  EN (4 valores — quitar "." al final):
+    0: "We believe in a future where fashion and the environment coexist in harmony"  (sin punto)
+    1: "We promote transparency throughout the supply chain"
+    2: "We connect brands and manufacturers to create lasting relationships"
+    3: "We use technology to simplify complex processes"
+
+  ES (4 valores — quitar "." al final):
+    0: "Creemos en un futuro donde la moda y el medio ambiente coexistan en armonía"
+    1: "Fomentamos la transparencia en toda la cadena de suministro"
+    2: "Conectamos marcas y fabricantes para crear relaciones duraderas"
+    3: "Utilizamos tecnología para simplificar procesos complejos"
+
+  FR (4 valores — quitar "." al final):
+    0: "Nous croyons en un avenir où la mode et l'environnement coexistent en harmonie"
+    1: "Nous promouvons la transparence dans toute la chaîne d'approvisionnement"
+    2: "Nous connectons marques et fabricants pour créer des relations durables"
+    3: "Nous utilisons la technologie pour simplifier les processus complexes"
+
+--------------------------------------------------------------------------------
+
+## BLOQUE 3 — About > CTA Title
+Archivo: messages/en.json, es.json, fr.json → clave "About.ctaTitle"
+
+  ACTUAL (EN): "Ready To Join The Sustainable Fashion Revolution?"
+  NUEVO  (EN): "Ready to build, launch, and scale your fashion brand?"
+
+  ACTUAL (ES): "¿Listo Para Unirte A La Revolución De La Moda Sostenible?"
+  NUEVO  (ES): "¿Listo para construir, lanzar y escalar tu marca de moda?"
+
+  ACTUAL (FR): "Pret a rejoindre la revolution de la mode durable ?"
+  NUEVO  (FR): "Prêt à construire, lancer et développer votre marque de mode ?"
+
+  NOTA ADICIONAL: El botón "ctaCreate" del About CTA aún apunta a
+  "https://app.manufy.com/register" → se corrige a "/register" en page.tsx.
+
+--------------------------------------------------------------------------------
+
+## BLOQUE 4 — Pricing: Para Fabricantes (supplierPlans)
+Archivo: messages/en.json, es.json, fr.json → clave "Pricing.supplierPlans"
+         NOTA: El componente PricingSection.tsx usa 3 features por supplier plan (SUPPLIER_FEATURES_COUNT = [3,3,3])
+               — posiblemente habrá que agregar una feature al plan 0 para reflejar "primer mes gratis"
+
+  Plan 0 — Standard (era: Free/$0):
+    Precio:    "$199"
+    Desc EN:   "Free first month. Then $199/mo. For manufacturers starting on the platform."
+    Desc ES:   "Primer mes gratis. Luego $199/mes. Para fabricantes que empiezan."
+    Features:  "Free first month" | "Access to projects" | "Messaging" | "Receive invitations"
+    CTA:       "Start free"
+
+  Plan 1 — Pro (era: $99):
+    Precio:    "$299"
+    Desc EN:   "For manufacturers seeking more visibility. Limited projects per month."
+    Desc ES:   "Para fabricantes con más visibilidad. Proyectos limitados por mes."
+    Features:  sin cambio estructural (priority visibility, more invitations, verified badge)
+    CTA:       sin cambio
+
+  Plan 2 — Elite (era: $599):
+    Precio:    "$599"  (sin cambio de precio)
+    Desc EN:   "For manufacturers with unlimited capacity and full platform access."
+    Desc ES:   "Para fabricantes con capacidad ilimitada y acceso completo."
+    Features:  "Unlimited projects" | "Maximum visibility" | "Priority matching"
+    CTA:       sin cambio
+
+  ⚠️ PREGUNTA: El array SUPPLIER_FEATURES_COUNT en PricingSection.tsx es [3,3,3].
+     Si el plan Standard pasa a tener 4 features (añadir "primer mes gratis"),
+     se necesita cambiar [3,3,3] → [4,3,3] en el componente. ¿Confirmas?
+
+--------------------------------------------------------------------------------
+
+## BLOQUE 5 — Pricing: Para Marcas (brandPlans)
+Archivo: messages/en.json, es.json, fr.json → clave "Pricing.brandPlans"
+         NOTA: PLAN_FEATURES_COUNT actual = [3,4,4]
+
+  Plan 0 — Starter (era: $29):
+    Precio:    "$29"  (primer mes) — la plataforma mostrará "$29" pero describir en desc que luego son $99
+    Desc EN:   "First month $29, then $99/mo. Includes a free tech pack template."
+    Desc ES:   "Primer mes $29, luego $99/mes. Incluye tech pack template de regalo."
+    Features:  "1 active project" | "Standard matching" | "Free tech pack template" → 3 features (sin cambio estructural)
+    CTA:       "Start with Starter"
+
+  Plan 1 — Scale (era: $149):
+    Precio:    "$199"
+    Desc EN:   "For growing brands. Includes 1 tech pack review + priority support."
+    Desc ES:   "Para marcas en crecimiento. Incluye revisión de tech pack + soporte prioritario."
+    Features:  actualizar a: "Up to 4 active projects" | "Priority matching" | "Tech pack review" | "Priority support"
+    CTA:       "Choose Scale"
+
+  Plan 2 — Enterprise (era: $499):
+    Precio:    "$499"  (sin cambio)
+    Desc EN:   "For brands with large-scale operations. Includes 1 tech pack creation/month."
+    Desc ES:   "Para marcas a gran escala. Incluye creación de tech pack por mes."
+    Features:  actualizar a: "Unlimited projects" | "Dedicated support" | "Tech pack creation/month" | "Top-tier partners"
+    CTA:       "Contact sales"
+
+  NOTA: PLAN_FEATURES_COUNT pasa de [3,4,4] → sigue igual [3,4,4]
+        (Starter mantiene 3, Scale tiene 4, Enterprise tiene 4)
+
+--------------------------------------------------------------------------------
+
+## BLOQUE 6 — "esta sección se mueva" ← NECESITA ACLARACIÓN
+El screenshot adjunto muestra la sección "How Fashion Hubb works" en el home.
+En el código esta sección ya dice "How FashionsDen works" (Platform section).
+
+  PUNTO PENDIENTE: ¿Qué sección quieres mover y a dónde?
+  Opciones posibles:
+    a) ¿Mover la sección de Pricing para que aparezca en el homepage (después del Hero)?
+    b) ¿Cambiar el orden de secciones en la homepage?
+    c) ¿Mover el "How FashionsDen works" arriba/abajo en la página?
+
+  → Confirmar antes de tocar el orden de secciones.
+
+================================================================================
+RESUMEN DE ARCHIVOS Y CAMBIOS
+================================================================================
+
+  messages/en.json     → Bloques 1, 2, 3, 4, 5
+  messages/es.json     → Bloques 1, 2, 3, 4, 5
+  messages/fr.json     → Bloques 1, 2, 3, 4, 5
+  sobre-nosotros/page.tsx  → Bloque 3 (fix link app.manufy.com → /register)
+  PricingSection.tsx   → Posible cambio SUPPLIER_FEATURES_COUNT [3,3,3]→[4,3,3] (Bloque 4)
+
+  TOTAL CAMBIOS CLAROS:  Bloques 1-5 listos para aplicar
+  PENDIENTE ACLARACIÓN:  Bloque 6 (sección a mover)
+
+================================================================================

@@ -60,7 +60,7 @@ export default function RegisterPage() {
 
   const { register, handleSubmit: rhfSubmit, watch, setValue, formState: { errors: fieldErrors } } = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { role: "brand", termsAccepted: false as unknown as true },
+    defaultValues: { role: "brand", termsAccepted: false as unknown as true, firstName: "", lastName: "", email: "", password: "", confirmPassword: "", companyName: "" },
     mode: "onTouched",
   });
 

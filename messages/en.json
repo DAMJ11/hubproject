@@ -45,7 +45,8 @@
   },
   "Hero": {
     "pill": "Fashion production, simplified",
-    "titleA": "The platform where fashion brands",
+    "titleA": "The platform",
+    "titleC": "where fashion brands",
     "titleB": "are built",
     "subtitle": "From first idea to final production, work with verified partners across Latin America — all managed in one place.",
     "highlights": {
@@ -62,20 +63,20 @@
       "2": "On-time delivery"
     },
     "categories": {
-      "0": "Streetwear",
-      "1": "Denim",
-      "2": "Activewear",
-      "3": "Outerwear",
-      "4": "Womenswear",
-      "5": "Accessories"
+      "0": "Design",
+      "1": "Tech Pack",
+      "2": "Sourcing",
+      "3": "Sampling",
+      "4": "Production",
+      "5": "Branding"
     },
     "categoryDesc": {
-      "0": "Oversized cuts, embroidery and screen-print",
-      "1": "Washes, technical fit and premium finishes",
-      "2": "Technical fabrics and high-performance seams",
-      "3": "Jackets, padding and waterproof processes",
-      "4": "Pattern making, fine confection and boutique finish",
-      "5": "Caps, bags and trims development"
+      "0": "Concepts, sketches and creative direction",
+      "1": "Technical specifications for production",
+      "2": "Materials, trims and supplier matching",
+      "3": "Prototype development and revisions",
+      "4": "Manufacturing with trusted partners",
+      "5": "Content, visuals and brand support"
     }
   },
   "Platform": {
@@ -223,45 +224,45 @@
       "0": {
         "name": "Starter",
         "price": "$29",
-        "desc": "For brands starting their first production",
-        "features": { "0": "1 active project", "1": "Standard matching", "2": "Basic support" },
+        "desc": "First month $29, then $99/mo. Includes a free tech pack template.",
+        "features": { "0": "1 active project", "1": "Standard matching", "2": "Basic support", "3": "Free tech pack template" },
         "cta": "Start with Starter"
       },
       "1": {
         "name": "Scale",
-        "price": "$149",
-        "desc": "For growing brands with frequent drops",
-        "features": { "0": "Up to 4 active projects", "1": "Priority matching", "2": "Better partners", "3": "Production tracking" },
+        "price": "$199",
+        "desc": "For growing brands. Includes 1 tech pack review + priority support.",
+        "features": { "0": "Up to 4 active projects", "1": "Priority matching", "2": "Tech pack review", "3": "Priority support" },
         "cta": "Choose Scale"
       },
       "2": {
         "name": "Enterprise",
         "price": "$499",
-        "desc": "For brands with large-scale operations",
-        "features": { "0": "Unlimited projects", "1": "Dedicated support", "2": "Fast-track production", "3": "Top-tier partners" },
+        "desc": "For large-scale brands. Includes 1 tech pack creation per month.",
+        "features": { "0": "Unlimited projects", "1": "Dedicated support", "2": "Tech pack creation/month", "3": "Top-tier partners" },
         "cta": "Contact sales"
       }
     },
     "supplierPlans": {
       "0": {
         "name": "Standard",
-        "price": "Free",
-        "desc": "For manufacturers looking to receive projects",
-        "features": { "0": "Access to projects", "1": "Receive invitations", "2": "Messaging" },
+        "price": "$199",
+        "desc": "Free first month, then $199/mo. For manufacturers starting on the platform.",
+        "features": { "0": "Free first month", "1": "Access to projects", "2": "Receive invitations", "3": "Messaging" },
         "cta": "Start free"
       },
       "1": {
         "name": "Pro",
-        "price": "$99",
-        "desc": "For manufacturers seeking more visibility",
+        "price": "$299",
+        "desc": "For manufacturers seeking more visibility. Limited projects per month.",
         "features": { "0": "Priority visibility", "1": "More project invitations", "2": "Verified badge" },
         "cta": "Choose Pro"
       },
       "2": {
         "name": "Elite",
         "price": "$599",
-        "desc": "For manufacturers wanting premium access",
-        "features": { "0": "Maximum visibility", "1": "Priority matching", "2": "Access to best projects" },
+        "desc": "Unlimited access. For manufacturers with full platform capacity.",
+        "features": { "0": "Unlimited projects", "1": "Maximum visibility", "2": "Priority matching" },
         "cta": "Contact sales"
       }
     }
@@ -312,10 +313,10 @@
     "title": "News",
     "readMore": "Read More",
     "posts": {
-      "0": { "title": "ProjectHub launches new platform for sustainable manufacturers", "date": "Feb 15, 2024" },
+      "0": { "title": "FashionsDen launches new platform for sustainable manufacturers", "date": "Feb 15, 2024" },
       "1": { "title": "Sustainable fashion grows 25% in Europe", "date": "Feb 10, 2024" },
       "2": { "title": "New sustainability regulations in the EU", "date": "Feb 5, 2024" },
-      "3": { "title": "ProjectHub expands its manufacturer network in Portugal", "date": "Feb 1, 2024" },
+      "3": { "title": "FashionsDen expands its manufacturer network in Portugal", "date": "Feb 1, 2024" },
       "4": { "title": "Circular fashion trends for 2024", "date": "Jan 28, 2024" },
       "5": { "title": "How brands are adopting sustainable practices", "date": "Jan 20, 2024" }
     }
@@ -337,19 +338,23 @@
   },
   "About": {
     "title": "About Us",
-    "intro": "ProjectHub is Europe's first B2B sustainable sourcing platform. Our mission is to make sustainable fashion accessible to all brands, connecting them with European manufacturers committed to ethical and environmental practices.",
-    "intro2": "Founded with the vision of transforming the fashion industry, we work every day to create an ecosystem where sustainability is the norm, not the exception.",
-    "joinUs": "Join Us",
+    "intro": "FashionsDen is a global platform designed to support fashion brands at every stage of their journey — from idea to execution, and beyond.",
+    "intro2": "We bring together everything needed to build and scale a brand in one place: design, tech packs, sourcing, manufacturing, branding, content creation, and growth.",
+    "intro3": "Instead of navigating a fragmented industry with multiple suppliers, freelancers, and production partners, FashionsDen gives you a single, connected ecosystem where everything works together.",
+    "intro4": "Whether you're starting with just an idea or managing a growing brand, we provide the tools, network, and infrastructure to move forward with clarity and speed.",
+    "intro5": "Our mission is to simplify the fashion industry — making it more accessible, efficient, and scalable for brands worldwide.",
+    "intro6": "Because building a fashion brand shouldn't require managing chaos.",
+    "joinUs": "Join FashionsDen",
     "missionTitle": "Our Mission",
-    "missionText": "Simplify the sustainable fashion production process by connecting brands with the best European manufacturers and providing the tools needed to create conscious and ethical collections.",
+    "missionText": "Our mission is to remove the complexity of building a fashion brand. Connecting every stage of the process into one seamless platform.",
     "valuesTitle": "Our Values",
     "values": {
-      "0": { "title": "Sustainability", "desc": "We believe in a future where fashion and the environment coexist in harmony." },
-      "1": { "title": "Transparency", "desc": "We promote transparency throughout the supply chain." },
-      "2": { "title": "Collaboration", "desc": "We connect brands and manufacturers to create lasting relationships." },
-      "3": { "title": "Innovation", "desc": "We use technology to simplify complex processes." }
+      "0": { "title": "Sustainability", "desc": "We believe in a future where fashion and the environment coexist in harmony" },
+      "1": { "title": "Transparency", "desc": "We promote transparency throughout the supply chain" },
+      "2": { "title": "Collaboration", "desc": "We connect brands and manufacturers to create lasting relationships" },
+      "3": { "title": "Innovation", "desc": "We use technology to simplify complex processes" }
     },
-    "ctaTitle": "Ready To Join The Sustainable Fashion Revolution?",
+    "ctaTitle": "Ready to build, launch, and scale your fashion brand?",
     "ctaCreate": "Create An Account",
     "ctaContact": "Contact"
   },
@@ -360,7 +365,7 @@
     "learnMore": "Learn More",
     "platformTitle": "Europe's First Sustainable Sourcing Platform",
     "platformText1": "You're ready to produce your fashion locally and sustainably — great! But right now, finding the perfect European manufacturer for your product can be a real hassle. You may have been browsing the internet, visiting trade shows, or even diving into social media. But those methods can eat up your time, drain your wallet, and in the worst case, lead you to a disappointing manufacturer.",
-    "platformText2": "That's where we come in: introducing ProjectHub, Europe's first sustainable sourcing platform. Forget the headaches and welcome a super simple way to find what you need!",
+    "platformText2": "That's where we come in: introducing FashionsDen, Europe's first sustainable sourcing platform. Forget the headaches and welcome a super simple way to find what you need!",
     "howItWorksTitle": "Create Fashion The Easy Way",
     "howItWorksSubtitle": "Watch your idea come to life in a few simple steps.",
     "steps": {
@@ -382,38 +387,37 @@
     "heroSubtitle": "Get visible to brands across Europe.",
     "joinNow": "Join Now",
     "learnMore": "Learn More",
-    "platformTitle": "Europe's First Sustainable Sourcing Platform",
-    "platformText1": "You love creating quality products, not spending hours trying to land your next client. But between trade shows, unsolicited emails and social media chaos, it's easy to burn out before even closing a sale.",
-    "platformText2": "That's why we created ProjectHub, Europe's first sustainable sourcing platform. We connect you with a community of sustainable brands actively looking for partners like you so you can grow your business stress-free.",
+    "platformTitle": "The Future of Fashion Starts Here",
+    "platformText1": "You didn't start your brand to manage endless suppliers, chase contacts, or piece together production across multiple platforms.",
+    "platformText2": "But that's exactly what the fashion industry forces you to do. FashionsDen changes that. We bring every stage of building a fashion brand into one place — from design and development to sourcing, manufacturing, and beyond. No more fragmentation. No more guesswork. No more wasted time. Just one platform to build, launch, and scale your brand with clarity and control.",
     "howItWorksTitle": "Create Fashion The Easy Way",
     "howItWorksSubtitle": "Help your next client in a few simple steps.",
     "steps": {
-      "0": { "title": "Find New Leads", "desc": "Receive updates on the latest RFQs in your production categories." },
+      "0": { "title": "Start Your Project", "desc": "Whether you have a full tech pack or just an idea, you can get started. Upload your designs, reference photos or simply describe what you want to create — and we'll connect you with the right partners to bring it to life." },
       "1": { "title": "Chat And Negotiate", "desc": "Negotiate in your own language using our real-time translated chat." },
       "2": { "title": "Start Production", "desc": "Close a deal and start producing for your newly found lead." }
     },
     "features": {
-      "0": { "title": "Fair Pricing For Sustainability", "desc": "Sustainable manufacturing can't match the prices brands are used to in fast fashion. We're on a mission to educate brands about the true value of sustainable products to ensure you receive fair compensation for your commitment to sustainability." },
-      "1": { "title": "Available In Your Language", "desc": "Chat, negotiate and easily manage your clients on our platform, all in your preferred language. With our handy translation tools, communicating with clients across Europe is a breeze." },
-      "2": { "title": "Support Your Sustainable Business Growth", "desc": "We've got you covered! You can count on our expertise and support every step of the way. Whether it's finding the right leads or improving the sustainability of your business, we're here to help." }
+      "0": { "title": "Fair Pricing. Built on Real Value.", "desc": "Building a fashion brand shouldn't mean choosing between cost, quality, and reliability. FashionsDen connects you with trusted partners who deliver consistent results — with transparent pricing and clear expectations from the start. No hidden costs. No miscommunication. No compromises on quality. Because real value isn't about the lowest price — it's about getting it right the first time." },
+      "1": { "title": "Work Without Language Barriers", "desc": "Collaborate seamlessly with partners, suppliers, and clients — no matter where they are. FashionsDen makes it easy to communicate, negotiate, and manage projects in your preferred language, with built-in tools that keep everything clear and aligned. Because building a global brand shouldn't be limited by language." },
+      "2": { "title": "Built to Support Your Growth", "desc": "FashionsDen gives you the tools, network, and infrastructure to move forward with confidence at every stage. From finding the right partners to managing production and scaling your operations, everything is designed to help you grow faster — without the usual complexity. Because building a fashion brand should feel structured, not overwhelming." }
     },
     "pricingTitle": "Pricing For Manufacturers",
-    "pricingSubtitle": "We offer packages for different production capacities.",
-    "viewComparison": "View Full Comparison",
+    "pricingSubtitle": "Choose the plan that fits your production capacity.",
     "plans": {
-      "0": { "name": "BASIC", "price": "49", "desc": "Ideal for supply chain partners looking to get started." },
-      "1": { "name": "GROWTH", "price": "79", "desc": "The preferred option for established supply chain partners." },
-      "2": { "name": "PROFESSIONAL", "price": "99", "desc": "Unique experience designed for larger companies ready for new leads." }
+      "0": { "name": "STANDARD", "price": "199", "desc": "Ideal for supply chain partners looking to get started." },
+      "1": { "name": "PRO", "price": "299", "desc": "The preferred option for established supply chain partners." },
+      "2": { "name": "ELITE", "price": "599", "desc": "Premium experience for larger companies ready to scale." }
     },
     "perMonth": "/mo",
-    "learnMorePlan": "Learn More",
-    "ctaTitle": "Ready To Get Started?",
-    "ctaSubtitle": "Create an account and dive into your next sustainable fashion adventure!",
+    "learnMorePlan": "Get Started",
+    "ctaTitle": "Ready to build, launch, and scale your fashion brand?",
+    "ctaSubtitle": "Create an account and start building your fashion brand today.",
     "ctaButton": "Create An Account"
   },
   "Sustainability": {
     "title": "Sustainability Policy",
-    "intro": "At ProjectHub, sustainability is not just a buzzword — it's at the core of everything we do. Our sustainability policy guides every decision we make and every partner we work with.",
+    "intro": "At FashionsDen, sustainability is not just a buzzword — it's at the core of everything we do. Our sustainability policy guides every decision we make and every partner we work with.",
     "intro2": "We are committed to transforming the fashion industry towards a more responsible, ethical and environmentally friendly model.",
     "pillarsTitle": "Our Sustainability Pillars",
     "pillarsSubtitle": "These are the fundamental principles that guide our commitment to sustainability.",

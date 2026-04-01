@@ -9,7 +9,7 @@ export default async function CTASection() {
   const t = await getTranslations("CTA");
 
   return (
-    <section id="manufacturers" className="py-20 bg-brand-900 text-white">
+    <section id="manufacturers" className="py-20 bg-[#7e7cf3] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
@@ -27,7 +27,7 @@ export default async function CTASection() {
             </div>
             <div className="mt-10">
               <Link href="/register">
-                <Button size="lg" className="bg-brand-600 text-white hover:bg-brand-700 rounded-lg px-8 h-12">
+                <Button size="lg" className="bg-white text-[#7e7cf3] hover:bg-white/90 rounded-lg px-8 h-12 font-semibold">
                   {t("cta")}
                 </Button>
               </Link>

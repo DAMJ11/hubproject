@@ -39,7 +39,7 @@ export default function Header() {
     () => [
       { name: t("capabilities"), href: "/#servicios" },
       { name: t("howItWorks"), href: "/#como-funciona" },
-      { name: t("manufacturers"), href: "/#manufacturers" },
+      { name: t("manufacturers"), href: "/para-fabricantes" },
       { name: t("plans"), href: "/#precios" },
       { name: t("cases"), href: "/#testimonios" },
     ],

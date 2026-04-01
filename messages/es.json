@@ -2,7 +2,7 @@
   "Header": {
     "capabilities": "Capacidades",
     "howItWorks": "Cómo funciona",
-    "manufacturers": "Manufacturers",
+    "manufacturers": "Fabricantes",
     "plans": "Planes",
     "cases": "Casos",
     "login": "Iniciar sesión",
@@ -15,7 +15,7 @@
     "brandText": "Plataforma B2B para conectar brands y manufacturers en procesos de diseño, desarrollo y producción de moda.",
     "services": "Servicios",
     "company": "Empresa",
-    "manufacturers": "Manufacturers",
+    "manufacturers": "Fabricantes",
     "legal": "Legal",
     "serviceLinks": {
       "0": "Streetwear",
@@ -45,7 +45,8 @@
   },
   "Hero": {
     "pill": "Produccion de moda, simplificada",
-    "titleA": "La plataforma donde las marcas de moda",
+    "titleA": "La plataforma",
+    "titleC": "donde las marcas de moda",
     "titleB": "se construyen",
     "subtitle": "Desde la primera idea hasta la produccion final, trabaja con partners verificados en Latinoamerica — todo gestionado en un solo lugar.",
     "highlights": {
@@ -62,20 +63,20 @@
       "2": "Entrega on-time"
     },
     "categories": {
-      "0": "Streetwear",
-      "1": "Denim",
-      "2": "Activewear",
-      "3": "Outerwear",
-      "4": "Womenswear",
-      "5": "Accesorios"
+      "0": "Diseño",
+      "1": "Tech Pack",
+      "2": "Sourcing",
+      "3": "Muestras",
+      "4": "Producción",
+      "5": "Branding"
     },
     "categoryDesc": {
-      "0": "Cortes oversize, bordado y serigrafia",
-      "1": "Lavados, fit tecnico y acabados premium",
-      "2": "Telas tecnicas y costuras de alto rendimiento",
-      "3": "Chaquetas, padding y procesos impermeables",
-      "4": "Patronaje, confección fina y acabados boutique",
-      "5": "Gorras, bags y desarrollo de trims"
+      "0": "Conceptos, bocetos y dirección creativa",
+      "1": "Especificaciones técnicas para producción",
+      "2": "Materiales, avíos y búsqueda de proveedores",
+      "3": "Desarrollo de prototipos y revisiones",
+      "4": "Fabricación con socios verificados",
+      "5": "Contenido, visuales y apoyo de marca"
     }
   },
   "Platform": {
@@ -223,22 +224,22 @@
       "0": {
         "name": "Starter",
         "price": "$29",
-        "desc": "Para marcas que inician su primera produccion",
-        "features": { "0": "1 proyecto activo", "1": "Matching estandar", "2": "Soporte basico" },
+        "desc": "Primer mes $29, luego $99/mes. Incluye tech pack template de regalo.",
+        "features": { "0": "1 proyecto activo", "1": "Matching estándar", "2": "Soporte básico", "3": "Tech pack template gratis" },
         "cta": "Comenzar con Starter"
       },
       "1": {
         "name": "Scale",
-        "price": "$149",
-        "desc": "Para marcas en crecimiento con drops frecuentes",
-        "features": { "0": "Hasta 4 proyectos activos", "1": "Matching prioritario", "2": "Mejores partners", "3": "Seguimiento de produccion" },
+        "price": "$199",
+        "desc": "Para marcas en crecimiento. Incluye revisión de tech pack + soporte prioritario.",
+        "features": { "0": "Hasta 4 proyectos activos", "1": "Matching prioritario", "2": "Revisión de tech pack", "3": "Soporte prioritario" },
         "cta": "Elegir Scale"
       },
       "2": {
         "name": "Enterprise",
         "price": "$499",
-        "desc": "Para marcas con operacion a gran escala",
-        "features": { "0": "Proyectos ilimitados", "1": "Soporte dedicado", "2": "Produccion fast-track", "3": "Partners top-tier" },
+        "desc": "Para marcas a gran escala. Incluye creación de tech pack por mes.",
+        "features": { "0": "Proyectos ilimitados", "1": "Soporte dedicado", "2": "Creación de tech pack/mes", "3": "Partners top-tier" },
         "cta": "Contactar ventas"
       }
     },
@@ -312,10 +313,10 @@
     "title": "Noticias",
     "readMore": "Leer Más",
     "posts": {
-      "0": { "title": "ProjectHub lanza nueva plataforma para fabricantes sostenibles", "date": "15 Feb 2024" },
+      "0": { "title": "FashionsDen lanza nueva plataforma para fabricantes sostenibles", "date": "15 Feb 2024" },
       "1": { "title": "La moda sostenible crece un 25% en Europa", "date": "10 Feb 2024" },
       "2": { "title": "Nuevas regulaciones de sostenibilidad en la UE", "date": "5 Feb 2024" },
-      "3": { "title": "ProjectHub expande su red de fabricantes en Portugal", "date": "1 Feb 2024" },
+      "3": { "title": "FashionsDen expande su red de fabricantes en Portugal", "date": "1 Feb 2024" },
       "4": { "title": "Tendencias de moda circular para 2024", "date": "28 Ene 2024" },
       "5": { "title": "Cómo las marcas están adoptando prácticas sostenibles", "date": "20 Ene 2024" }
     }
@@ -337,19 +338,23 @@
   },
   "About": {
     "title": "Sobre Nosotros",
-    "intro": "ProjectHub es la primera plataforma de abastecimiento sostenible B2B de Europa. Nuestra misión es hacer que la moda sostenible sea accesible para todas las marcas, conectándolas con fabricantes europeos comprometidos con prácticas éticas y ambientales.",
-    "intro2": "Fundada con la visión de transformar la industria de la moda, trabajamos cada día para crear un ecosistema donde la sostenibilidad sea la norma, no la excepción.",
-    "joinUs": "Únete A Nosotros",
+    "intro": "FashionsDen es una plataforma global diseñada para apoyar a las marcas de moda en cada etapa de su camino — desde la idea hasta la ejecución, y más allá.",
+    "intro2": "Reunimos todo lo necesario para construir y escalar una marca en un solo lugar: diseño, fichas técnicas, sourcing, fabricación, branding, creación de contenido y crecimiento.",
+    "intro3": "En lugar de navegar por una industria fragmentada con múltiples proveedores, freelancers y socios de producción, FashionsDen te ofrece un ecosistema único y conectado donde todo funciona en conjunto.",
+    "intro4": "Ya sea que estés comenzando con solo una idea o gestionando una marca en crecimiento, te proporcionamos las herramientas, la red y la infraestructura para avanzar con claridad y rapidez.",
+    "intro5": "Nuestra misión es simplificar la industria de la moda — haciéndola más accesible, eficiente y escalable para marcas de todo el mundo.",
+    "intro6": "Porque construir una marca de moda no debería requerir gestionar el caos.",
+    "joinUs": "Únete a FashionsDen",
     "missionTitle": "Nuestra Misión",
-    "missionText": "Simplificar el proceso de producción de moda sostenible, conectando marcas con los mejores fabricantes europeos y proporcionando las herramientas necesarias para crear colecciones conscientes y éticas.",
+    "missionText": "Nuestra misión es eliminar la complejidad de construir una marca de moda. Conectando cada etapa del proceso en una sola plataforma integrada.",
     "valuesTitle": "Nuestros Valores",
     "values": {
-      "0": { "title": "Sostenibilidad", "desc": "Creemos en un futuro donde la moda y el medio ambiente coexistan en armonía." },
-      "1": { "title": "Transparencia", "desc": "Fomentamos la transparencia en toda la cadena de suministro." },
-      "2": { "title": "Colaboración", "desc": "Conectamos marcas y fabricantes para crear relaciones duraderas." },
-      "3": { "title": "Innovación", "desc": "Utilizamos tecnología para simplificar procesos complejos." }
+      "0": { "title": "Sostenibilidad", "desc": "Creemos en un futuro donde la moda y el medio ambiente coexistan en armonía" },
+      "1": { "title": "Transparencia", "desc": "Fomentamos la transparencia en toda la cadena de suministro" },
+      "2": { "title": "Colaboración", "desc": "Conectamos marcas y fabricantes para crear relaciones duraderas" },
+      "3": { "title": "Innovación", "desc": "Utilizamos tecnología para simplificar procesos complejos" }
     },
-    "ctaTitle": "¿Listo Para Unirte A La Revolución De La Moda Sostenible?",
+    "ctaTitle": "¿Listo para construir, lanzar y escalar tu marca de moda?",
     "ctaCreate": "Crear Una Cuenta",
     "ctaContact": "Contactar"
   },
@@ -360,7 +365,7 @@
     "learnMore": "Aprende Más",
     "platformTitle": "La Primera Plataforma De Abastecimiento Sostenible De Europa",
     "platformText1": "Estás listo para producir tu moda de forma local y sostenible, ¡genial! Pero ahora mismo, encontrar al fabricante europeo perfecto para tu producto puede ser un verdadero lío. Puede que hayas estado navegando por internet, visitando ferias comerciales o incluso sumergiéndote en las redes sociales. Pero esos métodos pueden consumirte tiempo, vaciarte el bolsillo y, en el peor de los casos, llevarte a un fabricante decepcionante.",
-    "platformText2": "Ahí es donde entramos nosotros: presentamos ProjectHub: la primera plataforma de abastecimiento sostenible de Europa. ¡Olvídate de los dolores de cabeza y dale la bienvenida a una forma súper sencilla de encontrar lo que necesitas!",
+    "platformText2": "Ahí es donde entramos nosotros: presentamos FashionsDen, la primera plataforma de abastecimiento sostenible de Europa. ¡Olvídate de los dolores de cabeza y dale la bienvenida a una forma súper sencilla de encontrar lo que necesitas!",
     "howItWorksTitle": "Crear Moda De Forma Fácil",
     "howItWorksSubtitle": "Observe cómo su idea cobra vida en unos sencillos pasos.",
     "steps": {
@@ -382,38 +387,37 @@
     "heroSubtitle": "Hazte visible para las marcas en toda Europa.",
     "joinNow": "Únete Ahora",
     "learnMore": "Aprende Más",
-    "platformTitle": "La Primera Plataforma De Abastecimiento Sostenible De Europa",
-    "platformText1": "Te encanta crear productos de calidad, no pasar horas intentando conseguir a tu próximo cliente. Pero entre ferias, correos electrónicos no solicitados y el caos de las redes sociales, es fácil agotarse incluso antes de cerrar una venta.",
-    "platformText2": "Por eso creamos ProjectHub, la primera plataforma de abastecimiento sostenible de Europa. Te conectamos con una comunidad de marcas sostenibles que buscan activamente socios como tú para que puedas impulsar tu negocio sin estrés.",
+    "platformTitle": "El Futuro de la Moda Empieza Aquí",
+    "platformText1": "No empezaste tu marca para gestionar interminables proveedores, perseguir contactos o unir la producción en múltiples plataformas.",
+    "platformText2": "Pero eso es exactamente lo que la industria de la moda te obliga a hacer. FashionsDen lo cambia. Reunimos cada etapa de la construcción de una marca de moda en un solo lugar — desde el diseño y el desarrollo hasta el sourcing, la fabricación y más. Sin fragmentación. Sin suposiciones. Sin tiempo perdido. Solo una plataforma para construir, lanzar y escalar tu marca con claridad y control.",
     "howItWorksTitle": "Crear Moda De Forma Fácil",
     "howItWorksSubtitle": "Ayude a su próximo cliente en unos sencillos pasos.",
     "steps": {
-      "0": { "title": "Encuentra Nuevos Clientes Potenciales", "desc": "Reciba actualizaciones sobre las últimas RFQ en sus categorías de producción." },
+      "0": { "title": "Inicia Tu Proyecto", "desc": "Ya sea que tengas un tech pack completo o solo una idea, puedes comenzar. Sube tus diseños, fotos de referencia o simplemente describe lo que quieres crear — y te conectaremos con los socios adecuados para hacerlo realidad." },
       "1": { "title": "Chatear Y Negociar", "desc": "Negocie en su propio idioma utilizando nuestro chat traducido en tiempo real." },
       "2": { "title": "Iniciar Producción", "desc": "Cierre un trato y comience a producir para el cliente potencial recién encontrado." }
     },
     "features": {
-      "0": { "title": "Precios Justos Para La Sostenibilidad", "desc": "La fabricación sostenible no puede igualar los precios a los que están acostumbradas las marcas en el ámbito de la moda rápida. Tenemos la misión de educar a las marcas sobre el verdadero valor de los productos sostenibles para garantizar que reciba una compensación justa por su compromiso con la sostenibilidad." },
-      "1": { "title": "Disponible En Tu Idioma", "desc": "Chatea, negocia y gestiona fácilmente a tus clientes en nuestra plataforma, todo en tu idioma preferido. Con nuestras prácticas herramientas de traducción, comunicarte con clientes de toda Europa es pan comido." },
-      "2": { "title": "Apoye El Crecimiento De Su Negocio Sostenible", "desc": "¡Te cubrimos! Puede confiar en nuestra experiencia y apoyo en cada paso del camino. Ya sea para encontrar los clientes potenciales adecuados o mejorar la sostenibilidad de su negocio, estamos aquí para ayudarlo." }
+      "0": { "title": "Precios Justos. Basados en Valor Real.", "desc": "Construir una marca de moda no debería significar elegir entre costo, calidad y confiabilidad. FashionsDen te conecta con socios de confianza que entregan resultados consistentes — con precios transparentes y expectativas claras desde el principio. Sin costos ocultos. Sin malentendidos. Sin compromisos en la calidad. Porque el valor real no se trata del precio más bajo — se trata de hacerlo bien desde la primera vez." },
+      "1": { "title": "Trabaja Sin Barreras de Idioma", "desc": "Colabora sin problemas con socios, proveedores y clientes — sin importar dónde estén. FashionsDen facilita comunicarse, negociar y gestionar proyectos en tu idioma preferido, con herramientas integradas que mantienen todo claro y alineado. Porque construir una marca global no debería estar limitado por el idioma." },
+      "2": { "title": "Diseñado Para Apoyar Tu Crecimiento", "desc": "FashionsDen te brinda las herramientas, la red y la infraestructura para avanzar con confianza en cada etapa. Desde encontrar los socios adecuados hasta gestionar la producción y escalar tus operaciones, todo está diseñado para ayudarte a crecer más rápido — sin la complejidad habitual. Porque construir una marca de moda debería sentirse estructurado, no abrumador." }
     },
     "pricingTitle": "Precios Para Fabricantes",
-    "pricingSubtitle": "Ofrecemos paquetes para diferentes capacidades de producción.",
-    "viewComparison": "Ver Comparación Completa",
+    "pricingSubtitle": "Elige el plan que se ajuste a tu capacidad de producción.",
     "plans": {
-      "0": { "name": "BÁSICO", "price": "49", "desc": "Ideal para socios de la cadena de suministro que buscan comenzar." },
-      "1": { "name": "CRECIMIENTO", "price": "79", "desc": "La opción preferida por los socios de la cadena de suministro establecidos." },
-      "2": { "name": "PROFESIONAL", "price": "99", "desc": "Experiencia única diseñada para empresas más grandes listas para nuevos clientes potenciales." }
+      "0": { "name": "STANDARD", "price": "199", "desc": "Ideal para socios de producción que buscan comenzar." },
+      "1": { "name": "PRO", "price": "299", "desc": "La opción preferida por socios de producción establecidos." },
+      "2": { "name": "ELITE", "price": "599", "desc": "Experiencia premium para empresas grandes listas para escalar." }
     },
     "perMonth": "/mes",
-    "learnMorePlan": "Aprende Más",
-    "ctaTitle": "¿Listo Para Empezar?",
-    "ctaSubtitle": "¡Crea una cuenta y sumérgete en tu próxima aventura de moda sostenible!",
+    "learnMorePlan": "Comenzar",
+    "ctaTitle": "¿Listo para construir, lanzar y escalar tu marca de moda?",
+    "ctaSubtitle": "Crea una cuenta y empieza a construir tu marca de moda hoy.",
     "ctaButton": "Crear Una Cuenta"
   },
   "Sustainability": {
     "title": "Política De Sostenibilidad",
-    "intro": "En ProjectHub, la sostenibilidad no es solo una palabra de moda, es el núcleo de todo lo que hacemos. Nuestra política de sostenibilidad guía cada decisión que tomamos y cada socio con el que trabajamos.",
+    "intro": "En FashionsDen, la sostenibilidad no es solo una palabra de moda, es el núcleo de todo lo que hacemos. Nuestra política de sostenibilidad guía cada decisión que tomamos y cada socio con el que trabajamos.",
     "intro2": "Estamos comprometidos a transformar la industria de la moda hacia un modelo más responsable, ético y respetuoso con el medio ambiente.",
     "pillarsTitle": "Nuestros Pilares De Sostenibilidad",
     "pillarsSubtitle": "Estos son los principios fundamentales que guían nuestro compromiso con la sostenibilidad.",

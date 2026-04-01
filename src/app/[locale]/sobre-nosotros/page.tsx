@@ -25,11 +25,25 @@ export default async function SobreNosotrosPage() {
               <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
                 {t("intro2")}
               </p>
-              <Link href="https://app.projecthub.com/register">
-                <Button className="bg-brand-900 hover:bg-brand-900 text-white rounded-full px-8 py-6 text-lg font-medium">
-                  {t("joinUs")}
-                </Button>
-              </Link>
+              <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                {t("intro3")}
+              </p>
+              <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                {t("intro4")}
+              </p>
+              <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                {t("intro5")}
+              </p>
+              <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                {t("intro6")}
+              </p>
+              <div className="mt-10">
+                <Link href="/register">
+                  <Button className="bg-brand-900 hover:bg-brand-900 text-white rounded-full px-8 py-6 text-lg font-medium">
+                    {t("joinUs")}
+                  </Button>
+                </Link>
+              </div>
             </div>
             <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
               <Image
@@ -81,7 +95,7 @@ export default async function SobreNosotrosPage() {
             {t("ctaTitle")}
           </h2>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link href="https://app.manufy.com/register">
+            <Link href="/register">
               <Button className="bg-brand-900 hover:bg-brand-900 text-white rounded-full px-8 py-6 text-lg font-medium">
                 {t("ctaCreate")}
               </Button>

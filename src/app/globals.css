@@ -129,6 +129,13 @@
   .container-custom {
     @apply max-w-7xl mx-auto;
   }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* Scrollbar */

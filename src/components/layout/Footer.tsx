@@ -12,7 +12,7 @@ export default async function Footer() {
   const locale = await getLocale();
 
   return (
-    <footer className="bg-brand-900 text-white">
+    <footer className="bg-[#745E96] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-1">

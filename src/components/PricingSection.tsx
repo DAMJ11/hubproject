@@ -16,8 +16,8 @@ const SUPPLIER_PLANS = [
   { key: "1", featured: true },
   { key: "2", featured: false },
 ];
-const PLAN_FEATURES_COUNT = [3, 4, 4]; // features per brand plan
-const SUPPLIER_FEATURES_COUNT = [3, 3, 3]; // features per supplier plan
+const PLAN_FEATURES_COUNT = [4, 4, 4]; // features per brand plan
+const SUPPLIER_FEATURES_COUNT = [4, 3, 3]; // features per supplier plan
 
 export default function PricingSection() {
   const t = useTranslations("Pricing");
@@ -31,18 +31,18 @@ export default function PricingSection() {
     <section id="precios" className="py-20 bg-white dark:bg-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 dark:text-gray-100">{t("title")}</h2>
-          <p className="mt-4 text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">{t("subtitle")}</p>
+          <h2 className="text-3xl lg:text-4xl font-bold text-[#745E96] dark:text-gray-100">{t("title")}</h2>
+          <p className="mt-4 text-lg text-[#9279BA] dark:text-gray-400 max-w-2xl mx-auto">{t("subtitle")}</p>
         </div>
 
         <div className="flex justify-center mb-12">
-          <div className="inline-flex bg-gray-100 dark:bg-slate-800 rounded-xl p-1">
+          <div className="inline-flex bg-[#E7DDFF]/50 dark:bg-slate-800 rounded-xl p-1">
             <button
               onClick={() => setActiveTab("brands")}
               className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 activeTab === "brands"
-                  ? "bg-brand-900 text-white shadow-sm"
-                  : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                  ? "bg-[#7e7cf3] text-white shadow-sm"
+                  : "text-[#9279BA] dark:text-gray-400 hover:text-[#745E96] dark:hover:text-white"
               }`}
             >
               {t("tabBrands")}
@@ -51,8 +51,8 @@ export default function PricingSection() {
               onClick={() => setActiveTab("suppliers")}
               className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 activeTab === "suppliers"
-                  ? "bg-brand-900 text-white shadow-sm"
-                  : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                  ? "bg-[#7e7cf3] text-white shadow-sm"
+                  : "text-[#9279BA] dark:text-gray-400 hover:text-[#745E96] dark:hover:text-white"
               }`}
             >
               {t("tabSuppliers")}
@@ -65,7 +65,7 @@ export default function PricingSection() {
             <div
               key={plan.key}
               className={`rounded-2xl p-8 ${
-                plan.featured ? "bg-brand-900 text-white ring-4 ring-brand-900/20 scale-105" : "bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700"
+                plan.featured ? "bg-[#745E96] text-white ring-4 ring-[#7e7cf3]/20 scale-105" : "bg-[#E7DDFF]/20 dark:bg-slate-800 border border-[#D1C1F2] dark:border-slate-700"
               }`}
             >
               {plan.featured && (
@@ -73,18 +73,18 @@ export default function PricingSection() {
                   {t("featured")}
                 </span>
               )}
-              <h3 className={`text-xl font-bold ${plan.featured ? "text-white" : "text-gray-800 dark:text-gray-100"}`}>{t(`${prefix}.${plan.key}.name`)}</h3>
+              <h3 className={`text-xl font-bold ${plan.featured ? "text-white" : "text-[#745E96] dark:text-gray-100"}`}>{t(`${prefix}.${plan.key}.name`)}</h3>
               <div className="mt-4 flex items-baseline gap-1">
-                <span className={`text-4xl font-bold ${plan.featured ? "text-white" : "text-gray-800 dark:text-gray-100"}`}>{t(`${prefix}.${plan.key}.price`)}</span>
-                <span className={plan.featured ? "text-white/70" : "text-gray-500 dark:text-gray-400"}>{t("perMonth")}</span>
+                <span className={`text-4xl font-bold ${plan.featured ? "text-white" : "text-[#7e7cf3] dark:text-gray-100"}`}>{t(`${prefix}.${plan.key}.price`)}</span>
+                <span className={plan.featured ? "text-white/70" : "text-[#9279BA] dark:text-gray-400"}>{t("perMonth")}</span>
               </div>
-              <p className={`mt-3 text-sm ${plan.featured ? "text-white/80" : "text-gray-600 dark:text-gray-400"}`}>{t(`${prefix}.${plan.key}.desc`)}</p>
+              <p className={`mt-3 text-sm ${plan.featured ? "text-white/80" : "text-[#9279BA] dark:text-gray-400"}`}>{t(`${prefix}.${plan.key}.desc`)}</p>
 
               <ul className="mt-8 space-y-3">
                 {Array.from({ length: featuresCount[planIdx] }).map((_, fi) => (
                   <li key={fi} className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 className={`w-4 h-4 flex-shrink-0 ${plan.featured ? "text-white" : "text-brand-600"}`} />
-                    <span>{t(`${prefix}.${plan.key}.features.${fi}`)}</span>
+                    <CheckCircle2 className={`w-4 h-4 flex-shrink-0 ${plan.featured ? "text-[#D4C4EC]" : "text-[#7e7cf3]"}`} />
+                    <span className={plan.featured ? "text-white" : "text-[#745E96] dark:text-gray-300"}>{t(`${prefix}.${plan.key}.features.${fi}`)}</span>
                   </li>
                 ))}
               </ul>
@@ -93,7 +93,7 @@ export default function PricingSection() {
                 <Link href="/register">
                   <Button
                     className={`w-full h-12 rounded-lg font-medium ${
-                      plan.featured ? "bg-brand-600 text-white hover:bg-brand-700" : "bg-brand-900 text-white hover:bg-black"
+                      plan.featured ? "bg-[#7e7cf3] text-white hover:bg-[#6a68e0]" : "bg-[#7e7cf3] text-white hover:bg-[#6a68e0]"
                     }`}
                   >
                     {t(`${prefix}.${plan.key}.cta`)}
@@ -105,17 +105,17 @@ export default function PricingSection() {
         </div>
 
         <div className="mt-16 max-w-2xl mx-auto">
-          <div className="bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl p-8 text-center">
-            <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">{t("trialTitle")}</h3>
+          <div className="bg-[#E7DDFF]/20 dark:bg-slate-800 border border-[#D1C1F2] dark:border-slate-700 rounded-2xl p-8 text-center">
+            <h3 className="text-xl font-bold text-[#745E96] dark:text-gray-100 mb-4">{t("trialTitle")}</h3>
             <ul className="space-y-2 mb-6">
               {[0, 1, 2, 3].map((i) => (
-                <li key={i} className="flex items-center justify-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                <li key={i} className="flex items-center justify-center gap-2 text-sm text-[#9279BA] dark:text-gray-300">
+                  <CheckCircle2 className="w-4 h-4 text-[#7e7cf3] flex-shrink-0" />
                   <span>{t(`trialItems.${i}`)}</span>
                 </li>
               ))}
             </ul>
-            <div className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+            <div className="flex items-center justify-center gap-2 text-sm text-[#9279BA] dark:text-gray-400">
               <Lock className="w-4 h-4" />
               <span>{t("trialNote")}</span>
             </div>

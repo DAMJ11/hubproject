@@ -45,7 +45,8 @@
   },
   "Hero": {
     "pill": "Production de mode, simplifiee",
-    "titleA": "La plateforme où les marques de mode",
+    "titleA": "La plateforme",
+    "titleC": "où les marques de mode",
     "titleB": "se construisent",
     "subtitle": "De la premiere idee a la production finale, travaillez avec des partenaires verifies en Amerique latine — tout gere en un seul endroit.",
     "highlights": {
@@ -62,20 +63,20 @@
       "2": "Livraison a temps"
     },
     "categories": {
-      "0": "Streetwear",
-      "1": "Denim",
-      "2": "Activewear",
-      "3": "Outerwear",
-      "4": "Womenswear",
-      "5": "Accessoires"
+      "0": "Design",
+      "1": "Tech Pack",
+      "2": "Sourcing",
+      "3": "Échantillons",
+      "4": "Production",
+      "5": "Branding"
     },
     "categoryDesc": {
-      "0": "Coupes oversize, broderie et serigraphie",
-      "1": "Lavages, fit technique et finitions premium",
-      "2": "Tissus techniques et coutures performance",
-      "3": "Vestes, padding et process impermeables",
-      "4": "Patronage, confection fine et finitions boutique",
-      "5": "Casquettes, sacs et developpement de trims"
+      "0": "Concepts, croquis et direction créative",
+      "1": "Spécifications techniques pour la production",
+      "2": "Matières, fournitures et recherche de fournisseurs",
+      "3": "Développement de prototypes et révisions",
+      "4": "Fabrication avec des partenaires fiables",
+      "5": "Contenu, visuels et support de marque"
     }
   },
   "Platform": {
@@ -223,45 +224,45 @@
       "0": {
         "name": "Starter",
         "price": "$29",
-        "desc": "Pour les marques qui lancent leur premiere production",
-        "features": { "0": "1 projet actif", "1": "Matching standard", "2": "Support basique" },
-        "cta": "Commencer avec Starter"
+        "desc": "Premier mois $29, puis $99/mois. Inclut un template de tech pack offert.",
+        "features": { "0": "1 projet actif", "1": "Matching standard", "2": "Support basique", "3": "Template tech pack offert" },
+        "cta": "Démarrer avec Starter"
       },
       "1": {
         "name": "Scale",
-        "price": "$149",
-        "desc": "Pour les marques en croissance avec des drops frequents",
-        "features": { "0": "Jusqu'a 4 projets actifs", "1": "Matching prioritaire", "2": "Meilleurs partenaires", "3": "Suivi de production" },
+        "price": "$199",
+        "desc": "Pour les marques en croissance. Inclut 1 révision de tech pack + support prioritaire.",
+        "features": { "0": "Jusqu'à 4 projets actifs", "1": "Matching prioritaire", "2": "Révision de tech pack", "3": "Support prioritaire" },
         "cta": "Choisir Scale"
       },
       "2": {
         "name": "Enterprise",
         "price": "$499",
-        "desc": "Pour les marques avec des operations a grande echelle",
-        "features": { "0": "Projets illimites", "1": "Support dedie", "2": "Production fast-track", "3": "Partenaires top-tier" },
+        "desc": "Pour les grandes marques. Inclut 1 création de tech pack par mois.",
+        "features": { "0": "Projets illimités", "1": "Support dédié", "2": "Création de tech pack/mois", "3": "Partenaires top-tier" },
         "cta": "Contacter les ventes"
       }
     },
     "supplierPlans": {
       "0": {
         "name": "Standard",
-        "price": "Gratuit",
-        "desc": "Pour les fabricants qui veulent recevoir des projets",
-        "features": { "0": "Acces aux projets", "1": "Recevoir des invitations", "2": "Messagerie" },
+        "price": "$199",
+        "desc": "Premier mois gratuit, puis $199/mois. Pour les fabricants qui démarrent.",
+        "features": { "0": "Premier mois gratuit", "1": "Accès aux projets", "2": "Recevoir des invitations", "3": "Messagerie" },
         "cta": "Commencer gratuitement"
       },
       "1": {
         "name": "Pro",
-        "price": "$99",
-        "desc": "Pour les fabricants qui cherchent plus de visibilite",
-        "features": { "0": "Visibilite prioritaire", "1": "Plus d'invitations a des projets", "2": "Badge verifie" },
+        "price": "$299",
+        "desc": "Pour les fabricants cherchant plus de visibilité. Projets limités par mois.",
+        "features": { "0": "Visibilité prioritaire", "1": "Plus d'invitations", "2": "Badge vérifié" },
         "cta": "Choisir Pro"
       },
       "2": {
         "name": "Elite",
         "price": "$599",
-        "desc": "Pour les fabricants qui veulent un acces premium",
-        "features": { "0": "Visibilite maximale", "1": "Matching prioritaire", "2": "Acces aux meilleurs projets" },
+        "desc": "Accès illimité. Pour les fabricants à pleine capacité.",
+        "features": { "0": "Projets illimités", "1": "Visibilité maximale", "2": "Matching prioritaire" },
         "cta": "Contacter les ventes"
       }
     }
@@ -312,10 +313,10 @@
     "title": "Actualites",
     "readMore": "Lire la suite",
     "posts": {
-      "0": { "title": "ProjectHub lance une nouvelle plateforme pour les fabricants durables", "date": "15 fev. 2024" },
+      "0": { "title": "FashionsDen lance une nouvelle plateforme pour les fabricants durables", "date": "15 fev. 2024" },
       "1": { "title": "La mode durable croit de 25% en Europe", "date": "10 fev. 2024" },
       "2": { "title": "Nouvelles reglementations de durabilite dans l'UE", "date": "5 fev. 2024" },
-      "3": { "title": "ProjectHub etend son reseau de fabricants au Portugal", "date": "1 fev. 2024" },
+      "3": { "title": "FashionsDen etend son reseau de fabricants au Portugal", "date": "1 fev. 2024" },
       "4": { "title": "Tendances de la mode circulaire pour 2024", "date": "28 jan. 2024" },
       "5": { "title": "Comment les marques adoptent des pratiques durables", "date": "20 jan. 2024" }
     }
@@ -336,20 +337,24 @@
     }
   },
   "About": {
-    "title": "A propos",
-    "intro": "ProjectHub est la premiere plateforme europeenne d'approvisionnement durable B2B. Notre mission est de rendre la mode durable accessible a toutes les marques, en les connectant avec des fabricants europeens engages dans des pratiques ethiques et environnementales.",
-    "intro2": "Fondee avec la vision de transformer l'industrie de la mode, nous travaillons chaque jour pour creer un ecosysteme ou la durabilite est la norme, pas l'exception.",
-    "joinUs": "Rejoignez-nous",
+    "title": "À propos",
+    "intro": "FashionsDen est une plateforme mondiale conçue pour accompagner les marques de mode à chaque étape de leur parcours — de l'idée à l'exécution, et au-delà.",
+    "intro2": "Nous rassemblons tout ce qui est nécessaire pour créer et développer une marque en un seul endroit : design, fiches techniques, approvisionnement, fabrication, branding, création de contenu et croissance.",
+    "intro3": "Plutôt que de naviguer dans une industrie fragmentée avec de multiples fournisseurs, freelancers et partenaires de production, FashionsDen vous offre un écosystème unique et connecté où tout fonctionne ensemble.",
+    "intro4": "Que vous partiez d'une simple idée ou que vous gériez une marque en pleine croissance, nous vous fournissons les outils, le réseau et l'infrastructure pour avancer avec clarté et rapidité.",
+    "intro5": "Notre mission est de simplifier l'industrie de la mode — la rendre plus accessible, efficace et évolutive pour les marques du monde entier.",
+    "intro6": "Parce que construire une marque de mode ne devrait pas nécessiter de gérer le chaos.",
+    "joinUs": "Rejoindre FashionsDen",
     "missionTitle": "Notre Mission",
-    "missionText": "Simplifier le processus de production de mode durable en connectant les marques avec les meilleurs fabricants europeens et en fournissant les outils necessaires pour creer des collections conscientes et ethiques.",
+    "missionText": "Notre mission est de supprimer la complexité de la construction d'une marque de mode. En connectant chaque étape du processus sur une seule plateforme intégrée.",
     "valuesTitle": "Nos Valeurs",
     "values": {
-      "0": { "title": "Durabilite", "desc": "Nous croyons en un avenir ou la mode et l'environnement coexistent en harmonie." },
-      "1": { "title": "Transparence", "desc": "Nous promouvons la transparence dans toute la chaine d'approvisionnement." },
-      "2": { "title": "Collaboration", "desc": "Nous connectons marques et fabricants pour creer des relations durables." },
-      "3": { "title": "Innovation", "desc": "Nous utilisons la technologie pour simplifier les processus complexes." }
+      "0": { "title": "Durabilité", "desc": "Nous croyons en un avenir où la mode et l'environnement coexistent en harmonie" },
+      "1": { "title": "Transparence", "desc": "Nous promouvons la transparence dans toute la chaîne d'approvisionnement" },
+      "2": { "title": "Collaboration", "desc": "Nous connectons marques et fabricants pour créer des relations durables" },
+      "3": { "title": "Innovation", "desc": "Nous utilisons la technologie pour simplifier les processus complexes" }
     },
-    "ctaTitle": "Pret a rejoindre la revolution de la mode durable ?",
+    "ctaTitle": "Prêt à construire, lancer et développer votre marque de mode ?",
     "ctaCreate": "Creer un compte",
     "ctaContact": "Contact"
   },
@@ -360,7 +365,7 @@
     "learnMore": "En savoir plus",
     "platformTitle": "La premiere plateforme d'approvisionnement durable d'Europe",
     "platformText1": "Vous etes pret a produire votre mode localement et durablement — genial ! Mais en ce moment, trouver le fabricant europeen parfait pour votre produit peut etre un vrai casse-tete. Vous avez peut-etre passe du temps sur internet, visite des salons professionnels ou meme plonge dans les reseaux sociaux. Mais ces methodes peuvent vous faire perdre du temps, vider votre portefeuille et, dans le pire des cas, vous mener a un fabricant decevant.",
-    "platformText2": "C'est la que nous intervenons : voici ProjectHub, la premiere plateforme d'approvisionnement durable d'Europe. Oubliez les maux de tete et bienvenue a une facon super simple de trouver ce dont vous avez besoin !",
+    "platformText2": "C'est la que nous intervenons : voici FashionsDen, la premiere plateforme d'approvisionnement durable d'Europe. Oubliez les maux de tete et bienvenue a une facon super simple de trouver ce dont vous avez besoin !",
     "howItWorksTitle": "Creer de la mode facilement",
     "howItWorksSubtitle": "Regardez votre idee prendre vie en quelques etapes simples.",
     "steps": {
@@ -382,38 +387,37 @@
     "heroSubtitle": "Soyez visible aupres des marques dans toute l'Europe.",
     "joinNow": "Rejoignez maintenant",
     "learnMore": "En savoir plus",
-    "platformTitle": "La premiere plateforme d'approvisionnement durable d'Europe",
-    "platformText1": "Vous aimez creer des produits de qualite, pas passer des heures a essayer de decrocher votre prochain client. Mais entre les salons, les emails non sollicites et le chaos des reseaux sociaux, il est facile de s'epuiser avant meme de conclure une vente.",
-    "platformText2": "C'est pourquoi nous avons cree ProjectHub, la premiere plateforme d'approvisionnement durable d'Europe. Nous vous connectons avec une communaute de marques durables qui recherchent activement des partenaires comme vous pour que vous puissiez developper votre activite sans stress.",
+    "platformTitle": "L'Avenir de la Mode Commence Ici",
+    "platformText1": "Vous n'avez pas créé votre marque pour gérer d'innombrables fournisseurs, courir après des contacts ou assembler la production sur plusieurs plateformes.",
+    "platformText2": "Mais c'est exactement ce que l'industrie de la mode vous oblige à faire. FashionsDen change cela. Nous réunissons chaque étape de la construction d'une marque de mode en un seul endroit — de la conception et du développement à l'approvisionnement, la fabrication et au-delà. Plus de fragmentation. Plus de conjectures. Plus de temps perdu. Une seule plateforme pour construire, lancer et développer votre marque avec clarté et contrôle.",
     "howItWorksTitle": "Creer de la mode facilement",
     "howItWorksSubtitle": "Aidez votre prochain client en quelques etapes simples.",
     "steps": {
-      "0": { "title": "Trouvez de nouveaux prospects", "desc": "Recevez des mises a jour sur les derniers appels d'offres dans vos categories de production." },
+      "0": { "title": "Démarrez Votre Projet", "desc": "Que vous ayez un tech pack complet ou juste une idée, vous pouvez commencer. Téléchargez vos designs, photos de référence ou décrivez simplement ce que vous voulez créer — et nous vous connecterons avec les bons partenaires pour le concrétiser." },
       "1": { "title": "Discutez et negociez", "desc": "Negociez dans votre langue grace a notre chat traduit en temps reel." },
       "2": { "title": "Lancez la production", "desc": "Concluez un accord et commencez a produire pour votre nouveau prospect." }
     },
     "features": {
-      "0": { "title": "Prix justes pour la durabilite", "desc": "La fabrication durable ne peut pas egaler les prix auxquels les marques sont habituees dans la fast fashion. Nous avons pour mission d'eduquer les marques sur la vraie valeur des produits durables pour garantir que vous receviez une compensation juste pour votre engagement envers la durabilite." },
-      "1": { "title": "Disponible dans votre langue", "desc": "Discutez, negociez et gerez facilement vos clients sur notre plateforme, le tout dans votre langue preferee. Avec nos outils de traduction pratiques, communiquer avec des clients dans toute l'Europe est un jeu d'enfant." },
-      "2": { "title": "Soutenez la croissance de votre entreprise durable", "desc": "Nous vous couvrons ! Comptez sur notre expertise et notre soutien a chaque etape. Que ce soit pour trouver les bons prospects ou ameliorer la durabilite de votre entreprise, nous sommes la pour vous aider." }
+      "0": { "title": "Prix Justes. Fondés sur une Vraie Valeur.", "desc": "Construire une marque de mode ne devrait pas signifier choisir entre le coût, la qualité et la fiabilité. FashionsDen vous connecte avec des partenaires de confiance qui livrent des résultats constants — avec une tarification transparente et des attentes claires dès le départ. Sans coûts cachés. Sans malentendus. Sans compromis sur la qualité. Parce que la vraie valeur n'est pas le prix le plus bas — c'est de bien faire les choses dès la première fois." },
+      "1": { "title": "Travaillez Sans Barrières Linguistiques", "desc": "Collaborez facilement avec des partenaires, fournisseurs et clients — peu importe où ils se trouvent. FashionsDen facilite la communication, la négociation et la gestion de projets dans votre langue préférée, avec des outils intégrés qui maintiennent tout clair et aligné. Parce que construire une marque mondiale ne devrait pas être limité par la langue." },
+      "2": { "title": "Conçu Pour Soutenir Votre Croissance", "desc": "FashionsDen vous offre les outils, le réseau et l'infrastructure pour avancer avec confiance à chaque étape. De la recherche des bons partenaires à la gestion de la production et au développement de vos opérations, tout est conçu pour vous aider à grandir plus vite — sans la complexité habituelle. Parce que construire une marque de mode devrait être structuré, pas accablant." }
     },
-    "pricingTitle": "Tarifs pour les fabricants",
-    "pricingSubtitle": "Nous proposons des packages pour differentes capacites de production.",
-    "viewComparison": "Voir la comparaison complete",
+    "pricingTitle": "Tarifs Pour les Fabricants",
+    "pricingSubtitle": "Choisissez le plan adapté à votre capacité de production.",
     "plans": {
-      "0": { "name": "BASIQUE", "price": "49", "desc": "Ideal pour les partenaires de la chaine d'approvisionnement qui cherchent a demarrer." },
-      "1": { "name": "CROISSANCE", "price": "79", "desc": "L'option preferee des partenaires de la chaine d'approvisionnement etablis." },
-      "2": { "name": "PROFESSIONNEL", "price": "99", "desc": "Experience unique concue pour les grandes entreprises pretes pour de nouveaux prospects." }
+      "0": { "name": "STANDARD", "price": "199", "desc": "Idéal pour les partenaires de production qui débutent." },
+      "1": { "name": "PRO", "price": "299", "desc": "L'option préférée des partenaires de production établis." },
+      "2": { "name": "ELITE", "price": "599", "desc": "Expérience premium pour les grandes entreprises prêtes à grandir." }
     },
     "perMonth": "/mois",
-    "learnMorePlan": "En savoir plus",
-    "ctaTitle": "Pret a commencer ?",
-    "ctaSubtitle": "Creez un compte et plongez dans votre prochaine aventure de mode durable !",
-    "ctaButton": "Creer un compte"
+    "learnMorePlan": "Commencer",
+    "ctaTitle": "Prêt à construire, lancer et développer votre marque de mode ?",
+    "ctaSubtitle": "Créez un compte et commencez à construire votre marque de mode aujourd'hui.",
+    "ctaButton": "Créer un compte"
   },
   "Sustainability": {
     "title": "Politique de durabilite",
-    "intro": "Chez ProjectHub, la durabilite n'est pas qu'un mot a la mode — c'est au coeur de tout ce que nous faisons. Notre politique de durabilite guide chaque decision que nous prenons et chaque partenaire avec lequel nous travaillons.",
+    "intro": "Chez FashionsDen, la durabilite n'est pas qu'un mot a la mode — c'est au coeur de tout ce que nous faisons. Notre politique de durabilite guide chaque decision que nous prenons et chaque partenaire avec lequel nous travaillons.",
     "intro2": "Nous nous engageons a transformer l'industrie de la mode vers un modele plus responsable, ethique et respectueux de l'environnement.",
     "pillarsTitle": "Nos piliers de durabilite",
     "pillarsSubtitle": "Voici les principes fondamentaux qui guident notre engagement envers la durabilite.",
