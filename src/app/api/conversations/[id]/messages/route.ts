@@ -4,6 +4,8 @@ import { getSessionUser, hasRole } from "@/lib/session";
 import { notifyConversationParticipants } from "@/lib/realtime/notifyConversation";
 import { sendMessageSchema } from "@/lib/validations/conversations";
 import { createNotification } from "@/lib/notifications";
+import { moderateMessage } from "@/lib/moderation";
+import { isUserBlocked, recordViolation, VIOLATION_THRESHOLD } from "@/lib/chat-violations";
 
 // GET /api/conversations/[id]/messages - Obtener mensajes de una conversación
 export async function GET(
@@ -117,6 +119,55 @@ export async function POST(
       return NextResponse.json({ success: false, message: parsed.error.issues[0]?.message || "Datos inválidos" }, { status: 400 });
     }
     const { content, messageType } = parsed.data;
+
+    // 1. Check if user is already blocked from this conversation
+    const blocked = await isUserBlocked(user.id, conversationId);
+    if (blocked) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "You have been blocked from this conversation due to repeated policy violations.",
+          code: "CHAT_BLOCKED",
+        },
+        { status: 403 }
+      );
+    }
+
+    // 2. Run content moderation (email / phone detection)
+    const moderation = moderateMessage(content);
+    if (moderation.blocked) {
+      const { violations, nowBlocked } = await recordViolation(
+        user.id,
+        conversationId,
+        moderation.type,
+        content.trim()
+      );
+
+      if (nowBlocked) {
+        return NextResponse.json(
+          {
+            success: false,
+            message:
+              "You have been blocked from this conversation after repeated policy violations. Please contact support if you believe this is a mistake.",
+            code: "CHAT_BLOCKED",
+          },
+          { status: 403 }
+        );
+      }
+
+      const remaining = VIOLATION_THRESHOLD - violations;
+      return NextResponse.json(
+        {
+          success: false,
+          message: `${moderation.reason} Warning ${violations}/${VIOLATION_THRESHOLD}: ${remaining} more violation(s) will result in your access being blocked.`,
+          code: "CONTENT_VIOLATION",
+          violations,
+          remaining,
+        },
+        { status: 422 }
+      );
+    }
 
     // Verificar que la conversación existe y está abierta
     const conversation = await queryOne<{

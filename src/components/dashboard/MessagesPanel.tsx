@@ -17,6 +17,8 @@ import {
   Building2,
   Check,
   CheckCheck,
+  ShieldAlert,
+  AlertTriangle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { emitUnreadMessagesRefresh } from "@/hooks/useUnreadMessagesCount";
@@ -106,6 +108,14 @@ export default function MessagesPanel() {
   const [sending, setSending] = useState(false);
   const [tab, setTab] = useState<"chats" | "pending" | "search">("chats");
 
+  // Moderation state
+  const [sendError, setSendError] = useState<string | null>(null);
+  const [chatBlocked, setChatBlocked] = useState(false);
+  const [appealStatus, setAppealStatus] = useState<"none" | "pending" | "approved" | "rejected">("none");
+  const [showAppealForm, setShowAppealForm] = useState(false);
+  const [appealText, setAppealText] = useState("");
+  const [appealSubmitting, setAppealSubmitting] = useState(false);
+
   // Busqueda de empresas
   const [companySearch, setCompanySearch] = useState("");
   const [companyResults, setCompanyResults] = useState<CompanyResult[]>([]);
@@ -192,6 +202,37 @@ export default function MessagesPanel() {
       lastMsgIdRef.current = 0;
     }
   }, [selectedConv, loadMessages]);
+
+  // Check moderation block status when selecting a conversation
+  useEffect(() => {
+    setChatBlocked(false);
+    setAppealStatus("none");
+    setSendError(null);
+    setShowAppealForm(false);
+    setAppealText("");
+
+    if (!selectedConv || selectedConv.status !== "open") return;
+
+    const checkBlockStatus = async () => {
+      try {
+        const res = await fetch(`/api/chat-appeals?conversationId=${selectedConv.id}`);
+        const data = await res.json();
+        if (data.success) {
+          if (data.blocked) {
+            setChatBlocked(true);
+            if (data.appeal?.status === "pending") {
+              setAppealStatus("pending");
+            } else if (data.appeal?.status === "rejected") {
+              setAppealStatus("rejected");
+            }
+          }
+        }
+      } catch {
+        // noop — assume not blocked
+      }
+    };
+    checkBlockStatus();
+  }, [selectedConv]);
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -377,7 +418,8 @@ export default function MessagesPanel() {
 
   // Enviar mensaje
   const handleSend = async () => {
-    if (!newMessage.trim() || !selectedConv || sending) return;
+    if (!newMessage.trim() || !selectedConv || sending || chatBlocked) return;
+    setSendError(null);
     const tempId = -Date.now();
     const tempMsg: Message = {
       id: tempId,
@@ -427,13 +469,55 @@ export default function MessagesPanel() {
         );
         emitUnreadMessagesRefresh();
       } else {
-        setMessages((prev) => prev.map((m) => (m.id === tempId ? { ...m, pending: false, failed: true } : m)));
+        // Remove optimistic message on moderation error
+        setMessages((prev) => prev.filter((m) => m.id !== tempId));
+
+        if (data.code === "CHAT_BLOCKED") {
+          setChatBlocked(true);
+          setAppealStatus("none");
+        } else if (data.code === "CONTENT_VIOLATION") {
+          const current = data.violations ?? 0;
+          const remaining = data.remaining ?? 0;
+          setSendError(
+            t("moderation.warning", { current, max: current + remaining, remaining })
+          );
+        } else {
+          setMessages((prev) => [...prev, { ...tempMsg, pending: false, failed: true }]);
+        }
       }
     } catch (e) {
       console.error(e);
       setMessages((prev) => prev.map((m) => (m.id === tempId ? { ...m, pending: false, failed: true } : m)));
     } finally {
       setSending(false);
+    }
+  };
+
+  // Submit appeal
+  const handleSubmitAppeal = async () => {
+    if (!selectedConv || !appealText.trim() || appealSubmitting) return;
+    setAppealSubmitting(true);
+    try {
+      const res = await fetch("/api/chat-appeals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          conversationId: selectedConv.id,
+          appealText: appealText.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAppealStatus("pending");
+        setShowAppealForm(false);
+        setAppealText("");
+      } else {
+        setSendError(data.message || t("moderation.appealError"));
+      }
+    } catch {
+      setSendError(t("moderation.appealError"));
+    } finally {
+      setAppealSubmitting(false);
     }
   };
 
@@ -995,6 +1079,25 @@ export default function MessagesPanel() {
               </button>
             </div>
 
+            {/* Moderation policy banner */}
+            <div className="px-4 py-2 bg-amber-50 dark:bg-amber-900/30 border-b border-amber-200 dark:border-amber-800 flex items-start gap-2">
+              <ShieldAlert className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+              <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
+                {t("moderation.banner")}
+              </p>
+            </div>
+
+            {/* Send error (moderation warning) */}
+            {sendError && (
+              <div className="px-4 py-2 bg-red-50 dark:bg-red-900/30 border-b border-red-200 dark:border-red-800 flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
+                <p className="text-xs text-red-800 dark:text-red-300 leading-relaxed flex-1">{sendError}</p>
+                <button onClick={() => setSendError(null)} className="text-red-400 hover:text-red-600 dark:text-red-500 dark:hover:text-red-300">
+                  <XCircle className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
             {/* Messages area with WhatsApp wallpaper */}
             <div
               className="flex-1 overflow-y-auto px-[6%] py-4 space-y-1 bg-white dark:bg-slate-900"
@@ -1088,30 +1191,82 @@ export default function MessagesPanel() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Message Input Bar (WhatsApp style) */}
-            <div className="px-3 py-2 bg-white dark:bg-slate-800 flex items-end gap-2">
-              <div className="flex-1 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-end">
-                <input
-                  placeholder={t("chat.inputPlaceholder")}
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSend();
-                    }
-                  }}
-                  className="flex-1 bg-transparent text-slate-800 dark:text-white text-sm px-3 py-[9px] outline-none border-none placeholder:text-slate-500 dark:placeholder:text-slate-400"
-                />
+            {/* Message Input Bar / Blocked State */}
+            {chatBlocked ? (
+              <div className="px-4 py-3 bg-red-50 dark:bg-red-900/20 border-t border-red-200 dark:border-red-800">
+                {appealStatus === "pending" ? (
+                  <div className="flex items-center gap-2 text-sm text-amber-700 dark:text-amber-400">
+                    <Clock className="w-4 h-4 flex-shrink-0" />
+                    <p>{t("moderation.appealPending")}</p>
+                  </div>
+                ) : showAppealForm ? (
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-semibold text-slate-900 dark:text-white">{t("moderation.appealTitle")}</h4>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{t("moderation.appealLabel")}</p>
+                    <textarea
+                      value={appealText}
+                      onChange={(e) => setAppealText(e.target.value)}
+                      placeholder={t("moderation.appealPlaceholder")}
+                      rows={3}
+                      className="w-full text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-brand-600 text-slate-800 dark:text-white placeholder:text-slate-400"
+                    />
+                    <div className="flex justify-end gap-2">
+                      <button
+                        onClick={() => { setShowAppealForm(false); setAppealText(""); }}
+                        className="px-3 py-1.5 text-xs rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
+                      >
+                        {t("moderation.appealCancel")}
+                      </button>
+                      <button
+                        onClick={handleSubmitAppeal}
+                        disabled={appealText.trim().length < 10 || appealSubmitting}
+                        className="px-3 py-1.5 text-xs rounded-lg bg-brand-600 text-white hover:bg-brand-700 disabled:opacity-40 transition-colors flex items-center gap-1"
+                      >
+                        {appealSubmitting && <Loader2 className="w-3 h-3 animate-spin" />}
+                        {t("moderation.appealSubmit")}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-sm text-red-700 dark:text-red-400">
+                      <ShieldAlert className="w-4 h-4 flex-shrink-0" />
+                      <p>{t("moderation.blocked")}</p>
+                    </div>
+                    <button
+                      onClick={() => setShowAppealForm(true)}
+                      className="px-3 py-1.5 text-xs rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition-colors flex-shrink-0"
+                    >
+                      {t("moderation.appealButton")}
+                    </button>
+                  </div>
+                )}
               </div>
-              <button
-                onClick={handleSend}
-                disabled={!newMessage.trim() || sending}
-                className="w-10 h-10 rounded-full bg-brand-600 hover:bg-brand-700 flex items-center justify-center text-white disabled:opacity-40 disabled:hover:bg-brand-600 transition-colors flex-shrink-0"
-              >
-                {sending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5 ml-0.5" />}
-              </button>
-            </div>
+            ) : (
+              <div className="px-3 py-2 bg-white dark:bg-slate-800 flex items-end gap-2">
+                <div className="flex-1 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-end">
+                  <input
+                    placeholder={t("chat.inputPlaceholder")}
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSend();
+                      }
+                    }}
+                    className="flex-1 bg-transparent text-slate-800 dark:text-white text-sm px-3 py-[9px] outline-none border-none placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                  />
+                </div>
+                <button
+                  onClick={handleSend}
+                  disabled={!newMessage.trim() || sending}
+                  className="w-10 h-10 rounded-full bg-brand-600 hover:bg-brand-700 flex items-center justify-center text-white disabled:opacity-40 disabled:hover:bg-brand-600 transition-colors flex-shrink-0"
+                >
+                  {sending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5 ml-0.5" />}
+                </button>
+              </div>
+            )}
           </div>
         )}
 

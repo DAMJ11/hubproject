@@ -897,10 +897,43 @@
       "title": "Conversation closed",
       "subtitle": "This conversation is no longer active"
     },
+    "moderation": {
+      "banner": "This chat is for internal platform communication only. Sharing personal or business contact information (emails, phone numbers) is not allowed and may result in access being blocked.",
+      "warning": "Warning {current}/{max}: Your message was blocked for sharing contact information. {remaining} more violation(s) will result in your chat access being blocked.",
+      "blocked": "Your access to this conversation has been blocked due to repeated policy violations.",
+      "appealButton": "Submit Appeal",
+      "appealTitle": "Appeal Chat Block",
+      "appealLabel": "Explain why you believe the block should be lifted:",
+      "appealPlaceholder": "Describe the situation and why you think your messages were wrongly flagged...",
+      "appealSubmit": "Send Appeal",
+      "appealCancel": "Cancel",
+      "appealSent": "Your appeal has been submitted. An administrator will review it shortly.",
+      "appealError": "Could not submit appeal. Please try again.",
+      "appealPending": "Your appeal is under review by an administrator."
+    },
     "errors": {
       "createFailed": "Could not create the chat.",
       "networkError": "Network error creating the request."
     }
+  },
+  "ChatAppeals": {
+    "title": "Chat Appeals",
+    "subtitle": "Review blocked user appeals",
+    "empty": "No pending appeals",
+    "user": "User",
+    "conversation": "Conversation",
+    "violations": "Violations",
+    "appealText": "User's Appeal",
+    "flaggedMessages": "Flagged Messages",
+    "date": "Date",
+    "status": "Status",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "approve": "Unblock User",
+    "reject": "Keep Blocked",
+    "confirmApprove": "This will unblock the user and allow them to send messages again.",
+    "confirmReject": "This will keep the user blocked from this conversation."
   },
   "Addresses": {
     "title": "My Addresses",

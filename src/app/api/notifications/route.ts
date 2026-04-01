@@ -24,8 +24,8 @@ export async function GET(request: NextRequest) {
       is_read: boolean; read_at: string | null; created_at: string;
     }>(`SELECT id, title, message, type, reference_type, reference_id, is_read, read_at, created_at
         FROM notifications ${where}
-        ORDER BY created_at DESC LIMIT ? OFFSET ?`,
-      unreadOnly ? [user.id, limit, offset] : [user.id, limit, offset]
+        ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`,
+      unreadOnly ? [user.id] : [user.id]
     );
 
     const countRow = await queryOne<{ total: number }>(

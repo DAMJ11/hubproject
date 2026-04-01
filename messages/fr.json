@@ -897,10 +897,43 @@
       "title": "Conversation fermée",
       "subtitle": "Cette conversation n'est plus active"
     },
+    "moderation": {
+      "banner": "Ce chat est réservé à la communication interne sur la plateforme. Le partage d'informations de contact personnelles ou professionnelles (e-mails, numéros de téléphone) est interdit et peut entraîner le blocage de l'accès.",
+      "warning": "Avertissement {current}/{max}: Votre message a été bloqué pour partage d'informations de contact. {remaining} infraction(s) supplémentaire(s) entraînera(ont) le blocage de votre accès.",
+      "blocked": "Votre accès à cette conversation a été bloqué en raison de violations répétées des règles.",
+      "appealButton": "Soumettre un Appel",
+      "appealTitle": "Appel de Blocage Chat",
+      "appealLabel": "Expliquez pourquoi vous pensez que le blocage devrait être levé :",
+      "appealPlaceholder": "Décrivez la situation et pourquoi vous pensez que vos messages ont été bloqués à tort...",
+      "appealSubmit": "Envoyer l'Appel",
+      "appealCancel": "Annuler",
+      "appealSent": "Votre appel a été soumis. Un administrateur l'examinera sous peu.",
+      "appealError": "Impossible de soumettre l'appel. Veuillez réessayer.",
+      "appealPending": "Votre appel est en cours d'examen par un administrateur."
+    },
     "errors": {
       "createFailed": "Impossible de créer le chat.",
       "networkError": "Erreur réseau lors de la création de la demande."
     }
+  },
+  "ChatAppeals": {
+    "title": "Appels Chat",
+    "subtitle": "Examiner les appels des utilisateurs bloqués",
+    "empty": "Aucun appel en attente",
+    "user": "Utilisateur",
+    "conversation": "Conversation",
+    "violations": "Infractions",
+    "appealText": "Appel de l'Utilisateur",
+    "flaggedMessages": "Messages Bloqués",
+    "date": "Date",
+    "status": "Statut",
+    "pending": "En attente",
+    "approved": "Approuvé",
+    "rejected": "Rejeté",
+    "approve": "Débloquer l'Utilisateur",
+    "reject": "Maintenir le Blocage",
+    "confirmApprove": "Cela débloquera l'utilisateur et lui permettra d'envoyer des messages à nouveau.",
+    "confirmReject": "Cela maintiendra l'utilisateur bloqué dans cette conversation."
   },
   "Addresses": {
     "title": "Mes Adresses",

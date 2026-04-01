@@ -897,10 +897,43 @@
       "title": "Conversacion cerrada",
       "subtitle": "Esta conversacion ya no esta activa"
     },
+    "moderation": {
+      "banner": "Este chat es exclusivamente para comunicación interna en la plataforma. No está permitido compartir información de contacto personal o empresarial (correos electrónicos, números de teléfono). Hacerlo puede resultar en el bloqueo del acceso.",
+      "warning": "Advertencia {current}/{max}: Tu mensaje fue bloqueado por compartir información de contacto. {remaining} infracción(es) más resultarán en el bloqueo de tu acceso al chat.",
+      "blocked": "Tu acceso a esta conversación ha sido bloqueado por infracciones repetidas a las políticas.",
+      "appealButton": "Enviar Apelación",
+      "appealTitle": "Apelar Bloqueo de Chat",
+      "appealLabel": "Explica por qué crees que el bloqueo debe ser levantado:",
+      "appealPlaceholder": "Describe la situación y por qué crees que tus mensajes fueron bloqueados incorrectamente...",
+      "appealSubmit": "Enviar Apelación",
+      "appealCancel": "Cancelar",
+      "appealSent": "Tu apelación ha sido enviada. Un administrador la revisará en breve.",
+      "appealError": "No se pudo enviar la apelación. Intenta de nuevo.",
+      "appealPending": "Tu apelación está siendo revisada por un administrador."
+    },
     "errors": {
       "createFailed": "No se pudo crear el chat.",
       "networkError": "Error de red al crear la solicitud."
     }
+  },
+  "ChatAppeals": {
+    "title": "Apelaciones de Chat",
+    "subtitle": "Revisar apelaciones de usuarios bloqueados",
+    "empty": "No hay apelaciones pendientes",
+    "user": "Usuario",
+    "conversation": "Conversación",
+    "violations": "Infracciones",
+    "appealText": "Apelación del Usuario",
+    "flaggedMessages": "Mensajes Bloqueados",
+    "date": "Fecha",
+    "status": "Estado",
+    "pending": "Pendiente",
+    "approved": "Aprobada",
+    "rejected": "Rechazada",
+    "approve": "Desbloquear Usuario",
+    "reject": "Mantener Bloqueado",
+    "confirmApprove": "Esto desbloqueará al usuario y le permitirá enviar mensajes de nuevo.",
+    "confirmReject": "Esto mantendrá al usuario bloqueado en esta conversación."
   },
   "Addresses": {
     "title": "Mis Direcciones",

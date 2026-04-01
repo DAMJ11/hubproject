@@ -17,6 +17,7 @@ import {
 import { useTranslations } from "next-intl";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/shared/status-badge";
+import ChatAppealsPanel from "@/components/dashboard/ChatAppealsPanel";
 
 interface AdminDashboardProps {
   user: {
@@ -105,6 +106,11 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Chat Appeals */}
+        <div className="mb-8">
+          <ChatAppealsPanel />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
