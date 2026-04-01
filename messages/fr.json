@@ -79,7 +79,7 @@
     }
   },
   "Platform": {
-    "title": "Comment fonctionne Fashion Hubb",
+    "title": "Comment fonctionne FashionsDen",
     "subtitle": "De la premiere idee a la production finale, gerez chaque etape avec les bons partenaires, une communication claire et une visibilite totale.",
     "steps": {
       "0": {
@@ -102,7 +102,7 @@
   },
   "WhyManufy": {
     "title": "Une meilleure facon de creer votre collection",
-    "subtitle": "Fashion Hubb donne aux marques un seul endroit pour trouver les bons partenaires, gerer le processus et passer de la premiere idee a la production finale avec plus de clarte et de controle.",
+    "subtitle": "FashionsDen donne aux marques un seul endroit pour trouver les bons partenaires, gerer le processus et passer de la premiere idee a la production finale avec plus de clarte et de controle.",
     "items": {
       "0": {
         "title": "Partenaires mode verifies",
@@ -131,7 +131,7 @@
     }
   },
   "Quality": {
-    "title": "Que pouvez-vous produire sur Fashion Hubb",
+    "title": "Que pouvez-vous produire sur FashionsDen",
     "subtitle": "Du premier sample a la production complete, trouvez les bons partenaires pour chaque etape de votre collection.",
     "services": {
       "0": { "name": "T-shirts & tops", "shortDesc": "Jersey, rib et melanges premium", "detail": "A partir de 10 unites" },
@@ -729,7 +729,7 @@
       "evening": "Bonsoir"
     },
     "subtitle": {
-      "admin": "Voici un résumé de l'activité de FASHION HUBB.",
+      "admin": "Voici un résumé de l'activité de FashionsDen.",
       "brand": "Quel projet de mode avez-vous besoin de produire aujourd'hui ?",
       "manufacturer": "Consultez les opportunités disponibles."
     },
@@ -1651,7 +1651,7 @@
     "emptyUsersHint": "Essayez d'ajuster les filtres de recherche"
   },
   "Metadata": {
-    "title": "FASHION HUBB - Design et production de mode",
-    "description": "FASHION HUBB est votre plateforme de design de mode professionnel : croquis, tech packs, patronage numerique, echantillons et production."
+    "title": "FashionsDen - Design et production de mode",
+    "description": "FashionsDen est votre plateforme de design de mode professionnel : croquis, tech packs, patronage numerique, echantillons et production."
   }
 }

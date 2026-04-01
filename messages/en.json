@@ -79,7 +79,7 @@
     }
   },
   "Platform": {
-    "title": "How Fashion Hubb works",
+    "title": "How FashionsDen works",
     "subtitle": "From first idea to final production, manage every step with the right partners, clear communication, and full visibility.",
     "steps": {
       "0": {
@@ -102,7 +102,7 @@
   },
   "WhyManufy": {
     "title": "A better way to build your collection",
-    "subtitle": "Fashion Hubb gives brands one place to find the right partners, manage the process, and move from first idea to final production with more clarity and control.",
+    "subtitle": "FashionsDen gives brands one place to find the right partners, manage the process, and move from first idea to final production with more clarity and control.",
     "items": {
       "0": {
         "title": "Verified fashion partners",
@@ -131,7 +131,7 @@
     }
   },
   "Quality": {
-    "title": "What can you build on Fashion Hubb",
+    "title": "What can you build on FashionsDen",
     "subtitle": "From first sample to full production, find the right partners for every stage of your collection.",
     "services": {
       "0": { "name": "Tees & tops", "shortDesc": "Jersey, rib, premium blends", "detail": "From 10 units" },
@@ -729,7 +729,7 @@
       "evening": "Good evening"
     },
     "subtitle": {
-      "admin": "Here's a summary of FASHION HUBB activity.",
+      "admin": "Here's a summary of FashionsDen activity.",
       "brand": "What fashion project do you need to produce today?",
       "manufacturer": "Check available opportunities."
     },
@@ -1651,7 +1651,7 @@
     "emptyUsersHint": "Try adjusting your search filters"
   },
   "Metadata": {
-    "title": "FASHION HUBB - Fashion design and production",
-    "description": "FASHION HUBB is your platform for professional fashion design: sketches, tech packs, digital pattern making, samples and production."
+    "title": "FashionsDen - Fashion design and production",
+    "description": "FashionsDen is your platform for professional fashion design: sketches, tech packs, digital pattern making, samples and production."
   }
 }
