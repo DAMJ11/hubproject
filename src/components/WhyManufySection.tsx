@@ -18,20 +18,20 @@ export default async function WhyManufySection() {
     <section className="py-20 bg-white dark:bg-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 dark:text-gray-100">{t("title")}</h2>
-          <p className="mt-4 text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">{t("subtitle")}</p>
+          <h2 className="text-3xl lg:text-4xl font-bold text-[#745E96] dark:text-gray-100">{t("title")}</h2>
+          <p className="mt-4 text-lg text-[#9279BA] dark:text-gray-400 max-w-2xl mx-auto">{t("subtitle")}</p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {icons.map((Icon, index) => {
             const style = cardStyles[index];
             return (
-              <div key={index} className="bg-white dark:bg-slate-800 rounded-2xl p-8 hover:shadow-lg transition-shadow border border-gray-100 dark:border-slate-700">
+              <div key={index} className="bg-white dark:bg-slate-800 rounded-2xl p-8 hover:shadow-lg transition-shadow border border-[#D1C1F2] dark:border-slate-700">
                 <div className={`w-14 h-14 ${style.iconBg} rounded-full flex items-center justify-center mb-5`}>
                   <Icon className={`w-7 h-7 ${style.iconColor}`} />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">{t(`items.${index}.title`)}</h3>
-                <p className="text-gray-600 dark:text-gray-400">{t(`items.${index}.desc`)}</p>
+                <h3 className="text-xl font-semibold text-[#745E96] dark:text-gray-100 mb-3">{t(`items.${index}.title`)}</h3>
+                <p className="text-[#9279BA] dark:text-gray-400">{t(`items.${index}.desc`)}</p>
               </div>
             );
           })}

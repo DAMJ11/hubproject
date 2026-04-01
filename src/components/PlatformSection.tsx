@@ -44,8 +44,8 @@ export default async function PlatformSection() {
     <section id="como-funciona" className="py-20 bg-landing-neutral dark:bg-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 dark:text-gray-100">{t("title")}</h2>
-          <p className="mt-4 text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">{t("subtitle")}</p>
+          <h2 className="text-3xl lg:text-4xl font-bold text-[#745E96] dark:text-gray-100">{t("title")}</h2>
+          <p className="mt-4 text-lg text-[#9279BA] dark:text-gray-400 max-w-2xl mx-auto">{t("subtitle")}</p>
         </div>
 
         <div className="relative">
@@ -67,8 +67,8 @@ export default async function PlatformSection() {
                       <div className={`mx-auto mb-5 grid h-12 w-12 place-items-center rounded-2xl ${color.iconBg} shadow-[0_16px_30px_-24px_rgba(15,23,42,0.35)]`}>
                         <Icon className={`block h-6 w-6 ${color.iconColor}`} />
                       </div>
-                      <h3 className="mb-3 text-[1.05rem] font-semibold leading-8 text-gray-800 dark:text-gray-100">{t(`steps.${index}.title`)}</h3>
-                      <p className="text-sm leading-7 text-gray-600 dark:text-gray-400">{t(`steps.${index}.desc`)}</p>
+                      <h3 className="mb-3 text-[1.05rem] font-semibold leading-8 text-[#745E96] dark:text-gray-100">{t(`steps.${index}.title`)}</h3>
+                      <p className="text-sm leading-7 text-[#9279BA] dark:text-gray-400">{t(`steps.${index}.desc`)}</p>
                     </div>
                   </div>
                 </div>

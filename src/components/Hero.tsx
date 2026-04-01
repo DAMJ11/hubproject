@@ -33,19 +33,19 @@ export default async function Hero() {
               {t("pill")}
             </div>
 
-            <h1 className="text-4xl lg:text-6xl font-bold text-gray-800 dark:text-gray-100 leading-tight">
+            <h1 className="text-4xl lg:text-6xl font-bold text-[#745E96] leading-tight">
               {t("titleA")}<br />
               {t("titleC")}<br />
               <span className="text-[#7e7cf3]">{t("titleB")}</span>
             </h1>
 
-            <p className="mt-6 text-base lg:text-lg text-gray-600 dark:text-gray-400">{t("subtitle")}</p>
+            <p className="mt-6 text-base lg:text-lg text-[#9279BA]">{t("subtitle")}</p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-8">
               {highlights.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <div key={item.text} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                  <div key={item.text} className="flex items-center gap-2 text-sm text-[#745E96]">
                     <Icon className="w-5 h-5 flex-shrink-0 text-brand-600" />
                     <span>{item.text}</span>
                   </div>
@@ -78,7 +78,7 @@ export default async function Hero() {
                   className={`${categoryColors[idx]} border rounded-xl p-3 flex flex-col items-center text-center`}
                 >
                   <Icon className="w-5 h-5 text-brand-600 mb-1.5" />
-                  <span className="font-semibold text-gray-900 dark:text-white text-xs leading-tight">
+                  <span className="font-semibold text-[#745E96] text-xs leading-tight">
                     {t(`categories.${idx}`)}
                   </span>
                 </div>
@@ -92,8 +92,8 @@ export default async function Hero() {
               {categoryIcons.map((Icon, idx) => (
                 <div key={idx} className={`${categoryColors[idx]} border rounded-xl p-6 hover:shadow-lg transition-all hover:-translate-y-1 cursor-pointer`}>
                     <Icon className="w-8 h-8 mx-auto mb-3 text-brand-600" />
-                    <h3 className="font-semibold text-gray-900 dark:text-white mt-3">{t(`categories.${idx}`)}</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t(`categoryDesc.${idx}`)}</p>
+                    <h3 className="font-semibold text-[#745E96] mt-3">{t(`categories.${idx}`)}</h3>
+                    <p className="text-sm text-[#9279BA] mt-1">{t(`categoryDesc.${idx}`)}</p>
                 </div>
               ))}
             </div>

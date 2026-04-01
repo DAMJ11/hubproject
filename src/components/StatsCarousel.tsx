@@ -33,9 +33,9 @@ export default function StatsCarousel({ stats }: { stats: StatItem[] }) {
           {stats.map((stat, i) => (
             // min-w-full = 100% del overflow-hidden padre, no del track entero
             <div key={i} className="min-w-full flex justify-center py-1">
-              <div className="flex flex-col items-center justify-center bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-10 py-5 shadow-sm w-4/5 max-w-[280px]">
+              <div className="flex flex-col items-center justify-center bg-white border border-[#D1C1F2] rounded-xl px-10 py-5 shadow-sm w-4/5 max-w-[280px]">
                 <span className={`text-2xl font-bold ${stat.color}`}>{stat.value}</span>
-                <span className="text-sm text-gray-500 dark:text-gray-400 mt-1 text-center">{stat.label}</span>
+                <span className="text-sm text-[#9279BA] mt-1 text-center">{stat.label}</span>
               </div>
             </div>
           ))}
@@ -47,7 +47,7 @@ export default function StatsCarousel({ stats }: { stats: StatItem[] }) {
             <div
               key={i}
               className={`h-1.5 rounded-full transition-all duration-500 ${
-                i === index ? "w-6 bg-[#7e7cf3]" : "w-1.5 bg-gray-200"
+                i === index ? "w-6 bg-[#7e7cf3]" : "w-1.5 bg-[#D1C1F2]"
               }`}
             />
           ))}
@@ -59,10 +59,10 @@ export default function StatsCarousel({ stats }: { stats: StatItem[] }) {
         {stats.map((stat, i) => (
           <div
             key={i}
-            className="flex flex-col items-center justify-center bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-10 py-5 shadow-sm min-w-[160px]"
+            className="flex flex-col items-center justify-center bg-white border border-[#D1C1F2] rounded-xl px-10 py-5 shadow-sm min-w-[160px]"
           >
             <span className={`text-2xl font-bold ${stat.color}`}>{stat.value}</span>
-            <span className="text-sm text-gray-500 dark:text-gray-400 mt-1">{stat.label}</span>
+            <span className="text-sm text-[#9279BA] mt-1">{stat.label}</span>
           </div>
         ))}
       </div>
