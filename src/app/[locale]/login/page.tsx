@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginInput } from "@/lib/validations/auth";
 import Image from "next/image";
+import { images } from "@/lib/images";
 import { ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -134,7 +135,7 @@ export default function LoginPage() {
               <div className="flex items-center justify-between mb-6">
                 <Link href="/" className="flex items-center gap-2">
                   <Image
-                    src="/images/brand/logo-dark.svg"
+                    src={images.logoDark}
                     alt="FashionsDen"
                     width={200}
                     height={44}

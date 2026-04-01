@@ -14,7 +14,7 @@ const securityHeaders = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com",
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob: https://source.unsplash.com https://images.unsplash.com https://ext.same-assets.com https://ugc.same-assets.com https://flagcdn.com",
+      "img-src 'self' data: blob: https://source.unsplash.com https://images.unsplash.com https://ext.same-assets.com https://ugc.same-assets.com https://flagcdn.com https://res.cloudinary.com",
       "font-src 'self'",
       "connect-src 'self' https://api.stripe.com https://*.resend.com",
       "frame-src 'self' https://js.stripe.com",
@@ -44,8 +44,14 @@ const nextConfig = {
       "ext.same-assets.com",
       "ugc.same-assets.com",
       "flagcdn.com",
+      "res.cloudinary.com",
     ],
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
+      },
       {
         protocol: "https",
         hostname: "source.unsplash.com",

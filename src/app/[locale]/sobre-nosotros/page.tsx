@@ -2,6 +2,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { images } from "@/lib/images";
 import { Link } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
 
@@ -47,7 +48,7 @@ export default async function SobreNosotrosPage() {
             </div>
             <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
               <Image
-                src="/images/mockups/gorra.jpg"
+                src={images.mockupGorra}
                 alt="FashionsDen Cap Mockup"
                 fill
                 className="object-cover"

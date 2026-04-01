@@ -48,7 +48,7 @@
     "titleA": "La plataforma",
     "titleC": "donde las marcas de moda",
     "titleB": "se construyen",
-    "subtitle": "Desde la primera idea hasta la produccion final, trabaja con partners verificados en Latinoamerica — todo gestionado en un solo lugar.",
+    "subtitle": "Desde la primera idea hasta la produccion final, trabaja con partners verificados donde los necesites — todo gestionado en un solo lugar.",
     "highlights": {
       "0": "Partners verificados en quienes confiar",
       "1": "Precios claros y tiempos definidos",
@@ -84,8 +84,8 @@
     "subtitle": "Desde la primera idea hasta la produccion final, gestiona cada paso con los partners correctos, comunicacion clara y visibilidad total.",
     "steps": {
       "0": {
-        "title": "Sube tu proyecto",
-        "desc": "Comparte tu boceto, tech pack, materiales, medidas o referencias para que los partners adecuados revisen tu proyecto correctamente."
+        "title": "Inicia Tu Proyecto",
+        "desc": "Ya tengas un tech pack completo o solo una idea, puedes comenzar. Sube tus diseños, fotos de referencia o simplemente describe lo que quieres crear — y te conectaremos con los partners adecuados para hacerlo realidad."
       },
       "1": {
         "title": "Encuentra el partner ideal",
@@ -304,7 +304,7 @@
     "emailLabel": "Email",
     "phoneLabel": "Teléfono",
     "addressLabel": "Dirección",
-    "address": "Amsterdam, Países Bajos",
+    "address": "Londres, Reino Unido",
     "hoursLabel": "Horario De Atención",
     "weekdays": "Lunes - Viernes: 9:00 - 18:00",
     "weekends": "Sábado - Domingo: Cerrado"
@@ -369,7 +369,7 @@
     "howItWorksTitle": "Crear Moda De Forma Fácil",
     "howItWorksSubtitle": "Observe cómo su idea cobra vida en unos sencillos pasos.",
     "steps": {
-      "0": { "title": "Crea Tu Proyecto", "desc": "Publique una solicitud de cotización para ponerse en contacto con los fabricantes." },
+      "0": { "title": "Inicia Tu Proyecto", "desc": "Ya tengas un tech pack completo o solo una idea, puedes comenzar. Sube tus diseños, fotos de referencia o simplemente describe lo que quieres crear — y te conectaremos con los partners adecuados para hacerlo realidad." },
       "1": { "title": "Chatea Y Compara", "desc": "Negocie en su propio idioma utilizando nuestro chat traducido en tiempo real." },
       "2": { "title": "Iniciar Producción", "desc": "Ordene su colección utilizando nuestras herramientas seguras de pedido y pago." }
     },

@@ -48,7 +48,7 @@
     "titleA": "La plateforme",
     "titleC": "où les marques de mode",
     "titleB": "se construisent",
-    "subtitle": "De la premiere idee a la production finale, travaillez avec des partenaires verifies en Amerique latine — tout gere en un seul endroit.",
+    "subtitle": "De la premiere idee a la production finale, travaillez avec des partenaires verifies ou vous en avez besoin — tout gere en un seul endroit.",
     "highlights": {
       "0": "Partenaires verifies de confiance",
       "1": "Prix clairs et delais definis",
@@ -84,8 +84,8 @@
     "subtitle": "De la premiere idee a la production finale, gerez chaque etape avec les bons partenaires, une communication claire et une visibilite totale.",
     "steps": {
       "0": {
-        "title": "Telechargez votre projet",
-        "desc": "Partagez votre croquis, tech pack, materiaux, mesures ou references pour que les bons partenaires puissent examiner correctement votre projet."
+        "title": "Démarrez Votre Projet",
+        "desc": "Que vous ayez un tech pack complet ou juste une idée, vous pouvez commencer. Téléchargez vos designs, photos de référence ou décrivez simplement ce que vous voulez créer — et nous vous connecterons avec les bons partenaires pour le concrétiser."
       },
       "1": {
         "title": "Trouvez le partenaire ideal",
@@ -304,7 +304,7 @@
     "emailLabel": "Email",
     "phoneLabel": "Telephone",
     "addressLabel": "Adresse",
-    "address": "Amsterdam, Pays-Bas",
+    "address": "Londres, Royaume-Uni",
     "hoursLabel": "Horaires d'ouverture",
     "weekdays": "Lundi - Vendredi : 9h00 - 18h00",
     "weekends": "Samedi - Dimanche : Ferme"
@@ -369,7 +369,7 @@
     "howItWorksTitle": "Creer de la mode facilement",
     "howItWorksSubtitle": "Regardez votre idee prendre vie en quelques etapes simples.",
     "steps": {
-      "0": { "title": "Creez votre projet", "desc": "Publiez une demande de devis pour entrer en contact avec les fabricants." },
+      "0": { "title": "Démarrez Votre Projet", "desc": "Que vous ayez un tech pack complet ou juste une idée, vous pouvez commencer. Téléchargez vos designs, photos de référence ou décrivez simplement ce que vous voulez créer — et nous vous connecterons avec les bons partenaires pour le concrétiser." },
       "1": { "title": "Discutez et comparez", "desc": "Negociez dans votre langue grace a notre chat traduit en temps reel." },
       "2": { "title": "Lancez la production", "desc": "Commandez votre collection en utilisant nos outils securises de commande et de paiement." }
     },

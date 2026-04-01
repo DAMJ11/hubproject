@@ -1,4 +1,4 @@
-import Header from "@/components/layout/Header";
+﻿import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -36,13 +36,13 @@ export default async function ParaFabricantesPage() {
           </p>
           <div className="flex flex-wrap justify-center gap-4 mt-8">
             <Link href="/register">
-              <Button className="bg-[#7e7cf3] hover:bg-[#6a68e0] text-white rounded-full px-8 py-6 text-lg font-medium">
+              <Button className="bg-[#9279BA] hover:bg-[#745E96] text-white rounded-full px-8 py-6 text-lg font-medium">
                 {t("joinNow")}
               </Button>
             </Link>
             <Button
               variant="outline"
-              className="border-2 border-[#7e7cf3] text-[#7e7cf3] hover:bg-[#7e7cf3] hover:text-white rounded-full px-8 py-6 text-lg font-medium"
+              className="border-2 border-[#9279BA] text-[#9279BA] hover:bg-[#9279BA] hover:text-white rounded-full px-8 py-6 text-lg font-medium"
             >
               {t("learnMore")}
             </Button>
@@ -74,7 +74,7 @@ export default async function ParaFabricantesPage() {
               </p>
               <div className="mt-8">
               <Link href="/register">
-                <Button className="bg-[#7e7cf3] hover:bg-[#6a68e0] text-white rounded-full px-8 py-6 text-lg font-medium">
+                <Button className="bg-[#9279BA] hover:bg-[#745E96] text-white rounded-full px-8 py-6 text-lg font-medium">
                   {t("joinNow")}
                 </Button>
               </Link>
@@ -93,7 +93,7 @@ export default async function ParaFabricantesPage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-[#7e7cf3]">
+      <section className="py-16 md:py-24 bg-[#9279BA]">
         <div className="container-custom mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
@@ -111,7 +111,7 @@ export default async function ParaFabricantesPage() {
               >
                 <CardContent className="p-8 text-center">
                   <div className="w-24 h-24 mx-auto mb-6 flex items-center justify-center">
-                    <StepIcon size={64} color="#7e7cf3" strokeWidth={1.5} />
+                    <StepIcon size={64} color="#9279BA" strokeWidth={1.5} />
                   </div>
                   <h3 className="text-xl font-bold text-[#745E96] dark:text-white mb-4">
                     {t(`steps.${index}.title`)}
@@ -174,7 +174,7 @@ export default async function ParaFabricantesPage() {
                 key={index}
                 className={`relative overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-2 ${
                   planHighlighted[index]
-                    ? "border-2 border-[#7e7cf3] shadow-xl"
+                    ? "border-2 border-[#9279BA] shadow-xl"
                     : "border border-[#D1C1F2] shadow-lg"
                 }`}
               >
@@ -184,8 +184,8 @@ export default async function ParaFabricantesPage() {
                   </h3>
 
                   <div className="flex items-baseline justify-center mb-4">
-                    <span className="text-lg text-[#7e7cf3] mr-1">$</span>
-                    <span className="text-4xl font-bold text-[#7e7cf3]">
+                    <span className="text-lg text-[#9279BA] mr-1">$</span>
+                    <span className="text-4xl font-bold text-[#9279BA]">
                       {t(`plans.${index}.price`)}
                     </span>
                     <span className="text-[#9279BA] dark:text-gray-400 ml-1">{t("perMonth")}</span>
@@ -199,8 +199,8 @@ export default async function ParaFabricantesPage() {
                     <Button
                       className={`rounded-full px-8 py-6 w-full font-medium transition-all ${
                         planHighlighted[index]
-                          ? "bg-[#7e7cf3] hover:bg-[#6a68e0] text-white"
-                          : "bg-white border-2 border-[#7e7cf3] text-[#7e7cf3] hover:bg-[#7e7cf3] hover:text-white"
+                          ? "bg-[#9279BA] hover:bg-[#745E96] text-white"
+                          : "bg-white border-2 border-[#9279BA] text-[#9279BA] hover:bg-[#9279BA] hover:text-white"
                       }`}
                     >
                       {t("learnMorePlan")}
@@ -227,7 +227,7 @@ export default async function ParaFabricantesPage() {
               </div>
               <div className="mt-8">
               <Link href="/register">
-                <Button className="bg-[#7e7cf3] hover:bg-[#6a68e0] text-white rounded-full px-8 py-6 text-lg font-medium whitespace-nowrap">
+                <Button className="bg-[#9279BA] hover:bg-[#745E96] text-white rounded-full px-8 py-6 text-lg font-medium whitespace-nowrap">
                   {t("ctaButton")}
                 </Button>
               </Link>

@@ -27,6 +27,7 @@ import {
   Building2,
 } from "lucide-react";
 import Image from "next/image";
+import { images } from "@/lib/images";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
@@ -168,7 +169,7 @@ export default function Sidebar({
         {expanded ? (
           <Link href="/dashboard" onClick={() => handleNavigate("/dashboard")} className="flex items-center gap-2">
             <Image
-              src="/images/brand/logo.svg"
+              src={images.logo}
               alt="FashionsDen"
               width={180}
               height={30}
@@ -178,7 +179,7 @@ export default function Sidebar({
         ) : (
           <Link href="/dashboard" onClick={() => handleNavigate("/dashboard")} className="mx-auto">
             <Image
-              src="/images/brand/icon-primary.png"
+              src={images.iconPrimary}
               alt="FH"
               width={40}
               height={40}

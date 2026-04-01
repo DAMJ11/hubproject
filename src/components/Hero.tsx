@@ -11,7 +11,7 @@ const categoryColors = [
   "bg-emerald-50 border-emerald-100 dark:bg-emerald-950/40 dark:border-emerald-900",
   "bg-stone-100 border-stone-200 dark:bg-stone-900/40 dark:border-stone-800",
   "bg-rose-50 border-rose-100 dark:bg-rose-950/40 dark:border-rose-900",
-  "bg-violet-50 border-violet-100 dark:bg-violet-950/40 dark:border-violet-900",
+  "bg-[#E7DDFF] border-[#D1C1F2] dark:bg-violet-950/40 dark:border-violet-900",
 ];
 
 export default async function Hero() {
@@ -33,19 +33,19 @@ export default async function Hero() {
               {t("pill")}
             </div>
 
-            <h1 className="text-4xl lg:text-6xl font-bold text-[#745E96] leading-tight">
+            <h1 className="text-4xl lg:text-6xl font-bold text-gray-800 dark:text-gray-100 leading-tight">
               {t("titleA")}<br />
               {t("titleC")}<br />
-              <span className="text-[#7e7cf3]">{t("titleB")}</span>
+              <span className="text-[#9279BA]">{t("titleB")}</span>
             </h1>
 
-            <p className="mt-6 text-base lg:text-lg text-[#9279BA]">{t("subtitle")}</p>
+            <p className="mt-6 text-base lg:text-lg text-gray-600 dark:text-gray-400">{t("subtitle")}</p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-8">
               {highlights.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <div key={item.text} className="flex items-center gap-2 text-sm text-[#745E96]">
+                  <div key={item.text} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                     <Icon className="w-5 h-5 flex-shrink-0 text-brand-600" />
                     <span>{item.text}</span>
                   </div>
@@ -55,7 +55,7 @@ export default async function Hero() {
 
             <div className="flex flex-wrap gap-3 mt-10">
               <Link href="/register">
-                <Button size="lg" className="bg-[#7e7cf3] hover:bg-[#6a68e0] text-white rounded-lg px-6 h-12 text-base">
+                <Button size="lg" className="bg-[#9279BA] hover:bg-[#745E96] text-white rounded-lg px-6 h-12 text-base">
                   {t("ctaPrimary")}
                 </Button>
               </Link>
@@ -63,7 +63,7 @@ export default async function Hero() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="rounded-lg px-6 h-12 text-base border-[#7e7cf3] text-[#7e7cf3] hover:bg-[#7e7cf3]/5"
+                  className="rounded-lg px-6 h-12 text-base border-[#9279BA] text-[#9279BA] hover:bg-[#9279BA]/5"
                 >
                   {t("ctaSecondary")}
                 </Button>
@@ -78,7 +78,7 @@ export default async function Hero() {
                   className={`${categoryColors[idx]} border rounded-xl p-3 flex flex-col items-center text-center`}
                 >
                   <Icon className="w-5 h-5 text-brand-600 mb-1.5" />
-                  <span className="font-semibold text-[#745E96] text-xs leading-tight">
+                  <span className="font-semibold text-gray-900 dark:text-white text-xs leading-tight">
                     {t(`categories.${idx}`)}
                   </span>
                 </div>
@@ -92,8 +92,8 @@ export default async function Hero() {
               {categoryIcons.map((Icon, idx) => (
                 <div key={idx} className={`${categoryColors[idx]} border rounded-xl p-6 hover:shadow-lg transition-all hover:-translate-y-1 cursor-pointer`}>
                     <Icon className="w-8 h-8 mx-auto mb-3 text-brand-600" />
-                    <h3 className="font-semibold text-[#745E96] mt-3">{t(`categories.${idx}`)}</h3>
-                    <p className="text-sm text-[#9279BA] mt-1">{t(`categoryDesc.${idx}`)}</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mt-3">{t(`categories.${idx}`)}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t(`categoryDesc.${idx}`)}</p>
                 </div>
               ))}
             </div>

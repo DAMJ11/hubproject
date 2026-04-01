@@ -1,6 +1,7 @@
 import { getTranslations, getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
+import { images } from "@/lib/images";
 
 const serviceHrefs = ["/#servicios", "/#servicios", "/#servicios", "/#servicios", "/#servicios", "/#servicios"];
 const companyHrefs = ["/sobre-nosotros", "/blog", "/para-fabricantes", "/contacto"];
@@ -18,7 +19,7 @@ export default async function Footer() {
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
               <Image
-                src="/images/brand/logo-light.svg"
+                src={images.logoLight}
                 alt="FashionsDen"
                 width={180}
                 height={40}

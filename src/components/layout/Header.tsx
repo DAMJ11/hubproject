@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
+import { images } from "@/lib/images";
 import { Link, useRouter, usePathname } from "@/i18n/navigation";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -55,7 +56,7 @@ export default function Header() {
           <div className="-ml-2 transition-transform hover:scale-105 active:scale-95">
             <Link href="/" className="flex items-center gap-1">
               <Image
-                src="/images/brand/logo.svg"
+                src={images.logo}
                 alt="FashionsDen"
                 width={280}
                 height={44}
@@ -114,14 +115,14 @@ export default function Header() {
             </DropdownMenu>
             <div className="transition-transform hover:scale-105 active:scale-95">
               <Link href="/login">
-                <Button variant="ghost" className="text-gray-700 dark:text-gray-300 hover:text-brand-600">
+                <Button variant="ghost" className="text-[#9279BA] hover:text-[#745E96]">
                   {t("login")}
                 </Button>
               </Link>
             </div>
             <div className="transition-transform hover:scale-105 active:scale-95">
               <Link href="/register">
-                <Button className="bg-brand-600 hover:bg-brand-700 text-white rounded-lg">
+                <Button className="bg-[#9279BA] hover:bg-[#745E96] text-white rounded-lg">
                   {t("register")}
                 </Button>
               </Link>
@@ -195,14 +196,14 @@ export default function Header() {
                 </DropdownMenu>
                 <div className="transition-transform hover:scale-[1.02] active:scale-[0.98]">
                   <Link href="/login">
-                    <Button variant="outline" className="w-full">
+                    <Button variant="outline" className="w-full border-[#9279BA] text-[#9279BA] hover:bg-[#9279BA] hover:text-white">
                       {t("login")}
                     </Button>
                   </Link>
                 </div>
                 <div className="transition-transform hover:scale-[1.02] active:scale-[0.98]">
                   <Link href="/register">
-                    <Button className="w-full bg-brand-600 hover:bg-brand-700 text-white">
+                    <Button className="w-full bg-[#9279BA] hover:bg-[#745E96] text-white">
                       {t("register")}
                     </Button>
                   </Link>

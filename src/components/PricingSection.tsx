@@ -41,7 +41,7 @@ export default function PricingSection() {
               onClick={() => setActiveTab("brands")}
               className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 activeTab === "brands"
-                  ? "bg-[#7e7cf3] text-white shadow-sm"
+                  ? "bg-[#9279BA] text-white shadow-sm"
                   : "text-[#9279BA] dark:text-gray-400 hover:text-[#745E96] dark:hover:text-white"
               }`}
             >
@@ -51,7 +51,7 @@ export default function PricingSection() {
               onClick={() => setActiveTab("suppliers")}
               className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 activeTab === "suppliers"
-                  ? "bg-[#7e7cf3] text-white shadow-sm"
+                  ? "bg-[#9279BA] text-white shadow-sm"
                   : "text-[#9279BA] dark:text-gray-400 hover:text-[#745E96] dark:hover:text-white"
               }`}
             >
@@ -65,7 +65,7 @@ export default function PricingSection() {
             <div
               key={plan.key}
               className={`rounded-2xl p-8 ${
-                plan.featured ? "bg-[#745E96] text-white ring-4 ring-[#7e7cf3]/20 scale-105" : "bg-[#E7DDFF]/20 dark:bg-slate-800 border border-[#D1C1F2] dark:border-slate-700"
+                plan.featured ? "bg-[#745E96] text-white ring-4 ring-[#9279BA]/20 scale-105" : "bg-[#E7DDFF]/20 dark:bg-slate-800 border border-[#D1C1F2] dark:border-slate-700"
               }`}
             >
               {plan.featured && (
@@ -75,7 +75,7 @@ export default function PricingSection() {
               )}
               <h3 className={`text-xl font-bold ${plan.featured ? "text-white" : "text-[#745E96] dark:text-gray-100"}`}>{t(`${prefix}.${plan.key}.name`)}</h3>
               <div className="mt-4 flex items-baseline gap-1">
-                <span className={`text-4xl font-bold ${plan.featured ? "text-white" : "text-[#7e7cf3] dark:text-gray-100"}`}>{t(`${prefix}.${plan.key}.price`)}</span>
+                <span className={`text-4xl font-bold ${plan.featured ? "text-white" : "text-[#9279BA] dark:text-gray-100"}`}>{t(`${prefix}.${plan.key}.price`)}</span>
                 <span className={plan.featured ? "text-white/70" : "text-[#9279BA] dark:text-gray-400"}>{t("perMonth")}</span>
               </div>
               <p className={`mt-3 text-sm ${plan.featured ? "text-white/80" : "text-[#9279BA] dark:text-gray-400"}`}>{t(`${prefix}.${plan.key}.desc`)}</p>
@@ -83,7 +83,7 @@ export default function PricingSection() {
               <ul className="mt-8 space-y-3">
                 {Array.from({ length: featuresCount[planIdx] }).map((_, fi) => (
                   <li key={fi} className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 className={`w-4 h-4 flex-shrink-0 ${plan.featured ? "text-[#D4C4EC]" : "text-[#7e7cf3]"}`} />
+                    <CheckCircle2 className={`w-4 h-4 flex-shrink-0 ${plan.featured ? "text-[#D4C4EC]" : "text-[#9279BA]"}`} />
                     <span className={plan.featured ? "text-white" : "text-[#745E96] dark:text-gray-300"}>{t(`${prefix}.${plan.key}.features.${fi}`)}</span>
                   </li>
                 ))}
@@ -93,7 +93,7 @@ export default function PricingSection() {
                 <Link href="/register">
                   <Button
                     className={`w-full h-12 rounded-lg font-medium ${
-                      plan.featured ? "bg-[#7e7cf3] text-white hover:bg-[#6a68e0]" : "bg-[#7e7cf3] text-white hover:bg-[#6a68e0]"
+                      plan.featured ? "bg-[#9279BA] text-white hover:bg-[#745E96]" : "bg-[#9279BA] text-white hover:bg-[#745E96]"
                     }`}
                   >
                     {t(`${prefix}.${plan.key}.cta`)}
@@ -110,7 +110,7 @@ export default function PricingSection() {
             <ul className="space-y-2 mb-6">
               {[0, 1, 2, 3].map((i) => (
                 <li key={i} className="flex items-center justify-center gap-2 text-sm text-[#9279BA] dark:text-gray-300">
-                  <CheckCircle2 className="w-4 h-4 text-[#7e7cf3] flex-shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-[#9279BA] flex-shrink-0" />
                   <span>{t(`trialItems.${i}`)}</span>
                 </li>
               ))}

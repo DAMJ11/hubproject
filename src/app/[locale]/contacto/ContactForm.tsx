@@ -124,7 +124,7 @@ export default function ContactForm() {
                 </div>
                 <div>
                   <h3 className="font-bold text-brand-900 mb-1">{t("emailLabel")}</h3>
-                  <p className="text-gray-600 dark:text-gray-400">info@projecthub.com</p>
+                  <p className="text-gray-600 dark:text-gray-400">info@fashionsden.com</p>
                 </div>
               </CardContent>
             </Card>

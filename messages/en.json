@@ -48,7 +48,7 @@
     "titleA": "The platform",
     "titleC": "where fashion brands",
     "titleB": "are built",
-    "subtitle": "From first idea to final production, work with verified partners across Latin America — all managed in one place.",
+    "subtitle": "From first idea to final production, work with verified partners wherever you need them — all managed in one place.",
     "highlights": {
       "0": "Verified partners you can trust",
       "1": "Clear pricing and timelines",
@@ -84,8 +84,8 @@
     "subtitle": "From first idea to final production, manage every step with the right partners, clear communication, and full visibility.",
     "steps": {
       "0": {
-        "title": "Upload your project",
-        "desc": "Share your sketch, tech pack, materials, measurements or references so the right partners can properly review your project."
+        "title": "Start Your Project",
+        "desc": "Whether you have a full tech pack or just an idea, you can get started. Upload your designs, reference photos or simply describe what you want to create — and we'll connect you with the right partners to bring it to life."
       },
       "1": {
         "title": "Find the ideal partner",
@@ -304,7 +304,7 @@
     "emailLabel": "Email",
     "phoneLabel": "Phone",
     "addressLabel": "Address",
-    "address": "Amsterdam, Netherlands",
+    "address": "London, United Kingdom",
     "hoursLabel": "Business Hours",
     "weekdays": "Monday - Friday: 9:00 - 18:00",
     "weekends": "Saturday - Sunday: Closed"
@@ -369,7 +369,7 @@
     "howItWorksTitle": "Create Fashion The Easy Way",
     "howItWorksSubtitle": "Watch your idea come to life in a few simple steps.",
     "steps": {
-      "0": { "title": "Create Your Project", "desc": "Post a request for quotation to get in touch with manufacturers." },
+      "0": { "title": "Start Your Project", "desc": "Whether you have a full tech pack or just an idea, you can get started. Upload your designs, reference photos or simply describe what you want to create — and we'll connect you with the right partners to bring it to life." },
       "1": { "title": "Chat And Compare", "desc": "Negotiate in your own language using our real-time translated chat." },
       "2": { "title": "Start Production", "desc": "Order your collection using our secure ordering and payment tools." }
     },

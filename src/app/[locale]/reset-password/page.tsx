@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
+import { images } from "@/lib/images";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AuthTransition, StaggeredTransition } from "@/components/shared/page-transition";
@@ -81,7 +82,7 @@ export default function ResetPasswordPage() {
               <div className="flex items-center justify-center mb-6">
                 <Link href="/">
                   <Image
-                    src="/images/brand/logo-dark.svg"
+                    src={images.logoDark}
                     alt="FashionsDen"
                     width={200}
                     height={44}

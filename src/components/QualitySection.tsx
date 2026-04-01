@@ -39,10 +39,10 @@ const services = [
   },
   {
     icon: Tag,
-    iconColor: "text-[#7e7cf3]",
-    iconBg: "bg-[#f0efff]",
-    cardBg: "bg-gradient-to-b from-[#f7f6ff] via-[#fefeff] to-white",
-    accent: "text-[#7e7cf3]",
+    iconColor: "text-[#9279BA]",
+    iconBg: "bg-[#E7DDFF]",
+    cardBg: "bg-gradient-to-b from-[#f5f3ff] via-[#fefeff] to-white",
+    accent: "text-[#9279BA]",
   },
   {
     icon: Layers,
@@ -81,8 +81,8 @@ export default async function QualitySection() {
     <section id="servicios" className="bg-landing-neutral dark:bg-slate-900 py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-[#745E96] dark:text-gray-100 lg:text-4xl">{t("title")}</h2>
-          <p className="mx-auto mt-4 max-w-3xl text-base text-[#9279BA] dark:text-gray-400 lg:text-lg">{t("subtitle")}</p>
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 lg:text-4xl">{t("title")}</h2>
+          <p className="mx-auto mt-4 max-w-3xl text-base text-gray-600 dark:text-gray-400 lg:text-lg">{t("subtitle")}</p>
         </div>
 
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
@@ -99,10 +99,10 @@ export default async function QualitySection() {
                   </div>
                 );
               })()}
-              <h3 className="text-[1rem] font-semibold leading-6 text-[#745E96] dark:text-gray-100 transition-colors duration-300 group-hover:text-[#7e7cf3] dark:group-hover:text-[#B9A5E2]">
+              <h3 className="text-[1rem] font-semibold leading-6 text-gray-800 dark:text-gray-100 transition-colors duration-300 group-hover:text-brand-900 dark:group-hover:text-brand-400">
                 {t(`services.${index}.name`)}
               </h3>
-              <p className="mt-2 text-xs leading-5 text-[#9279BA] dark:text-gray-400 md:text-[13px]">
+              <p className="mt-2 text-xs leading-5 text-gray-500 dark:text-gray-400 md:text-[13px]">
                 {t(`services.${index}.shortDesc`)}
               </p>
               <p className={`mt-auto pt-4 text-sm font-semibold ${service.accent}`}>{t(`services.${index}.detail`)}</p>
