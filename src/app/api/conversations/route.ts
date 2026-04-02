@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
         r.title AS rfq_title,
         CONCAT(au.first_name, ' ', au.last_name) AS admin_user_name,
         CONCAT(iu.first_name, ' ', iu.last_name) AS initiator_name,
-        (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id AND m.is_read = FALSE AND m.sender_user_id != ?) AS unread_count,
+        (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id AND m.is_read = FALSE AND m.sender_user_id != ? AND m.message_type != 'system') AS unread_count,
         (SELECT m2.content FROM messages m2 WHERE m2.conversation_id = c.id ORDER BY m2.created_at DESC LIMIT 1) AS last_message
        FROM conversations c
        LEFT JOIN companies bc ON bc.id = c.brand_company_id

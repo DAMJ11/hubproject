@@ -77,6 +77,29 @@ export async function POST(request: NextRequest) {
 // =============================================
 
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
+  // ── Pago único: Strategy Call ──────────────────────────────────────────
+  if (session.mode === "payment" && session.metadata?.purchase_type === "strategy_call") {
+    const userId = session.metadata?.user_id;
+    if (!userId) return;
+    const stripeCustomerId = session.customer as string;
+
+    await query(
+      "UPDATE users SET stripe_customer_id = COALESCE(stripe_customer_id, ?), updated_at = NOW() WHERE id = ?",
+      [stripeCustomerId, parseInt(userId, 10)]
+    );
+
+    // Insertar o actualizar compra
+    await query(
+      `INSERT INTO strategy_call_purchases (user_id, stripe_session_id, status, amount_usd)
+       VALUES (?, ?, 'paid', 150.00)
+       ON DUPLICATE KEY UPDATE status = 'paid', updated_at = NOW()`,
+      [parseInt(userId, 10), session.id]
+    );
+
+    return;
+  }
+
+  // ── Suscripción (flujo original) ──────────────────────────────────────
   if (session.mode !== "subscription") return;
 
   const userId = session.metadata?.user_id;

@@ -235,13 +235,17 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         />
 
         {/* Contenido de la sección — solo esto cambia al navegar */}
-        <main id="main-content" className="flex-1 overflow-auto">
-          <div
-            key={pathname}
-            className="px-4 py-5 sm:px-6 lg:px-8 animate-in fade-in slide-in-from-bottom-2 duration-200"
-          >
-            {children}
-          </div>
+        <main id="main-content" className={`flex-1 ${pathname.includes("/messages") ? "overflow-hidden" : "overflow-auto"}`}>
+          {pathname.includes("/messages") ? (
+            children
+          ) : (
+            <div
+              key={pathname}
+              className="px-4 py-5 sm:px-6 lg:px-8 animate-in fade-in slide-in-from-bottom-2 duration-200"
+            >
+              {children}
+            </div>
+          )}
         </main>
       </div>
     </div>

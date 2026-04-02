@@ -696,7 +696,8 @@
     "logoutCancel": "Annuler",
     "logoutConfirm": "Se déconnecter",
     "logoutSuccess": "Déconnecté",
-    "logoutError": "Erreur lors de la déconnexion"
+    "logoutError": "Erreur lors de la déconnexion",
+    "newMessageDefault": "Nouveau message"
   },
   "Companies": {
     "title": "Entreprises",
@@ -750,6 +751,11 @@
     },
     "viewAll": "Voir tout",
     "noProjects": "Pas encore de projets.",
+    "unreadMessages": "{count} message(s) non lu(s)",
+    "unreadMessagesBanner": "Vous avez {count} message(s) non lu(s) dans votre boîte.",
+    "pendingRequestsBanner": "Vous avez {count} demande(s) de chat en attente de réponse.",
+    "pendingAndUnreadBanner": "Vous avez {pending} demande(s) en attente et {unread} message(s) non lu(s).",
+    "goToMessages": "Aller aux Messages",
     "proposals": "propositions",
     "units": "unités",
     "quick": {
@@ -1690,5 +1696,37 @@
   "Metadata": {
     "title": "FashionsDen - Design et production de mode",
     "description": "FashionsDen est votre plateforme de design de mode professionnel : croquis, tech packs, patronage numerique, echantillons et production."
+  },
+  "StrategyCallSection": {
+    "duration": "Session 1:1 de 45 minutes",
+    "price": "$150 USD",
+    "priceNote": "Disponibilit\u00e9 limit\u00e9e \u2014 le prix passera \u00e0 $250 USD",
+    "cta": "R\u00e9servez votre session MAINTENANT",
+    "brand": {
+      "badge": "Pour les Marques",
+      "title": "Vous ne savez pas par o\u00f9 commencer\u00a0?",
+      "subtitle": "Obtenez une feuille de route claire pour votre marque.",
+      "description": "En 45 minutes, nous d\u00e9taillerons exactement ce dont vous avez besoin \u2014 de l\u2019id\u00e9e \u00e0 la production \u2014 pour avancer avec confiance.",
+      "features": [
+        "De l\u2019id\u00e9e \u00e0 la production \u2014 \u00e9tape par \u00e9tape",
+        "Ce que les usines attendent vraiment d\u2019une marque",
+        "Comment \u00e9valuer les fabricants",
+        "Strat\u00e9gie de prix et planification budg\u00e9taire"
+      ]
+    },
+    "manufacturer": {
+      "badge": "Pour les Fabricants",
+      "title": "Obtenez Plus de Clients sur FashionsDen",
+      "subtitle": "Positionnez votre usine pour attirer les bonnes marques.",
+      "description": "Une session de 45 minutes pour vous aider \u00e0 vous d\u00e9marquer, attirer des marques de qualit\u00e9 et conclure plus d\u2019accords sur la plateforme.",
+      "features": [
+        "Comment positionner efficacement votre usine",
+        "Ce que les marques recherchent vraiment",
+        "Strat\u00e9gie de prix qui remporte des contrats",
+        "Comment r\u00e9pondre aux demandes et \u00eatre s\u00e9lectionn\u00e9",
+        "Comment \u00eatre choisi plut\u00f4t qu\u2019ignor\u00e9",
+        "Erreurs des fabricants avec les marques EU/US"
+      ]
+    }
   }
 }

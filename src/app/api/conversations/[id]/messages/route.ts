@@ -228,6 +228,7 @@ export async function POST(
     await notifyConversationParticipants(conversationId, "chat.message.created", {
       messageId,
       senderUserId: user.id,
+      senderName: `${user.firstName} ${user.lastName}`,
       preview: content.trim().slice(0, 120),
       createdAt: new Date().toISOString(),
     });

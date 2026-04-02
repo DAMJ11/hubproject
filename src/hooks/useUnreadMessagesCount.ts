@@ -6,9 +6,20 @@ import { getPusherClient } from "@/lib/realtime/pusherClient";
 const CHAT_UNREAD_REFRESH_EVENT = "chat:unread-refresh";
 const CHAT_BROADCAST_CHANNEL = "chat-events";
 
+// ID de la conversación que el usuario está viendo actualmente (módulo-level, compartido entre instancias)
+let _viewingConversationId: number | null = null;
+export function setViewingConversationId(id: number | null) {
+  _viewingConversationId = id;
+}
+
 interface ConversationsResponse {
   success?: boolean;
-  conversations?: Array<{ unread_count?: number }>;
+  conversations?: Array<{
+    id?: number;
+    unread_count?: number;
+    status?: string;
+    initiated_by_user_id?: number;
+  }>;
 }
 
 export function emitUnreadMessagesRefresh() {
@@ -25,8 +36,10 @@ export function emitUnreadMessagesRefresh() {
 
 export function useUnreadMessagesCount(pollIntervalMs = 15000) {
   const [count, setCount] = useState(0);
+  const [pendingCount, setPendingCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<number | null>(null);
+  const userIdRef = useRef<number | null>(null);
   const mountedRef = useRef(true);
 
   const fetchUnreadCount = useCallback(async () => {
@@ -41,11 +54,20 @@ export function useUnreadMessagesCount(pollIntervalMs = 15000) {
         return;
       }
 
-      const unread = (data.conversations ?? []).reduce((acc, conversation) => {
+      const conversations = data.conversations ?? [];
+
+      const unread = conversations.reduce((acc, conversation) => {
+        // No contar mensajes de la conversación que el usuario está viendo ahora mismo
+        if ((conversation as { id?: number }).id === _viewingConversationId) return acc;
         return acc + (Number(conversation.unread_count) || 0);
       }, 0);
 
+      const pending = conversations.filter(
+        (c) => c.status === "pending" && c.initiated_by_user_id !== userIdRef.current
+      ).length;
+
       setCount(unread);
+      setPendingCount(pending);
     } catch {
       if (!mountedRef.current) return;
       setCount(0);
@@ -64,6 +86,7 @@ export function useUnreadMessagesCount(pollIntervalMs = 15000) {
         const data = await response.json();
         if (!mountedRef.current) return;
         setUserId(data?.user?.id ?? null);
+        userIdRef.current = data?.user?.id ?? null;
       } catch {
         if (!mountedRef.current) return;
         setUserId(null);
@@ -126,5 +149,5 @@ export function useUnreadMessagesCount(pollIntervalMs = 15000) {
     };
   }, [fetchUnreadCount, userId]);
 
-  return { unreadCount: count, loading, refreshUnreadCount: fetchUnreadCount };
+  return { unreadCount: count, pendingCount, loading, refreshUnreadCount: fetchUnreadCount };
 }

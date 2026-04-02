@@ -21,7 +21,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { emitUnreadMessagesRefresh } from "@/hooks/useUnreadMessagesCount";
+import { emitUnreadMessagesRefresh, setViewingConversationId } from "@/hooks/useUnreadMessagesCount";
 import { getPusherClient } from "@/lib/realtime/pusherClient";
 import { useTranslations, useLocale } from "next-intl";
 
@@ -106,7 +106,9 @@ export default function MessagesPanel() {
   const [loading, setLoading] = useState(true);
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [sending, setSending] = useState(false);
-  const [tab, setTab] = useState<"chats" | "pending" | "search">("chats");
+  const [tab, setTab] = useState<"chats" | "pending" | "search">(
+    searchParams.get("tab") === "pending" ? "pending" : "chats"
+  );
 
   // Moderation state
   const [sendError, setSendError] = useState<string | null>(null);
@@ -135,13 +137,28 @@ export default function MessagesPanel() {
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastMsgIdRef = useRef<number>(0);
   const prefillHandledRef = useRef(false);
+  const selectedConvRef = useRef<Conversation | null>(null);
 
   const refreshConversations = useCallback(async () => {
     try {
       const res = await fetch("/api/conversations", { cache: "no-store" });
       const data = await res.json();
       if (data.success) {
-        setConversations(data.conversations ?? []);
+        const fresh: Conversation[] = data.conversations ?? [];
+        const currentId = selectedConvRef.current?.id;
+        // Si el usuario está viendo una conversación, mantener unread_count en 0
+        const adjusted = fresh.map((c) =>
+          c.id === currentId ? { ...c, unread_count: 0 } : c
+        );
+        setConversations(adjusted);
+        // Solo actualizar selectedConv si cambió el status (evita re-render innecesario)
+        setSelectedConv((prev) => {
+          if (!prev) return prev;
+          const updated = adjusted.find((c) => c.id === prev.id);
+          if (!updated) return prev;
+          if (updated.status === prev.status) return prev;
+          return updated;
+        });
       }
     } catch {
       // noop
@@ -193,6 +210,23 @@ export default function MessagesPanel() {
     }
   }, []);
 
+  // Mantener ref sincronizada con la conversação seleccionada
+  useEffect(() => {
+    selectedConvRef.current = selectedConv;
+  }, [selectedConv]);
+
+  // Notificar al hook global qué conversación está siendo vista (para badge correcto)
+  useEffect(() => {
+    const id = selectedConv?.status === "open" ? (selectedConv?.id ?? null) : null;
+    setViewingConversationId(id);
+    if (id) emitUnreadMessagesRefresh();
+    return () => {
+      setViewingConversationId(null);
+      emitUnreadMessagesRefresh();
+    };
+  }, [selectedConv?.id, selectedConv?.status]);
+
+  // Cargar mensajes cuando cambia la conversación seleccionada (solo por id o status)
   useEffect(() => {
     if (selectedConv && selectedConv.status === "open") {
       lastMsgIdRef.current = 0;
@@ -201,7 +235,8 @@ export default function MessagesPanel() {
       setMessages([]);
       lastMsgIdRef.current = 0;
     }
-  }, [selectedConv, loadMessages]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedConv?.id, selectedConv?.status]);
 
   // Check moderation block status when selecting a conversation
   useEffect(() => {
@@ -234,9 +269,11 @@ export default function MessagesPanel() {
     checkBlockStatus();
   }, [selectedConv]);
 
-  // Scroll to bottom on new messages
+  // Scroll to bottom on new messages (only when there are messages to show)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messages.length > 0) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
   }, [messages]);
 
   // Polling: mensajes cada 4s, lista de conversaciones cada 10s
@@ -249,7 +286,8 @@ export default function MessagesPanel() {
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };
-  }, [selectedConv, loadMessages]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedConv?.id, selectedConv?.status]);
 
   // Polling para lista de conversaciones (unread badges, ultimo mensaje)
   useEffect(() => {

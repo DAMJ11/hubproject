@@ -696,7 +696,8 @@
     "logoutCancel": "Cancel",
     "logoutConfirm": "Sign out",
     "logoutSuccess": "Signed out",
-    "logoutError": "Error signing out"
+    "logoutError": "Error signing out",
+    "newMessageDefault": "New message"
   },
   "Companies": {
     "title": "Companies",
@@ -750,6 +751,11 @@
     },
     "viewAll": "View all",
     "noProjects": "No projects yet.",
+    "unreadMessages": "{count} unread message(s)",
+    "unreadMessagesBanner": "You have {count} unread message(s) in your inbox.",
+    "pendingRequestsBanner": "You have {count} pending chat request(s) awaiting your response.",
+    "pendingAndUnreadBanner": "You have {pending} pending request(s) and {unread} unread message(s).",
+    "goToMessages": "Go to Messages",
     "proposals": "proposals",
     "units": "units",
     "quick": {
@@ -1690,5 +1696,37 @@
   "Metadata": {
     "title": "FashionsDen - Fashion design and production",
     "description": "FashionsDen is your platform for professional fashion design: sketches, tech packs, digital pattern making, samples and production."
+  },
+  "StrategyCallSection": {
+    "duration": "45-minute 1:1 session",
+    "price": "$150 USD",
+    "priceNote": "Limited availability \u2014 price increases to $250 USD",
+    "cta": "Book your session NOW",
+    "brand": {
+      "badge": "For Brands",
+      "title": "Not sure where to start?",
+      "subtitle": "Get a clear roadmap for your brand.",
+      "description": "In 45 minutes, we\u2019ll break down exactly what you need \u2014 from idea to production \u2014 so you can move forward with confidence.",
+      "features": [
+        "From idea to production \u2014 step by step",
+        "What factories actually need from a brand",
+        "How to evaluate manufacturers",
+        "Pricing strategy and budget planning"
+      ]
+    },
+    "manufacturer": {
+      "badge": "For Manufacturers",
+      "title": "Get More Clients on FashionsDen",
+      "subtitle": "Position your factory to win the right brands.",
+      "description": "A focused 45-minute session to help you stand out, attract quality brands and close more deals on the platform.",
+      "features": [
+        "How to position your factory effectively",
+        "What brands actually look for",
+        "Pricing strategy that wins deals",
+        "How to respond to requests and get selected",
+        "How to get selected vs ignored",
+        "Mistakes manufacturers make with EU/US brands"
+      ]
+    }
   }
 }

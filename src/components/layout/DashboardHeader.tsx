@@ -37,6 +37,7 @@ import { toast } from "sonner";
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/navigation";
+import { getPusherClient } from "@/lib/realtime/pusherClient";
 
 const getFlagSrc = (countryCode: string) => `https://flagcdn.com/w40/${countryCode}.png`;
 
@@ -95,6 +96,41 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
     const interval = setInterval(fetchNotifications, 30_000);
     return () => clearInterval(interval);
   }, [fetchNotifications]);
+
+  // Pusher real-time: toast inmediato cuando llega un mensaje nuevo
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const pusher = getPusherClient();
+    if (!pusher) return;
+
+    const channel = pusher.subscribe(`private-user-${user.id}`);
+
+    const onNewMessage = (data: {
+      preview?: string;
+      senderName?: string;
+      senderUserId?: number;
+      messageId?: number;
+    }) => {
+      // No mostrar toast si el mensaje lo envió el propio usuario
+      if (data.senderUserId === user.id) return;
+      const sender = data.senderName ?? t("newMessageDefault");
+      const preview = data.preview ?? "";
+      toast(sender, {
+        description: preview,
+        icon: "💬",
+        duration: 5000,
+      });
+      fetchNotifications();
+    };
+
+    channel.bind("chat.message.created", onNewMessage);
+
+    return () => {
+      channel.unbind("chat.message.created", onNewMessage);
+      pusher.unsubscribe(`private-user-${user.id}`);
+    };
+  }, [user.id, fetchNotifications, t]);
 
   const markAllRead = async () => {
     try {
@@ -292,6 +328,11 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
                   <DropdownMenuItem
                     key={n.id}
                     className="flex flex-col items-start gap-1 px-4 py-3 cursor-pointer"
+                    onClick={() => {
+                      if (n.reference_type === "conversation") {
+                        router.push("/dashboard/messages");
+                      }
+                    }}
                   >
                     <div className="flex items-center gap-2 w-full">
                       {!n.is_read && (
@@ -308,7 +349,10 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
               )}
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="justify-center text-brand-600 font-medium cursor-pointer">
+            <DropdownMenuItem
+              className="justify-center text-brand-600 font-medium cursor-pointer"
+              onClick={() => router.push("/dashboard/messages")}
+            >
               {t("viewAllNotifications")}
             </DropdownMenuItem>
           </DropdownMenuContent>

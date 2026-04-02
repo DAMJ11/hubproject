@@ -696,7 +696,8 @@
     "logoutCancel": "Cancelar",
     "logoutConfirm": "Cerrar sesión",
     "logoutSuccess": "Sesión cerrada",
-    "logoutError": "Error al cerrar sesión"
+    "logoutError": "Error al cerrar sesión",
+    "newMessageDefault": "Nuevo mensaje"
   },
   "Companies": {
     "title": "Empresas",
@@ -750,6 +751,11 @@
     },
     "viewAll": "Ver todos",
     "noProjects": "No hay proyectos aún.",
+    "unreadMessages": "{count} mensaje(s) sin leer",
+    "unreadMessagesBanner": "Tienes {count} mensaje(s) sin leer en tu bandeja.",
+    "pendingRequestsBanner": "Tienes {count} solicitud(es) de chat pendiente(s) esperando tu respuesta.",
+    "pendingAndUnreadBanner": "Tienes {pending} solicitud(es) pendiente(s) y {unread} mensaje(s) sin leer.",
+    "goToMessages": "Ir a Mensajes",
     "proposals": "propuestas",
     "units": "uds",
     "quick": {
@@ -1686,6 +1692,38 @@
     "actionError": "Ocurrió un error al ejecutar la acción.",
     "emptyUsers": "No se encontraron usuarios",
     "emptyUsersHint": "Prueba ajustando los filtros de búsqueda"
+  },
+  "StrategyCallSection": {
+    "duration": "Sesión 1:1 de 45 minutos",
+    "price": "$150 USD",
+    "priceNote": "Disponibilidad limitada \u2014 el precio sube a $250 USD",
+    "cta": "Reserva tu sesión AHORA",
+    "brand": {
+      "badge": "Para Marcas",
+      "title": "¿No sabes por dónde empezar?",
+      "subtitle": "Obtén una hoja de ruta clara para tu marca.",
+      "description": "En 45 minutos, desglosaremos exactamente lo que necesitas \u2014 desde la idea hasta la producción \u2014 para que puedas avanzar con confianza.",
+      "features": [
+        "De la idea a la producción, paso a paso",
+        "Lo que las fábricas realmente necesitan de una marca",
+        "Cómo evaluar fabricantes",
+        "Estrategia de precios y planificación de presupuesto"
+      ]
+    },
+    "manufacturer": {
+      "badge": "Para Fabricantes",
+      "title": "Consigue Más Clientes en FashionsDen",
+      "subtitle": "Posiciona tu fábrica para ganar las marcas correctas.",
+      "description": "Una sesión enfocada de 45 minutos para ayudarte a destacar, atraer marcas de calidad y cerrar más acuerdos en la plataforma.",
+      "features": [
+        "Cómo posicionar tu fábrica eficazmente",
+        "Lo que las marcas realmente buscan",
+        "Estrategia de precios que gana contratos",
+        "Cómo responder a solicitudes y ser seleccionado",
+        "Cómo ser elegido en vez de ignorado",
+        "Errores que cometen los fabricantes con marcas EU/US"
+      ]
+    }
   },
   "Metadata": {
     "title": "FashionsDen - Diseño y producción de moda",

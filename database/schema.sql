@@ -620,3 +620,20 @@ INSERT INTO contract_milestones (contract_id, title, description, sort_order, st
 (1, 'Primera entrega (50 uds)', 'Produccion y entrega del primer lote', 2, 'in_progress', 1950000, 'pending', '2026-03-28'),
 (1, 'Segunda entrega (50 uds)', 'Produccion y entrega del segundo lote', 3, 'pending', 1950000, 'pending', '2026-04-10'),
 (1, 'Entrega final (50 uds)', 'Ultimo lote y cierre del contrato', 4, 'pending', 1365000, 'pending', '2026-04-20');
+
+-- =============================================
+-- Tabla: strategy_call_purchases
+-- Registra pagos únicos por la Project Strategy Call
+-- =============================================
+
+CREATE TABLE IF NOT EXISTS strategy_call_purchases (
+  id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id         INT UNSIGNED NOT NULL,
+  stripe_session_id VARCHAR(255) NOT NULL UNIQUE,
+  status          ENUM('pending','paid','refunded') NOT NULL DEFAULT 'pending',
+  amount_usd      DECIMAL(10,2) NOT NULL DEFAULT 150.00,
+  created_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_scp_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_scp_user (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
