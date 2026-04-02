@@ -3,6 +3,25 @@ import { query, queryOne } from "@/lib/db";
 import { getSessionUser } from "@/lib/session";
 import { stripe } from "@/lib/stripe";
 
+async function resolveStrategyCallPriceId(rawId: string): Promise<string | null> {
+  if (rawId.startsWith("price_")) {
+    return rawId;
+  }
+
+  if (!rawId.startsWith("prod_")) {
+    return null;
+  }
+
+  const product = await stripe.products.retrieve(rawId, { expand: ["default_price"] });
+
+  if (product.default_price && typeof product.default_price !== "string") {
+    return product.default_price.id;
+  }
+
+  const prices = await stripe.prices.list({ product: rawId, active: true, limit: 1 });
+  return prices.data[0]?.id ?? null;
+}
+
 /**
  * POST /api/stripe/strategy-call
  * Crea una Stripe Checkout Session para el pago único de la Project Strategy Call.
@@ -30,10 +49,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const priceId = process.env.STRIPE_PRICE_STRATEGY_CALL;
-    if (!priceId) {
+    const stripePriceOrProductId = process.env.STRIPE_PRICE_STRATEGY_CALL;
+    if (!stripePriceOrProductId) {
       return NextResponse.json(
         { success: false, message: "Precio no configurado. Contacta soporte." },
+        { status: 500 }
+      );
+    }
+
+    const priceId = await resolveStrategyCallPriceId(stripePriceOrProductId);
+    if (!priceId) {
+      console.error(
+        "Invalid STRIPE_PRICE_STRATEGY_CALL. Expected a Stripe Price ID (price_*) or Product ID (prod_*), received:",
+        stripePriceOrProductId
+      );
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "Configuracion de Stripe invalida: STRIPE_PRICE_STRATEGY_CALL debe ser un Price ID (price_*) o Product ID (prod_*) con un precio activo.",
+        },
         { status: 500 }
       );
     }

@@ -567,6 +567,9 @@
     "checkEmailTitle": "Vérifiez votre email !",
     "checkEmailDescription": "Nous vous avons envoyé un lien de vérification. Confirmez-le pour activer votre compte.",
     "goToLogin": "Aller à la connexion",
+    "strategyCallTitle": "Envie de démarrer du bon pied ?",
+    "strategyCallDesc": "Réservez une session 1:1 de 45 minutes avec notre équipe et obtenez une feuille de route personnalisée.",
+    "strategyCallCta": "Réserver ma session maintenant",
     "error": "Une erreur est survenue. Veuillez reessayer.",
     "validation": {
       "emailRequired": "Email obligatoire",

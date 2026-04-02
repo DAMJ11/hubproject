@@ -1,5 +1,7 @@
 import { Resend } from "resend";
 
+const SUPPORTED_LOCALES = new Set(["es", "en", "fr"]);
+
 let _resend: Resend | null = null;
 
 function getResend(): Resend {
@@ -17,7 +19,8 @@ const APP_NAME = "FashionsDen";
 
 // ─── Verification Email ─────────────────────────────────────────────
 export async function sendVerificationEmail(to: string, token: string, locale: string = "es") {
-  const verifyUrl = `${APP_URL}/api/auth/verify-email?token=${token}`;
+  const safeLocale = SUPPORTED_LOCALES.has(locale) ? locale : "es";
+  const verifyUrl = `${APP_URL}/api/auth/verify-email?token=${token}&locale=${safeLocale}`;
 
   const subjects: Record<string, string> = {
     es: "Confirma tu cuenta en FashionsDen",
@@ -29,8 +32,8 @@ export async function sendVerificationEmail(to: string, token: string, locale: s
   return resend.emails.send({
     from: FROM_EMAIL,
     to,
-    subject: subjects[locale] || subjects.es,
-    html: verificationEmailHtml(verifyUrl, locale),
+    subject: subjects[safeLocale] || subjects.es,
+    html: verificationEmailHtml(verifyUrl, safeLocale),
   });
 }
 

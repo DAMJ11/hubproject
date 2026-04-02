@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
 import Image from "next/image";
 import { images } from "@/lib/images";
-import { ChevronDown, MailCheck } from "lucide-react";
+import { ChevronDown, MailCheck, Phone, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -73,7 +73,30 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState("");
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [callLoading, setCallLoading] = useState(false);
+  const [callError, setCallError] = useState<string | null>(null);
   const buttonAnimation = useButtonAnimation();
+
+  const handleBookCall = async () => {
+    setCallLoading(true);
+    setCallError(null);
+    try {
+      const res = await fetch("/api/stripe/strategy-call", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      if (data.success && data.url) {
+        window.location.href = data.url;
+      } else {
+        setCallError(data.message || "Something went wrong. Please try again.");
+      }
+    } catch {
+      setCallError("Network error. Please try again.");
+    } finally {
+      setCallLoading(false);
+    }
+  };
 
   const onSubmit = async (data: RegisterInput) => {
     setIsLoading(true);
@@ -162,6 +185,27 @@ export default function RegisterPage() {
                 <Link href="/login" className="inline-block text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors">
                   {t("goToLogin")}
                 </Link>
+
+                {/* Strategy call upsell */}
+                <div className="mt-6 p-4 rounded-xl bg-brand-50 dark:bg-brand-950/30 border border-brand-200 dark:border-brand-800 text-left">
+                  <p className="text-sm font-semibold text-brand-800 dark:text-brand-200 mb-1">{t("strategyCallTitle")}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">{t("strategyCallDesc")}</p>
+                  {callError && <p className="text-xs text-red-500 mb-2">{callError}</p>}
+                  <Button
+                    onClick={handleBookCall}
+                    disabled={callLoading}
+                    className="w-full h-10 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium text-sm flex items-center justify-center gap-2"
+                  >
+                    {callLoading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <>
+                        <Phone className="w-4 h-4" />
+                        {t("strategyCallCta")}
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
             ) : (
             <form onSubmit={rhfSubmit(onSubmit)} className="space-y-4">

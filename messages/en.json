@@ -567,6 +567,9 @@
     "checkEmailTitle": "Check your email!",
     "checkEmailDescription": "We've sent you a verification link. Confirm it to activate your account.",
     "goToLogin": "Go to sign in",
+    "strategyCallTitle": "Want to start on the right foot?",
+    "strategyCallDesc": "Book a 45-minute 1:1 session with our team and get a personalized roadmap.",
+    "strategyCallCta": "Book my session now",
     "error": "An error occurred. Please try again.",
     "validation": {
       "emailRequired": "Email is required",
