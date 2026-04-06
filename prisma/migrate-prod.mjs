@@ -11,7 +11,6 @@ try {
     execSync("npx prisma migrate deploy", { stdio: "inherit" });
   } catch (resolveError) {
     console.error("Migration failed:", resolveError.message);
-    // Don't block app startup - the DB schema already exists
-    console.log("Continuing with app startup...");
+    process.exit(1);
   }
 }
