@@ -16,6 +16,7 @@
  */
 
 const CLOUD = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+const USE_CLOUDINARY = process.env.NEXT_PUBLIC_USE_CLOUDINARY === "true";
 
 function resolveCloudinaryCloudName(rawValue: string | undefined): string | null {
   if (!rawValue) return null;
@@ -39,7 +40,7 @@ function resolveCloudinaryCloudName(rawValue: string | undefined): string | null
   return cloudName && /^[a-z0-9_-]+$/i.test(cloudName) ? cloudName : null;
 }
 
-const cloudName = resolveCloudinaryCloudName(CLOUD);
+const cloudName = USE_CLOUDINARY ? resolveCloudinaryCloudName(CLOUD) : null;
 const cdnBase = cloudName ? `https://res.cloudinary.com/${cloudName}/image/upload/fashionsden` : null;
 
 function img(localPath: string, cloudinaryPublicId: string): string {
