@@ -247,9 +247,9 @@
     "supplierPlans": {
       "0": {
         "name": "Standard",
-        "price": "$199",
-        "desc": "Free first month, then $199/mo. For manufacturers starting on the platform.",
-        "features": { "0": "Free first month", "1": "Access to projects", "2": "Receive invitations", "3": "Messaging" },
+        "price": "$0*",
+        "desc": "*Free while in beta. Get started and receive projects at no cost.",
+        "features": { "0": "Access to projects", "1": "Receive invitations", "2": "Messaging", "3": "Basic profile" },
         "cta": "Start free"
       },
       "1": {
@@ -643,7 +643,7 @@
       "myProfile": "My Profile",
       "companyDetails": "Company Details",
       "capabilities": "Capabilities",
-      "certifications": "Certifications",
+      "certifications": "Portfolio",
       "greenScore": "Green Score"
     },
     "closeMenu": "Close menu",
@@ -1286,10 +1286,25 @@
     "createdSuccess": "Project published successfully!",
     "reviewDescription": "Review the information before publishing your project.",
     "steps": {
+      "type": "Project type",
       "basic": "Basic information",
       "budget": "Budget & dates",
       "materials": "Materials & sustainability",
       "review": "Review"
+    },
+    "projectType": {
+      "title": "What do you need?",
+      "subtitle": "Select the type of service for your project",
+      "designOnly": "Design only",
+      "designOnlyDesc": "Concepts, sketches and creative direction",
+      "techPack": "Tech Pack",
+      "techPackDesc": "Technical specifications and production-ready files",
+      "designAndSample": "Design + Sample",
+      "designAndSampleDesc": "From concept to physical prototype",
+      "productionWithDesign": "Production (with design)",
+      "productionWithDesignDesc": "Full service: design, sampling and manufacturing",
+      "productionOnly": "Production (without design)",
+      "productionOnlyDesc": "I already have designs ready for manufacturing"
     }
   },
   "ProjectDetail": {
@@ -1444,35 +1459,44 @@
     "saved": "Saved"
   },
   "Certifications": {
-    "title": "Certifications",
-    "subtitle": "Sustainability and quality certifications",
+    "title": "Portfolio",
+    "subtitle": "Photos of previously completed products",
     "add": "Add",
-    "newCertification": "New certification",
-    "nameLabel": "Name *",
-    "namePlaceholder": "E.g.: GOTS, OEKO-TEX",
-    "issuedBy": "Issued by",
-    "issuedByPlaceholder": "Certifying body",
-    "issuedAt": "Issue date",
-    "expiresAt": "Expiration date",
+    "newCertification": "New product",
+    "nameLabel": "Product name *",
+    "namePlaceholder": "E.g.: Denim jacket, Leather bag",
+    "issuedBy": "Client / Brand",
+    "issuedByPlaceholder": "Client or brand name",
+    "issuedAt": "Completion date",
+    "photoUrl": "Photo URL",
+    "photoUrlPlaceholder": "Click to select an image (max 5 MB)",
     "save": "Save",
     "cancel": "Cancel",
-    "empty": "You have no certifications registered",
-    "emptyHint": "Certifications improve your green score",
+    "empty": "You have no portfolio products registered",
+    "emptyHint": "Add past work photos to showcase your experience",
     "verified": "Verified",
     "expired": "Expired",
-    "by": "By: {issuer}",
-    "from": "From: {date}",
-    "until": "Until: {date}",
-    "delete": "Delete certification",
-    "addSuccess": "Certification added",
-    "addError": "Error adding certification",
-    "deleteSuccess": "Certification deleted",
-    "deleteError": "Error deleting certification",
+    "by": "Client: {issuer}",
+    "from": "Completed: {date}",
+    "until": "Photo: {date}",
+    "delete": "Delete product",
+    "addSuccess": "Product added to portfolio",
+    "addError": "Error adding product",
+    "deleteSuccess": "Product deleted",
+    "deleteError": "Error deleting product",
     "status": {
       "verified": "Verified",
       "expired": "Expired",
       "pending": "Pending"
     }
+  },
+  "ServiceCategories": {
+    "design": "Design",
+    "tech-pack": "Tech Pack",
+    "sourcing": "Sourcing",
+    "sampling": "Sampling",
+    "production": "Production",
+    "branding": "Branding"
   },
   "Capabilities": {
     "title": "Capabilities",
@@ -1595,7 +1619,12 @@
     "emailPlaceholder": "you@email.com",
     "phone": "Phone",
     "phonePlaceholder": "+1 555 000 0000",
+    "currency": "Currency",
+    "currencyDescription": "Prices across the platform will display in this currency.",
     "profileSaved": "Changes saved.",
+    "profileSaveError": "Could not save profile.",
+    "avatarTypeError": "Only image files are allowed.",
+    "avatarSizeError": "Profile image must be 2 MB or less.",
     "saving": "Saving...",
     "saveChanges": "Save Changes",
     "changePassword": "Change Password",
@@ -1734,5 +1763,20 @@
         "Mistakes manufacturers make with EU/US brands"
       ]
     }
+  },
+  "SetupPayment": {
+    "title": "Add a Payment Method",
+    "description": "To start receiving project requests and connect with brands, please add a payment method. Your Standard plan is free — no charges will be made.",
+    "secureTitle": "Secure & encrypted",
+    "secureDescription": "Your card information is processed securely by Stripe. We never store your full card details.",
+    "benefit1": "Free Standard plan — $0/month during beta",
+    "benefit2": "Upgrade to Pro or Elite anytime",
+    "benefit3": "Cancel or change your plan whenever you want",
+    "addCard": "Add Payment Method",
+    "loading": "Redirecting to Stripe...",
+    "error": "Something went wrong. Please try again.",
+    "successTitle": "Payment method added!",
+    "successDescription": "Your account is now fully set up. You can start receiving project requests from brands.",
+    "redirecting": "Redirecting to dashboard..."
   }
 }

@@ -1,0 +1,2 @@
+Ahí me falta también el botón de la llamada inicial como recomendado pero OPCIONAL.
+Quitar el telefono de la seccion de contactos.

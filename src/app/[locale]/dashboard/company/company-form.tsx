@@ -20,15 +20,12 @@ export default function CompanyForm({ company }: CompanyFormProps) {
   const [form, setForm] = useState({
     name: company.name || "",
     description: company.description || "",
-    phone: company.phone || "",
-    website: company.website || "",
     addressLine1: company.address_line1 || "",
     city: company.city || "",
     state: company.state || "",
     country: company.country || "Colombia",
     employeeCount: company.employee_count || "",
     foundedYear: company.founded_year?.toString() || "",
-    legalId: company.legal_id || "",
   });
 
   const handleSave = async () => {
@@ -76,10 +73,6 @@ export default function CompanyForm({ company }: CompanyFormProps) {
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("name")}</label>
             <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("legalId")}</label>
-            <Input value={form.legalId} onChange={(e) => setForm({ ...form, legalId: e.target.value })} />
-          </div>
         </div>
 
         <div>
@@ -90,17 +83,6 @@ export default function CompanyForm({ company }: CompanyFormProps) {
             rows={3}
             className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-slate-900 dark:border-slate-700"
           />
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("phone")}</label>
-            <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("website")}</label>
-            <Input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} />
-          </div>
         </div>
 
         <div className="border-t dark:border-slate-700 pt-4">

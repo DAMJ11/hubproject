@@ -17,6 +17,7 @@ import {
   Package,
   FileText,
   ClipboardList,
+  Layers,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +33,7 @@ const materialSchema = z.object({
 });
 
 const rfqFormSchema = z.object({
+  projectType: z.string().min(1, "Selecciona un tipo de proyecto"),
   categoryId: z.string().min(1, "Selecciona una categoría"),
   title: z.string().min(3, "Mínimo 3 caracteres").max(300),
   description: z.string().min(10, "Mínimo 10 caracteres").max(5000),
@@ -51,9 +53,11 @@ type RFQFormData = z.infer<typeof rfqFormSchema>;
 interface Category {
   id: number;
   name: string;
+  slug: string;
 }
 
 const STEPS = [
+  { key: "type", icon: Layers },
   { key: "basic", icon: FileText },
   { key: "budget", icon: Package },
   { key: "materials", icon: Leaf },
@@ -62,14 +66,16 @@ const STEPS = [
 
 /* ── Fields validated per step ── */
 const STEP_FIELDS: Record<number, (keyof RFQFormData)[]> = {
-  0: ["categoryId", "title", "description", "quantity"],
-  1: ["budgetMin", "budgetMax", "deadline", "proposalsDeadline"],
-  2: ["preferredMaterials", "materials", "requiresSample", "sustainabilityPriority"],
-  3: [],
+  0: ["projectType"],
+  1: ["categoryId", "title", "description", "quantity"],
+  2: ["budgetMin", "budgetMax", "deadline", "proposalsDeadline"],
+  3: ["preferredMaterials", "materials", "requiresSample", "sustainabilityPriority"],
+  4: [],
 };
 
 export default function RFQMultiStepForm() {
   const t = useTranslations("ProjectNew");
+  const tCat = useTranslations("ServiceCategories");
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -85,6 +91,7 @@ export default function RFQMultiStepForm() {
   } = useForm<RFQFormData>({
     resolver: zodResolver(rfqFormSchema),
     defaultValues: {
+      projectType: "",
       categoryId: "",
       title: "",
       description: "",
@@ -138,6 +145,7 @@ export default function RFQMultiStepForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          projectType: data.projectType,
           categoryId: Number(data.categoryId),
           title: data.title,
           description: data.description,
@@ -171,8 +179,11 @@ export default function RFQMultiStepForm() {
     "h-11 rounded-lg border-gray-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-brand-600 focus:ring-brand-600";
   const errorClass = "text-xs text-red-500 mt-1";
 
-  const getCategoryName = (id: string) =>
-    categories.find((c) => c.id === Number(id))?.name ?? "—";
+  const getCategoryName = (id: string) => {
+    const cat = categories.find((c) => c.id === Number(id));
+    if (!cat) return "—";
+    return tCat.has(cat.slug) ? tCat(cat.slug) : cat.name;
+  };
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -245,8 +256,58 @@ export default function RFQMultiStepForm() {
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 space-y-5"
       >
-        {/* ── STEP 0: Básico ── */}
+        {/* ── STEP 0: Tipo de proyecto ── */}
         {step === 0 && (
+          <div className="space-y-4">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+              {t("projectType.title")}
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t("projectType.subtitle")}</p>
+
+            <Controller
+              control={control}
+              name="projectType"
+              render={({ field }) => (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {([
+                    { value: "design_only", label: "designOnly", desc: "designOnlyDesc", icon: "🎨" },
+                    { value: "tech_pack", label: "techPack", desc: "techPackDesc", icon: "📐" },
+                    { value: "design_and_sample", label: "designAndSample", desc: "designAndSampleDesc", icon: "✂️" },
+                    { value: "production_with_design", label: "productionWithDesign", desc: "productionWithDesignDesc", icon: "🏭" },
+                    { value: "production_only", label: "productionOnly", desc: "productionOnlyDesc", icon: "📦" },
+                  ] as const).map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => field.onChange(opt.value)}
+                      className={`flex items-start gap-3 p-4 rounded-xl border text-left transition-colors ${
+                        field.value === opt.value
+                          ? "border-brand-600 bg-brand-50 dark:bg-brand-900/20 ring-1 ring-brand-600"
+                          : "border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-gray-300 dark:hover:border-slate-600"
+                      }`}
+                    >
+                      <span className="text-2xl">{opt.icon}</span>
+                      <div>
+                        <span className={`text-sm font-medium ${field.value === opt.value ? "text-brand-700 dark:text-brand-200" : "text-gray-900 dark:text-white"}`}>
+                          {t(`projectType.${opt.label}`)}
+                        </span>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                          {t(`projectType.${opt.desc}`)}
+                        </p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            />
+            {errors.projectType && (
+              <p className={errorClass}>{errors.projectType.message}</p>
+            )}
+          </div>
+        )}
+
+        {/* ── STEP 1: Básico ── */}
+        {step === 1 && (
           <div className="space-y-4">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
               {t("steps.basic")}
@@ -278,7 +339,7 @@ export default function RFQMultiStepForm() {
                   <option value="">{t("placeholders.select")}</option>
                   {categories.map((c) => (
                     <option key={c.id} value={c.id}>
-                      {c.name}
+                      {tCat.has(c.slug) ? tCat(c.slug) : c.name}
                     </option>
                   ))}
                 </select>
@@ -320,8 +381,8 @@ export default function RFQMultiStepForm() {
           </div>
         )}
 
-        {/* ── STEP 1: Presupuesto y Fechas ── */}
-        {step === 1 && (
+        {/* ── STEP 2: Presupuesto y Fechas ── */}
+        {step === 2 && (
           <div className="space-y-4">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
               {t("steps.budget")}
@@ -370,8 +431,8 @@ export default function RFQMultiStepForm() {
           </div>
         )}
 
-        {/* ── STEP 2: Materiales y Sostenibilidad ── */}
-        {step === 2 && (
+        {/* ── STEP 3: Materiales y Sostenibilidad ── */}
+        {step === 3 && (
           <div className="space-y-4">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
               {t("steps.materials")}
@@ -476,8 +537,8 @@ export default function RFQMultiStepForm() {
           </div>
         )}
 
-        {/* ── STEP 3: Revisión ── */}
-        {step === 3 && (
+        {/* ── STEP 4: Revisión ── */}
+        {step === 4 && (
           <div className="space-y-4">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
               {t("steps.review")}
@@ -487,6 +548,9 @@ export default function RFQMultiStepForm() {
             </p>
 
             <div className="grid gap-3 sm:grid-cols-2">
+              <ReviewField label={t("steps.type")} value={values.projectType ? t(`projectType.${
+                { design_only: "designOnly", tech_pack: "techPack", design_and_sample: "designAndSample", production_with_design: "productionWithDesign", production_only: "productionOnly" }[values.projectType] ?? values.projectType
+              }`) : "—"} />
               <ReviewField label={t("fields.title")} value={values.title} />
               <ReviewField
                 label={t("fields.category")}

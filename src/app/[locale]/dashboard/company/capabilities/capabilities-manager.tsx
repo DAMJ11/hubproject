@@ -4,11 +4,10 @@ import { useState } from "react";
 import { Package, Plus, Trash2, Loader2, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/shared/empty-state";
 import type { CapabilityItem, CategoryItem } from "@/lib/data/capabilities";
-import { formatCurrency } from "@/lib/currency";
 
 interface Props {
   initialCapabilities: CapabilityItem[];
@@ -17,7 +16,7 @@ interface Props {
 
 export default function CapabilitiesManager({ initialCapabilities, categories }: Props) {
   const t = useTranslations("Capabilities");
-  const locale = useLocale();
+  const tCat = useTranslations("ServiceCategories");
   const [capabilities, setCapabilities] = useState<CapabilityItem[]>(initialCapabilities);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -27,13 +26,9 @@ export default function CapabilitiesManager({ initialCapabilities, categories }:
     minOrderQty: "1",
     maxMonthlyCapacity: "",
     leadTimeDays: "",
-    unitPriceFrom: "",
-    wholesalePriceFrom: "",
     commercialNotes: "",
     description: "",
   });
-
-  const formatPrice = (amount: number) => formatCurrency(amount, locale);
 
   const refreshCapabilities = async () => {
     try {
@@ -57,8 +52,6 @@ export default function CapabilitiesManager({ initialCapabilities, categories }:
           minOrderQty: Number(form.minOrderQty) || 1,
           maxMonthlyCapacity: form.maxMonthlyCapacity ? Number(form.maxMonthlyCapacity) : null,
           leadTimeDays: form.leadTimeDays ? Number(form.leadTimeDays) : null,
-          unitPriceFrom: form.unitPriceFrom ? Number(form.unitPriceFrom) : null,
-          wholesalePriceFrom: form.wholesalePriceFrom ? Number(form.wholesalePriceFrom) : null,
           commercialNotes: form.commercialNotes || null,
           description: form.description || null,
         }),
@@ -72,8 +65,6 @@ export default function CapabilitiesManager({ initialCapabilities, categories }:
           minOrderQty: "1",
           maxMonthlyCapacity: "",
           leadTimeDays: "",
-          unitPriceFrom: "",
-          wholesalePriceFrom: "",
           commercialNotes: "",
           description: "",
         });
@@ -129,7 +120,7 @@ export default function CapabilitiesManager({ initialCapabilities, categories }:
               >
                 <option value="">{t("selectCategory")}</option>
                 {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  <option key={cat.id} value={cat.id}>{tCat.has(cat.slug) ? tCat(cat.slug) : cat.name}</option>
                 ))}
               </select>
             </div>
@@ -144,14 +135,6 @@ export default function CapabilitiesManager({ initialCapabilities, categories }:
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("leadTime")}</label>
               <Input type="number" value={form.leadTimeDays} onChange={(e) => setForm({ ...form, leadTimeDays: e.target.value })} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("unitPrice")}</label>
-              <Input type="number" min="0" value={form.unitPriceFrom} onChange={(e) => setForm({ ...form, unitPriceFrom: e.target.value })} placeholder={t("unitPricePlaceholder")} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("wholesalePrice")}</label>
-              <Input type="number" min="0" value={form.wholesalePriceFrom} onChange={(e) => setForm({ ...form, wholesalePriceFrom: e.target.value })} placeholder={t("wholesalePricePlaceholder")} />
             </div>
           </div>
           <div>
@@ -202,20 +185,6 @@ export default function CapabilitiesManager({ initialCapabilities, categories }:
                       {cap.max_monthly_capacity && <span>{t("capacity", { qty: cap.max_monthly_capacity.toLocaleString() })}</span>}
                       {cap.lead_time_days && <span>{t("delivery", { days: cap.lead_time_days })}</span>}
                     </div>
-                    {(cap.unit_price_from !== null || cap.wholesale_price_from !== null) && (
-                      <div className="flex flex-wrap gap-2 mt-2 text-xs">
-                        {cap.unit_price_from !== null && (
-                          <span className="rounded-full bg-blue-50 text-blue-700 px-2 py-1">
-                            {t("priceFrom", { price: formatPrice(cap.unit_price_from) })}
-                          </span>
-                        )}
-                        {cap.wholesale_price_from !== null && (
-                          <span className="rounded-full bg-indigo-50 text-indigo-700 px-2 py-1">
-                            {t("wholesaleFrom", { price: formatPrice(cap.wholesale_price_from) })}
-                          </span>
-                        )}
-                      </div>
-                    )}
                     {cap.description && <p className="text-sm text-gray-400 mt-1">{cap.description}</p>}
                     {cap.commercial_notes && <p className="text-xs text-gray-500 mt-1">{cap.commercial_notes}</p>}
                   </div>

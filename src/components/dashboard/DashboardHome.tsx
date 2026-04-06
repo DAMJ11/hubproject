@@ -19,7 +19,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import { useUnreadMessagesCount } from "@/hooks/useUnreadMessagesCount";
 
 interface DashboardHomeProps {
   user: {
@@ -68,8 +67,6 @@ export default function DashboardHome({ user, initialStats, initialProjects }: D
   const isAdmin = user.role === "admin";
   const stats = initialStats;
   const projects = initialProjects;
-  const { unreadCount: unreadChats, pendingCount: pendingChats } = useUnreadMessagesCount();
-
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return t("greeting.morning");
@@ -117,25 +114,6 @@ export default function DashboardHome({ user, initialStats, initialProjects }: D
           </Link>
         )}
       </div>
-
-      {/* Unread messages / pending requests banner */}
-      {(unreadChats > 0 || pendingChats > 0) && (
-        <Link href={pendingChats > 0 ? "/dashboard/messages?tab=pending" : "/dashboard/messages"}>
-          <div className="flex items-center gap-3 p-4 bg-brand-50 border border-brand-200 rounded-xl hover:bg-brand-100 transition-colors">
-            <MessageSquare className="w-5 h-5 text-brand-600 flex-shrink-0" />
-            <span className="text-sm font-medium text-brand-700">
-              {pendingChats > 0 && unreadChats === 0
-                ? t("pendingRequestsBanner", { count: pendingChats })
-                : pendingChats > 0
-                  ? t("pendingAndUnreadBanner", { pending: pendingChats, unread: unreadChats })
-                  : t("unreadMessagesBanner", { count: unreadChats })}
-            </span>
-            <span className="ml-auto text-xs text-brand-600 font-medium">
-              {t("goToMessages")} &rarr;
-            </span>
-          </div>
-        </Link>
-      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

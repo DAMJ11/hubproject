@@ -8,16 +8,17 @@
 -- Password plano: Test1234!
 SET @pwd = '$2b$12$0AJqdete69Suw4NRWXoooeLxQ/ilIbzl1zGZwtjYNQp3EBUwGb/sq';
 
--- 1) service_categories
+-- 1) service_categories (match homepage cards)
 INSERT INTO service_categories (id, name, slug, description, icon, is_active, sort_order) VALUES
-(1, 'Bocetos y Diseno', 'bocetos-diseno', 'Ilustracion de moda y diseno de colecciones', 'Pencil', TRUE, 1),
-(2, 'Fichas Tecnicas', 'fichas-tecnicas', 'Documentacion tecnica de prendas', 'FileText', TRUE, 2),
-(3, 'Patronaje Digital', 'patronaje-digital', 'Patronaje 2D/3D y escalado', 'Ruler', TRUE, 3),
-(4, 'Confeccion de Muestras', 'confeccion-muestras', 'Prototipos y muestras pre-produccion', 'Scissors', TRUE, 4),
-(5, 'Produccion Limitada', 'produccion-limitada', 'Producciones capsula y ediciones especiales', 'Package', TRUE, 5),
-(6, 'Produccion Masiva', 'produccion-masiva', 'Produccion industrial a gran escala', 'Factory', TRUE, 6)
+(1, 'Design',     'design',     'Concepts, sketches and creative direction',       'PenLine',   TRUE, 1),
+(2, 'Tech Pack',  'tech-pack',  'Technical specifications for production',         'FileText',  TRUE, 2),
+(3, 'Sourcing',   'sourcing',   'Materials, trims and supplier matching',           'Search',    TRUE, 3),
+(4, 'Sampling',   'sampling',   'Prototype development and revisions',             'Scissors',  TRUE, 4),
+(5, 'Production', 'production', 'Manufacturing with trusted partners',             'Cog',       TRUE, 5),
+(6, 'Branding',   'branding',   'Content, visuals and brand support',              'Sparkles',  TRUE, 6)
 ON DUPLICATE KEY UPDATE
 	name = VALUES(name),
+	slug = VALUES(slug),
 	description = VALUES(description),
 	icon = VALUES(icon),
 	is_active = VALUES(is_active),

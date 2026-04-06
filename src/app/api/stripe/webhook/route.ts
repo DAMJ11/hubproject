@@ -99,6 +99,39 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     return;
   }
 
+  // ── Setup mode: manufacturer payment method onboarding ──────────────
+  if (session.mode === "setup") {
+    const userId = session.metadata?.user_id;
+    if (!userId) return;
+
+    const stripeCustomerId = session.customer as string;
+
+    await query(
+      "UPDATE users SET stripe_customer_id = COALESCE(stripe_customer_id, ?), updated_at = NOW() WHERE id = ?",
+      [stripeCustomerId, parseInt(userId, 10)]
+    );
+
+    // Retrieve the SetupIntent to get the payment method
+    const setupIntentId = session.setup_intent as string;
+    if (setupIntentId) {
+      const setupIntent = await stripe.setupIntents.retrieve(setupIntentId);
+      const pmId = typeof setupIntent.payment_method === "string"
+        ? setupIntent.payment_method
+        : setupIntent.payment_method?.id;
+
+      if (pmId) {
+        await syncPaymentMethod(parseInt(userId, 10), pmId);
+
+        // Set as default payment method on the Stripe Customer
+        await stripe.customers.update(stripeCustomerId, {
+          invoice_settings: { default_payment_method: pmId },
+        });
+      }
+    }
+
+    return;
+  }
+
   // ── Suscripción (flujo original) ──────────────────────────────────────
   if (session.mode !== "subscription") return;
 

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
+import { queryOne } from "@/lib/db";
 import type { AuthResponse } from "@/types/user";
 
 export async function GET() {
@@ -16,6 +17,16 @@ export async function GET() {
       );
     }
 
+    // Check if manufacturer has a payment method
+    let hasPaymentMethod: boolean | undefined;
+    if (user.role === "manufacturer") {
+      const pm = await queryOne<{ cnt: number }>(
+        "SELECT COUNT(*) as cnt FROM user_payment_methods WHERE user_id = ?",
+        [user.id]
+      );
+      hasPaymentMethod = (pm?.cnt ?? 0) > 0;
+    }
+
     return NextResponse.json<AuthResponse>(
       {
         success: true,
@@ -27,6 +38,7 @@ export async function GET() {
           lastName: user.lastName,
           role: user.role,
           companyId: user.companyId ?? null,
+          ...(hasPaymentMethod !== undefined && { hasPaymentMethod }),
         },
       },
       { status: 200 }

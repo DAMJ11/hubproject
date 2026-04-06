@@ -76,6 +76,24 @@ export async function POST(request: NextRequest) {
       );
       insertId = (userResult as { insertId: number }).insertId;
 
+      // Auto-assign supplier_standard plan for manufacturers
+      if (role === "manufacturer") {
+        const [planRows] = await connection.execute(
+          "SELECT id FROM subscription_plans WHERE slug = 'supplier_standard' AND is_active = TRUE LIMIT 1"
+        );
+        const plan = (planRows as { id: number }[])[0];
+        if (plan) {
+          const now = new Date();
+          const periodEnd = new Date(now);
+          periodEnd.setDate(periodEnd.getDate() + 30);
+          await connection.execute(
+            `INSERT INTO subscriptions (user_id, plan_id, status, current_period_start, current_period_end, created_at, updated_at)
+             VALUES (?, ?, 'active', ?, ?, NOW(), NOW())`,
+            [insertId, plan.id, now.toISOString().slice(0, 19).replace("T", " "), periodEnd.toISOString().slice(0, 19).replace("T", " ")]
+          );
+        }
+      }
+
       await connection.commit();
     } catch (txError) {
       await connection.rollback();

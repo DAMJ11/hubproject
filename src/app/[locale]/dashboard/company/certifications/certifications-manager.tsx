@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Award, Plus, Trash2, Loader2, ShieldCheck, AlertTriangle } from "lucide-react";
+import { Award, Plus, Trash2, Loader2, ShieldCheck, AlertTriangle, ImagePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTranslations, useLocale } from "next-intl";
@@ -24,10 +24,29 @@ export default function CertificationsManager({ initialCerts }: Props) {
   const [form, setForm] = useState({
     name: "",
     issuedBy: "",
-    certificateUrl: "",
+    photoUrl: "",
     issuedAt: "",
     expiresAt: "",
   });
+
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        toast.error("Solo se aceptan archivos de imagen");
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("La imagen no puede superar 5 MB");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        setForm((prev) => ({ ...prev, photoUrl: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    };
 
   const refreshCerts = async () => {
     try {
@@ -49,7 +68,7 @@ export default function CertificationsManager({ initialCerts }: Props) {
         body: JSON.stringify({
           name: form.name.trim(),
           issuedBy: form.issuedBy || null,
-          certificateUrl: form.certificateUrl || null,
+          certificateUrl: form.photoUrl || null,
           issuedAt: form.issuedAt || null,
           expiresAt: form.expiresAt || null,
         }),
@@ -57,7 +76,7 @@ export default function CertificationsManager({ initialCerts }: Props) {
       const data = await res.json();
       if (data.success) {
         setShowForm(false);
-        setForm({ name: "", issuedBy: "", certificateUrl: "", issuedAt: "", expiresAt: "" });
+        setForm({ name: "", issuedBy: "", photoUrl: "", issuedAt: "", expiresAt: "" });
         refreshCerts();
         toast.success(t("certAdded"));
       }
@@ -109,8 +128,18 @@ export default function CertificationsManager({ initialCerts }: Props) {
               <Input type="date" value={form.issuedAt} onChange={(e) => setForm({ ...form, issuedAt: e.target.value })} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("expiresAt")}</label>
-              <Input type="date" value={form.expiresAt} onChange={(e) => setForm({ ...form, expiresAt: e.target.value })} />
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("photoUrl")}</label>
+              <label className="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors overflow-hidden">
+                {form.photoUrl ? (
+                  <img src={form.photoUrl} alt="preview" className="h-full w-full object-cover" />
+                ) : (
+                  <span className="flex flex-col items-center gap-1 text-slate-400">
+                    <ImagePlus className="w-6 h-6" />
+                    <span className="text-xs">{t("photoUrlPlaceholder")}</span>
+                  </span>
+                )}
+                <input type="file" accept="image/*" className="sr-only" onChange={handleFileChange} />
+              </label>
             </div>
           </div>
           <div className="flex gap-2">
@@ -167,6 +196,17 @@ export default function CertificationsManager({ initialCerts }: Props) {
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
+              {cert.certificate_url ? (
+                <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+                  <a href={cert.certificate_url} target="_blank" rel="noreferrer noopener">
+                    <img
+                      src={cert.certificate_url}
+                      alt={`${cert.name} photo`}
+                      className="h-56 w-full object-cover"
+                    />
+                  </a>
+                </div>
+              ) : null}
             </div>
           ))}
         </div>

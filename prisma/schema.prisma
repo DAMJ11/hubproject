@@ -73,7 +73,8 @@ model User {
   first_name                 String                  @db.VarChar(100)
   last_name                  String                  @db.VarChar(100)
   phone                      String?                 @db.VarChar(50)
-  avatar_url                 String?                 @db.VarChar(500)
+  avatar_url                 String?                 @db.MediumText
+  preferred_currency         String                  @default("USD") @db.VarChar(3)
   role                       UserRole                @default(brand)
   company_id                 Int?
   terms_accepted             Boolean                 @default(false)
@@ -152,7 +153,7 @@ model ManufacturerCertification {
   company_id      Int
   name            String    @db.VarChar(100)
   issued_by       String?   @db.VarChar(200)
-  certificate_url String?   @db.VarChar(500)
+  certificate_url String?   @db.MediumText
   issued_at       DateTime? @db.Date
   expires_at      DateTime? @db.Date
   is_verified     Boolean   @default(false)
@@ -166,6 +167,7 @@ model ManufacturerCertification {
 model RfqProject {
   id                      Int             @id @default(autoincrement())
   code                    String          @unique @db.VarChar(20)
+  project_type            String?         @db.VarChar(50)
   brand_company_id        Int
   created_by_user_id      Int
   category_id             Int

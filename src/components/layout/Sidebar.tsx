@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
-  MessageSquare,
   Users,
   Settings,
   Search,
@@ -33,7 +32,6 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { useUnreadMessagesCount } from "@/hooks/useUnreadMessagesCount";
 import { useOpportunitiesCount } from "@/hooks/useOpportunitiesCount";
 
 interface SidebarProps {
@@ -60,7 +58,6 @@ const adminNavItems: NavItem[] = [
   { key: "projectsRfq", href: "/dashboard/rfq", icon: FileText },
   { key: "contracts", href: "/dashboard/contracts", icon: Briefcase },
   { key: "users", href: "/dashboard/users", icon: Users },
-  { key: "messages", href: "/dashboard/messages", icon: MessageSquare },
   { key: "payments", href: "/dashboard/payments", icon: CreditCard },
   { key: "reviews", href: "/dashboard/reviews", icon: Star },
   { key: "reports", href: "/dashboard/reports", icon: BarChart3 },
@@ -72,7 +69,6 @@ const brandNavItems: NavItem[] = [
   { key: "myProjects", href: "/dashboard/projects", icon: FileText },
   { key: "myContracts", href: "/dashboard/contracts", icon: Briefcase },
   { key: "manufacturers", href: "/dashboard/manufacturers", icon: Factory },
-  { key: "messages", href: "/dashboard/messages", icon: MessageSquare },
   { key: "myCompany", href: "/dashboard/company", icon: Building2 },
   { key: "payments", href: "/dashboard/payments", icon: CreditCard },
   { key: "help", href: "/dashboard/help", icon: HelpCircle },
@@ -83,7 +79,6 @@ const manufacturerNavItems: NavItem[] = [
   { key: "opportunities", href: "/dashboard/opportunities", icon: Leaf },
   { key: "myProposals", href: "/dashboard/proposals", icon: Send },
   { key: "myContracts", href: "/dashboard/contracts", icon: Briefcase },
-  { key: "messages", href: "/dashboard/messages", icon: MessageSquare },
   {
     key: "myProfile",
     href: "/dashboard/company",
@@ -114,7 +109,6 @@ export default function Sidebar({
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const sidebarRef = useRef<HTMLElement | null>(null);
-  const { unreadCount } = useUnreadMessagesCount(15000);
   const { opportunitiesCount } = useOpportunitiesCount(userRole === "manufacturer", 10000);
 
   const navItems = userRole === "admin"
@@ -299,9 +293,7 @@ export default function Sidebar({
           const active = isActive(item.href);
           const isExpanded = expandedItems.includes(item.key);
           const hasSubItems = item.subItems && item.subItems.length > 0;
-          const itemBadge = item.key === "messages"
-            ? unreadCount
-            : item.key === "opportunities" && userRole === "manufacturer"
+          const itemBadge = item.key === "opportunities" && userRole === "manufacturer"
               ? opportunitiesCount
               : (item.badge ?? 0);
 

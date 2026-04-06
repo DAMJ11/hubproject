@@ -19,6 +19,7 @@ export interface CapabilityItem {
 export interface CategoryItem {
   id: number;
   name: string;
+  slug: string;
 }
 
 export async function getCapabilitiesWithCategories(): Promise<{
@@ -40,7 +41,7 @@ export async function getCapabilitiesWithCategories(): Promise<{
       [user.companyId]
     ),
     query<CategoryItem[]>(
-      `SELECT id, name FROM service_categories WHERE is_active = TRUE ORDER BY sort_order, name`
+      `SELECT id, name, slug FROM service_categories WHERE is_active = TRUE ORDER BY sort_order, name`
     ),
   ]);
 

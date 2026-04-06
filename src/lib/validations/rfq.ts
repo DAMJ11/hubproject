@@ -1,6 +1,7 @@
 import { z } from "zod/v4";
 
 export const rfqCreateSchema = z.object({
+  projectType: z.enum(["design_only", "tech_pack", "design_and_sample", "production_with_design", "production_only"]).optional(),
   categoryId: z.number().int().positive("categoryId es requerido"),
   title: z
     .string()

@@ -1,6 +1,6 @@
 "use client";
 
-import { User, BarChart3, Package, MessageSquare, Settings, Bell, Calendar } from "lucide-react";
+import { User, BarChart3, Package, Settings, Bell, Calendar } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface UserDashboardProps {
@@ -15,7 +15,6 @@ export default function UserDashboard({ user }: UserDashboardProps) {
   const t = useTranslations("UserDashboard");
   const stats = [
     { label: t("stats.activeProjects"), value: "3", icon: Package, color: "bg-blue-500" },
-    { label: t("stats.newMessages"), value: "12", icon: MessageSquare, color: "bg-green-500" },
     { label: t("stats.pendingTasks"), value: "8", icon: Calendar, color: "bg-yellow-500" },
     { label: t("stats.notifications"), value: "5", icon: Bell, color: "bg-purple-500" },
   ];
@@ -106,10 +105,6 @@ export default function UserDashboard({ user }: UserDashboardProps) {
               <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg transition-colors">
                 <Package className="w-5 h-5 text-brand-600" />
                 <span className="text-sm font-medium">{t("actions.createProject")}</span>
-              </button>
-              <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg transition-colors">
-                <MessageSquare className="w-5 h-5 text-brand-600" />
-                <span className="text-sm font-medium">{t("actions.sendMessage")}</span>
               </button>
               <button className="w-full flex items-center gap-3 p-3 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg transition-colors">
                 <BarChart3 className="w-5 h-5 text-brand-600" />

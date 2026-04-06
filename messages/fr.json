@@ -247,9 +247,9 @@
     "supplierPlans": {
       "0": {
         "name": "Standard",
-        "price": "$199",
-        "desc": "Premier mois gratuit, puis $199/mois. Pour les fabricants qui démarrent.",
-        "features": { "0": "Premier mois gratuit", "1": "Accès aux projets", "2": "Recevoir des invitations", "3": "Messagerie" },
+        "price": "$0*",
+        "desc": "*Gratuit pendant la bêta. Commencez à recevoir des projets sans frais.",
+        "features": { "0": "Accès aux projets", "1": "Recevoir des invitations", "2": "Messagerie", "3": "Profil de base" },
         "cta": "Commencer gratuitement"
       },
       "1": {
@@ -643,7 +643,7 @@
       "myProfile": "Mon Profil",
       "companyDetails": "Données d'entreprise",
       "capabilities": "Capacités",
-      "certifications": "Certifications",
+      "certifications": "Portfolio",
       "greenScore": "Score Vert"
     },
     "closeMenu": "Fermer le menu",
@@ -1290,6 +1290,20 @@
       "budget": "Budget et dates",
       "materials": "Matériaux et durabilité",
       "review": "Vérification"
+    },
+    "projectType": {
+      "title": "De quoi avez-vous besoin ?",
+      "subtitle": "Sélectionnez le type de service pour votre projet",
+      "designOnly": "Design uniquement",
+      "designOnlyDesc": "Concepts, croquis et direction créative",
+      "techPack": "Tech Pack",
+      "techPackDesc": "Spécifications techniques et fichiers prêts pour la production",
+      "designAndSample": "Design + Échantillon",
+      "designAndSampleDesc": "Du concept au prototype physique",
+      "productionWithDesign": "Production (avec design)",
+      "productionWithDesignDesc": "Service complet : design, échantillon et fabrication",
+      "productionOnly": "Production (sans design)",
+      "productionOnlyDesc": "J'ai déjà des designs prêts à fabriquer"
     }
   },
   "ProjectDetail": {
@@ -1444,35 +1458,44 @@
     "saved": "Enregistré"
   },
   "Certifications": {
-    "title": "Certifications",
-    "subtitle": "Certifications de durabilité et de qualité",
+    "title": "Portfolio",
+    "subtitle": "Photos de produits réalisés",
     "add": "Ajouter",
-    "newCertification": "Nouvelle certification",
-    "nameLabel": "Nom *",
-    "namePlaceholder": "Ex : GOTS, OEKO-TEX",
-    "issuedBy": "Délivré par",
-    "issuedByPlaceholder": "Organisme certificateur",
-    "issuedAt": "Date d'émission",
-    "expiresAt": "Date d'expiration",
+    "newCertification": "Nouveau produit",
+    "nameLabel": "Nom du produit *",
+    "namePlaceholder": "Ex : Veste en denim, Sac en cuir",
+    "issuedBy": "Client / Marque",
+    "issuedByPlaceholder": "Nom du client ou de la marque",
+    "issuedAt": "Date de réalisation",
+    "photoUrl": "URL de la photo",
+    "photoUrlPlaceholder": "Cliquer pour sélectionner une image (max 5 Mo)",
     "save": "Enregistrer",
     "cancel": "Annuler",
-    "empty": "Vous n'avez aucune certification enregistrée",
-    "emptyHint": "Les certifications améliorent votre score vert",
-    "verified": "Vérifiée",
-    "expired": "Expirée",
-    "by": "Par : {issuer}",
-    "from": "Depuis : {date}",
-    "until": "Jusqu'à : {date}",
-    "delete": "Supprimer la certification",
-    "addSuccess": "Certification ajoutée",
-    "addError": "Erreur lors de l'ajout de la certification",
-    "deleteSuccess": "Certification supprimée",
-    "deleteError": "Erreur lors de la suppression de la certification",
+    "empty": "Vous n'avez aucun produit en portfolio",
+    "emptyHint": "Ajoutez des photos de travaux antérieurs pour montrer votre expérience",
+    "verified": "Vérifié",
+    "expired": "Expiré",
+    "by": "Client : {issuer}",
+    "from": "Réalisé : {date}",
+    "until": "Photo : {date}",
+    "delete": "Supprimer le produit",
+    "addSuccess": "Produit ajouté au portfolio",
+    "addError": "Erreur lors de l'ajout du produit",
+    "deleteSuccess": "Produit supprimé",
+    "deleteError": "Erreur lors de la suppression du produit",
     "status": {
       "verified": "Vérifiée",
       "expired": "Expirée",
       "pending": "En attente"
     }
+  },
+  "ServiceCategories": {
+    "design": "Design",
+    "tech-pack": "Tech Pack",
+    "sourcing": "Sourcing",
+    "sampling": "Échantillons",
+    "production": "Production",
+    "branding": "Branding"
   },
   "Capabilities": {
     "title": "Capacités",
@@ -1595,7 +1618,12 @@
     "emailPlaceholder": "vous@email.com",
     "phone": "Téléphone",
     "phonePlaceholder": "+33 6 00 00 00 00",
+    "currency": "Devise",
+    "currencyDescription": "Les prix sur la plateforme s'afficheront dans cette devise.",
     "profileSaved": "Modifications enregistrées.",
+    "profileSaveError": "Impossible d'enregistrer le profil.",
+    "avatarTypeError": "Seuls les fichiers image sont autorisés.",
+    "avatarSizeError": "L'image de profil doit être inférieure ou égale à 2 Mo.",
     "saving": "Enregistrement...",
     "saveChanges": "Enregistrer les modifications",
     "changePassword": "Changer le mot de passe",
@@ -1734,5 +1762,20 @@
         "Erreurs des fabricants avec les marques EU/US"
       ]
     }
+  },
+  "SetupPayment": {
+    "title": "Ajouter un moyen de paiement",
+    "description": "Pour commencer \u00e0 recevoir des demandes de projets et vous connecter avec des marques, veuillez ajouter un moyen de paiement. Votre plan Standard est gratuit \u2014 aucun frais ne sera factur\u00e9.",
+    "secureTitle": "S\u00e9curis\u00e9 et chiffr\u00e9",
+    "secureDescription": "Les informations de votre carte sont trait\u00e9es de mani\u00e8re s\u00e9curis\u00e9e par Stripe. Nous ne stockons jamais les d\u00e9tails complets de votre carte.",
+    "benefit1": "Plan Standard gratuit \u2014 0\u00a0$/mois pendant la b\u00eata",
+    "benefit2": "Passez \u00e0 Pro ou Elite quand vous voulez",
+    "benefit3": "Annulez ou changez votre plan \u00e0 tout moment",
+    "addCard": "Ajouter un moyen de paiement",
+    "loading": "Redirection vers Stripe...",
+    "error": "Une erreur est survenue. Veuillez r\u00e9essayer.",
+    "successTitle": "Moyen de paiement ajout\u00e9 !",
+    "successDescription": "Votre compte est enti\u00e8rement configur\u00e9. Vous pouvez commencer \u00e0 recevoir des demandes de projets de marques.",
+    "redirecting": "Redirection vers le tableau de bord..."
   }
 }

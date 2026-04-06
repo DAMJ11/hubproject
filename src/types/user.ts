@@ -37,6 +37,7 @@ export interface UserResponse {
   role: UserRole;
   companyId: number | null;
   companyName?: string;
+  hasPaymentMethod?: boolean;
 }
 
 export interface AuthResponse {

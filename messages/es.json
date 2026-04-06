@@ -247,9 +247,9 @@
     "supplierPlans": {
       "0": {
         "name": "Standard",
-        "price": "Gratis",
-        "desc": "Para fabricantes que quieren recibir proyectos",
-        "features": { "0": "Acceso a proyectos", "1": "Recibir invitaciones", "2": "Mensajeria" },
+        "price": "$0*",
+        "desc": "*Gratis mientras estemos en beta. Empieza a recibir proyectos sin costo.",
+        "features": { "0": "Acceso a proyectos", "1": "Recibir invitaciones", "2": "Mensajer\u00eda", "3": "Perfil b\u00e1sico" },
         "cta": "Empezar gratis"
       },
       "1": {
@@ -643,7 +643,7 @@
       "myProfile": "Mi Perfil",
       "companyDetails": "Datos de Empresa",
       "capabilities": "Capacidades",
-      "certifications": "Certificaciones",
+      "certifications": "Portfolio",
       "greenScore": "Puntuación Verde"
     },
     "closeMenu": "Cerrar menú",
@@ -1290,6 +1290,20 @@
       "budget": "Presupuesto y fechas",
       "materials": "Materiales y sostenibilidad",
       "review": "Revisión"
+    },
+    "projectType": {
+      "title": "¿Qué necesitas?",
+      "subtitle": "Selecciona el tipo de servicio para tu proyecto",
+      "designOnly": "Solo diseño",
+      "designOnlyDesc": "Conceptos, bocetos y dirección creativa",
+      "techPack": "Tech Pack",
+      "techPackDesc": "Especificaciones técnicas y archivos listos para producción",
+      "designAndSample": "Diseño + Muestra",
+      "designAndSampleDesc": "Del concepto al prototipo físico",
+      "productionWithDesign": "Producción (con diseño)",
+      "productionWithDesignDesc": "Servicio completo: diseño, muestra y fabricación",
+      "productionOnly": "Producción (sin diseño)",
+      "productionOnlyDesc": "Ya tengo diseños listos para fabricar"
     }
   },
   "ProjectDetail": {
@@ -1444,35 +1458,44 @@
     "saved": "Guardado"
   },
   "Certifications": {
-    "title": "Certificaciones",
-    "subtitle": "Certificaciones de sostenibilidad y calidad",
+    "title": "Portfolio",
+    "subtitle": "Fotos de productos previamente realizados",
     "add": "Agregar",
-    "newCertification": "Nueva certificación",
-    "nameLabel": "Nombre *",
-    "namePlaceholder": "Ej: GOTS, OEKO-TEX",
-    "issuedBy": "Emitido por",
-    "issuedByPlaceholder": "Organismo certificador",
-    "issuedAt": "Fecha emisión",
-    "expiresAt": "Fecha expiración",
+    "newCertification": "Nuevo producto",
+    "nameLabel": "Nombre del producto *",
+    "namePlaceholder": "Ej: Chaqueta de denim, Bolso de cuero",
+    "issuedBy": "Cliente / Marca",
+    "issuedByPlaceholder": "Nombre del cliente o marca",
+    "issuedAt": "Fecha de finalización",
+    "photoUrl": "URL de la foto",
+    "photoUrlPlaceholder": "Clic para seleccionar imagen (máx 5 MB)",
     "save": "Guardar",
     "cancel": "Cancelar",
-    "empty": "No tienes certificaciones registradas",
-    "emptyHint": "Las certificaciones mejoran tu puntuación verde",
-    "verified": "Verificada",
-    "expired": "Expirada",
-    "by": "Por: {issuer}",
-    "from": "Desde: {date}",
-    "until": "Hasta: {date}",
-    "delete": "Eliminar certificación",
-    "addSuccess": "Certificación agregada",
-    "addError": "Error al agregar certificación",
-    "deleteSuccess": "Certificación eliminada",
-    "deleteError": "Error al eliminar certificación",
+    "empty": "No tienes productos en el portfolio",
+    "emptyHint": "Agrega fotos de trabajos anteriores para mostrar tu experiencia",
+    "verified": "Verificado",
+    "expired": "Expirado",
+    "by": "Cliente: {issuer}",
+    "from": "Finalizado: {date}",
+    "until": "Foto: {date}",
+    "delete": "Eliminar producto",
+    "addSuccess": "Producto agregado al portfolio",
+    "addError": "Error al agregar producto",
+    "deleteSuccess": "Producto eliminado",
+    "deleteError": "Error al eliminar producto",
     "status": {
       "verified": "Verificada",
       "expired": "Expirada",
       "pending": "Pendiente"
     }
+  },
+  "ServiceCategories": {
+    "design": "Diseño",
+    "tech-pack": "Tech Pack",
+    "sourcing": "Sourcing",
+    "sampling": "Muestras",
+    "production": "Producción",
+    "branding": "Branding"
   },
   "Capabilities": {
     "title": "Capacidades",
@@ -1595,7 +1618,12 @@
     "emailPlaceholder": "tu@email.com",
     "phone": "Teléfono",
     "phonePlaceholder": "+57 300 000 0000",
+    "currency": "Moneda",
+    "currencyDescription": "Los precios en la plataforma se mostrar\u00e1n en esta moneda.",
     "profileSaved": "Cambios guardados.",
+    "profileSaveError": "No se pudo guardar el perfil.",
+    "avatarTypeError": "Solo se permiten imágenes.",
+    "avatarSizeError": "La imagen de perfil no puede superar 2 MB.",
     "saving": "Guardando...",
     "saveChanges": "Guardar Cambios",
     "changePassword": "Cambiar Contraseña",
@@ -1734,5 +1762,20 @@
   "Metadata": {
     "title": "FashionsDen - Diseño y producción de moda",
     "description": "FashionsDen es tu plataforma para diseño de moda profesional: bocetos, fichas técnicas, patronaje digital, muestras y producción."
+  },
+  "SetupPayment": {
+    "title": "Agregar método de pago",
+    "description": "Para empezar a recibir solicitudes de proyectos y conectar con marcas, agrega un método de pago. Tu plan Standard es gratis — no se realizará ningún cobro.",
+    "secureTitle": "Seguro y encriptado",
+    "secureDescription": "La información de tu tarjeta es procesada de forma segura por Stripe. Nunca almacenamos los datos completos de tu tarjeta.",
+    "benefit1": "Plan Standard gratis — $0/mes durante la beta",
+    "benefit2": "Mejora a Pro o Elite cuando quieras",
+    "benefit3": "Cancela o cambia tu plan en cualquier momento",
+    "addCard": "Agregar método de pago",
+    "loading": "Redirigiendo a Stripe...",
+    "error": "Algo salió mal. Por favor intenta de nuevo.",
+    "successTitle": "¡Método de pago agregado!",
+    "successDescription": "Tu cuenta está completamente configurada. Ya puedes empezar a recibir solicitudes de proyectos de marcas.",
+    "redirecting": "Redirigiendo al dashboard..."
   }
 }
