@@ -42,6 +42,3 @@ next-env.d.ts
 
 # github copilot skills/customizations
 .github/
-
-# Brand source files (originals, not for web)
-/FashionsDen/
