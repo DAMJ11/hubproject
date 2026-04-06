@@ -542,7 +542,8 @@
     "verifySuccess": "Email verified! You can now sign in.",
     "verifyAlready": "Your email was already verified.",
     "verifyExpired": "Verification link expired. Sign in to resend.",
-    "verifyInvalid": "Invalid verification link."
+    "verifyInvalid": "Invalid verification link.",
+    "googleError": "An error occurred while signing in with Google. Please try again."
   },
   "Register": {
     "accountType": "Account type",
@@ -571,6 +572,7 @@
     "strategyCallTitle": "Want to start on the right foot?",
     "strategyCallDesc": "Book a 45-minute 1:1 session with our team and get a personalized roadmap.",
     "strategyCallCta": "Book my session now",
+    "signInGoogle": "Register with Google",
     "error": "An error occurred. Please try again.",
     "validation": {
       "emailRequired": "Email is required",

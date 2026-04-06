@@ -82,6 +82,8 @@ model User {
   email_verification_token   String?                 @db.VarChar(255)
   email_verification_expires DateTime?               @db.DateTime(0)
   stripe_customer_id         String?                 @unique(map: "stripe_customer_id") @db.VarChar(255)
+  google_id                  String?                 @unique @db.VarChar(255)
+  auth_provider              String                  @default("local") @db.VarChar(20)
   is_active                  Boolean                 @default(true)
   created_at                 DateTime                @default(now())
   updated_at                 DateTime                @updatedAt

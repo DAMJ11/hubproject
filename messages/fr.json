@@ -542,7 +542,8 @@
     "verifySuccess": "Email vérifié ! Vous pouvez maintenant vous connecter.",
     "verifyAlready": "Votre email était déjà vérifié.",
     "verifyExpired": "Le lien de vérification a expiré. Connectez-vous pour renvoyer.",
-    "verifyInvalid": "Lien de vérification invalide."
+    "verifyInvalid": "Lien de vérification invalide.",
+    "googleError": "Une erreur s'est produite lors de la connexion avec Google. Veuillez réessayer."
   },
   "Register": {
     "accountType": "Type de compte",
@@ -571,6 +572,7 @@
     "strategyCallTitle": "Envie de démarrer du bon pied ?",
     "strategyCallDesc": "Réservez une session 1:1 de 45 minutes avec notre équipe et obtenez une feuille de route personnalisée.",
     "strategyCallCta": "Réserver ma session maintenant",
+    "signInGoogle": "S'inscrire avec Google",
     "error": "Une erreur est survenue. Veuillez reessayer.",
     "validation": {
       "emailRequired": "Email obligatoire",

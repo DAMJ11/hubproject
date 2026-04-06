@@ -71,6 +71,7 @@ export default function RegisterPage() {
   const strength = getPasswordStrength(watchedPassword ?? "");
 
   const [isLoading, setIsLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [serverError, setServerError] = useState("");
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [callLoading, setCallLoading] = useState(false);
@@ -309,6 +310,28 @@ export default function RegisterPage() {
                   <div className="transition-transform hover:scale-105 active:scale-95">
                     <Link href="/login" className="text-sm font-bold text-brand-600 hover:text-brand-700 transition-colors inline-block">
                       {t("logIn")}
+
+                                  <div className="relative flex items-center justify-center my-2">
+                                    <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200 dark:border-slate-700"></div></div>
+                                    <div className="relative bg-white dark:bg-slate-800 px-4"><span className="text-xs text-gray-400 dark:text-gray-500 uppercase">o</span></div>
+                                  </div>
+
+                                  <button
+                                    type="button"
+                                    onClick={() => { setGoogleLoading(true); window.location.href = `/api/auth/google?locale=${locale}&role=${watchedRole}`; }}
+                                    disabled={isLoading || googleLoading}
+                                    className="w-full h-11 flex items-center justify-center gap-3 border border-gray-300 dark:border-slate-600 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
+                                  >
+                                    {googleLoading ? (
+                                      <svg className="w-5 h-5 animate-spin text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                                      </svg>
+                                    ) : (
+                                      <Image src="https://ext.same-assets.com/1985226505/3863342314.svg" alt="Google" width={28} height={28} className="w-7 h-7" />
+                                    )}
+                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("signInGoogle")}</span>
+                                  </button>
                     </Link>
                   </div>
                 </div>

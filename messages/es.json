@@ -542,7 +542,8 @@
     "verifySuccess": "¡Correo verificado! Ya puedes iniciar sesión.",
     "verifyAlready": "Tu correo ya estaba verificado.",
     "verifyExpired": "El enlace de verificación ha expirado. Inicia sesión para reenviar.",
-    "verifyInvalid": "Enlace de verificación inválido."
+    "verifyInvalid": "Enlace de verificación inválido.",
+    "googleError": "Ocurrió un error al iniciar sesión con Google. Intenta de nuevo."
   },
   "Register": {
     "accountType": "Tipo de cuenta",
@@ -571,6 +572,7 @@
     "strategyCallTitle": "¿Quieres empezar con el pie derecho?",
     "strategyCallDesc": "Reserva una sesión 1:1 de 45 minutos con nuestro equipo y recibe una hoja de ruta personalizada.",
     "strategyCallCta": "Reservar mi sesión ahora",
+    "signInGoogle": "Registrarse con Google",
     "error": "Ocurrió un error. Por favor intenta de nuevo.",
     "validation": {
       "emailRequired": "El email es obligatorio",
