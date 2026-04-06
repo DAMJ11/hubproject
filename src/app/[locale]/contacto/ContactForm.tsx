@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export default function ContactForm() {
@@ -125,18 +125,6 @@ export default function ContactForm() {
                 <div>
                   <h3 className="font-bold text-brand-900 mb-1">{t("emailLabel")}</h3>
                   <p className="text-gray-600 dark:text-gray-400">info@fashionsden.com</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="p-6 rounded-2xl">
-              <CardContent className="flex items-start gap-4 p-0">
-                <div className="w-12 h-12 bg-brand-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Phone className="w-6 h-6 text-brand-600" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-brand-900 mb-1">{t("phoneLabel")}</h3>
-                  <p className="text-gray-600 dark:text-gray-400">+31 20 123 4567</p>
                 </div>
               </CardContent>
             </Card>

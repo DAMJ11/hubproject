@@ -12,7 +12,7 @@
     "selectLanguage": "Seleccionar idioma"
   },
   "Footer": {
-    "brandText": "Plataforma B2B para conectar brands y manufacturers en procesos de diseño, desarrollo y producción de moda.",
+    "brandText": "Plataforma B2B para conectar marcas y fabricantes en procesos de diseño, desarrollo y producción de moda.",
     "services": "Servicios",
     "company": "Empresa",
     "manufacturers": "Fabricantes",
@@ -28,7 +28,7 @@
     "companyLinks": {
       "0": "Sobre Nosotros",
       "1": "Blog",
-      "2": "Programa para Manufacturers",
+      "2": "Programa para Fabricantes",
       "3": "Contacto"
     },
     "manufacturerLinks": {
@@ -148,14 +148,15 @@
     }
   },
   "CTA": {
-    "title": "Eres manufacturer? Conecta con marcas que si compran",
-    "subtitle": "Recibe briefs claros, pedidos estructurados y conversaciones directas con brands de moda en crecimiento. Menos fricción comercial, más producción activa.",
+    "title": "¿Eres fabricante? Conecta con marcas que sí compran",
+    "subtitle": "Recibe briefs claros, pedidos estructurados y conversaciones directas con marcas de moda en crecimiento. Menos fricción comercial, más producción activa.",
     "bullets": {
       "0": "Visibilidad frente a marcas segmentadas por categoría",
       "1": "Proceso de órdenes transparente con hitos definidos",
       "2": "Relaciones de largo plazo con compras recurrentes"
     },
     "cta": "Postular mi fábrica",
+    "ctaOptionalCall": "Llamada inicial (opcional)",
     "stats": {
       "0": { "value": "+38%", "label": "Crecimiento promedio por fábrica" },
       "1": { "value": "14 días", "label": "Primer pedido promedio" },
@@ -164,7 +165,7 @@
     }
   },
   "Testimonials": {
-    "title": "Resultados de brands y manufacturers",
+    "title": "Resultados de marcas y fabricantes",
     "subtitle": "Equipos de moda que ya están produciendo con más velocidad, control y previsibilidad.",
     "items": {
       "0": {
@@ -176,7 +177,7 @@
       "1": {
         "name": "Andrés Peña",
         "role": "Head of Production, AURA SPORT",
-        "quote": "Conseguimos un manufacturer para activewear con experiencia real en telas técnicas. El proceso de muestras fue mucho más rápido.",
+        "quote": "Conseguimos un fabricante para activewear con experiencia real en telas técnicas. El proceso de muestras fue mucho más rápido.",
         "badge": "Marca activewear"
       },
       "2": {
@@ -187,13 +188,13 @@
       },
       "3": {
         "name": "Textiles Rivera",
-        "role": "Manufacturer partner",
+        "role": "Fabricante aliado",
         "quote": "Ahora recibimos briefs mejor definidos y pedidos con más contexto técnico. Eso nos permitió mejorar tiempos de respuesta y tasa de cierre.",
         "badge": "Fábrica multi-categoría"
       },
       "4": {
         "name": "Confecciones Delta",
-        "role": "Manufacturer partner",
+        "role": "Fabricante aliado",
         "quote": "Nos conectamos con marcas que sí están listas para producir. Menos negociación improductiva, más órdenes concretas.",
         "badge": "Denim y outerwear"
       },
@@ -269,7 +270,7 @@
   },
   "FinalCTA": {
     "title": "Listo para acelerar tu próxima colección?",
-    "subtitle": "Conecta diseño, sourcing y producción en un solo espacio colaborativo entre brands y manufacturers.",
+    "subtitle": "Conecta diseño, sourcing y producción en un solo espacio colaborativo entre marcas y fabricantes.",
     "ctaPrimary": "Crear cuenta y publicar pedido",
     "ctaSecondary": "Entrar al panel"
   },

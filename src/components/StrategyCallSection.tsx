@@ -10,7 +10,7 @@ export default function StrategyCallSection() {
   const t = useTranslations("StrategyCallSection");
 
   return (
-    <section className="py-20 bg-gradient-to-br from-brand-600 to-brand-800 relative overflow-hidden">
+    <section id="strategy-call" className="py-20 bg-gradient-to-br from-brand-600 to-brand-800 relative overflow-hidden">
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-0 w-72 h-72 bg-white rounded-full -translate-x-1/2 -translate-y-1/2" />
@@ -101,11 +101,17 @@ function StrategyCard({
         headers: { "Content-Type": "application/json" },
       });
       const data = await res.json();
+
+      const authMessage = typeof data?.message === "string" ? data.message.toLowerCase() : "";
+      const isAuthError = res.status === 401 || res.status === 403 || authMessage.includes("autoriz");
+
+      if (isAuthError) {
+        router.push("/login");
+        return;
+      }
+
       if (data.success && data.url) {
         window.location.href = data.url;
-      } else if (res.status === 401) {
-        // Not logged in — redirect to register
-        router.push("/login");
       } else {
         setError(data.message || "Something went wrong. Please try again.");
       }

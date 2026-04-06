@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
   try {
     const user = await getSessionUser(request);
     if (!user) {
-      return NextResponse.json({ success: false, message: "No autorizado" }, { status: 401 });
+      return NextResponse.json({ success: false, message: "Inicia sesión para reservar la llamada." }, { status: 401 });
     }
 
     // Verificar si ya compró la llamada
@@ -134,7 +134,7 @@ export async function GET(request: NextRequest) {
   try {
     const user = await getSessionUser(request);
     if (!user) {
-      return NextResponse.json({ success: false, message: "No autorizado" }, { status: 401 });
+      return NextResponse.json({ success: false, message: "Inicia sesión para ver el estado de tu llamada." }, { status: 401 });
     }
 
     const purchase = await queryOne<{ id: number; status: string; created_at: string }>(

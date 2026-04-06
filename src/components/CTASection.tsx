@@ -26,11 +26,18 @@ export default async function CTASection() {
               ))}
             </div>
             <div className="mt-10">
-              <Link href="/register">
-                <Button size="lg" className="bg-white text-[#9279BA] hover:bg-white/90 rounded-lg px-8 h-12 font-semibold">
-                  {t("cta")}
-                </Button>
-              </Link>
+              <div className="flex flex-wrap gap-3">
+                <Link href="/register">
+                  <Button size="lg" className="bg-white text-[#9279BA] hover:bg-white/90 rounded-lg px-8 h-12 font-semibold">
+                    {t("cta")}
+                  </Button>
+                </Link>
+                <Link href="/#strategy-call">
+                  <Button size="lg" variant="outline" className="border-white/70 text-white hover:bg-white/10 rounded-lg px-8 h-12 font-semibold">
+                    {t("ctaOptionalCall")}
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
 

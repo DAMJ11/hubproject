@@ -156,6 +156,7 @@
       "2": "Relations a long terme avec des achats recurrents"
     },
     "cta": "Postuler comme usine",
+    "ctaOptionalCall": "Appel initial (optionnel)",
     "stats": {
       "0": { "value": "+38%", "label": "Croissance moyenne par usine" },
       "1": { "value": "14 jours", "label": "Premiere commande moyenne" },

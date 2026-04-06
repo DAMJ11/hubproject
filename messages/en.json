@@ -156,6 +156,7 @@
       "2": "Long-term relationships with recurring purchases"
     },
     "cta": "Apply as factory",
+    "ctaOptionalCall": "Initial call (optional)",
     "stats": {
       "0": { "value": "+38%", "label": "Average growth per factory" },
       "1": { "value": "14 days", "label": "Average first order" },
