@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
 
     // Send verification email (non-blocking for the response)
     const locale = request.headers.get("x-locale") || "es";
-    sendVerificationEmail(email.toLowerCase(), verificationToken, locale).catch((err) =>
+    sendVerificationEmail(email.toLowerCase(), verificationToken, locale, { appUrl: request.nextUrl.origin }).catch((err) =>
       console.error("Failed to send verification email:", err)
     );
 

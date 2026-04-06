@@ -14,13 +14,43 @@ function getResend(): Resend {
 }
 
 const FROM_EMAIL = process.env.EMAIL_FROM || "FashionsDen <noreply@fashionsden.com>";
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 const APP_NAME = "FashionsDen";
 
+function normalizeAppUrl(value: string | undefined): string | null {
+  if (!value) return null;
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  try {
+    const url = new URL(trimmed);
+    url.pathname = "";
+    url.search = "";
+    url.hash = "";
+    return url.toString().replace(/\/$/, "");
+  } catch {
+    return null;
+  }
+}
+
+function resolveAppUrl(overrideAppUrl?: string): string {
+  const fromOverride = normalizeAppUrl(overrideAppUrl);
+  if (fromOverride) return fromOverride;
+
+  const fromEnv = normalizeAppUrl(process.env.APP_URL) || normalizeAppUrl(process.env.NEXT_PUBLIC_APP_URL);
+  if (fromEnv) return fromEnv;
+
+  return "http://localhost:3000";
+}
+
 // ─── Verification Email ─────────────────────────────────────────────
-export async function sendVerificationEmail(to: string, token: string, locale: string = "es") {
+export async function sendVerificationEmail(
+  to: string,
+  token: string,
+  locale: string = "es",
+  options?: { appUrl?: string }
+) {
   const safeLocale = SUPPORTED_LOCALES.has(locale) ? locale : "es";
-  const verifyUrl = `${APP_URL}/api/auth/verify-email?token=${token}&locale=${safeLocale}`;
+  const appUrl = resolveAppUrl(options?.appUrl);
+  const verifyUrl = `${appUrl}/api/auth/verify-email?token=${token}&locale=${safeLocale}`;
 
   const subjects: Record<string, string> = {
     es: "Confirma tu cuenta en FashionsDen",
@@ -38,8 +68,14 @@ export async function sendVerificationEmail(to: string, token: string, locale: s
 }
 
 // ─── Password Reset Email ───────────────────────────────────────────
-export async function sendPasswordResetEmail(to: string, token: string, locale: string = "es") {
-  const resetUrl = `${APP_URL}/${locale}/reset-password?token=${token}`;
+export async function sendPasswordResetEmail(
+  to: string,
+  token: string,
+  locale: string = "es",
+  options?: { appUrl?: string }
+) {
+  const appUrl = resolveAppUrl(options?.appUrl);
+  const resetUrl = `${appUrl}/${locale}/reset-password?token=${token}`;
 
   const subjects: Record<string, string> = {
     es: "Restablece tu contraseña — FashionsDen",

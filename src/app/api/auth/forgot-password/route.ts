@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
       [user.id, token, expiresAt]
     );
 
-    await sendPasswordResetEmail(email.toLowerCase(), token, locale);
+    await sendPasswordResetEmail(email.toLowerCase(), token, locale, { appUrl: request.nextUrl.origin });
 
     return successResponse;
   } catch (error) {

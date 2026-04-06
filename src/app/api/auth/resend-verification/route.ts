@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
       [token, expires, user.id]
     );
 
-    await sendVerificationEmail(email.toLowerCase(), token, locale);
+    await sendVerificationEmail(email.toLowerCase(), token, locale, { appUrl: request.nextUrl.origin });
 
     return successResponse;
   } catch (error) {
