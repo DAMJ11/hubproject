@@ -7,10 +7,15 @@ function getGoogleClientId(): string {
   return id;
 }
 
+function getAppOrigin(request: NextRequest): string {
+  return process.env.NEXT_PUBLIC_APP_URL ?? request.nextUrl.origin;
+}
+
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = request.nextUrl;
+  const { searchParams } = request.nextUrl;
   const locale = searchParams.get("locale") ?? "es";
   const role = searchParams.get("role") ?? "brand";
+  const origin = getAppOrigin(request);
 
   // CSRF state token
   const state = randomBytes(32).toString("hex");

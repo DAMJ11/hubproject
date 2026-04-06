@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
   const cookieState = request.cookies.get("oauth_state")?.value;
   const locale = request.cookies.get("oauth_locale")?.value ?? "es";
   const role = request.cookies.get("oauth_role")?.value ?? "brand";
-  const callbackOrigin = request.cookies.get("oauth_callback_origin")?.value ?? request.nextUrl.origin;
+  const callbackOrigin = process.env.NEXT_PUBLIC_APP_URL ?? request.cookies.get("oauth_callback_origin")?.value ?? request.nextUrl.origin;
 
   const loginUrl = buildRedirectUrl(callbackOrigin, locale, "/login?error=google_failed");
 
