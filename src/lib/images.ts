@@ -16,7 +16,31 @@
  */
 
 const CLOUD = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-const cdnBase = CLOUD ? `https://res.cloudinary.com/${CLOUD}/image/upload/fashionsden` : null;
+
+function resolveCloudinaryCloudName(rawValue: string | undefined): string | null {
+  if (!rawValue) return null;
+
+  const value = rawValue.trim();
+  if (!value) return null;
+
+  // Supports plain cloud name, full Cloudinary URL, or legacy values with extra path parts.
+  if (/^https?:\/\//i.test(value)) {
+    try {
+      const url = new URL(value);
+      if (url.hostname !== "res.cloudinary.com") return null;
+      const [cloudName] = url.pathname.split("/").filter(Boolean);
+      return cloudName && /^[a-z0-9_-]+$/i.test(cloudName) ? cloudName : null;
+    } catch {
+      return null;
+    }
+  }
+
+  const [cloudName] = value.split("/").filter(Boolean);
+  return cloudName && /^[a-z0-9_-]+$/i.test(cloudName) ? cloudName : null;
+}
+
+const cloudName = resolveCloudinaryCloudName(CLOUD);
+const cdnBase = cloudName ? `https://res.cloudinary.com/${cloudName}/image/upload/fashionsden` : null;
 
 function img(localPath: string, cloudinaryPublicId: string): string {
   if (cdnBase) return `${cdnBase}/${cloudinaryPublicId}`;
