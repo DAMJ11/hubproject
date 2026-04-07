@@ -50,6 +50,11 @@ export async function GET() {
       }
     }
 
+    const preferredCurrencyRow = await queryOne<{ preferred_currency: string | null }>(
+      "SELECT preferred_currency FROM users WHERE id = ? LIMIT 1",
+      [user.id]
+    );
+
     return NextResponse.json<AuthResponse>(
       {
         success: true,
@@ -62,6 +67,7 @@ export async function GET() {
           role: user.role,
           companyId: user.companyId ?? null,
           ...(hasPaymentMethod !== undefined && { hasPaymentMethod }),
+          preferredCurrency: preferredCurrencyRow?.preferred_currency ?? "USD",
         },
       },
       { status: 200 }

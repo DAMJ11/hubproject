@@ -141,6 +141,14 @@ export async function GET(request: NextRequest) {
     const totalRows = await query<Array<{ total: number }>>(
       `SELECT COUNT(*) AS total
        FROM companies c
+       LEFT JOIN (
+         SELECT
+           mc.company_id,
+           MIN(mc.min_order_qty) AS min_moq
+         FROM manufacturer_capabilities mc
+         WHERE mc.is_active = TRUE
+         GROUP BY mc.company_id
+       ) caps ON caps.company_id = c.id
        WHERE ${whereSql}`,
       params
     );

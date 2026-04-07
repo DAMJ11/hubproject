@@ -18,6 +18,7 @@ import {
   FileText,
   ClipboardList,
   Layers,
+  ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -79,6 +80,8 @@ export default function RFQMultiStepForm() {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [currency, setCurrency] = useState("USD");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -115,6 +118,17 @@ export default function RFQMultiStepForm() {
       .then((r) => r.json())
       .then((data) => {
         if (data.success) setCategories(data.categories);
+      })
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.user?.preferredCurrency) {
+          setCurrency(data.user.preferredCurrency);
+        }
       })
       .catch(console.error);
   }, []);
@@ -175,8 +189,9 @@ export default function RFQMultiStepForm() {
   };
 
   const values = watch();
+  const currencySymbol = currency === "EUR" ? "€" : "$";
   const inputClass =
-    "h-11 rounded-lg border-gray-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-brand-600 focus:ring-brand-600";
+    "h-11 rounded-2xl border border-gray-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-brand-600 focus:ring-2 focus:ring-brand-600 focus:ring-offset-0 shadow-sm";
   const errorClass = "text-xs text-red-500 mt-1";
 
   const getCategoryName = (id: string) => {
@@ -332,17 +347,57 @@ export default function RFQMultiStepForm() {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   {t("fields.category")} <span className="text-red-400">*</span>
                 </label>
-                <select
-                  {...register("categoryId")}
-                  className={`w-full ${inputClass} ${errors.categoryId ? "border-red-400" : ""}`}
-                >
-                  <option value="">{t("placeholders.select")}</option>
-                  {categories.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {tCat.has(c.slug) ? tCat(c.slug) : c.name}
-                    </option>
-                  ))}
-                </select>
+                <Controller
+                  control={control}
+                  name="categoryId"
+                  render={({ field }) => {
+                    const selected = categories.find((c) => c.id === Number(field.value));
+                    return (
+                      <div className="relative">
+                        <button
+                          type="button"
+                          onClick={() => setCategoryOpen((prev) => !prev)}
+                          className={`w-full text-left rounded-[28px] border border-slate-200 bg-white px-4 py-3 pr-11 text-sm text-slate-900 shadow-sm transition duration-200 ease-in-out outline-none hover:border-slate-300 focus:border-brand-600 focus:ring-2 focus:ring-brand-600 focus:ring-offset-0 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-slate-600 ${errors.categoryId ? "border-red-400" : ""}`}
+                        >
+                          <span className={`${selected ? "text-slate-900 dark:text-slate-100" : "text-slate-400"}`}>
+                            {selected ? (tCat.has(selected.slug) ? tCat(selected.slug) : selected.name) : t("placeholders.select")}
+                          </span>
+                        </button>
+                        <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                          <ChevronDown className={`h-4 w-4 transition-transform ${categoryOpen ? "rotate-180" : "rotate-0"} text-gray-400 dark:text-slate-400`} />
+                        </div>
+
+                        {categoryOpen && (
+                          <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-950">
+                            <ul className="max-h-60 overflow-y-auto text-sm text-slate-900 dark:text-slate-100">
+                              <li
+                                className="cursor-pointer px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800"
+                                onClick={() => {
+                                  field.onChange("");
+                                  setCategoryOpen(false);
+                                }}
+                              >
+                                {t("placeholders.select")}
+                              </li>
+                              {categories.map((c) => (
+                                <li
+                                  key={c.id}
+                                  className={`cursor-pointer px-4 py-3 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800 ${field.value === String(c.id) ? "bg-slate-100 font-medium dark:bg-slate-800" : ""}`}
+                                  onClick={() => {
+                                    field.onChange(String(c.id));
+                                    setCategoryOpen(false);
+                                  }}
+                                >
+                                  {tCat.has(c.slug) ? tCat(c.slug) : c.name}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }}
+                />
                 {errors.categoryId && (
                   <p className={errorClass}>{errors.categoryId.message}</p>
                 )}
@@ -384,32 +439,52 @@ export default function RFQMultiStepForm() {
         {/* ── STEP 2: Presupuesto y Fechas ── */}
         {step === 2 && (
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {t("steps.budget")}
-            </h2>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  {t("steps.budget")}
+                </h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Moneda seleccionada: {currency === "EUR" ? "EUR (€)" : "USD ($)"}
+                </p>
+              </div>
+              <div className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                {currency === "EUR" ? "EUR (€)" : "USD ($)"}
+              </div>
+            </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   {t("fields.budgetMin")}
                 </label>
-                <Input
-                  type="number"
-                  {...register("budgetMin")}
-                  placeholder={t("placeholders.budgetMin")}
-                  className={inputClass}
-                />
+                <div className="relative">
+                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-slate-400">
+                    {currencySymbol}
+                  </span>
+                  <Input
+                    type="number"
+                    {...register("budgetMin")}
+                    placeholder={t("placeholders.budgetMin")}
+                    className={`${inputClass} pl-10`}
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   {t("fields.budgetMax")}
                 </label>
-                <Input
-                  type="number"
-                  {...register("budgetMax")}
-                  placeholder={t("placeholders.budgetMax")}
-                  className={inputClass}
-                />
+                <div className="relative">
+                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-slate-400">
+                    {currencySymbol}
+                  </span>
+                  <Input
+                    type="number"
+                    {...register("budgetMax")}
+                    placeholder={t("placeholders.budgetMax")}
+                    className={`${inputClass} pl-10`}
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">

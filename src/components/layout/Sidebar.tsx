@@ -24,6 +24,7 @@ import {
   Briefcase,
   Send,
   Building2,
+  MessageSquare,
 } from "lucide-react";
 import Image from "next/image";
 import { images } from "@/lib/images";
@@ -69,6 +70,7 @@ const brandNavItems: NavItem[] = [
   { key: "myProjects", href: "/dashboard/projects", icon: FileText },
   { key: "myContracts", href: "/dashboard/contracts", icon: Briefcase },
   { key: "manufacturers", href: "/dashboard/manufacturers", icon: Factory },
+  { key: "messages", href: "/dashboard/messages", icon: MessageSquare },
   { key: "myCompany", href: "/dashboard/company", icon: Building2 },
   { key: "payments", href: "/dashboard/payments", icon: CreditCard },
   { key: "help", href: "/dashboard/help", icon: HelpCircle },
@@ -79,6 +81,7 @@ const manufacturerNavItems: NavItem[] = [
   { key: "opportunities", href: "/dashboard/opportunities", icon: Leaf },
   { key: "myProposals", href: "/dashboard/proposals", icon: Send },
   { key: "myContracts", href: "/dashboard/contracts", icon: Briefcase },
+  { key: "messages", href: "/dashboard/messages", icon: MessageSquare },
   {
     key: "myProfile",
     href: "/dashboard/company",

@@ -38,6 +38,7 @@ export interface UserResponse {
   companyId: number | null;
   companyName?: string;
   hasPaymentMethod?: boolean;
+  preferredCurrency?: string;
 }
 
 export interface AuthResponse {
