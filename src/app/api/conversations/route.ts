@@ -3,6 +3,7 @@ import { query, queryOne } from "@/lib/db";
 import { getSessionUser, hasRole } from "@/lib/session";
 import { notifyConversationParticipants } from "@/lib/realtime/notifyConversation";
 import { createConversationSchema } from "@/lib/validations/conversations";
+import { getPusherServer, userPrivateChannel } from "@/lib/realtime/pusherServer";
 
 // GET /api/conversations - Lista conversaciones del usuario autenticado
 export async function GET(request: NextRequest) {
@@ -21,8 +22,9 @@ export async function GET(request: NextRequest) {
     const params: (string | number | boolean | null)[] = [];
 
     if (isAdmin) {
-      // Admin ve todas las conversaciones
-      whereClause = "1=1";
+      // Admin ve todo excepto chats admin-target ya tomados por otro admin.
+      whereClause = "(c.target_company_id IS NULL OR c.admin_user_id IS NULL OR c.admin_user_id = ?)";
+      params.push(user.id);
     } else if (!user.companyId) {
       return NextResponse.json({ success: true, conversations: [] });
     } else {
@@ -105,23 +107,89 @@ export async function POST(request: NextRequest) {
     if (!parsed.success) {
       return NextResponse.json({ success: false, message: parsed.error.issues[0]?.message || "Datos inválidos" }, { status: 400 });
     }
-    const { targetCompanyId, subject, initialMessage, rfqId } = parsed.data;
+    const { targetCompanyId, subject, initialMessage, rfqId, supportRequest } = parsed.data;
 
     const parsedRfqId = rfqId ?? null;
-
-    // Validar que la empresa destino existe y es del tipo opuesto
-    const targetCompany = await queryOne<{ id: number; type: string; name: string }>(
-      `SELECT id, type, name FROM companies WHERE id = ? AND is_active = TRUE`,
-      [targetCompanyId]
-    );
-
-    if (!targetCompany) {
-      return NextResponse.json({ success: false, message: "Empresa no encontrada" }, { status: 404 });
-    }
 
     const isAdmin = hasRole(user, "admin");
 
     let conversationId: number;
+
+    if (supportRequest && !isAdmin) {
+      if (!user.companyId) {
+        return NextResponse.json({ success: false, message: "No autorizado" }, { status: 401 });
+      }
+
+      const existingSupport = await queryOne<{ id: number; status: string }>(
+        `SELECT id, status FROM conversations
+         WHERE target_company_id = ? AND initiated_by_user_id = ?
+           AND brand_company_id IS NULL AND manufacturer_company_id IS NULL
+           AND status IN ('pending', 'open')
+         ORDER BY id DESC LIMIT 1`,
+        [user.companyId, user.id]
+      );
+
+      if (existingSupport) {
+        return NextResponse.json({
+          success: false,
+          message: existingSupport.status === "pending"
+            ? "Ya tienes una solicitud de soporte pendiente"
+            : "Ya tienes un chat de soporte abierto",
+          conversationId: existingSupport.id,
+        }, { status: 409 });
+      }
+
+      const supportInsert = await query<{ insertId: number }>(
+        `INSERT INTO conversations (
+          rfq_id, contract_id, brand_company_id, manufacturer_company_id, target_company_id,
+          admin_user_id, initiated_by_user_id, subject, status
+        )
+        VALUES (NULL, NULL, NULL, NULL, ?, NULL, ?, ?, 'pending')`,
+        [user.companyId, user.id, subject.trim()]
+      );
+      conversationId = (supportInsert as unknown as { insertId: number }).insertId;
+
+      const admins = await query<Array<{ id: number }>>(
+        `SELECT id FROM users WHERE role = 'admin' AND is_active = TRUE`
+      );
+      if (admins.length) {
+        await Promise.all(
+          admins.map((a) =>
+            query(
+              `INSERT INTO notifications (user_id, title, message, type, reference_type, reference_id, is_read)
+               VALUES (?, 'Nueva solicitud de soporte', ?, 'system', 'conversation', ?, FALSE)`,
+              [a.id, subject.trim(), conversationId]
+            )
+          )
+        );
+
+        const pusher = getPusherServer();
+        if (pusher) {
+          await Promise.all(
+            admins.map((a) =>
+              pusher.trigger(userPrivateChannel(a.id), "chat.conversation.updated", {
+                conversationId,
+                action: "support_request_created",
+                actorUserId: user.id,
+              })
+            )
+          );
+        }
+      }
+    } else {
+      if (!targetCompanyId) {
+        return NextResponse.json({ success: false, message: "targetCompanyId es requerido" }, { status: 400 });
+      }
+
+      // Validar que la empresa destino existe y es del tipo opuesto
+      const targetCompany = await queryOne<{ id: number; type: string; name: string }>(
+        `SELECT id, type, name FROM companies WHERE id = ? AND is_active = TRUE`,
+        [targetCompanyId]
+      );
+
+      if (!targetCompany) {
+        return NextResponse.json({ success: false, message: "Empresa no encontrada" }, { status: 404 });
+      }
 
     if (isAdmin) {
       // Admin: chat directo con empresa (abre en estado open)
@@ -249,6 +317,7 @@ export async function POST(request: NextRequest) {
         [selectedRfqId, brandCompanyId, manufacturerCompanyId, user.id, subject.trim()]
       );
       conversationId = (result as unknown as { insertId: number }).insertId;
+    }
     }
 
     // Si hay mensaje inicial, guardarlo como system para contexto

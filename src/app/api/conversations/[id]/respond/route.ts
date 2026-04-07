@@ -28,11 +28,13 @@ export async function PUT(
     const conversation = await queryOne<{
       id: number;
       status: string;
-      brand_company_id: number;
-      manufacturer_company_id: number;
+      brand_company_id: number | null;
+      manufacturer_company_id: number | null;
+      target_company_id: number | null;
+      admin_user_id: number | null;
       initiated_by_user_id: number;
     }>(
-      `SELECT id, status, brand_company_id, manufacturer_company_id, initiated_by_user_id
+      `SELECT id, status, brand_company_id, manufacturer_company_id, target_company_id, admin_user_id, initiated_by_user_id
        FROM conversations WHERE id = ?`,
       [conversationId]
     );
@@ -56,10 +58,23 @@ export async function PUT(
     }
 
     if (action === "accept") {
-      await query(
-        `UPDATE conversations SET status = 'open', accepted_at = NOW() WHERE id = ?`,
-        [conversationId]
-      );
+      if (hasRole(user, "admin") && conversation.target_company_id) {
+        if (conversation.admin_user_id && conversation.admin_user_id !== user.id) {
+          return NextResponse.json({ success: false, message: "Esta solicitud ya fue tomada por otro administrador" }, { status: 409 });
+        }
+
+        await query(
+          `UPDATE conversations
+           SET status = 'open', accepted_at = NOW(), admin_user_id = ?
+           WHERE id = ? AND (admin_user_id IS NULL OR admin_user_id = ?)`,
+          [user.id, conversationId, user.id]
+        );
+      } else {
+        await query(
+          `UPDATE conversations SET status = 'open', accepted_at = NOW() WHERE id = ?`,
+          [conversationId]
+        );
+      }
 
       // Agregar un mensaje de sistema indicando la aceptación
       await query(

@@ -53,4 +53,12 @@ export async function queryOne<T>(
   return Array.isArray(results) && results.length > 0 ? results[0] : null;
 }
 
+export async function getTableColumns(table: string): Promise<string[]> {
+  const rows = await query<{ COLUMN_NAME: string }[]>(
+    `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?`,
+    [dbConfig.database, table]
+  );
+  return rows.map((row) => row.COLUMN_NAME.toLowerCase());
+}
+
 export default pool;

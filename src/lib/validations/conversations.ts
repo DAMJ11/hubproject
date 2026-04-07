@@ -1,10 +1,11 @@
 import { z } from "zod/v4";
 
 export const createConversationSchema = z.object({
-  targetCompanyId: z.number().int().positive("targetCompanyId es requerido"),
+  targetCompanyId: z.number().int().positive("targetCompanyId es requerido").optional(),
   subject: z.string().min(1, "El asunto es requerido").max(300, "Asunto demasiado largo"),
   initialMessage: z.string().max(2000).optional(),
   rfqId: z.number().int().positive().optional(),
+  supportRequest: z.boolean().optional(),
 });
 
 export const sendMessageSchema = z.object({

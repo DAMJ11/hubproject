@@ -19,6 +19,7 @@ import {
   CheckCheck,
   ShieldAlert,
   AlertTriangle,
+  Headphones,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { emitUnreadMessagesRefresh, setViewingConversationId } from "@/hooks/useUnreadMessagesCount";
@@ -872,9 +873,17 @@ export default function MessagesPanel() {
                     <span className="font-medium text-[15px] text-slate-900 dark:text-white truncate">
                       {getOtherPartyName(conv)}
                     </span>
-                    <span className={`text-xs flex-shrink-0 ${conv.unread_count > 0 ? "text-brand-600" : "text-slate-500 dark:text-slate-400"}`}>
-                      {formatTime(conv.last_message_at || conv.created_at)}
-                    </span>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      {conv.target_company_id && !conv.brand_company_id && !conv.manufacturer_company_id && (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-200 rounded text-xs font-medium">
+                          <Headphones className="w-3 h-3" />
+                          Support
+                        </span>
+                      )}
+                      <span className={`text-xs ${conv.unread_count > 0 ? "text-brand-600" : "text-slate-500 dark:text-slate-400"}`}>
+                        {formatTime(conv.last_message_at || conv.created_at)}
+                      </span>
+                    </div>
                   </div>
                   <div className="flex items-center justify-between mt-0.5">
                     <div className="flex-1 min-w-0">
