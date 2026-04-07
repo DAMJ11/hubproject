@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { useDashboardUser } from "@/contexts/DashboardUserContext";
 import type { CompanyDetail } from "@/lib/data/companies";
 
 interface CompanyFormProps {
@@ -33,11 +34,14 @@ export default function CompanyForm({ company }: CompanyFormProps) {
   const initialCategories = useMemo(() => {
     try {
       const parsed = JSON.parse(company.brand_categories || "[]");
-      return Array.isArray(parsed) ? parsed.slice(0, 3) : [];
+      return Array.isArray(parsed) ? parsed : [];
     } catch {
       return [];
     }
   }, [company.brand_categories]);
+
+  const { user } = useDashboardUser();
+  const isAdmin = user?.role === "admin";
 
   const [form, setForm] = useState({
     name: company.name || "",
@@ -50,7 +54,6 @@ export default function CompanyForm({ company }: CompanyFormProps) {
     instagramHandle: company.instagram_handle || "",
     brandTagline: company.brand_tagline || "",
     brandCategories: initialCategories as string[],
-    shipsWorldwide: Boolean(company.ships_worldwide),
   });
 
   const onFilePicked = async (file: File | null, target: "logoUrl" | "coverImageUrl") => {
@@ -76,7 +79,6 @@ export default function CompanyForm({ company }: CompanyFormProps) {
     setForm((prev) => {
       const exists = prev.brandCategories.includes(cat);
       if (exists) return { ...prev, brandCategories: prev.brandCategories.filter((c) => c !== cat) };
-      if (prev.brandCategories.length >= 3) return prev;
       return { ...prev, brandCategories: [...prev.brandCategories, cat] };
     });
   };
@@ -100,7 +102,6 @@ export default function CompanyForm({ company }: CompanyFormProps) {
           instagramHandle: form.instagramHandle,
           brandTagline: form.brandTagline,
           brandCategories: JSON.stringify(form.brandCategories),
-          shipsWorldwide: form.shipsWorldwide,
         }),
       });
 
@@ -181,15 +182,19 @@ export default function CompanyForm({ company }: CompanyFormProps) {
                 <Input value={form.country} onChange={(e) => setForm((prev) => ({ ...prev, country: e.target.value }))} placeholder={t("countryPlaceholder")} />
               </div>
 
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-slate-200">{t("website")}</label>
-                <Input value={form.website} onChange={(e) => setForm((prev) => ({ ...prev, website: e.target.value }))} placeholder="https://yourbrand.com" />
-              </div>
+              {isAdmin && (
+                <>
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-slate-200">{t("website")}</label>
+                    <Input value={form.website} onChange={(e) => setForm((prev) => ({ ...prev, website: e.target.value }))} placeholder="https://yourbrand.com" />
+                  </div>
 
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-slate-200">{t("instagram")}</label>
-                <Input value={form.instagramHandle} onChange={(e) => setForm((prev) => ({ ...prev, instagramHandle: e.target.value }))} placeholder="@yourbrand" />
-              </div>
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-slate-200">{t("instagram")}</label>
+                    <Input value={form.instagramHandle} onChange={(e) => setForm((prev) => ({ ...prev, instagramHandle: e.target.value }))} placeholder="@yourbrand" />
+                  </div>
+                </>
+              )}
 
               <div className="md:col-span-2">
                 <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-slate-200">{t("brandCategories")}</label>
@@ -216,12 +221,6 @@ export default function CompanyForm({ company }: CompanyFormProps) {
                 <Input value={form.brandTagline} onChange={(e) => setForm((prev) => ({ ...prev, brandTagline: e.target.value.slice(0, 100) }))} placeholder={t("brandTaglinePlaceholder")} />
               </div>
 
-              <div className="md:col-span-2">
-                <label className="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-slate-200">
-                  <input type="checkbox" checked={form.shipsWorldwide} onChange={(e) => setForm((prev) => ({ ...prev, shipsWorldwide: e.target.checked }))} className="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-600" />
-                  {t("shipsWorldwide")}
-                </label>
-              </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -264,8 +263,6 @@ export default function CompanyForm({ company }: CompanyFormProps) {
                 )}
 
                 {form.brandTagline && <p className="mt-3 text-sm italic text-slate-600 dark:text-slate-300">{form.brandTagline}</p>}
-
-                {form.shipsWorldwide && <div className="mt-3 inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">{t("shipsWorldwide")}</div>}
               </div>
             </div>
 

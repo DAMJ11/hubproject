@@ -13,7 +13,7 @@ const DEFAULT_CATEGORIES = [
 // GET /api/categories - List all service categories
 export async function GET() {
   try {
-    let categories = await query(
+    let categories = await query<Record<string, unknown>[]>(
       `SELECT * FROM service_categories WHERE is_active = TRUE ORDER BY sort_order, name`
     );
 

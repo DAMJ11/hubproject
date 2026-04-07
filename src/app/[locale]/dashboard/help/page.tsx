@@ -213,13 +213,13 @@ export default function HelpPage() {
   const { user } = useDashboardUser();
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedId, setExpandedId] = useState<number | null>(null);
-  const [activeCategory, setActiveCategory] = useState("all");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   if (!user) return null;
 
   const filtered = faqs.filter((f) => {
     const matchSearch = `${f.question} ${f.answer}`.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchCat = activeCategory === "all" || f.categoryKey === activeCategory;
+    const matchCat = selectedCategories.length === 0 || selectedCategories.includes(f.categoryKey);
     return matchSearch && matchCat;
   });
 
@@ -246,22 +246,29 @@ export default function HelpPage() {
 
         <div className="flex flex-wrap justify-center gap-2">
           <Button
-            variant={activeCategory === "all" ? "default" : "outline"}
+            variant={selectedCategories.length === 0 ? "default" : "outline"}
             size="sm"
-            onClick={() => setActiveCategory("all")}
-            className={activeCategory === "all" ? "bg-violet-400 text-slate-900 hover:bg-violet-300" : "border-slate-700 bg-slate-900/70 text-slate-100 hover:bg-slate-800"}
+            onClick={() => setSelectedCategories([])}
+            className={selectedCategories.length === 0 ? "bg-violet-400 text-slate-900 hover:bg-violet-300" : "border-slate-700 bg-slate-900/70 text-slate-100 hover:bg-slate-800"}
           >
             All
           </Button>
           {categories.map((category) => {
             const Icon = categoryIcons[category.key] || HelpCircle;
+            const selected = selectedCategories.includes(category.key);
             return (
               <Button
                 key={category.key}
-                variant={activeCategory === category.key ? "default" : "outline"}
+                variant={selected ? "default" : "outline"}
                 size="sm"
-                onClick={() => setActiveCategory(category.key)}
-                className={`gap-1 ${activeCategory === category.key ? "bg-violet-400 text-slate-900 hover:bg-violet-300" : "border-slate-700 bg-slate-900/70 text-slate-100 hover:bg-slate-800"}`}
+                onClick={() => {
+                  setSelectedCategories((prev) =>
+                    prev.includes(category.key)
+                      ? prev.filter((key) => key !== category.key)
+                      : [...prev, category.key]
+                  );
+                }}
+                className={`min-w-[10rem] gap-1 ${selected ? "bg-violet-400 text-slate-900 hover:bg-violet-300" : "border-slate-700 bg-slate-900/70 text-slate-100 hover:bg-slate-800"}`}
               >
                 <Icon className="h-3.5 w-3.5" /> {category.label}
               </Button>
