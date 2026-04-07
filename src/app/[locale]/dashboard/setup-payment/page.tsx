@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { CreditCard, CheckCircle, Shield, Loader2 } from "lucide-react";
@@ -14,19 +14,24 @@ export default function SetupPaymentPage() {
   const { user, setUser } = useDashboardUser();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  // Prevent the success effect from re-running after it has already processed once,
+  // which would cause an infinite loop (setUser updates user → user in deps re-triggers effect).
+  const hasProcessedSuccess = useRef(false);
 
   const success = searchParams.get("success") === "true";
 
   // If payment was added successfully, update context and redirect
   useEffect(() => {
-    if (success && user) {
-      // Clear cached user so it refreshes with hasPaymentMethod = true
+    if (!success || !user || hasProcessedSuccess.current) return;
+
+    hasProcessedSuccess.current = true;
+    if (!user.hasPaymentMethod) {
       setUser({ ...user, hasPaymentMethod: true });
-      const timer = setTimeout(() => {
-        router.push("/dashboard");
-      }, 3000);
-      return () => clearTimeout(timer);
     }
+    const timer = setTimeout(() => {
+      router.push("/dashboard");
+    }, 3000);
+    return () => clearTimeout(timer);
   }, [success, user, setUser, router]);
 
   // If user already has payment method, redirect away

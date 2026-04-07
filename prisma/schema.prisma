@@ -31,8 +31,13 @@ model Company {
   type                          CompanyType
   legal_id                      String?                     @db.VarChar(50)
   description                   String?                     @db.Text
-  logo_url                      String?                     @db.VarChar(500)
+  logo_url                      String?                     @db.MediumText
+  cover_image_url               String?                     @db.MediumText
   website                       String?                     @db.VarChar(500)
+  instagram_handle              String?                     @db.VarChar(120)
+  brand_categories              String?                     @db.Text
+  brand_tagline                 String?                     @db.VarChar(160)
+  ships_worldwide               Boolean                     @default(false)
   phone                         String?                     @db.VarChar(50)
   email                         String?                     @db.VarChar(255)
   address_line1                 String?                     @db.VarChar(255)
@@ -100,6 +105,9 @@ model User {
   strategy_call_purchases    StrategyCallPurchase[]
   subscriptions              Subscription[]
   payment_methods            UserPaymentMethod[]
+  support_chats_initiated    SupportChat[]           @relation("SupportChatInitiator")
+  support_chats_admin        SupportChat[]           @relation("SupportChatAdmin")
+  support_messages           SupportMessage[]
   company                    Company?                @relation(fields: [company_id], references: [id])
 
   @@index([company_id], map: "idx_users_company")
@@ -365,7 +373,40 @@ model Message {
   @@index([sender_user_id], map: "messages_sender_user_id_fkey")
   @@map("messages")
 }
+model SupportChat {
+  id                       Int                @id @default(autoincrement())
+  initiated_by_user_id     Int
+  admin_user_id            Int?
+  subject                  String             @db.VarChar(255)
+  message                  String             @db.Text
+  status                   SupportChatStatus  @default(pending)
+  accepted_at              DateTime?
+  closed_at                DateTime?
+  created_at               DateTime           @default(now())
+  updated_at               DateTime           @updatedAt
+  initiated_by             User               @relation("SupportChatInitiator", fields: [initiated_by_user_id], references: [id], onDelete: Cascade)
+  admin_user               User?              @relation("SupportChatAdmin", fields: [admin_user_id], references: [id], onDelete: Cascade)
+  support_messages         SupportMessage[]
 
+  @@index([status], map: "idx_status")
+  @@index([admin_user_id], map: "idx_admin_user")
+  @@index([initiated_by_user_id], map: "idx_initiated_by")
+  @@map("support_chats")
+}
+
+model SupportMessage {
+  id              Int          @id @default(autoincrement())
+  support_chat_id Int
+  sender_user_id  Int
+  content         String       @db.Text
+  created_at      DateTime     @default(now())
+  support_chat    SupportChat  @relation(fields: [support_chat_id], references: [id], onDelete: Cascade)
+  sender          User         @relation(fields: [sender_user_id], references: [id], onDelete: Cascade)
+
+  @@index([support_chat_id], map: "idx_support_chat")
+  @@index([sender_user_id], map: "idx_sender")
+  @@map("support_messages")
+}
 model Review {
   id                  Int      @id @default(autoincrement())
   contract_id         Int
@@ -681,6 +722,12 @@ enum StrategyCallPurchaseStatus {
   pending
   paid
   refunded
+}
+
+enum SupportChatStatus {
+  pending
+  accepted
+  closed
 }
 
 enum chat_appeals_status {

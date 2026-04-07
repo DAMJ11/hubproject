@@ -2,14 +2,13 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { Building2, CheckCircle2, Filter, Loader2, MessageSquare, Search, Sparkles } from "lucide-react";
+import { Building2, CheckCircle2, Filter, Loader2, MessageSquare, Package, Plane, Search, Sparkles } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { EmptyState } from "@/components/shared/empty-state";
 import { CardSkeleton } from "@/components/shared/skeleton-loader";
 import { Link } from "@/i18n/navigation";
-import { formatCurrency } from "@/lib/currency";
 
 interface Manufacturer {
   id: number;
@@ -27,23 +26,14 @@ interface Manufacturer {
   verifiedCertificationsCount: number;
   awardedProjectsCount: number;
   capabilities: string[];
+  minMoq: number | null;
+  serviceMode: "design_only" | "production_only" | "design_and_production" | "not_defined";
+  shipsWorldwide: boolean;
 }
 
 interface Category {
   id: number;
   name: string;
-}
-
-interface CapabilityOffer {
-  id: number;
-  category_name: string;
-  min_order_qty: number;
-  max_monthly_capacity: number | null;
-  lead_time_days: number | null;
-  unit_price_from: number | null;
-  wholesale_price_from: number | null;
-  commercial_notes: string | null;
-  description: string | null;
 }
 
 export default function ManufacturersList({
@@ -54,7 +44,6 @@ export default function ManufacturersList({
   categories: Category[];
 }) {
   const t = useTranslations("Manufacturers");
-  const locale = useLocale();
   const [manufacturers, setManufacturers] = useState<Manufacturer[]>([]);
   const [categories] = useState<Category[]>(initialCategories);
   const [loading, setLoading] = useState(true);
@@ -62,54 +51,59 @@ export default function ManufacturersList({
   const [error, setError] = useState("");
 
   const [search, setSearch] = useState("");
-  const [city, setCity] = useState("");
+  const [location, setLocation] = useState("");
   const [categoryId, setCategoryId] = useState<number>(0);
-  const [onlyVerified, setOnlyVerified] = useState(false);
-  const [onlyWithCerts, setOnlyWithCerts] = useState(false);
+  const [moqTier, setMoqTier] = useState<"all" | "1" | "10" | "50">("1");
+  const [shipping, setShipping] = useState<"all" | "international">("international");
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 12;
   const canContactManufacturers = userRole === "brand" || userRole === "admin";
   const hasLoadedOnceRef = useRef(false);
-  const [expandedOfferCompanyId, setExpandedOfferCompanyId] = useState<number | null>(null);
-  const [offersByCompany, setOffersByCompany] = useState<Record<number, CapabilityOffer[]>>({});
-  const [offersLoadingCompanyId, setOffersLoadingCompanyId] = useState<number | null>(null);
 
   const [debouncedFilters, setDebouncedFilters] = useState({
     search: "",
-    city: "",
+    location: "",
     categoryId: 0,
-    onlyVerified: false,
-    onlyWithCerts: false,
+    moqTier: "1" as "all" | "1" | "10" | "50",
+    shipping: "international" as "all" | "international",
   });
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       setDebouncedFilters({
         search,
-        city,
+        location,
         categoryId,
-        onlyVerified,
-        onlyWithCerts,
+        moqTier,
+        shipping,
       });
       setPage(1);
     }, 1000);
 
     return () => clearTimeout(timeout);
-  }, [search, city, categoryId, onlyVerified, onlyWithCerts]);
+  }, [search, location, categoryId, moqTier, shipping]);
 
   const queryString = useMemo(() => {
     const params = new URLSearchParams();
     params.set("page", String(page));
     params.set("limit", String(limit));
     if (debouncedFilters.search.trim()) params.set("q", debouncedFilters.search.trim());
-    if (debouncedFilters.city.trim()) params.set("city", debouncedFilters.city.trim());
+    if (debouncedFilters.location.trim()) params.set("location", debouncedFilters.location.trim());
     if (debouncedFilters.categoryId) params.set("categoryId", String(debouncedFilters.categoryId));
-    if (debouncedFilters.onlyVerified) params.set("verified", "true");
-    if (debouncedFilters.onlyWithCerts) params.set("hasCertifications", "true");
+    if (debouncedFilters.moqTier !== "all") params.set("moqTier", debouncedFilters.moqTier);
+    if (debouncedFilters.shipping !== "all") params.set("shipping", debouncedFilters.shipping);
     return params.toString();
   }, [debouncedFilters, page]);
+
+  const locationOptions = useMemo(() => {
+    const values = new Set<string>();
+    for (const item of manufacturers) {
+      if (item.country) values.add(item.country);
+    }
+    return Array.from(values).sort((a, b) => a.localeCompare(b));
+  }, [manufacturers]);
 
   const loadManufacturers = useCallback(async () => {
     if (hasLoadedOnceRef.current) {
@@ -146,46 +140,19 @@ export default function ManufacturersList({
 
   const resetFilters = () => {
     setSearch("");
-    setCity("");
+    setLocation("");
     setCategoryId(0);
-    setOnlyVerified(false);
-    setOnlyWithCerts(false);
+    setMoqTier("all");
+    setShipping("all");
     setPage(1);
-  };
-
-  const formatPrice = (value: number) => formatCurrency(value, locale);
-
-  const toggleOfferDetails = async (companyId: number) => {
-    if (expandedOfferCompanyId === companyId) {
-      setExpandedOfferCompanyId(null);
-      return;
-    }
-
-    setExpandedOfferCompanyId(companyId);
-
-    if (offersByCompany[companyId]) return;
-
-    setOffersLoadingCompanyId(companyId);
-    try {
-      const res = await fetch(`/api/manufacturers/capabilities?companyId=${companyId}`, { cache: "no-store" });
-      const data = await res.json();
-      if (data.success) {
-        setOffersByCompany((prev) => ({ ...prev, [companyId]: data.data ?? [] }));
-      }
-    } catch {
-      setOffersByCompany((prev) => ({ ...prev, [companyId]: [] }));
-    } finally {
-      setOffersLoadingCompanyId(null);
-    }
   };
 
   return (
     <div className="space-y-6">
       <div className="space-y-1">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t("title")}</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          {t("subtitle")}
-        </p>
+        <p className="text-sm font-semibold text-brand-700 dark:text-brand-300">{t("subtitleTop")}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{t("subtitle")}</p>
       </div>
 
       {userRole && userRole !== "brand" && (
@@ -203,22 +170,16 @@ export default function ManufacturersList({
             </span>
           )}
         </div>
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
-          <div className="relative xl:col-span-2">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <div className="relative xl:col-span-3">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder={t("searchPlaceholder")}
+              placeholder={t("searchByBrandKeywordOrLocation")}
               className="pl-9"
             />
           </div>
-
-          <Input
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            placeholder={t("cityPlaceholder")}
-          />
 
           <select
             value={categoryId}
@@ -233,6 +194,19 @@ export default function ManufacturersList({
             ))}
           </select>
 
+          <select
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            className="h-10 rounded-md border border-gray-200 bg-white px-3 text-sm outline-none focus:border-brand-600 dark:border-slate-600 dark:bg-slate-900"
+          >
+            <option value="">{t("allLocations")}</option>
+            {locationOptions.map((loc) => (
+              <option key={loc} value={loc}>
+                {loc}
+              </option>
+            ))}
+          </select>
+
           <div className="flex items-center gap-2">
             <Button type="button" variant="outline" onClick={resetFilters} className="h-10 w-full">
               {t("clearFilters")}
@@ -240,25 +214,39 @@ export default function ManufacturersList({
           </div>
         </div>
 
-        <div className="mt-3 flex flex-wrap items-center gap-4 text-sm">
-          <label className="inline-flex cursor-pointer items-center gap-2 text-gray-600 dark:text-gray-300">
-            <input
-              type="checkbox"
-              checked={onlyVerified}
-              onChange={(e) => setOnlyVerified(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-600"
-            />
-            {t("onlyVerified")}
-          </label>
-          <label className="inline-flex cursor-pointer items-center gap-2 text-gray-600 dark:text-gray-300">
-            <input
-              type="checkbox"
-              checked={onlyWithCerts}
-              onChange={(e) => setOnlyWithCerts(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-600"
-            />
-            {t("withCertifications")}
-          </label>
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+          {([
+            { value: "1", label: t("moqMin1") },
+            { value: "10", label: t("moqMin10") },
+            { value: "50", label: t("moqMin50") },
+          ] as const).map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => setMoqTier(option.value)}
+              className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+                moqTier === option.value
+                  ? "border-amber-300 bg-amber-100 text-amber-800 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-200"
+                  : "border-slate-300 bg-white text-slate-700 hover:border-slate-400 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+              }`}
+            >
+              <Package className="h-3.5 w-3.5" />
+              {option.label}
+            </button>
+          ))}
+
+          <button
+            type="button"
+            onClick={() => setShipping((prev) => (prev === "international" ? "all" : "international"))}
+            className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+              shipping === "international"
+                ? "border-indigo-300 bg-indigo-100 text-indigo-800 dark:border-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-200"
+                : "border-slate-300 bg-white text-slate-700 hover:border-slate-400 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+            }`}
+          >
+            <Plane className="h-3.5 w-3.5" />
+            {shipping === "international" ? t("shippingInternational") : t("shippingAny")}
+          </button>
         </div>
       </div>
 
@@ -316,97 +304,70 @@ export default function ManufacturersList({
                   {manufacturer.description || t("noDescription")}
                 </p>
 
-                <div className="mb-3 flex flex-wrap gap-2">
-                  <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs text-emerald-700">
-                    {t("certifications", { count: manufacturer.certificationsCount })}
-                  </span>
-                  <span className="rounded-full bg-amber-50 px-2 py-1 text-xs text-amber-700">
-                    {t("verifiedCertifications", { count: manufacturer.verifiedCertificationsCount })}
-                  </span>
-                  {manufacturer.foundedYear && (
-                    <span className="rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-700">
-                      {t("founded", { year: manufacturer.foundedYear })}
-                    </span>
-                  )}
-                  {manufacturer.employeeCount && (
-                    <span className="rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-700">
-                      {t("team", { size: manufacturer.employeeCount })}
-                    </span>
-                  )}
-                </div>
-
                 {manufacturer.capabilities.length > 0 && (
-                  <div className="mb-4 flex flex-wrap gap-2">
-                    {manufacturer.capabilities.slice(0, 5).map((capability) => (
-                      <span key={capability} className="rounded-full border border-gray-200 px-2 py-1 text-xs text-gray-600 dark:border-slate-600 dark:text-gray-300">
-                        {capability}
-                      </span>
-                    ))}
-                    {manufacturer.capabilities.length > 5 && (
-                      <span className="rounded-full border border-gray-200 px-2 py-1 text-xs text-gray-600 dark:border-slate-600 dark:text-gray-300">
-                        +{manufacturer.capabilities.length - 5}
+                  <div className="mb-3 flex flex-wrap gap-2">
+                    {manufacturer.capabilities.slice(0, 4).map((capability, idx) => {
+                      const color = [
+                        "bg-sky-100 text-sky-800 dark:bg-sky-900/40 dark:text-sky-200",
+                        "bg-violet-100 text-violet-800 dark:bg-violet-900/40 dark:text-violet-200",
+                        "bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/40 dark:text-fuchsia-200",
+                        "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-200",
+                      ][idx % 4];
+                      return (
+                        <span key={capability} className={`rounded-full px-2.5 py-1 text-xs font-medium ${color}`}>
+                          {capability}
+                        </span>
+                      );
+                    })}
+                    {manufacturer.capabilities.length > 4 && (
+                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-700 dark:bg-slate-700 dark:text-slate-200">
+                        +{manufacturer.capabilities.length - 4}
                       </span>
                     )}
                   </div>
                 )}
 
-                <div className="mb-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => toggleOfferDetails(manufacturer.id)}
-                  >
-                    {expandedOfferCompanyId === manufacturer.id ? t("hideOffer") : t("showOffer")}
-                  </Button>
-
-                  {expandedOfferCompanyId === manufacturer.id && (
-                    <div className="mt-2 rounded-lg border border-gray-200 p-3 dark:border-slate-600">
-                      {offersLoadingCompanyId === manufacturer.id ? (
-                        <div className="text-xs text-gray-500 flex items-center gap-2">
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" /> {t("loadingOffer")}
-                        </div>
-                      ) : (offersByCompany[manufacturer.id]?.length ?? 0) === 0 ? (
-                        <p className="text-xs text-gray-500">{t("noCapabilities")}</p>
-                      ) : (
-                        <div className="space-y-2">
-                          {(offersByCompany[manufacturer.id] ?? []).map((offer) => (
-                            <div key={offer.id} className="rounded-md bg-gray-50 p-2 dark:bg-slate-700/40">
-                              <p className="text-xs font-semibold text-gray-800 dark:text-gray-200">{offer.category_name}</p>
-                              <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">
-                                {t("offerMoq", { qty: offer.min_order_qty })}
-                                {offer.max_monthly_capacity ? ` · ${t("offerCapacity", { qty: offer.max_monthly_capacity.toLocaleString() })}` : ""}
-                                {offer.lead_time_days ? ` · ${t("offerDelivery", { days: offer.lead_time_days })}` : ""}
-                              </p>
-                              {(offer.unit_price_from !== null || offer.wholesale_price_from !== null) && (
-                                <p className="text-xs text-blue-700 mt-1">
-                                  {offer.unit_price_from !== null ? t("offerPriceFrom", { price: formatPrice(offer.unit_price_from) }) : ""}
-                                  {offer.unit_price_from !== null && offer.wholesale_price_from !== null ? " · " : ""}
-                                  {offer.wholesale_price_from !== null ? t("offerWholesaleFrom", { price: formatPrice(offer.wholesale_price_from) }) : ""}
-                                </p>
-                              )}
-                              {offer.commercial_notes && (
-                                <p className="text-xs text-gray-500 mt-1">{offer.commercial_notes}</p>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
+                <div className="mb-4 flex flex-wrap items-center gap-2 text-xs">
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-700 dark:bg-slate-700 dark:text-slate-200">
+                    {manufacturer.serviceMode === "design_only"
+                      ? t("modeDesignOnly")
+                      : manufacturer.serviceMode === "production_only"
+                      ? t("modeProductionOnly")
+                      : manufacturer.serviceMode === "design_and_production"
+                      ? t("modeDesignAndProduction")
+                      : t("modeNotDefined")}
+                  </span>
+                  {manufacturer.minMoq ? (
+                    <span className="rounded-full bg-amber-100 px-3 py-1 font-medium text-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
+                      {t("offerMoq", { qty: manufacturer.minMoq })}
+                    </span>
+                  ) : null}
+                  {manufacturer.shipsWorldwide ? (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-3 py-1 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-200">
+                      <Plane className="h-3 w-3" /> {t("shipsWorldwide")}
+                    </span>
+                  ) : null}
                 </div>
 
-                {canContactManufacturers ? (
-                  <Link href={`/dashboard/messages?${chatParams.toString()}`}>
-                    <Button className="w-full bg-brand-600 text-white hover:bg-brand-700">
-                      <MessageSquare className="mr-2 h-4 w-4" /> {t("contactChat")}
+                <div className="grid gap-2">
+                  {canContactManufacturers ? (
+                    <Link href={`/dashboard/messages?${chatParams.toString()}`}>
+                      <Button className="w-full bg-brand-600 text-white hover:bg-brand-700">
+                        <MessageSquare className="mr-2 h-4 w-4" /> {t("requestQuote")}
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Button className="w-full" variant="outline" disabled>
+                      {t("contactBrandOnly")}
+                    </Button>
+                  )}
+
+                  <Link href={`/dashboard/manufacturers?q=${encodeURIComponent(manufacturer.name)}`}>
+                    <Button type="button" variant="outline" className="w-full">
+                      {t("viewProfile")}
                     </Button>
                   </Link>
-                ) : (
-                  <Button className="w-full" variant="outline" disabled>
-                    {t("contactBrandOnly")}
-                  </Button>
-                )}
+                </div>
               </div>
             );
           })}

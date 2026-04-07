@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export interface DashboardUser {
   id: number;
@@ -29,7 +29,6 @@ let cachedUser: DashboardUser | null = null;
 
 export function DashboardUserProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const pathname = usePathname();
   const [user, setUser] = useState<DashboardUser | null>(cachedUser);
   const [isLoading, setIsLoading] = useState(cachedUser === null);
 
@@ -41,11 +40,12 @@ export function DashboardUserProvider({ children }: { children: React.ReactNode 
           cachedUser = data.user;
           setUser(data.user);
 
-          // Redirect manufacturers without payment method to setup-payment page
+          // Avoid redirect loops by checking current path once on initial session load.
+          const currentPath = typeof window !== "undefined" ? window.location.pathname : "";
           if (
             data.user.role === "manufacturer" &&
             data.user.hasPaymentMethod === false &&
-            !pathname?.includes("/setup-payment")
+            !currentPath.includes("/setup-payment")
           ) {
             router.push("/dashboard/setup-payment");
           }
@@ -59,7 +59,7 @@ export function DashboardUserProvider({ children }: { children: React.ReactNode 
         router.push("/login");
       })
       .finally(() => setIsLoading(false));
-  }, [router, pathname]);
+  }, [router]);
 
   return (
     <DashboardUserContext.Provider value={{ user, isLoading, setUser }}>

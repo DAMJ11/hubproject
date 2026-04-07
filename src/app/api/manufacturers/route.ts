@@ -18,10 +18,14 @@ interface ManufacturerRow {
   verified_certifications_count: number | null;
   awarded_projects_count: number | null;
   capabilities_raw: string | null;
+  min_moq: number | null;
+  has_design: number;
+  has_production: number;
+  ships_worldwide: number;
 }
 
 // GET /api/manufacturers
-// Filtros: q, city, categoryId, verified, hasCertifications, page, limit
+// Filtros: q, location, categoryId, moqTier, shipping, page, limit
 export async function GET(request: NextRequest) {
   try {
     const user = await getSessionUser(request);
@@ -31,10 +35,10 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const q = (searchParams.get("q") || "").trim();
-    const city = (searchParams.get("city") || "").trim();
+    const location = (searchParams.get("location") || "").trim();
     const categoryId = Number(searchParams.get("categoryId") || "0");
-    const verified = searchParams.get("verified");
-    const hasCertifications = searchParams.get("hasCertifications");
+    const moqTier = Number(searchParams.get("moqTier") || "0");
+    const shipping = (searchParams.get("shipping") || "").trim();
 
     const page = Math.max(1, Number(searchParams.get("page")) || 1);
     const limit = Math.min(48, Math.max(1, Number(searchParams.get("limit")) || 12));
@@ -49,13 +53,10 @@ export async function GET(request: NextRequest) {
       params.push(searchPattern, searchPattern, searchPattern, searchPattern);
     }
 
-    if (city) {
-      whereClauses.push("c.city LIKE ?");
-      params.push(`%${city}%`);
-    }
-
-    if (verified === "true") {
-      whereClauses.push("c.is_verified = TRUE");
+    if (location) {
+      whereClauses.push("(c.city LIKE ? OR c.state LIKE ? OR c.country LIKE ?)");
+      const locationPattern = `%${location}%`;
+      params.push(locationPattern, locationPattern, locationPattern);
     }
 
     if (categoryId && !Number.isNaN(categoryId)) {
@@ -71,15 +72,13 @@ export async function GET(request: NextRequest) {
       params.push(categoryId);
     }
 
-    if (hasCertifications === "true") {
-      whereClauses.push(
-        `EXISTS (
-          SELECT 1
-          FROM manufacturer_certifications mcert2
-          WHERE mcert2.company_id = c.id
-            AND (mcert2.expires_at IS NULL OR mcert2.expires_at >= CURDATE())
-        )`
-      );
+    if ((moqTier === 1 || moqTier === 10 || moqTier === 50)) {
+      whereClauses.push("caps.min_moq IS NOT NULL AND caps.min_moq >= ?");
+      params.push(moqTier);
+    }
+
+    if (shipping === "international") {
+      whereClauses.push("c.ships_worldwide = TRUE");
     }
 
     const whereSql = whereClauses.join(" AND ");
@@ -97,6 +96,8 @@ export async function GET(request: NextRequest) {
         c.is_verified,
         c.employee_count,
         c.founded_year,
+        caps.min_moq,
+        c.ships_worldwide,
         COALESCE(cert.certifications_count, 0) AS certifications_count,
         COALESCE(cert.verified_certifications_count, 0) AS verified_certifications_count,
         COALESCE(awards.awarded_projects_count, 0) AS awarded_projects_count,
@@ -105,7 +106,10 @@ export async function GET(request: NextRequest) {
       LEFT JOIN (
         SELECT
           mc.company_id,
-          GROUP_CONCAT(DISTINCT sc.name ORDER BY sc.name SEPARATOR '||') AS capabilities_raw
+          GROUP_CONCAT(DISTINCT sc.name ORDER BY sc.name SEPARATOR '||') AS capabilities_raw,
+          MIN(mc.min_order_qty) AS min_moq,
+          MAX(CASE WHEN sc.slug IN ('design', 'tech-pack', 'branding') THEN 1 ELSE 0 END) AS has_design,
+          MAX(CASE WHEN sc.slug IN ('production', 'sampling', 'sourcing') THEN 1 ELSE 0 END) AS has_production
         FROM manufacturer_capabilities mc
         JOIN service_categories sc ON sc.id = mc.category_id
         WHERE mc.is_active = TRUE
@@ -159,6 +163,9 @@ export async function GET(request: NextRequest) {
       verifiedCertificationsCount: Number(row.verified_certifications_count ?? 0),
       awardedProjectsCount: Number(row.awarded_projects_count ?? 0),
       capabilities: row.capabilities_raw ? row.capabilities_raw.split("||") : [],
+      minMoq: row.min_moq,
+      serviceMode: row.has_design && row.has_production ? "design_and_production" : row.has_design ? "design_only" : row.has_production ? "production_only" : "not_defined",
+      shipsWorldwide: Boolean(row.ships_worldwide),
     }));
 
     return NextResponse.json({

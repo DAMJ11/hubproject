@@ -1,5 +1,5 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
-import { query, queryOne } from "@/lib/db";
+import { query, queryOne, getTableColumns } from "@/lib/db";
 import { getSessionUser, hasRole } from "@/lib/session";
 
 // GET /api/companies - Listar empresas (filtrable por tipo)
@@ -66,11 +66,18 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const allowed = ["name", "description", "phone", "website", "address_line1", "city", "state", "country", "latitude", "longitude", "employee_count", "founded_year", "legal_id"];
+    const allowed = [
+      "name", "description", "logo_url", "cover_image_url", "website", "instagram_handle",
+      "brand_categories", "brand_tagline", "ships_worldwide",
+      "phone", "address_line1", "city", "state", "country", "latitude", "longitude",
+      "employee_count", "founded_year", "legal_id"
+    ];
+    const columns = await getTableColumns("companies");
     const sets: string[] = [];
     const params: (string | number | null)[] = [];
 
     for (const key of allowed) {
+      if (!columns.includes(key)) continue;
       const camelKey = key.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
       if (body[camelKey] !== undefined) {
         sets.push(`${key} = ?`);

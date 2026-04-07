@@ -5,6 +5,13 @@ import { routing, type AppLocale } from "@/i18n/routing";
 import { GeistSans } from "geist/font/sans";
 import Providers from "@/app/providers";
 import type { ReactNode } from "react";
+import type { Viewport } from "next";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 0.95,
+  maximumScale: 1,
+};
 
 export default async function LocaleLayout({
   children,

@@ -53,52 +53,52 @@ export default function PaymentsList({ payments, totals }: PaymentsListProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
-        <p className="text-gray-500 mt-1">{t("subtitle")}</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t("title")}</h1>
+        <p className="mt-1 text-gray-500 dark:text-slate-400">{t("subtitle")}</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <Card className="p-4 dark:border-slate-700 dark:bg-slate-900">
+          <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-sm text-gray-500">{t("totalRevenue")}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{formatPrice(totals.total_revenue)}</p>
+              <p className="text-sm text-gray-500 dark:text-slate-400">{t("totalRevenue")}</p>
+              <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{formatPrice(totals.total_revenue)}</p>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-              <DollarSign className="w-5 h-5 text-green-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-200">
+              <DollarSign className="h-5 w-5 text-emerald-600" />
             </div>
           </div>
         </Card>
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
+        <Card className="p-4 dark:border-slate-700 dark:bg-slate-900">
+          <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-sm text-gray-500">{t("pending")}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{formatPrice(totals.pending_amount)}</p>
+              <p className="text-sm text-gray-500 dark:text-slate-400">{t("pending")}</p>
+              <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{formatPrice(totals.pending_amount)}</p>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
-              <Clock className="w-5 h-5 text-yellow-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-200">
+              <Clock className="h-5 w-5 text-amber-600" />
             </div>
           </div>
         </Card>
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
+        <Card className="p-4 dark:border-slate-700 dark:bg-slate-900">
+          <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-sm text-gray-500">{t("transactions")}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{totals.total_transactions}</p>
+              <p className="text-sm text-gray-500 dark:text-slate-400">{t("transactions")}</p>
+              <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{totals.total_transactions}</p>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-              <CreditCard className="w-5 h-5 text-blue-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-sky-100 dark:bg-sky-200">
+              <CreditCard className="h-5 w-5 text-sky-600" />
             </div>
           </div>
         </Card>
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
+        <Card className="p-4 dark:border-slate-700 dark:bg-slate-900">
+          <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-sm text-gray-500">{t("successRate")}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{successRate}%</p>
+              <p className="text-sm text-gray-500 dark:text-slate-400">{t("successRate")}</p>
+              <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{successRate}%</p>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-purple-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-200">
+              <TrendingUp className="h-5 w-5 text-violet-600" />
             </div>
           </div>
         </Card>
@@ -124,13 +124,13 @@ export default function PaymentsList({ payments, totals }: PaymentsListProps) {
           <Table>
             <TableHeader>
               <TableRow className="bg-gray-50 dark:bg-slate-800">
-                <TableHead>{t("table.code")}</TableHead>
-                <TableHead>{t("table.client")}</TableHead>
-                <TableHead>{t("table.service")}</TableHead>
-                <TableHead>{t("table.amount")}</TableHead>
-                <TableHead>{t("table.method")}</TableHead>
-                <TableHead>{t("table.status")}</TableHead>
-                <TableHead>{t("table.date")}</TableHead>
+                <TableHead className="whitespace-nowrap">{t("table.code")}</TableHead>
+                <TableHead className="whitespace-nowrap">{t("table.client")}</TableHead>
+                <TableHead className="whitespace-nowrap">{t("table.service")}</TableHead>
+                <TableHead className="whitespace-nowrap">{t("table.amount")}</TableHead>
+                <TableHead className="whitespace-nowrap">{t("table.method")}</TableHead>
+                <TableHead className="whitespace-nowrap">{t("table.status")}</TableHead>
+                <TableHead className="whitespace-nowrap">{t("table.date")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -155,14 +155,14 @@ export default function PaymentsList({ payments, totals }: PaymentsListProps) {
               {filtered.map((p) => (
                 <TableRow key={p.id}>
                   <TableCell className="font-mono text-sm font-medium text-brand-600">{p.contract_code}</TableCell>
-                  <TableCell className="text-sm text-gray-700">{p.payer_name}</TableCell>
-                  <TableCell className="text-sm text-gray-700">{p.payee_name}</TableCell>
-                  <TableCell className="text-sm font-semibold text-gray-900">{formatPrice(p.amount)}</TableCell>
-                  <TableCell className="text-sm text-gray-600">{p.payment_method}</TableCell>
+                  <TableCell className="text-sm text-gray-700 dark:text-slate-200">{p.payer_name}</TableCell>
+                  <TableCell className="text-sm text-gray-700 dark:text-slate-200">{p.payee_name}</TableCell>
+                  <TableCell className="text-sm font-semibold text-gray-900 dark:text-white">{formatPrice(p.amount)}</TableCell>
+                  <TableCell className="text-sm text-gray-600 dark:text-slate-300">{p.payment_method}</TableCell>
                   <TableCell>
                     <StatusBadge entity="payments" status={p.status} />
                   </TableCell>
-                  <TableCell className="text-sm text-gray-500">{p.paid_at ? new Date(p.paid_at).toLocaleDateString(locale) : new Date(p.created_at).toLocaleDateString(locale)}</TableCell>
+                  <TableCell className="text-sm text-gray-500 dark:text-slate-400">{p.paid_at ? new Date(p.paid_at).toLocaleDateString(locale) : new Date(p.created_at).toLocaleDateString(locale)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
