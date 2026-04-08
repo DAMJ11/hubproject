@@ -96,7 +96,12 @@ export default function LoginPage() {
 
       if (result.success) {
         toast.success(t("loginSuccess"));
-        router.push("/dashboard");
+        const redirect = searchParams.get("redirect");
+        if (redirect === "strategy-call") {
+          router.push("/#strategy-call");
+        } else {
+          router.push("/dashboard");
+        }
         router.refresh();
       } else if (result.message === "EMAIL_NOT_VERIFIED") {
         setEmailNotVerified(true);

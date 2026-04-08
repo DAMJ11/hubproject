@@ -106,7 +106,7 @@ function StrategyCard({
       const isAuthError = res.status === 401 || res.status === 403 || authMessage.includes("autoriz");
 
       if (isAuthError) {
-        router.push("/login");
+        router.push("/login?redirect=strategy-call");
         return;
       }
 

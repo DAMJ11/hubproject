@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
-import { Building2, ShieldCheck, Handshake } from "lucide-react";
+import { Building2, ShieldCheck, Handshake, Phone } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 const icons = [Building2, ShieldCheck, Handshake];
@@ -33,7 +33,8 @@ export default async function CTASection() {
                   </Button>
                 </Link>
                 <Link href="/#strategy-call">
-                  <Button size="lg" variant="outline" className="border-white/70 text-white hover:bg-white/10 rounded-lg px-8 h-12 font-semibold">
+                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-[#9279BA] rounded-lg px-8 h-12 font-semibold inline-flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
                     {t("ctaOptionalCall")}
                   </Button>
                 </Link>
