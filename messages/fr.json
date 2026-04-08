@@ -682,6 +682,8 @@
     "closeMenu": "Fermer le menu",
     "collapseMenu": "Réduire le menu",
     "navigationLabel": "Navigation du tableau de bord",
+    "logoFullAlt": "Logo FashionsDen",
+    "logoIconAlt": "FH",
     "searchPlaceholder": "Rechercher...",
     "roleAdmin": "Administrateur",
     "roleManufacturer": "Fabricant",
@@ -1336,8 +1338,8 @@
       "select": "Sélectionner...",
       "quantity": "500",
       "description": "Décrivez matériaux, tailles, couleurs, finitions...",
-      "budgetMin": "5000000",
-      "budgetMax": "10000000",
+      "budgetMin": "5 000",
+      "budgetMax": "10 000",
       "materials": "Ex : Coton biologique 180g",
       "materialType": "Type (ex : Coton)",
       "composition": "Composition",
@@ -1354,7 +1356,20 @@
     "submit": "Publier le Projet",
     "createdSuccess": "Projet publié avec succès !",
     "reviewDescription": "Vérifiez les informations avant de publier votre projet.",
+    "budgetRange": {
+      "title": "Budget estimé"
+    },
+    "assistance": {
+      "button": "J'ai besoin d'aide pour choisir les tissus",
+      "selected": "Assistance tissus activée",
+      "helpText": "Notre équipe peut vous aider à choisir les tissus, compositions et finitions si vous n'êtes pas sûr.",
+      "targetRow": "Appliquer à la ligne {row}",
+      "typesLabel": "Types de tissu",
+      "compositionLabel": "Compositions courantes",
+      "recycledLabel": "% recyclé"
+    },
     "steps": {
+      "type": "Type de projet",
       "basic": "Informations de base",
       "budget": "Budget et dates",
       "materials": "Matériaux et durabilité",

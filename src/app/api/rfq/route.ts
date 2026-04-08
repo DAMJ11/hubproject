@@ -4,6 +4,14 @@ import pool from "@/lib/db";
 import { getSessionUser, hasRole } from "@/lib/session";
 import { rfqCreateSchema } from "@/lib/validations/rfq";
 
+function normalizeProjectTypes(projectType: string | string[] | undefined) {
+  if (Array.isArray(projectType)) {
+    return projectType.filter(Boolean);
+  }
+
+  return projectType ? [projectType] : [];
+}
+
 // GET /api/rfq - Listar proyectos RFQ
 // Marcas: ven sus propios RFQs. Fabricantes: ven RFQs abiertos. Admin: ve todos.
 export async function GET(request: NextRequest) {
@@ -124,6 +132,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, message: parsed.error.issues[0]?.message || "Datos inválidos" }, { status: 400 });
     }
     const { projectType, categoryId, title, description, quantity, budgetMin, budgetMax, deadline, proposalsDeadline, requiresSample, preferredMaterials, sustainabilityPriority, materials } = parsed.data;
+    const projectTypes = normalizeProjectTypes(projectType);
+    const serializedProjectTypes = projectTypes.length > 0 ? JSON.stringify(projectTypes) : null;
 
     const connection = await pool.getConnection();
     try {
@@ -139,7 +149,7 @@ export async function POST(request: NextRequest) {
           quantity, budget_min, budget_max, deadline, proposals_deadline, status, requires_sample,
           preferred_materials, sustainability_priority, created_at, updated_at)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'open', ?, ?, ?, NOW(), NOW())`,
-        [code, projectType || null, user.companyId, user.id, categoryId, title.trim(), description.trim(),
+        [code, serializedProjectTypes, user.companyId, user.id, categoryId, title.trim(), description.trim(),
           quantity, budgetMin || null, budgetMax || null, deadline || null, proposalsDeadline || null,
           requiresSample ?? false, preferredMaterials || null, sustainabilityPriority ?? false]
       );

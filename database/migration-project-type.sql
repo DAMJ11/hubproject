@@ -2,4 +2,4 @@
 -- Date: 2026-04-XX
 
 ALTER TABLE rfq_projects
-ADD COLUMN project_type VARCHAR(50) NULL AFTER code;
+ADD COLUMN project_type VARCHAR(255) NULL AFTER code;

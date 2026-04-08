@@ -682,6 +682,8 @@
     "closeMenu": "Close menu",
     "collapseMenu": "Collapse menu",
     "navigationLabel": "Dashboard navigation",
+    "logoFullAlt": "FashionsDen logo",
+    "logoIconAlt": "FH",
     "searchPlaceholder": "Search...",
     "roleAdmin": "Administrator",
     "roleManufacturer": "Manufacturer",
@@ -1336,8 +1338,8 @@
       "select": "Select...",
       "quantity": "500",
       "description": "Describe materials, sizes, colors, finishes...",
-      "budgetMin": "5000000",
-      "budgetMax": "10000000",
+      "budgetMin": "5,000",
+      "budgetMax": "10,000",
       "materials": "E.g.: Organic cotton 180g",
       "materialType": "Type (e.g.: Cotton)",
       "composition": "Composition",
@@ -1354,6 +1356,18 @@
     "submit": "Publish Project",
     "createdSuccess": "Project published successfully!",
     "reviewDescription": "Review the information before publishing your project.",
+    "budgetRange": {
+      "title": "Estimated budget"
+    },
+    "assistance": {
+      "button": "I need help choosing fabrics",
+      "selected": "Need fabric assistance",
+      "helpText": "Our team can help you choose fabrics, blends and finishes if you are unsure.",
+      "targetRow": "Apply to row {row}",
+      "typesLabel": "Fabric types",
+      "compositionLabel": "Common compositions",
+      "recycledLabel": "% recycled"
+    },
     "steps": {
       "type": "Project type",
       "basic": "Basic information",

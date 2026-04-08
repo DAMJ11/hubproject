@@ -1336,8 +1336,8 @@
       "select": "Seleccionar...",
       "quantity": "500",
       "description": "Describe materiales, tallas, colores, acabados...",
-      "budgetMin": "5000000",
-      "budgetMax": "10000000",
+      "budgetMin": "5,000",
+      "budgetMax": "10,000",
       "materials": "Ej: Algodón orgánico 180g",
       "materialType": "Tipo (ej: Algodón)",
       "composition": "Composición",
@@ -1354,7 +1354,20 @@
     "submit": "Publicar Proyecto",
     "createdSuccess": "¡Proyecto publicado exitosamente!",
     "reviewDescription": "Revisa la información antes de publicar tu proyecto.",
+    "budgetRange": {
+      "title": "Presupuesto estimado"
+    },
+    "assistance": {
+      "button": "Necesito ayuda para seleccionar telas",
+      "selected": "Necesito asistencia para telas",
+      "helpText": "Nuestro equipo puede ayudarte a elegir tejidos, composiciones y acabados si no estás seguro.",
+      "targetRow": "Aplica a la fila {row}",
+      "typesLabel": "Tipos de tela",
+      "compositionLabel": "Composiciones comunes",
+      "recycledLabel": "% reciclado sugerido"
+    },
     "steps": {
+      "type": "Tipo de proyecto",
       "basic": "Información básica",
       "budget": "Presupuesto y fechas",
       "materials": "Materiales y sostenibilidad",

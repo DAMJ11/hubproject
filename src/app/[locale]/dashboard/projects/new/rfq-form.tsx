@@ -19,11 +19,52 @@ import {
   ClipboardList,
   Layers,
   ChevronDown,
+  HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
+
+const PROJECT_TYPE_LABELS = {
+  design_only: "designOnly",
+  tech_pack: "techPack",
+  design_and_sample: "designAndSample",
+  production_with_design: "productionWithDesign",
+  production_only: "productionOnly",
+} as const;
+
+type ProjectTypeValue = keyof typeof PROJECT_TYPE_LABELS;
+
+const BUDGET_RANGE_OPTIONS = [
+  { value: "<500", label: "Menos de 500 USD" },
+  { value: "500-3000", label: "500 USD a 3,000 USD" },
+  { value: "3000-5000", label: "3,000 USD a 5,000 USD" },
+  { value: ">5000", label: "Más de 5,000 USD" },
+  { value: ">10000", label: "Más de 10,000 USD" },
+] as const;
+
+const MATERIAL_TYPE_SUGGESTIONS = [
+  { key: "cotton", value: "Cotton" },
+  { key: "linen", value: "Linen" },
+  { key: "polyester", value: "Polyester" },
+  { key: "denim", value: "Denim" },
+  { key: "silk", value: "Silk" },
+] as const;
+
+const COMPOSITION_SUGGESTIONS = [
+  { key: "cotton100", value: "100% Cotton" },
+  { key: "cottonPoly", value: "70% Cotton / 30% Polyester" },
+  { key: "linenCotton", value: "60% Linen / 40% Cotton" },
+  { key: "recycledPoly", value: "60% Recycled Polyester / 40% Cotton" },
+] as const;
+
+const RECYCLED_SUGGESTIONS = [
+  { key: "zero", value: "0%" },
+  { key: "twenty", value: "20%" },
+  { key: "fifty", value: "50%" },
+  { key: "onehundred", value: "100%" },
+] as const;
 
 /* ── Zod schema (client-side, matches server rfqCreateSchema) ── */
 const materialSchema = z.object({
@@ -34,22 +75,30 @@ const materialSchema = z.object({
 });
 
 const rfqFormSchema = z.object({
-  projectType: z.string().min(1, "Selecciona un tipo de proyecto"),
+  projectType: z.array(z.enum(["design_only", "tech_pack", "design_and_sample", "production_with_design", "production_only"])).min(1, "Selecciona al menos un tipo de proyecto"),
   categoryId: z.string().min(1, "Selecciona una categoría"),
   title: z.string().min(3, "Mínimo 3 caracteres").max(300),
   description: z.string().min(10, "Mínimo 10 caracteres").max(5000),
   quantity: z.string().min(1, "Mínimo 1 unidad"),
-  budgetMin: z.string().optional(),
-  budgetMax: z.string().optional(),
+  budgetRange: z.union([
+    z.literal("<500"),
+    z.literal("500-3000"),
+    z.literal("3000-5000"),
+    z.literal(">5000"),
+    z.literal(">10000"),
+  ]).optional(),
   deadline: z.string().optional(),
   proposalsDeadline: z.string().optional(),
   requiresSample: z.boolean(),
+  needsFabricAssistance: z.boolean().optional(),
   preferredMaterials: z.string().max(1000).optional(),
   sustainabilityPriority: z.boolean(),
   materials: z.array(materialSchema).optional(),
 });
 
 type RFQFormData = z.infer<typeof rfqFormSchema>;
+
+const RFQ_STORAGE_KEY = "rfq-form-state";
 
 interface Category {
   id: number;
@@ -69,7 +118,7 @@ const STEPS = [
 const STEP_FIELDS: Record<number, (keyof RFQFormData)[]> = {
   0: ["projectType"],
   1: ["categoryId", "title", "description", "quantity"],
-  2: ["budgetMin", "budgetMax", "deadline", "proposalsDeadline"],
+  2: ["budgetRange", "deadline", "proposalsDeadline"],
   3: ["preferredMaterials", "materials", "requiresSample", "sustainabilityPriority"],
   4: [],
 };
@@ -83,6 +132,7 @@ export default function RFQMultiStepForm() {
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [currency, setCurrency] = useState("USD");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedMaterialIndex, setSelectedMaterialIndex] = useState(0);
 
   const {
     register,
@@ -90,20 +140,22 @@ export default function RFQMultiStepForm() {
     handleSubmit,
     trigger,
     watch,
+    reset,
+    setValue,
     formState: { errors },
   } = useForm<RFQFormData>({
     resolver: zodResolver(rfqFormSchema),
     defaultValues: {
-      projectType: "",
+      projectType: [],
       categoryId: "",
       title: "",
       description: "",
       quantity: "",
-      budgetMin: "",
-      budgetMax: "",
+      budgetRange: "500-3000",
       deadline: "",
       proposalsDeadline: "",
       requiresSample: false,
+      needsFabricAssistance: false,
       preferredMaterials: "",
       sustainabilityPriority: false,
       materials: [{ materialType: "", composition: "", recycledPercentage: "" }],
@@ -133,6 +185,36 @@ export default function RFQMultiStepForm() {
       .catch(console.error);
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    try {
+      const saved = window.localStorage.getItem(RFQ_STORAGE_KEY);
+      if (!saved) return;
+
+      const parsed = JSON.parse(saved) as Partial<RFQFormData>;
+      if (parsed) {
+        reset({
+          ...parsed,
+          projectType: Array.isArray(parsed.projectType) ? parsed.projectType : [],
+          materials: Array.isArray(parsed.materials) ? parsed.materials : [{ materialType: "", composition: "", recycledPercentage: "" }],
+        });
+      }
+    } catch {
+      // ignore invalid storage data
+    }
+  }, [reset]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const subscription = watch((currentValues) => {
+      window.localStorage.setItem(RFQ_STORAGE_KEY, JSON.stringify(currentValues));
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
   /* ── Step navigation ── */
   const goNext = async () => {
     const fieldsToValidate = STEP_FIELDS[step];
@@ -155,6 +237,18 @@ export default function RFQMultiStepForm() {
           ...m,
           recycledPercentage: m.recycledPercentage ? Number(m.recycledPercentage) : undefined,
         }));
+      const budgetRangeMap: Record<string, { min?: number; max?: number }> = {
+        "<500": { max: 500 },
+        "500-3000": { min: 500, max: 3000 },
+        "3000-5000": { min: 3000, max: 5000 },
+        ">5000": { min: 5000 },
+        ">10000": { min: 10000 },
+      };
+
+      const selectedBudget = data.budgetRange ? budgetRangeMap[data.budgetRange] : {};
+      const budgetMin = selectedBudget.min ?? (data.budgetMin ? Number(data.budgetMin) : undefined);
+      const budgetMax = selectedBudget.max ?? (data.budgetMax ? Number(data.budgetMax) : undefined);
+
       const res = await fetch("/api/rfq", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -164,8 +258,8 @@ export default function RFQMultiStepForm() {
           title: data.title,
           description: data.description,
           quantity: Number(data.quantity),
-          budgetMin: data.budgetMin ? Number(data.budgetMin) : undefined,
-          budgetMax: data.budgetMax ? Number(data.budgetMax) : undefined,
+          budgetMin,
+          budgetMax,
           deadline: data.deadline || undefined,
           proposalsDeadline: data.proposalsDeadline || undefined,
           requiresSample: data.requiresSample,
@@ -176,6 +270,7 @@ export default function RFQMultiStepForm() {
       });
       const result = await res.json();
       if (result.success) {
+        window.localStorage.removeItem(RFQ_STORAGE_KEY);
         toast.success(t("createdSuccess"));
         router.push("/dashboard/projects");
       } else {
@@ -290,28 +385,41 @@ export default function RFQMultiStepForm() {
                     { value: "design_and_sample", label: "designAndSample", desc: "designAndSampleDesc", icon: "✂️" },
                     { value: "production_with_design", label: "productionWithDesign", desc: "productionWithDesignDesc", icon: "🏭" },
                     { value: "production_only", label: "productionOnly", desc: "productionOnlyDesc", icon: "📦" },
-                  ] as const).map((opt) => (
-                    <button
+                  ] as const).map((opt) => {
+                    const isSelected = field.value.includes(opt.value);
+
+                    return (
+                      <button
                       key={opt.value}
                       type="button"
-                      onClick={() => field.onChange(opt.value)}
+                      onClick={() => {
+                        const nextValue = isSelected
+                          ? field.value.filter((value) => value !== opt.value)
+                          : [...field.value, opt.value];
+                        field.onChange(nextValue);
+                      }}
                       className={`flex items-start gap-3 p-4 rounded-xl border text-left transition-colors ${
-                        field.value === opt.value
+                        isSelected
                           ? "border-brand-600 bg-brand-50 dark:bg-brand-900/20 ring-1 ring-brand-600"
                           : "border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-gray-300 dark:hover:border-slate-600"
                       }`}
-                    >
-                      <span className="text-2xl">{opt.icon}</span>
-                      <div>
-                        <span className={`text-sm font-medium ${field.value === opt.value ? "text-brand-700 dark:text-brand-200" : "text-gray-900 dark:text-white"}`}>
-                          {t(`projectType.${opt.label}`)}
-                        </span>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                          {t(`projectType.${opt.desc}`)}
-                        </p>
-                      </div>
-                    </button>
-                  ))}
+                      aria-pressed={isSelected}
+                      >
+                        <span className="text-2xl">{opt.icon}</span>
+                        <div className="flex-1">
+                          <div className="flex items-start justify-between gap-3">
+                            <span className={`text-sm font-medium ${isSelected ? "text-brand-700 dark:text-brand-200" : "text-gray-900 dark:text-white"}`}>
+                              {t(`projectType.${opt.label}`)}
+                            </span>
+                            {isSelected && <Check className="mt-0.5 h-4 w-4 text-brand-600 dark:text-brand-300" />}
+                          </div>
+                          <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                            {t(`projectType.${opt.desc}`)}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             />
@@ -453,39 +561,34 @@ export default function RFQMultiStepForm() {
               </div>
             </div>
 
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                {t("budgetRange.title")}
+              </label>
+              <Controller
+                control={control}
+                name="budgetRange"
+                render={({ field }) => (
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {BUDGET_RANGE_OPTIONS.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => field.onChange(option.value)}
+                        className={`rounded-2xl border p-4 text-left transition-colors ${
+                          field.value === option.value
+                            ? "border-brand-600 bg-brand-50 dark:border-brand-500 dark:bg-brand-900/20"
+                            : "border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800 hover:border-gray-300 dark:hover:border-slate-600"
+                        }`}
+                      >
+                        <span className="text-sm font-medium text-gray-900 dark:text-white">{option.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              />
+            </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t("fields.budgetMin")}
-                </label>
-                <div className="relative">
-                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-slate-400">
-                    {currencySymbol}
-                  </span>
-                  <Input
-                    type="number"
-                    {...register("budgetMin")}
-                    placeholder={t("placeholders.budgetMin")}
-                    className={`${inputClass} pl-10`}
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t("fields.budgetMax")}
-                </label>
-                <div className="relative">
-                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-slate-400">
-                    {currencySymbol}
-                  </span>
-                  <Input
-                    type="number"
-                    {...register("budgetMax")}
-                    placeholder={t("placeholders.budgetMax")}
-                    className={`${inputClass} pl-10`}
-                  />
-                </div>
-              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   {t("fields.deadline")}
@@ -522,6 +625,86 @@ export default function RFQMultiStepForm() {
                 placeholder={t("placeholders.materials")}
                 className={inputClass}
               />
+              <Controller
+                control={control}
+                name="needsFabricAssistance"
+                render={({ field }) => (
+                  <div className="mt-4 rounded-3xl border border-brand-200 bg-brand-50/80 p-4 dark:border-brand-600 dark:bg-brand-950/20">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => field.onChange(!field.value)}
+                          className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
+                            field.value
+                              ? "border-brand-600 bg-brand-600/10 text-brand-700 dark:border-brand-500 dark:bg-brand-900/20 dark:text-brand-200"
+                              : "border-brand-300 bg-white text-brand-700 hover:bg-brand-50 dark:border-brand-700 dark:bg-slate-900 dark:text-brand-300"
+                          }`}
+                        >
+                          <HelpCircle className="h-4 w-4" />
+                          {field.value ? t("assistance.selected") : t("assistance.button")}
+                        </button>
+                        <p className="mt-3 text-sm text-gray-600 dark:text-gray-300">
+                          {t("assistance.helpText")}
+                        </p>
+                      </div>
+                      <div className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
+                        {t("assistance.targetRow", { row: selectedMaterialIndex + 1 })}
+                      </div>
+                    </div>
+
+                    {field.value && (
+                      <div className="mt-4 grid gap-3 md:grid-cols-3">
+                        <div className="rounded-2xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900">
+                          <p className="text-sm font-semibold text-slate-900 dark:text-white">{t("assistance.typesLabel")}</p>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {MATERIAL_TYPE_SUGGESTIONS.map((option) => (
+                              <button
+                                key={option.key}
+                                type="button"
+                                onClick={() => setValue(`materials.${selectedMaterialIndex}.materialType`, option.value)}
+                                className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1 text-xs text-slate-700 transition hover:border-brand-600 hover:bg-brand-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
+                              >
+                                {option.value}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="rounded-2xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900">
+                          <p className="text-sm font-semibold text-slate-900 dark:text-white">{t("assistance.compositionLabel")}</p>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {COMPOSITION_SUGGESTIONS.map((option) => (
+                              <button
+                                key={option.key}
+                                type="button"
+                                onClick={() => setValue(`materials.${selectedMaterialIndex}.composition`, option.value)}
+                                className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1 text-xs text-slate-700 transition hover:border-brand-600 hover:bg-brand-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
+                              >
+                                {option.value}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="rounded-2xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900">
+                          <p className="text-sm font-semibold text-slate-900 dark:text-white">{t("assistance.recycledLabel")}</p>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {RECYCLED_SUGGESTIONS.map((option) => (
+                              <button
+                                key={option.key}
+                                type="button"
+                                onClick={() => setValue(`materials.${selectedMaterialIndex}.recycledPercentage`, option.value)}
+                                className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1 text-xs text-slate-700 transition hover:border-brand-600 hover:bg-brand-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
+                              >
+                                {option.value}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              />
             </div>
 
             <div>
@@ -541,7 +724,18 @@ export default function RFQMultiStepForm() {
               </div>
               <div className="space-y-2">
                 {fields.map((field, i) => (
-                  <div key={field.id} className="flex gap-2 items-start">
+                  <div
+                    key={field.id}
+                    onClick={() => setSelectedMaterialIndex(i)}
+                    className={`flex gap-2 items-start rounded-3xl p-2 transition ${
+                      selectedMaterialIndex === i
+                        ? "border border-brand-500 bg-brand-50/80 dark:border-brand-500 dark:bg-brand-900/40"
+                        : ""
+                    }`}
+                  >
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full border border-slate-200 text-xs text-slate-500 dark:border-slate-700 dark:text-slate-300">
+                      {i + 1}
+                    </div>
                     <Input
                       {...register(`materials.${i}.materialType`)}
                       placeholder={t("placeholders.materialType")}
@@ -623,9 +817,9 @@ export default function RFQMultiStepForm() {
             </p>
 
             <div className="grid gap-3 sm:grid-cols-2">
-              <ReviewField label={t("steps.type")} value={values.projectType ? t(`projectType.${
-                { design_only: "designOnly", tech_pack: "techPack", design_and_sample: "designAndSample", production_with_design: "productionWithDesign", production_only: "productionOnly" }[values.projectType] ?? values.projectType
-              }`) : "—"} />
+              <ReviewField label={t("steps.type")} value={values.projectType.length > 0
+                ? values.projectType.map((type) => t(`projectType.${PROJECT_TYPE_LABELS[type as ProjectTypeValue]}`)).join(", ")
+                : "—"} />
               <ReviewField label={t("fields.title")} value={values.title} />
               <ReviewField
                 label={t("fields.category")}
@@ -636,12 +830,10 @@ export default function RFQMultiStepForm() {
                 value={String(values.quantity || "—")}
               />
               <ReviewField
-                label={t("fields.budgetMin")}
-                value={values.budgetMin ? `$${values.budgetMin}` : "—"}
-              />
-              <ReviewField
-                label={t("fields.budgetMax")}
-                value={values.budgetMax ? `$${values.budgetMax}` : "—"}
+                label={t("budgetRange.title")}
+                value={values.budgetRange
+                  ? BUDGET_RANGE_OPTIONS.find((option) => option.value === values.budgetRange)?.label ?? values.budgetRange
+                  : "—"}
               />
               <ReviewField
                 label={t("fields.deadline")}

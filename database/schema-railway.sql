@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS manufacturer_certifications (
 CREATE TABLE IF NOT EXISTS rfq_projects (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(20) NOT NULL UNIQUE,
-    project_type VARCHAR(50) NULL,
+    project_type VARCHAR(255) NULL,
     brand_company_id INT NOT NULL,
     created_by_user_id INT NOT NULL,
     category_id INT NOT NULL,
