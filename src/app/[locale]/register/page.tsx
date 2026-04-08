@@ -85,6 +85,7 @@ export default function RegisterPage() {
       const res = await fetch("/api/stripe/strategy-call", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
       });
       const data = await res.json();
       if (data.success && data.url) {

@@ -76,6 +76,25 @@ export default function LoginPage() {
     setGoogleLoading(true);
     window.location.href = `/api/auth/google?locale=${locale}&role=brand`;
   };
+
+  const startStrategyCallCheckout = async () => {
+    const res = await fetch("/api/stripe/strategy-call", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+    });
+    const data = await res.json();
+
+    if (data.success && data.url) {
+      window.location.href = data.url;
+      return true;
+    }
+
+    setServerError(data.message || t("error"));
+    toast.error(data.message || t("error"));
+    return false;
+  };
+
   const switchLocale = (newLocale: string) => {
     router.replace(pathname, { locale: newLocale as "es" | "en" | "fr" });
   };
@@ -98,7 +117,10 @@ export default function LoginPage() {
         toast.success(t("loginSuccess"));
         const redirect = searchParams.get("redirect");
         if (redirect === "strategy-call") {
-          router.push("/#strategy-call");
+          const started = await startStrategyCallCheckout();
+          if (!started) {
+            router.push("/dashboard");
+          }
         } else {
           router.push("/dashboard");
         }

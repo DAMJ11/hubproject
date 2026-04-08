@@ -91,6 +91,20 @@ export async function POST(request: NextRequest) {
 
     let stripeCustomerId = userData.stripe_customer_id;
 
+    if (stripeCustomerId) {
+      try {
+        await stripe.customers.retrieve(stripeCustomerId);
+      } catch (stripeError) {
+        const stripeErr = stripeError as { code?: string; message?: string };
+        if (stripeErr.code === "resource_missing" && stripeErr.message?.includes("No such customer")) {
+          stripeCustomerId = null;
+          await query("UPDATE users SET stripe_customer_id = NULL, updated_at = NOW() WHERE id = ?", [user.id]);
+        } else {
+          throw stripeError;
+        }
+      }
+    }
+
     if (!stripeCustomerId) {
       const customer = await stripe.customers.create({
         email: userData.email,
@@ -122,7 +136,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, url: session.url });
   } catch (error) {
     console.error("Error creating strategy call checkout session:", error);
-    return NextResponse.json({ success: false, message: "Error al procesar el pago" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Error al procesar el pago";
+    return NextResponse.json({ success: false, message }, { status: 500 });
   }
 }
 

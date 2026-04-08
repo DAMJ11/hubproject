@@ -96,9 +96,20 @@ function StrategyCard({
     setLoading(true);
     setError(null);
     try {
+      const authRes = await fetch("/api/auth/me", {
+        method: "GET",
+        credentials: "same-origin",
+      });
+
+      if (!authRes.ok) {
+        router.push("/login?redirect=strategy-call");
+        return;
+      }
+
       const res = await fetch("/api/stripe/strategy-call", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
       });
       const data = await res.json();
 

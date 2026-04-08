@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FileText,
   MessageSquare,
@@ -14,6 +14,8 @@ import {
   CreditCard,
   Phone,
   Loader2,
+  CheckCircle,
+  Calendar,
 } from "lucide-react";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { formatCurrency } from "@/lib/currency";
@@ -72,12 +74,40 @@ export default function DashboardHome({ user, initialStats, initialProjects }: D
   const projects = initialProjects;
   const [callLoading, setCallLoading] = useState(false);
   const [callError, setCallError] = useState<string | null>(null);
+  const [hasStrategyCall, setHasStrategyCall] = useState(false);
+  const [isCheckingCall, setIsCheckingCall] = useState(true);
+
+  // Verificar si el usuario ya tiene una Strategy Call
+  useEffect(() => {
+    const checkStrategyCall = async () => {
+      try {
+        const res = await fetch("/api/stripe/strategy-call", {
+          method: "GET",
+          credentials: "same-origin",
+        });
+        const data = await res.json();
+        if (data.success && data.purchase) {
+          setHasStrategyCall(true);
+        }
+      } catch (error) {
+        console.error("Error checking strategy call:", error);
+      } finally {
+        setIsCheckingCall(false);
+      }
+    };
+    
+    checkStrategyCall();
+  }, []);
 
   const handleBookCall = async () => {
     setCallLoading(true);
     setCallError(null);
     try {
-      const res = await fetch("/api/stripe/strategy-call", { method: "POST", headers: { "Content-Type": "application/json" } });
+      const res = await fetch("/api/stripe/strategy-call", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+      });
       const data = await res.json();
       if (data.success && data.url) {
         window.location.href = data.url;
@@ -208,27 +238,69 @@ export default function DashboardHome({ user, initialStats, initialProjects }: D
 
         {/* Side Panel - Quick Actions */}
         <div className="space-y-4">
-          {(isBrand || isManufacturer) && (
-            <Card className="border-brand-200 dark:border-brand-800 bg-brand-50 dark:bg-brand-950/20">
+          {(isBrand || isManufacturer) && !isCheckingCall && (
+            hasStrategyCall ? (
+              // Estado: Ya tiene una Strategy Call
+              <Card className="border-green-200 dark:border-green-800/50 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/20 shadow-md">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 flex-shrink-0 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-md">
+                      <CheckCircle className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-green-700 dark:text-green-300">Strategy Call Booked!</p>
+                      <p className="text-xs text-green-600 dark:text-green-400 mt-1">Your 30-min session is confirmed</p>
+                      <div className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400 mt-2">
+                        <Calendar className="w-3 h-3" />
+                        <span>Check your email for details</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              // Estado: No tiene Strategy Call - mostrar CTA
+              <Card className="border-brand-200 dark:border-brand-800 bg-gradient-to-br from-brand-50 to-blue-50 dark:from-brand-950/20 dark:to-blue-950/10 shadow-md hover:shadow-lg transition-shadow">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 flex-shrink-0 bg-gradient-to-br from-brand-600 to-brand-700 rounded-lg flex items-center justify-center shadow-md">
+                      <Phone className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-gray-900 dark:text-white">Book a Strategy Call</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">30-min session to accelerate your journey</p>
+                      {callError && <p className="text-xs text-red-500 mt-2 font-medium">{callError}</p>}
+                      <Button
+                        size="sm"
+                        onClick={handleBookCall}
+                        disabled={callLoading}
+                        className="mt-3 bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white text-xs h-8 font-semibold shadow-md hover:shadow-lg transition-all"
+                      >
+                        {callLoading ? (
+                          <>
+                            <Loader2 className="w-3 h-3 animate-spin mr-2" />
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            <Phone className="w-3 h-3 mr-2" />
+                            Book Now
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          )}
+
+          {isCheckingCall && (isBrand || isManufacturer) && (
+            <Card className="border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/20">
               <CardContent className="p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-9 h-9 flex-shrink-0 bg-brand-600 rounded-lg flex items-center justify-center">
-                    <Phone className="w-4 h-4 text-white" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-gray-900 dark:text-white">Book a strategy call</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">30-min session to accelerate your production journey</p>
-                    {callError && <p className="text-xs text-red-500 mt-1">{callError}</p>}
-                    <Button
-                      size="sm"
-                      onClick={handleBookCall}
-                      disabled={callLoading}
-                      className="mt-2 bg-brand-600 hover:bg-brand-700 text-white text-xs h-8"
-                    >
-                      {callLoading ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Phone className="w-3 h-3 mr-1" />}
-                      Book Now
-                    </Button>
-                  </div>
+                <div className="flex items-center justify-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin text-gray-500" />
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Checking your bookings...</p>
                 </div>
               </CardContent>
             </Card>
