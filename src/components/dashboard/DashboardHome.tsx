@@ -248,11 +248,11 @@ export default function DashboardHome({ user, initialStats, initialProjects }: D
                       <CheckCircle className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold text-green-700 dark:text-green-300">Strategy Call Booked!</p>
-                      <p className="text-xs text-green-600 dark:text-green-400 mt-1">Your 30-min session is confirmed</p>
+                      <p className="text-sm font-bold text-green-700 dark:text-green-300">{t("strategyCall.bookedTitle")}</p>
+                      <p className="text-xs text-green-600 dark:text-green-400 mt-1">{t("strategyCall.bookedSubtitle")}</p>
                       <div className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400 mt-2">
                         <Calendar className="w-3 h-3" />
-                        <span>Check your email for details</span>
+                        <span>{t("strategyCall.bookedHint")}</span>
                       </div>
                     </div>
                   </div>
@@ -267,8 +267,8 @@ export default function DashboardHome({ user, initialStats, initialProjects }: D
                       <Phone className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold text-gray-900 dark:text-white">Book a Strategy Call</p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">30-min session to accelerate your journey</p>
+                      <p className="text-sm font-bold text-gray-900 dark:text-white">{t("strategyCall.ctaTitle")}</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">{t("strategyCall.ctaSubtitle")}</p>
                       {callError && <p className="text-xs text-red-500 mt-2 font-medium">{callError}</p>}
                       <Button
                         size="sm"
@@ -279,12 +279,12 @@ export default function DashboardHome({ user, initialStats, initialProjects }: D
                         {callLoading ? (
                           <>
                             <Loader2 className="w-3 h-3 animate-spin mr-2" />
-                            Processing...
+                            {t("strategyCall.processing")}
                           </>
                         ) : (
                           <>
                             <Phone className="w-3 h-3 mr-2" />
-                            Book Now
+                            {t("strategyCall.ctaButton")}
                           </>
                         )}
                       </Button>
@@ -300,7 +300,7 @@ export default function DashboardHome({ user, initialStats, initialProjects }: D
               <CardContent className="p-4">
                 <div className="flex items-center justify-center gap-2">
                   <Loader2 className="w-4 h-4 animate-spin text-gray-500" />
-                  <p className="text-xs text-gray-600 dark:text-gray-400">Checking your bookings...</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{t("strategyCall.checking")}</p>
                 </div>
               </CardContent>
             </Card>

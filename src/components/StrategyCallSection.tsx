@@ -88,6 +88,7 @@ function StrategyCard({
   cta,
   duration,
 }: StrategyCardProps) {
+  const t = useTranslations("StrategyCallSection");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -124,10 +125,10 @@ function StrategyCard({
       if (data.success && data.url) {
         window.location.href = data.url;
       } else {
-        setError(data.message || "Something went wrong. Please try again.");
+        setError(data.message || t("errors.generic"));
       }
     } catch {
-      setError("Network error. Please try again.");
+      setError(t("errors.network"));
     } finally {
       setLoading(false);
     }
@@ -196,7 +197,7 @@ function StrategyCard({
       </Button>
 
       <p className="text-center text-xs text-slate-400 dark:text-slate-500 mt-3">
-        One-time payment · No commitment required
+        {t("oneTimePaymentNote")}
       </p>
     </div>
   );

@@ -9,7 +9,8 @@
     "register": "Create account",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "selectLanguage": "Select language"
+    "selectLanguage": "Select language",
+    "logoAlt": "FashionsDen logo"
   },
   "Footer": {
     "brandText": "B2B platform connecting brands and manufacturers across design, development and fashion production workflows.",
@@ -41,7 +42,8 @@
       "1": "Privacy Policy",
       "2": "Cookie Policy"
     },
-    "copyright": "All rights reserved."
+    "copyright": "All rights reserved.",
+    "logoAlt": "FashionsDen logo"
   },
   "Hero": {
     "pill": "Fashion production, simplified",
@@ -620,6 +622,36 @@
     "invalidToken": "Invalid or expired link",
     "error": "An error occurred. Please try again."
   },
+  "AuthApi": {
+    "login": {
+      "rateLimit": "Too many attempts. Try again in {seconds}s",
+      "invalidForm": "Check your email and password, then try again.",
+      "invalidCredentials": "Incorrect email or password.",
+      "success": "Signed in successfully.",
+      "serverError": "An error occurred while signing in. Please try again."
+    },
+    "register": {
+      "rateLimit": "Too many sign-up attempts. Try again in {seconds}s",
+      "invalidForm": "Review the form details before continuing.",
+      "success": "Account created. Check your email to verify it.",
+      "serverError": "An error occurred while creating your account. Please try again."
+    },
+    "forgotPassword": {
+      "rateLimit": "Too many attempts. Try again in {seconds}s",
+      "emailRequired": "Enter a valid email address.",
+      "success": "If the email exists, you'll receive a link to reset your password.",
+      "serverError": "An error occurred while processing your request. Please try again."
+    },
+    "resetPassword": {
+      "invalidPayload": "Invalid data.",
+      "passwordMin": "Password must be at least 8 characters.",
+      "invalidToken": "Invalid or expired link.",
+      "alreadyUsed": "This link has already been used.",
+      "expired": "This link has expired. Request a new one.",
+      "success": "Password updated successfully.",
+      "serverError": "An error occurred while resetting the password. Please try again."
+    }
+  },
   "Sidebar": {
     "nav": {
       "dashboard": "Dashboard",
@@ -627,6 +659,7 @@
       "projectsRfq": "Projects (RFQ)",
       "contracts": "Contracts",
       "users": "Users",
+      "translations": "Content",
       "messages": "Messages",
       "payments": "Payments",
       "reviews": "Reviews",
@@ -675,6 +708,7 @@
       "manufacturers": "Manufacturers",
       "users": "Users",
       "messages": "Messages",
+      "translations": "Content",
       "payments": "Payments",
       "reviews": "Reviews",
       "reports": "Reports",
@@ -774,6 +808,16 @@
       "viewOpportunities": "View Opportunities",
       "myProposals": "My Proposals",
       "myProfile": "My Profile"
+    },
+    "strategyCall": {
+      "bookedTitle": "Strategy Call booked",
+      "bookedSubtitle": "Your 30-minute session is confirmed",
+      "bookedHint": "Check your email for details",
+      "ctaTitle": "Book a Strategy Call",
+      "ctaSubtitle": "30-minute session to accelerate your process",
+      "ctaButton": "Book now",
+      "processing": "Processing...",
+      "checking": "Checking your bookings..."
     }
   },
   "AdminDashboard": {
@@ -798,6 +842,31 @@
     "statusActive": "Active",
     "statusPending": "Pending",
     "systemStatus": "System status",
+    "uptime": "Uptime: {value}",
+    "recentUserDates": {
+      "0": "2 hours ago",
+      "1": "5 hours ago",
+      "2": "1 day ago",
+      "3": "2 days ago"
+    },
+    "systemItems": {
+      "0": {
+        "name": "Primary server",
+        "status": "Online"
+      },
+      "1": {
+        "name": "Database",
+        "status": "Online"
+      },
+      "2": {
+        "name": "API Gateway",
+        "status": "Online"
+      },
+      "3": {
+        "name": "CDN",
+        "status": "Online"
+      }
+    },
     "adminActions": "Admin actions",
     "actions": {
       "manageUsers": "Manage users",
@@ -1721,6 +1790,53 @@
     "loadingBilling": "Loading billing information...",
     "billingError": "Error loading billing information"
   },
+  "TranslationsAdmin": {
+    "title": "Content editor",
+    "subtitle": "Edit and publish site copy without touching the repository.",
+    "helperText": "Tip: search by a phrase you can see on the website (for example, a title or button).",
+    "keysCount": "keys",
+    "catalogTitle": "Keys catalog",
+    "searchPlaceholder": "Search by text or key...",
+    "allModules": "All modules",
+    "emptyTitle": "No results",
+    "emptyDescription": "Try another search or switch the module filter.",
+    "editorTitle": "Editor",
+    "selectKeyTitle": "Select a key",
+    "selectKeyDescription": "Choose a catalog key to edit its values by locale.",
+    "baseLabel": "Base",
+    "publishedLabel": "Published",
+    "draftLabel": "Draft",
+    "editableValue": "Editable value",
+    "textareaPlaceholder": "Write here the text you want to show in the app...",
+    "saveDraft": "Save draft",
+    "publish": "Publish",
+    "savedDraft": "Draft saved",
+    "published": "Text published",
+    "emptyValue": "No value",
+    "unauthorizedTitle": "Restricted access",
+    "unauthorizedDescription": "Only administrators can edit site copy.",
+    "errors": {
+      "loadKeys": "Could not load keys.",
+      "loadDetail": "Could not load key details.",
+      "saveDraft": "Could not save draft.",
+      "publish": "Could not publish text."
+    }
+  },
+  "GlobalError": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Please try again.",
+    "retry": "Try again",
+    "logPrefix": "Unhandled error:"
+  },
+  "NotFoundPage": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or has been moved.",
+    "goHome": "Back to home",
+    "goDashboard": "Go to dashboard"
+  },
+  "AppShell": {
+    "skipToContent": "Skip to content"
+  },
   "Users": {
     "title": "Client Management",
     "registeredClients": "{count} registered clients",
@@ -1780,6 +1896,11 @@
     "price": "$150 USD",
     "priceNote": "Limited availability \u2014 price increases to $250 USD",
     "cta": "Book your session NOW",
+    "oneTimePaymentNote": "One-time payment · No commitment required",
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "network": "Network error. Please try again."
+    },
     "brand": {
       "badge": "For Brands",
       "title": "Not sure where to start?",
@@ -1805,6 +1926,26 @@
         "How to get selected vs ignored",
         "Mistakes manufacturers make with EU/US brands"
       ]
+    }
+  },
+  "LiveChatWidget": {
+    "trigger": "Live chat",
+    "title": "Live chat support",
+    "subtitle": "Connect with an administrator",
+    "close": "Close chat",
+    "success": {
+      "title": "Chat created!",
+      "description": "An administrator will reply soon. Check your notifications inbox."
+    },
+    "subjectLabel": "Subject",
+    "subjectPlaceholder": "How can we help you?",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Describe your question or issue...",
+    "sending": "Sending...",
+    "submit": "Start chat",
+    "errors": {
+      "createFailed": "Could not create the chat.",
+      "network": "Connection error. Please try again."
     }
   },
   "SetupPayment": {

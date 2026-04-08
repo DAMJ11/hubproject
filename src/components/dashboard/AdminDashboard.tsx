@@ -37,17 +37,17 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
   ];
 
   const recentUsers = [
-    { name: "María García", email: "maria@ejemplo.com", date: "Hace 2 horas", status: "active" },
-    { name: "Carlos López", email: "carlos@ejemplo.com", date: "Hace 5 horas", status: "active" },
-    { name: "Ana Martínez", email: "ana@ejemplo.com", date: "Hace 1 día", status: "pending" },
-    { name: "Pedro Sánchez", email: "pedro@ejemplo.com", date: "Hace 2 días", status: "active" },
+    { name: "María García", email: "maria@ejemplo.com", date: t("recentUserDates.0"), status: "active" },
+    { name: "Carlos López", email: "carlos@ejemplo.com", date: t("recentUserDates.1"), status: "active" },
+    { name: "Ana Martínez", email: "ana@ejemplo.com", date: t("recentUserDates.2"), status: "pending" },
+    { name: "Pedro Sánchez", email: "pedro@ejemplo.com", date: t("recentUserDates.3"), status: "active" },
   ];
 
   const systemStatus = [
-    { name: "Servidor principal", status: "online", uptime: "99.9%" },
-    { name: "Base de datos", status: "online", uptime: "99.8%" },
-    { name: "API Gateway", status: "online", uptime: "99.7%" },
-    { name: "CDN", status: "online", uptime: "100%" },
+    { name: t("systemItems.0.name"), status: t("systemItems.0.status"), uptime: "99.9%" },
+    { name: t("systemItems.1.name"), status: t("systemItems.1.status"), uptime: "99.8%" },
+    { name: t("systemItems.2.name"), status: t("systemItems.2.status"), uptime: "99.7%" },
+    { name: t("systemItems.3.name"), status: t("systemItems.3.status"), uptime: "100%" },
   ];
 
   return (
@@ -168,7 +168,7 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
                       <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                       <span className="text-sm text-gray-300">{system.name}</span>
                     </div>
-                    <span className="text-xs text-gray-400">Uptime: {system.uptime}</span>
+                    <span className="text-xs text-gray-400">{t("uptime", { value: system.uptime })}</span>
                   </div>
                 ))}
               </div>

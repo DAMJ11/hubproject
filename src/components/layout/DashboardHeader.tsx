@@ -178,7 +178,7 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
     window.localStorage.setItem("dashboard-theme", theme);
   }, [theme]);
 
-  const SEGMENT_KEYS = ["companies","rfq","projects","contracts","opportunities","proposals","company","capabilities","certifications","manufacturers","users","messages","payments","reviews","reports","settings","help","new","green-score"] as const;
+  const SEGMENT_KEYS = ["companies","rfq","projects","contracts","opportunities","proposals","company","capabilities","certifications","manufacturers","users","messages","payments","reviews","reports","settings","help","new","green-score","translations"] as const;
 
   const breadcrumbs = useMemo(() => {
     const cleanPath = pathname.replace(/^\/dashboard\/?/, "");

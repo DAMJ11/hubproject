@@ -5,9 +5,11 @@ import { MessageCircle, Send, X, Loader2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useDashboardUser } from "@/contexts/DashboardUserContext";
+import { useTranslations } from "next-intl";
 
 export default function LiveChatWidget() {
   const { user } = useDashboardUser();
+  const t = useTranslations("LiveChatWidget");
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -36,7 +38,7 @@ export default function LiveChatWidget() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || "Error al crear el chat");
+        setError(data.message || t("errors.createFailed"));
         setIsLoading(false);
         return;
       }
@@ -51,7 +53,7 @@ export default function LiveChatWidget() {
         setSuccess(false);
       }, 2000);
     } catch {
-      setError("Error de conexión. Intenta de nuevo.");
+      setError(t("errors.network"));
       setIsLoading(false);
     }
   };
@@ -68,7 +70,7 @@ export default function LiveChatWidget() {
           className="fixed bottom-6 right-6 z-40 flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-full shadow-lg transition-all duration-200 hover:shadow-xl"
         >
           <MessageCircle size={20} />
-          <span className="text-sm font-medium">Live Chat</span>
+          <span className="text-sm font-medium">{t("trigger")}</span>
         </button>
       )}
 
@@ -79,12 +81,13 @@ export default function LiveChatWidget() {
             {/* Header */}
             <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white p-4 flex items-center justify-between">
               <div>
-                <h2 className="font-bold text-lg">Live Chat Support</h2>
-                <p className="text-indigo-100 text-sm">Conecta con un administrador</p>
+                <h2 className="font-bold text-lg">{t("title")}</h2>
+                <p className="text-indigo-100 text-sm">{t("subtitle")}</p>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
                 className="p-1 hover:bg-indigo-500 rounded transition"
+                aria-label={t("close")}
               >
                 <X size={20} />
               </button>
@@ -97,22 +100,22 @@ export default function LiveChatWidget() {
                   <div className="bg-green-100 p-3 rounded-full mb-3">
                     <Check className="text-green-600" size={24} />
                   </div>
-                  <h3 className="font-bold text-green-700 mb-1">¡Chat creado!</h3>
+                  <h3 className="font-bold text-green-700 mb-1">{t("success.title")}</h3>
                   <p className="text-sm text-gray-600">
-                    Un administrador responderá pronto. Revisa tu bandeja de notificaciones.
+                    {t("success.description")}
                   </p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-3">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Asunto
+                      {t("subjectLabel")}
                     </label>
                     <Input
                       type="text"
                       value={subject}
                       onChange={(e) => setSubject(e.target.value)}
-                      placeholder="¿En qué puedo ayudarte?"
+                      placeholder={t("subjectPlaceholder")}
                       required
                       disabled={isLoading}
                       className="w-full"
@@ -121,12 +124,12 @@ export default function LiveChatWidget() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Mensaje
+                      {t("messageLabel")}
                     </label>
                     <textarea
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      placeholder="Describe tu pregunta o problema..."
+                      placeholder={t("messagePlaceholder")}
                       required
                       disabled={isLoading}
                       rows={4}
@@ -148,12 +151,12 @@ export default function LiveChatWidget() {
                     {isLoading ? (
                       <>
                         <Loader2 size={16} className="animate-spin mr-2" />
-                        Enviando...
+                        {t("sending")}
                       </>
                     ) : (
                       <>
                         <Send size={16} className="mr-2" />
-                        Iniciar Chat
+                        {t("submit")}
                       </>
                     )}
                   </Button>

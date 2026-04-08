@@ -5,17 +5,23 @@ import { hashPassword } from "@/lib/auth";
 import { registerServerSchema } from "@/lib/validations/auth";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { sendVerificationEmail } from "@/lib/email";
+import { getRequestLocale, getServerText } from "@/lib/server-text";
 import { randomBytes } from "crypto";
 import type { User, AuthResponse } from "@/types/user";
 
 export async function POST(request: NextRequest) {
+  let t = (keyPath: string, _values?: Record<string, string>, fallback?: string) => fallback ?? keyPath;
   try {
+    t = await getServerText(request);
     // Rate limiting: 3 registros por IP cada hora
     const ip = getClientIp(request);
     const rl = checkRateLimit(`register:${ip}`, 3, 60 * 60 * 1000);
     if (!rl.allowed) {
       return NextResponse.json<AuthResponse>(
-        { success: false, message: `Demasiados intentos de registro. Intenta en ${rl.retryAfterSeconds}s` },
+        {
+          success: false,
+          message: t("AuthApi.register.rateLimit", { seconds: String(rl.retryAfterSeconds) }),
+        },
         { status: 429 }
       );
     }
@@ -24,7 +30,7 @@ export async function POST(request: NextRequest) {
     const parsed = registerServerSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json<AuthResponse>(
-        { success: false, message: parsed.error.issues[0]?.message || "Datos inválidos" },
+        { success: false, message: t("AuthApi.register.invalidForm") },
         { status: 400 }
       );
     }
@@ -40,7 +46,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json<AuthResponse>(
         {
           success: true,
-          message: "Account created. Please check your email to verify your account.",
+          message: t("AuthApi.register.success"),
         },
         { status: 201 }
       );
@@ -103,7 +109,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Send verification email (non-blocking for the response)
-    const locale = request.headers.get("x-locale") || "es";
+    const locale = getRequestLocale(request);
     sendVerificationEmail(email.toLowerCase(), verificationToken, locale, { appUrl: request.nextUrl.origin }).catch((err) =>
       console.error("Failed to send verification email:", err)
     );
@@ -111,7 +117,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json<AuthResponse>(
       {
         success: true,
-        message: "Account created. Please check your email to verify your account.",
+        message: t("AuthApi.register.success"),
       },
       { status: 201 }
     );
@@ -120,7 +126,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json<AuthResponse>(
       {
         success: false,
-        message: "An error occurred during registration. Please try again.",
+        message: t("AuthApi.register.serverError"),
       },
       { status: 500 }
     );

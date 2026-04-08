@@ -20,7 +20,7 @@ export default async function Footer() {
             <Link href="/" className="flex items-center gap-2 mb-4">
               <Image
                 src={images.logoLight}
-                alt="FashionsDen"
+                alt={t("logoAlt")}
                 width={180}
                 height={40}
                 className="h-8 w-auto"

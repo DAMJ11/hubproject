@@ -1,17 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { queryOne, query } from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
+import { getServerText } from "@/lib/server-text";
 
 export async function POST(request: NextRequest) {
+  let t = (keyPath: string, _values?: Record<string, string>, fallback?: string) => fallback ?? keyPath;
   try {
+    t = await getServerText(request);
     const { token, password } = await request.json();
 
     if (!token || !password || typeof token !== "string" || typeof password !== "string") {
-      return NextResponse.json({ success: false, message: "Datos inválidos" }, { status: 400 });
+      return NextResponse.json({ success: false, message: t("AuthApi.resetPassword.invalidPayload") }, { status: 400 });
     }
 
     if (password.length < 8) {
-      return NextResponse.json({ success: false, message: "La contraseña debe tener al menos 8 caracteres" }, { status: 400 });
+      return NextResponse.json({ success: false, message: t("AuthApi.resetPassword.passwordMin") }, { status: 400 });
     }
 
     const resetToken = await queryOne<{ id: number; user_id: number; expires_at: Date; used_at: Date | null }>(
@@ -20,15 +23,15 @@ export async function POST(request: NextRequest) {
     );
 
     if (!resetToken) {
-      return NextResponse.json({ success: false, message: "Token inválido o expirado" }, { status: 400 });
+      return NextResponse.json({ success: false, message: t("AuthApi.resetPassword.invalidToken") }, { status: 400 });
     }
 
     if (resetToken.used_at) {
-      return NextResponse.json({ success: false, message: "Este enlace ya fue utilizado" }, { status: 400 });
+      return NextResponse.json({ success: false, message: t("AuthApi.resetPassword.alreadyUsed") }, { status: 400 });
     }
 
     if (new Date() > new Date(resetToken.expires_at)) {
-      return NextResponse.json({ success: false, message: "El enlace ha expirado. Solicita uno nuevo." }, { status: 400 });
+      return NextResponse.json({ success: false, message: t("AuthApi.resetPassword.expired") }, { status: 400 });
     }
 
     const hashedPassword = await hashPassword(password);
@@ -40,11 +43,11 @@ export async function POST(request: NextRequest) {
 
     await query("UPDATE password_reset_tokens SET used_at = NOW() WHERE id = ?", [resetToken.id]);
 
-    return NextResponse.json({ success: true, message: "Contraseña actualizada correctamente" });
+    return NextResponse.json({ success: true, message: t("AuthApi.resetPassword.success") });
   } catch (error) {
     console.error("Reset password error:", error);
     return NextResponse.json(
-      { success: false, message: "An error occurred. Please try again." },
+      { success: false, message: t("AuthApi.resetPassword.serverError") },
       { status: 500 }
     );
   }

@@ -3,16 +3,22 @@ import { queryOne } from "@/lib/db";
 import { comparePassword, generateToken } from "@/lib/auth";
 import { loginSchema } from "@/lib/validations/auth";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { getServerText } from "@/lib/server-text";
 import type { User, AuthResponse } from "@/types/user";
 
 export async function POST(request: NextRequest) {
+  let t = (keyPath: string, _values?: Record<string, string>, fallback?: string) => fallback ?? keyPath;
   try {
+    t = await getServerText(request);
     // Rate limiting: 5 intentos por IP cada 15 minutos
     const ip = getClientIp(request);
     const rl = checkRateLimit(`login:${ip}`, 5, 15 * 60 * 1000);
     if (!rl.allowed) {
       return NextResponse.json<AuthResponse>(
-        { success: false, message: `Demasiados intentos. Intenta en ${rl.retryAfterSeconds}s` },
+        {
+          success: false,
+          message: t("AuthApi.login.rateLimit", { seconds: String(rl.retryAfterSeconds) }),
+        },
         { status: 429 }
       );
     }
@@ -21,7 +27,7 @@ export async function POST(request: NextRequest) {
     const parsed = loginSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json<AuthResponse>(
-        { success: false, message: parsed.error.issues[0]?.message || "Datos inválidos" },
+        { success: false, message: t("AuthApi.login.invalidForm") },
         { status: 400 }
       );
     }
@@ -40,7 +46,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json<AuthResponse>(
         {
           success: false,
-          message: "Invalid email or password",
+          message: t("AuthApi.login.invalidCredentials"),
         },
         { status: 401 }
       );
@@ -53,7 +59,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json<AuthResponse>(
         {
           success: false,
-          message: "Invalid email or password",
+          message: t("AuthApi.login.invalidCredentials"),
         },
         { status: 401 }
       );
@@ -84,7 +90,7 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json<AuthResponse>(
       {
         success: true,
-        message: "Login successful",
+        message: t("AuthApi.login.success"),
         user: {
           id: user.id,
           email: user.email,
@@ -111,7 +117,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json<AuthResponse>(
       {
         success: false,
-        message: "An error occurred during login. Please try again.",
+        message: t("AuthApi.login.serverError"),
       },
       { status: 500 }
     );

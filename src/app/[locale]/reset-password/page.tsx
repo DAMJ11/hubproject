@@ -8,12 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AuthTransition, StaggeredTransition } from "@/components/shared/page-transition";
 import { toast } from "sonner";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { CheckCircle2, XCircle } from "lucide-react";
 
 export default function ResetPasswordPage() {
   const t = useTranslations("ResetPassword");
+  const locale = useLocale();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
@@ -41,7 +42,10 @@ export default function ResetPasswordPage() {
     try {
       const res = await fetch("/api/auth/reset-password", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-locale": locale,
+        },
         body: JSON.stringify({ token, password }),
       });
       const data = await res.json();

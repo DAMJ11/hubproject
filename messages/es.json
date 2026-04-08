@@ -9,7 +9,8 @@
     "register": "Crear cuenta",
     "openMenu": "Abrir menú",
     "closeMenu": "Cerrar menú",
-    "selectLanguage": "Seleccionar idioma"
+    "selectLanguage": "Seleccionar idioma",
+    "logoAlt": "Logo de FashionsDen"
   },
   "Footer": {
     "brandText": "Plataforma B2B para conectar marcas y fabricantes en procesos de diseño, desarrollo y producción de moda.",
@@ -41,7 +42,8 @@
       "1": "Política de Privacidad",
       "2": "Política de Cookies"
     },
-    "copyright": "Todos los derechos reservados."
+    "copyright": "Todos los derechos reservados.",
+    "logoAlt": "Logo de FashionsDen"
   },
   "Hero": {
     "pill": "Produccion de moda, simplificada",
@@ -620,6 +622,36 @@
     "invalidToken": "Enlace inválido o expirado",
     "error": "Ocurrió un error. Intenta de nuevo."
   },
+  "AuthApi": {
+    "login": {
+      "rateLimit": "Demasiados intentos. Intenta en {seconds}s",
+      "invalidForm": "Revisa tu correo y contraseña e inténtalo de nuevo.",
+      "invalidCredentials": "Correo o contraseña incorrectos.",
+      "success": "Sesión iniciada correctamente.",
+      "serverError": "Ocurrió un error al iniciar sesión. Intenta de nuevo."
+    },
+    "register": {
+      "rateLimit": "Demasiados intentos de registro. Intenta en {seconds}s",
+      "invalidForm": "Revisa los datos del formulario antes de continuar.",
+      "success": "Cuenta creada. Revisa tu correo para verificarla.",
+      "serverError": "Ocurrió un error al crear tu cuenta. Intenta de nuevo."
+    },
+    "forgotPassword": {
+      "rateLimit": "Demasiados intentos. Intenta en {seconds}s",
+      "emailRequired": "Ingresa un correo electrónico válido.",
+      "success": "Si el correo existe, recibirás un enlace para restablecer tu contraseña.",
+      "serverError": "Ocurrió un error al procesar tu solicitud. Intenta de nuevo."
+    },
+    "resetPassword": {
+      "invalidPayload": "Datos inválidos.",
+      "passwordMin": "La contraseña debe tener al menos 8 caracteres.",
+      "invalidToken": "Enlace inválido o expirado.",
+      "alreadyUsed": "Este enlace ya fue utilizado.",
+      "expired": "El enlace ha expirado. Solicita uno nuevo.",
+      "success": "Contraseña actualizada correctamente.",
+      "serverError": "Ocurrió un error al restablecer la contraseña. Intenta de nuevo."
+    }
+  },
   "Sidebar": {
     "nav": {
       "dashboard": "Dashboard",
@@ -627,6 +659,7 @@
       "projectsRfq": "Proyectos (RFQ)",
       "contracts": "Contratos",
       "users": "Usuarios",
+      "translations": "Textos",
       "messages": "Mensajes",
       "payments": "Pagos",
       "reviews": "Reseñas",
@@ -675,6 +708,7 @@
       "manufacturers": "Fabricantes",
       "users": "Usuarios",
       "messages": "Mensajes",
+      "translations": "Textos",
       "payments": "Pagos",
       "reviews": "Reseñas",
       "reports": "Reportes",
@@ -774,6 +808,16 @@
       "viewOpportunities": "Ver Oportunidades",
       "myProposals": "Mis Propuestas",
       "myProfile": "Mi Perfil"
+    },
+    "strategyCall": {
+      "bookedTitle": "Strategy Call reservada",
+      "bookedSubtitle": "Tu sesion de 30 minutos esta confirmada",
+      "bookedHint": "Revisa tu correo para los detalles",
+      "ctaTitle": "Reservar Strategy Call",
+      "ctaSubtitle": "Sesion de 30 minutos para acelerar tu proceso",
+      "ctaButton": "Reservar ahora",
+      "processing": "Procesando...",
+      "checking": "Revisando tus reservas..."
     }
   },
   "AdminDashboard": {
@@ -798,6 +842,31 @@
     "statusActive": "Activo",
     "statusPending": "Pendiente",
     "systemStatus": "Estado del sistema",
+    "uptime": "Disponibilidad: {value}",
+    "recentUserDates": {
+      "0": "Hace 2 horas",
+      "1": "Hace 5 horas",
+      "2": "Hace 1 día",
+      "3": "Hace 2 días"
+    },
+    "systemItems": {
+      "0": {
+        "name": "Servidor principal",
+        "status": "En línea"
+      },
+      "1": {
+        "name": "Base de datos",
+        "status": "En línea"
+      },
+      "2": {
+        "name": "API Gateway",
+        "status": "En línea"
+      },
+      "3": {
+        "name": "CDN",
+        "status": "En línea"
+      }
+    },
     "adminActions": "Acciones de admin",
     "actions": {
       "manageUsers": "Gestionar usuarios",
@@ -1720,6 +1789,53 @@
     "loadingBilling": "Cargando información de facturación...",
     "billingError": "Error al cargar la información de facturación"
   },
+  "TranslationsAdmin": {
+    "title": "Editor de textos",
+    "subtitle": "Edita y publica textos del sitio sin tocar el repositorio.",
+    "helperText": "Tip: busca por una frase visible en la web (por ejemplo, un titulo o boton).",
+    "keysCount": "claves",
+    "catalogTitle": "Catalogo de claves",
+    "searchPlaceholder": "Buscar por texto o key...",
+    "allModules": "Todos los modulos",
+    "emptyTitle": "No hay resultados",
+    "emptyDescription": "Prueba con otra busqueda o cambia el modulo.",
+    "editorTitle": "Editor",
+    "selectKeyTitle": "Selecciona una clave",
+    "selectKeyDescription": "Elige una key del catalogo para editar sus textos por idioma.",
+    "baseLabel": "Base",
+    "publishedLabel": "Publicado",
+    "draftLabel": "Borrador",
+    "editableValue": "Valor editable",
+    "textareaPlaceholder": "Escribe aqui el texto que quieres mostrar en la app...",
+    "saveDraft": "Guardar borrador",
+    "publish": "Publicar",
+    "savedDraft": "Borrador guardado",
+    "published": "Texto publicado",
+    "emptyValue": "Sin valor",
+    "unauthorizedTitle": "Acceso restringido",
+    "unauthorizedDescription": "Solo los administradores pueden editar los textos del sitio.",
+    "errors": {
+      "loadKeys": "No se pudieron cargar las claves.",
+      "loadDetail": "No se pudo cargar el detalle de la clave.",
+      "saveDraft": "No se pudo guardar el borrador.",
+      "publish": "No se pudo publicar el texto."
+    }
+  },
+  "GlobalError": {
+    "title": "Algo salio mal",
+    "description": "Ocurrio un error inesperado. Por favor intenta de nuevo.",
+    "retry": "Intentar de nuevo",
+    "logPrefix": "Error no manejado:"
+  },
+  "NotFoundPage": {
+    "title": "Pagina no encontrada",
+    "description": "La pagina que buscas no existe o fue movida.",
+    "goHome": "Volver al inicio",
+    "goDashboard": "Ir al panel"
+  },
+  "AppShell": {
+    "skipToContent": "Saltar al contenido"
+  },
   "Users": {
     "title": "Gestión de Clientes",
     "registeredClients": "{count} clientes registrados",
@@ -1775,6 +1891,11 @@
     "price": "$150 USD",
     "priceNote": "Disponibilidad limitada \u2014 el precio sube a $250 USD",
     "cta": "Reserva tu sesión AHORA",
+    "oneTimePaymentNote": "Pago único · Sin compromiso",
+    "errors": {
+      "generic": "Algo salió mal. Intenta de nuevo.",
+      "network": "Error de conexión. Intenta de nuevo."
+    },
     "brand": {
       "badge": "Para Marcas",
       "title": "¿No sabes por dónde empezar?",
@@ -1800,6 +1921,26 @@
         "Cómo ser elegido en vez de ignorado",
         "Errores que cometen los fabricantes con marcas EU/US"
       ]
+    }
+  },
+  "LiveChatWidget": {
+    "trigger": "Chat en vivo",
+    "title": "Soporte por chat",
+    "subtitle": "Conecta con un administrador",
+    "close": "Cerrar chat",
+    "success": {
+      "title": "¡Chat creado!",
+      "description": "Un administrador responderá pronto. Revisa tu bandeja de notificaciones."
+    },
+    "subjectLabel": "Asunto",
+    "subjectPlaceholder": "¿En qué puedo ayudarte?",
+    "messageLabel": "Mensaje",
+    "messagePlaceholder": "Describe tu pregunta o problema...",
+    "sending": "Enviando...",
+    "submit": "Iniciar chat",
+    "errors": {
+      "createFailed": "No se pudo crear el chat.",
+      "network": "Error de conexión. Intenta de nuevo."
     }
   },
   "Metadata": {

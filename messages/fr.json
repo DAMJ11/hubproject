@@ -9,7 +9,8 @@
     "register": "Creer un compte",
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
-    "selectLanguage": "Choisir la langue"
+    "selectLanguage": "Choisir la langue",
+    "logoAlt": "Logo FashionsDen"
   },
   "Footer": {
     "brandText": "Plateforme B2B reliant marques et fabricants pour le design, le developpement et la production mode.",
@@ -41,7 +42,8 @@
       "1": "Politique de confidentialite",
       "2": "Politique de cookies"
     },
-    "copyright": "Tous droits reserves."
+    "copyright": "Tous droits reserves.",
+    "logoAlt": "Logo FashionsDen"
   },
   "Hero": {
     "pill": "Production de mode, simplifiee",
@@ -620,6 +622,36 @@
     "invalidToken": "Lien invalide ou expiré",
     "error": "Une erreur est survenue. Veuillez réessayer."
   },
+  "AuthApi": {
+    "login": {
+      "rateLimit": "Trop de tentatives. Réessayez dans {seconds}s",
+      "invalidForm": "Vérifiez votre email et votre mot de passe, puis réessayez.",
+      "invalidCredentials": "Email ou mot de passe incorrect.",
+      "success": "Connexion réussie.",
+      "serverError": "Une erreur s'est produite lors de la connexion. Veuillez réessayer."
+    },
+    "register": {
+      "rateLimit": "Trop de tentatives d'inscription. Réessayez dans {seconds}s",
+      "invalidForm": "Vérifiez les informations du formulaire avant de continuer.",
+      "success": "Compte créé. Vérifiez votre email pour le confirmer.",
+      "serverError": "Une erreur s'est produite lors de la création du compte. Veuillez réessayer."
+    },
+    "forgotPassword": {
+      "rateLimit": "Trop de tentatives. Réessayez dans {seconds}s",
+      "emailRequired": "Entrez une adresse email valide.",
+      "success": "Si l'email existe, vous recevrez un lien pour réinitialiser votre mot de passe.",
+      "serverError": "Une erreur s'est produite lors du traitement de votre demande. Veuillez réessayer."
+    },
+    "resetPassword": {
+      "invalidPayload": "Données invalides.",
+      "passwordMin": "Le mot de passe doit contenir au moins 8 caractères.",
+      "invalidToken": "Lien invalide ou expiré.",
+      "alreadyUsed": "Ce lien a déjà été utilisé.",
+      "expired": "Ce lien a expiré. Demandez-en un nouveau.",
+      "success": "Mot de passe mis à jour avec succès.",
+      "serverError": "Une erreur s'est produite lors de la réinitialisation du mot de passe. Veuillez réessayer."
+    }
+  },
   "Sidebar": {
     "nav": {
       "dashboard": "Tableau de bord",
@@ -627,6 +659,7 @@
       "projectsRfq": "Projets (RFQ)",
       "contracts": "Contrats",
       "users": "Utilisateurs",
+      "translations": "Contenu",
       "messages": "Messages",
       "payments": "Paiements",
       "reviews": "Avis",
@@ -675,6 +708,7 @@
       "manufacturers": "Fabricants",
       "users": "Utilisateurs",
       "messages": "Messages",
+      "translations": "Contenu",
       "payments": "Paiements",
       "reviews": "Avis",
       "reports": "Rapports",
@@ -774,6 +808,16 @@
       "viewOpportunities": "Voir les opportunités",
       "myProposals": "Mes propositions",
       "myProfile": "Mon profil"
+    },
+    "strategyCall": {
+      "bookedTitle": "Strategy Call reservee",
+      "bookedSubtitle": "Votre session de 30 minutes est confirmee",
+      "bookedHint": "Verifiez votre email pour les details",
+      "ctaTitle": "Reserver une Strategy Call",
+      "ctaSubtitle": "Session de 30 minutes pour accelerer votre processus",
+      "ctaButton": "Reserver",
+      "processing": "Traitement...",
+      "checking": "Verification de vos reservations..."
     }
   },
   "AdminDashboard": {
@@ -798,6 +842,31 @@
     "statusActive": "Actif",
     "statusPending": "En attente",
     "systemStatus": "État du système",
+    "uptime": "Disponibilité : {value}",
+    "recentUserDates": {
+      "0": "Il y a 2 heures",
+      "1": "Il y a 5 heures",
+      "2": "Il y a 1 jour",
+      "3": "Il y a 2 jours"
+    },
+    "systemItems": {
+      "0": {
+        "name": "Serveur principal",
+        "status": "En ligne"
+      },
+      "1": {
+        "name": "Base de données",
+        "status": "En ligne"
+      },
+      "2": {
+        "name": "API Gateway",
+        "status": "En ligne"
+      },
+      "3": {
+        "name": "CDN",
+        "status": "En ligne"
+      }
+    },
     "adminActions": "Actions admin",
     "actions": {
       "manageUsers": "Gérer les utilisateurs",
@@ -1720,6 +1789,53 @@
     "loadingBilling": "Chargement des informations de facturation...",
     "billingError": "Erreur lors du chargement des informations de facturation"
   },
+  "TranslationsAdmin": {
+    "title": "Editeur de contenu",
+    "subtitle": "Modifiez et publiez les textes du site sans toucher au depot.",
+    "helperText": "Astuce: recherchez une phrase visible sur le site (par exemple, un titre ou un bouton).",
+    "keysCount": "cles",
+    "catalogTitle": "Catalogue des cles",
+    "searchPlaceholder": "Rechercher par texte ou key...",
+    "allModules": "Tous les modules",
+    "emptyTitle": "Aucun resultat",
+    "emptyDescription": "Essayez une autre recherche ou changez le filtre de module.",
+    "editorTitle": "Editeur",
+    "selectKeyTitle": "Selectionnez une cle",
+    "selectKeyDescription": "Choisissez une key du catalogue pour modifier ses valeurs par langue.",
+    "baseLabel": "Base",
+    "publishedLabel": "Publie",
+    "draftLabel": "Brouillon",
+    "editableValue": "Valeur editable",
+    "textareaPlaceholder": "Ecrivez ici le texte que vous voulez afficher dans l'application...",
+    "saveDraft": "Enregistrer le brouillon",
+    "publish": "Publier",
+    "savedDraft": "Brouillon enregistre",
+    "published": "Texte publie",
+    "emptyValue": "Aucune valeur",
+    "unauthorizedTitle": "Acces restreint",
+    "unauthorizedDescription": "Seuls les administrateurs peuvent modifier les textes du site.",
+    "errors": {
+      "loadKeys": "Impossible de charger les cles.",
+      "loadDetail": "Impossible de charger le detail de la cle.",
+      "saveDraft": "Impossible d'enregistrer le brouillon.",
+      "publish": "Impossible de publier le texte."
+    }
+  },
+  "GlobalError": {
+    "title": "Un probleme est survenu",
+    "description": "Une erreur inattendue est survenue. Veuillez reessayer.",
+    "retry": "Reessayer",
+    "logPrefix": "Erreur non geree:"
+  },
+  "NotFoundPage": {
+    "title": "Page introuvable",
+    "description": "La page que vous recherchez n'existe pas ou a ete deplacee.",
+    "goHome": "Retour a l'accueil",
+    "goDashboard": "Aller au tableau de bord"
+  },
+  "AppShell": {
+    "skipToContent": "Aller au contenu"
+  },
   "Users": {
     "title": "Gestion des clients",
     "registeredClients": "{count} clients enregistrés",
@@ -1779,6 +1895,11 @@
     "price": "$150 USD",
     "priceNote": "Disponibilit\u00e9 limit\u00e9e \u2014 le prix passera \u00e0 $250 USD",
     "cta": "R\u00e9servez votre session MAINTENANT",
+    "oneTimePaymentNote": "Paiement unique · Sans engagement",
+    "errors": {
+      "generic": "Une erreur est survenue. Veuillez réessayer.",
+      "network": "Erreur de connexion. Veuillez réessayer."
+    },
     "brand": {
       "badge": "Pour les Marques",
       "title": "Vous ne savez pas par o\u00f9 commencer\u00a0?",
@@ -1804,6 +1925,26 @@
         "Comment \u00eatre choisi plut\u00f4t qu\u2019ignor\u00e9",
         "Erreurs des fabricants avec les marques EU/US"
       ]
+    }
+  },
+  "LiveChatWidget": {
+    "trigger": "Chat en direct",
+    "title": "Support par chat",
+    "subtitle": "Connectez-vous avec un administrateur",
+    "close": "Fermer le chat",
+    "success": {
+      "title": "Chat créé !",
+      "description": "Un administrateur répondra bientôt. Vérifiez votre boîte de notifications."
+    },
+    "subjectLabel": "Objet",
+    "subjectPlaceholder": "Comment pouvons-nous vous aider ?",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Décrivez votre question ou votre problème...",
+    "sending": "Envoi...",
+    "submit": "Démarrer le chat",
+    "errors": {
+      "createFailed": "Impossible de créer le chat.",
+      "network": "Erreur de connexion. Veuillez réessayer."
     }
   },
   "SetupPayment": {

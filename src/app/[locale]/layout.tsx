@@ -1,5 +1,5 @@
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing, type AppLocale } from "@/i18n/routing";
 import { GeistSans } from "geist/font/sans";
@@ -27,6 +27,7 @@ export default async function LocaleLayout({
   }
 
   const messages = await getMessages();
+  const t = await getTranslations("AppShell");
 
   return (
     <html lang={locale} className={GeistSans.variable}>
@@ -35,7 +36,7 @@ export default async function LocaleLayout({
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-brand-600 focus:text-white focus:rounded-lg focus:text-sm"
         >
-          Skip to content
+          {t("skipToContent")}
         </a>
         <NextIntlClientProvider messages={messages}>
           <Providers>

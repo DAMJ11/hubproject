@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { CheckCircle2, PenLine, FileText, Search, Scissors, Cog, Sparkles } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import StatsCarousel from "@/components/StatsCarousel";
 
 const categoryIcons = [PenLine, FileText, Search, Scissors, Cog, Sparkles];
 const categoryColors = [
@@ -99,15 +98,6 @@ export default async function Hero() {
             </div>
           </div>
         </div>
-
-        {/* Stats cards — auto-carousel en móvil, flex centrado en desktop */}
-        <StatsCarousel
-          stats={[
-            { value: "250+", color: "text-teal-500", label: t("stats.0") },
-            { value: "1,200+", color: "text-blue-500", label: t("stats.1") },
-            { value: "92%", color: "text-teal-500", label: t("stats.2") },
-          ]}
-        />
       </div>
     </section>
   );

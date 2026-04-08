@@ -3,28 +3,35 @@ import { queryOne, query } from "@/lib/db";
 import { sendPasswordResetEmail } from "@/lib/email";
 import { randomBytes } from "crypto";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { getRequestLocale, getServerText } from "@/lib/server-text";
 
 export async function POST(request: NextRequest) {
+  let t = (keyPath: string, _values?: Record<string, string>, fallback?: string) => fallback ?? keyPath;
   try {
+    t = await getServerText(request);
     const ip = getClientIp(request);
     const rl = checkRateLimit(`forgot:${ip}`, 3, 15 * 60 * 1000);
     if (!rl.allowed) {
       return NextResponse.json(
-        { success: false, message: `Demasiados intentos. Intenta en ${rl.retryAfterSeconds}s` },
+        {
+          success: false,
+          message: t("AuthApi.forgotPassword.rateLimit", { seconds: String(rl.retryAfterSeconds) }),
+        },
         { status: 429 }
       );
     }
 
-    const { email, locale = "es" } = await request.json();
+    const { email } = await request.json();
+    const locale = getRequestLocale(request);
 
     if (!email || typeof email !== "string") {
-      return NextResponse.json({ success: false, message: "Email requerido" }, { status: 400 });
+      return NextResponse.json({ success: false, message: t("AuthApi.forgotPassword.emailRequired") }, { status: 400 });
     }
 
     // Always return success to avoid email enumeration
     const successResponse = NextResponse.json({
       success: true,
-      message: "Si el correo existe, recibirás un enlace para restablecer tu contraseña.",
+      message: t("AuthApi.forgotPassword.success"),
     });
 
     const user = await queryOne<{ id: number }>(
@@ -55,7 +62,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Forgot password error:", error);
     return NextResponse.json(
-      { success: false, message: "An error occurred. Please try again." },
+      { success: false, message: t("AuthApi.forgotPassword.serverError") },
       { status: 500 }
     );
   }

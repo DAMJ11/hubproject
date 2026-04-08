@@ -57,7 +57,7 @@ export default function Header() {
             <Link href="/" className="flex items-center gap-1">
               <Image
                 src={images.logo}
-                alt="FashionsDen"
+                alt={t("logoAlt")}
                 width={280}
                 height={44}
                 className="h-14 w-auto"

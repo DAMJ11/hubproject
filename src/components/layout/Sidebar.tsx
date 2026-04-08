@@ -25,6 +25,7 @@ import {
   Send,
   Building2,
   MessageSquare,
+  Languages,
 } from "lucide-react";
 import Image from "next/image";
 import { images } from "@/lib/images";
@@ -59,6 +60,7 @@ const adminNavItems: NavItem[] = [
   { key: "projectsRfq", href: "/dashboard/rfq", icon: FileText },
   { key: "contracts", href: "/dashboard/contracts", icon: Briefcase },
   { key: "users", href: "/dashboard/users", icon: Users },
+  { key: "translations", href: "/dashboard/translations", icon: Languages },
   { key: "payments", href: "/dashboard/payments", icon: CreditCard },
   { key: "reviews", href: "/dashboard/reviews", icon: Star },
   { key: "reports", href: "/dashboard/reports", icon: BarChart3 },
@@ -154,7 +156,7 @@ export default function Sidebar({
       role={isMobile ? "dialog" : undefined}
       aria-modal={isMobile ? true : undefined}
       aria-hidden={isMobile ? !mobileOpen : undefined}
-      aria-label="Menu lateral del dashboard"
+      aria-label={t("navigationLabel")}
       className={`fixed left-0 top-0 h-full bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 transition-all duration-300 z-40 ${
         isMobile
           ? `w-[84vw] max-w-[320px] transform lg:hidden ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`
@@ -167,7 +169,7 @@ export default function Sidebar({
           <Link href="/dashboard" onClick={() => handleNavigate("/dashboard")} className="flex items-center gap-2">
             <Image
               src={images.logo}
-              alt="FashionsDen"
+              alt={t("logoFullAlt")}
               width={180}
               height={30}
               className="h-8 w-auto"
@@ -177,7 +179,7 @@ export default function Sidebar({
           <Link href="/dashboard" onClick={() => handleNavigate("/dashboard")} className="mx-auto">
             <Image
               src={images.iconPrimary}
-              alt="FH"
+              alt={t("logoIconAlt")}
               width={40}
               height={40}
               className="w-10 h-10"
