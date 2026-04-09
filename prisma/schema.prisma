@@ -111,6 +111,9 @@ model User {
   admin_notes                AdminNote[]              @relation("AdminNotes")
   admin_created_projects     RfqProject[]             @relation("AdminCreatedProjects")
   invoices_proposed          Invoice[]
+  i18n_values_created        I18nValue[]              @relation("I18nValueCreatedBy")
+  i18n_values_published      I18nValue[]              @relation("I18nValuePublishedBy")
+  i18n_audit_logs_changed    I18nAuditLog[]           @relation("I18nAuditLogsChangedBy")
   company                    Company?                @relation(fields: [company_id], references: [id])
 
   @@index([company_id], map: "idx_users_company")
@@ -540,7 +543,6 @@ model I18nKey {
   created_at  DateTime       @default(now())
   updated_at  DateTime       @updatedAt
   values      I18nValue[]
-  audit_logs  I18nAuditLog[]
 
   @@index([module], map: "idx_i18n_keys_module")
   @@index([is_active], map: "idx_i18n_keys_active")
