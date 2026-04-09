@@ -246,8 +246,8 @@ export default function RFQMultiStepForm() {
       };
 
       const selectedBudget = data.budgetRange ? budgetRangeMap[data.budgetRange] : {};
-      const budgetMin = selectedBudget.min ?? (data.budgetMin ? Number(data.budgetMin) : undefined);
-      const budgetMax = selectedBudget.max ?? (data.budgetMax ? Number(data.budgetMax) : undefined);
+      const budgetMin = selectedBudget.min;
+      const budgetMax = selectedBudget.max;
 
       const res = await fetch("/api/rfq", {
         method: "POST",
