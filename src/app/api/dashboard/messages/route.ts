@@ -11,7 +11,7 @@ export async function GET() {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
-    const isAdmin = user.role === "admin";
+    const isAdmin = user.role === "admin" || user.role === "super_admin";
 
     let whereClause: string;
     const params: (string | number | boolean | null)[] = [];

@@ -208,8 +208,8 @@ export default function UsersPage() {
       `${u.first_name} ${u.last_name} ${u.email}`.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesRole =
       filterRole === "all" ||
-      (filterRole === "admin" && u.role === "admin") ||
-      (filterRole === "clients" && u.role !== "admin");
+      (filterRole === "admin" && (u.role === "admin" || u.role === "super_admin")) ||
+      (filterRole === "clients" && u.role !== "admin" && u.role !== "super_admin");
     return matchesSearch && matchesRole;
   });
 
@@ -295,10 +295,10 @@ export default function UsersPage() {
                 </TableCell>
                 <TableCell className="p-4">
                     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${
-                      u.role === "admin" ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"
+                      u.role === "super_admin" ? "bg-red-100 text-red-700" : u.role === "admin" ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"
                     }`}>
-                      {u.role === "admin" ? <ShieldCheck className="w-3 h-3" /> : <Users className="w-3 h-3" />}
-                      {u.role === "admin" ? t("role.admin") : t("role.client")}
+                      {(u.role === "admin" || u.role === "super_admin") ? <ShieldCheck className="w-3 h-3" /> : <Users className="w-3 h-3" />}
+                      {u.role === "super_admin" ? t("role.superAdmin") : u.role === "admin" ? t("role.admin") : t("role.client")}
                     </span>
                 </TableCell>
                 <TableCell className="p-4 text-sm text-gray-700 font-medium">{u.total_bookings}</TableCell>
@@ -329,9 +329,9 @@ export default function UsersPage() {
                         variant="ghost"
                         size="sm"
                         className="text-gray-500 hover:text-brand-600"
-                        disabled={actionLoadingId === u.id || u.role === "admin" || u.id === user.id}
-                        title={u.role === "admin" ? t("alreadyAdmin") : t("grantAdmin")}
-                        aria-label={u.role === "admin" ? t("alreadyAdmin") : t("grantAdmin")}
+                        disabled={actionLoadingId === u.id || u.role === "admin" || u.role === "super_admin" || u.id === user.id}
+                        title={u.role === "admin" || u.role === "super_admin" ? t("alreadyAdmin") : t("grantAdmin")}
+                        aria-label={u.role === "admin" || u.role === "super_admin" ? t("alreadyAdmin") : t("grantAdmin")}
                         onClick={() => handleUserAction(u, "grant_admin")}
                       >
                         <Shield className="w-4 h-4" />
@@ -340,9 +340,9 @@ export default function UsersPage() {
                         variant="ghost"
                         size="sm"
                         className="text-gray-500 hover:text-red-600"
-                        disabled={actionLoadingId === u.id || u.role === "admin" || u.id === user.id}
-                        title={u.role === "admin" ? t("cannotDeleteAdmin") : t("deleteUser")}
-                        aria-label={u.role === "admin" ? t("cannotDeleteAdmin") : t("deleteUser")}
+                        disabled={actionLoadingId === u.id || u.role === "admin" || u.role === "super_admin" || u.id === user.id}
+                        title={u.role === "admin" || u.role === "super_admin" ? t("cannotDeleteAdmin") : t("deleteUser")}
+                        aria-label={u.role === "admin" || u.role === "super_admin" ? t("cannotDeleteAdmin") : t("deleteUser")}
                         onClick={() => handleUserAction(u, "delete")}
                       >
                         <Trash2 className="w-4 h-4" />
@@ -351,9 +351,9 @@ export default function UsersPage() {
                         variant="ghost"
                         size="sm"
                         className="text-gray-500 hover:text-green-600"
-                        disabled={u.role === "admin" || u.id === user.id}
-                        title={u.role === "admin" ? t("cannotChangeAdminPassword") : t("changePassword")}
-                        aria-label={u.role === "admin" ? t("cannotChangeAdminPassword") : t("changePassword")}
+                        disabled={u.role === "admin" || u.role === "super_admin" || u.id === user.id}
+                        title={u.role === "admin" || u.role === "super_admin" ? t("cannotChangeAdminPassword") : t("changePassword")}
+                        aria-label={u.role === "admin" || u.role === "super_admin" ? t("cannotChangeAdminPassword") : t("changePassword")}
                         onClick={() => openPasswordModal(u)}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">

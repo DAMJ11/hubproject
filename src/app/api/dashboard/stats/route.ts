@@ -9,7 +9,7 @@ export async function GET() {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
-    if (user.role === "admin") {
+    if (user.role === "admin" || user.role === "super_admin") {
       const [companies, projects, contracts, revenue] = await Promise.all([
         queryOne<{ count: number }>("SELECT COUNT(*) as count FROM companies WHERE is_active = TRUE"),
         queryOne<{ count: number }>("SELECT COUNT(*) as count FROM rfq_projects WHERE status IN ('open','evaluating')"),
@@ -19,10 +19,10 @@ export async function GET() {
 
       return NextResponse.json({
         stats: [
-          { label: "Empresas Activas", value: companies?.count ?? 0, icon: "Factory" },
-          { label: "Proyectos Abiertos", value: projects?.count ?? 0, icon: "FileText" },
-          { label: "Contratos Activos", value: contracts?.count ?? 0, icon: "Briefcase" },
-          { label: "Ingresos", value: `$${((revenue?.total ?? 0)).toLocaleString("es-CO")}`, icon: "CreditCard" },
+          { label: "stats.activeCompanies", value: companies?.count ?? 0, icon: "Factory" },
+          { label: "stats.openProjects", value: projects?.count ?? 0, icon: "FileText" },
+          { label: "stats.activeContracts", value: contracts?.count ?? 0, icon: "Briefcase" },
+          { label: "stats.revenue", value: `$${((revenue?.total ?? 0)).toLocaleString("en-US")}`, icon: "CreditCard" },
         ],
       });
     }
@@ -45,9 +45,9 @@ export async function GET() {
 
       return NextResponse.json({
         stats: [
-          { label: "Proyectos Activos", value: projects?.count ?? 0, icon: "FileText" },
-          { label: "Contratos", value: contracts?.count ?? 0, icon: "Briefcase" },
-          { label: "Mensajes", value: messages?.count ?? 0, icon: "MessageSquare" },
+          { label: "stats.activeProjects", value: projects?.count ?? 0, icon: "FileText" },
+          { label: "stats.contracts", value: contracts?.count ?? 0, icon: "Briefcase" },
+          { label: "stats.messages", value: messages?.count ?? 0, icon: "MessageSquare" },
         ],
       });
     }
@@ -67,9 +67,9 @@ export async function GET() {
 
     return NextResponse.json({
       stats: [
-        { label: "Oportunidades", value: opportunities?.count ?? 0, icon: "Leaf" },
-        { label: "Propuestas Activas", value: proposals?.count ?? 0, icon: "Send" },
-        { label: "Contratos", value: contracts?.count ?? 0, icon: "Briefcase" },
+        { label: "stats.opportunities", value: opportunities?.count ?? 0, icon: "Leaf" },
+        { label: "stats.activeProposals", value: proposals?.count ?? 0, icon: "Send" },
+        { label: "stats.contracts", value: contracts?.count ?? 0, icon: "Briefcase" },
       ],
     });
   } catch (error) {

@@ -21,7 +21,7 @@ export async function getContracts(): Promise<ContractItem[] | null> {
   const user = await getCurrentUser();
   if (!user) return null;
 
-  const isAdmin = user.role === "admin";
+  const isAdmin = user.role === "admin" || user.role === "super_admin";
 
   if (!isAdmin && !user.companyId) return null;
 
@@ -100,7 +100,7 @@ export async function getContractDetail(contractId: number): Promise<{ contract:
   const user = await getCurrentUser();
   if (!user) return null;
 
-  const isAdmin = user.role === "admin";
+  const isAdmin = user.role === "admin" || user.role === "super_admin";
   if (!isAdmin && !user.companyId) return null;
 
   const contract = await query<Record<string, unknown>[]>(

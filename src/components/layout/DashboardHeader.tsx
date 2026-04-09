@@ -198,11 +198,13 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
   }, [t, pathname]);
 
   const pageTitle = breadcrumbs[breadcrumbs.length - 1] ?? t("dashboard");
-  const roleLabel = user.role === "admin"
-    ? t("roleAdmin")
-    : user.role === "manufacturer"
-      ? t("roleManufacturer")
-      : t("roleBrand");
+  const roleLabel = user.role === "super_admin"
+    ? t("roleSuperAdmin")
+    : user.role === "admin"
+      ? t("roleAdmin")
+      : user.role === "manufacturer"
+        ? t("roleManufacturer")
+        : t("roleBrand");
 
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 

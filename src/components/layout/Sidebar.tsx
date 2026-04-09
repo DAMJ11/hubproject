@@ -114,9 +114,10 @@ export default function Sidebar({
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const sidebarRef = useRef<HTMLElement | null>(null);
+  const isAdminLike = userRole === "admin" || userRole === "super_admin";
   const { opportunitiesCount } = useOpportunitiesCount(userRole === "manufacturer", 10000);
 
-  const navItems = userRole === "admin"
+  const navItems = isAdminLike
     ? adminNavItems
     : userRole === "manufacturer"
       ? manufacturerNavItems
@@ -210,13 +211,13 @@ export default function Sidebar({
         <div className="p-4">
           <Link
             href={
-              userRole === "admin" ? "/dashboard/rfq"
+              isAdminLike ? "/dashboard/rfq"
                 : userRole === "brand" ? "/dashboard/projects/new"
                 : "/dashboard/opportunities"
             }
             onClick={() =>
               handleNavigate(
-                userRole === "admin" ? "/dashboard/rfq"
+                isAdminLike ? "/dashboard/rfq"
                   : userRole === "brand" ? "/dashboard/projects/new"
                   : "/dashboard/opportunities"
               )
@@ -224,7 +225,7 @@ export default function Sidebar({
           >
             <Button className="w-full bg-brand-600 hover:bg-brand-700 text-white rounded-lg flex items-center justify-center gap-2">
               <Plus className="w-4 h-4" />
-              {userRole === "admin" ? t("ctaAdmin") : userRole === "brand" ? t("ctaBrand") : t("ctaManufacturer")}
+              {isAdminLike ? t("ctaAdmin") : userRole === "brand" ? t("ctaBrand") : t("ctaManufacturer")}
             </Button>
           </Link>
         </div>
@@ -232,13 +233,13 @@ export default function Sidebar({
         <div className="p-2 flex justify-center">
           <Link
             href={
-              userRole === "admin" ? "/dashboard/rfq"
+              isAdminLike ? "/dashboard/rfq"
                 : userRole === "brand" ? "/dashboard/projects/new"
                 : "/dashboard/opportunities"
             }
             onClick={() =>
               handleNavigate(
-                userRole === "admin" ? "/dashboard/rfq"
+                isAdminLike ? "/dashboard/rfq"
                   : userRole === "brand" ? "/dashboard/projects/new"
                   : "/dashboard/opportunities"
               )
@@ -246,12 +247,12 @@ export default function Sidebar({
           >
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button size="icon" className="bg-brand-600 hover:bg-brand-700 text-white rounded-lg" aria-label={userRole === "admin" ? t("ctaAdminAria") : userRole === "brand" ? t("ctaBrandAria") : t("ctaManufacturerAria")}>
+                <Button size="icon" className="bg-brand-600 hover:bg-brand-700 text-white rounded-lg" aria-label={isAdminLike ? t("ctaAdminAria") : userRole === "brand" ? t("ctaBrandAria") : t("ctaManufacturerAria")}>
                   <Plus className="w-5 h-5" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right">
-                {userRole === "admin" ? t("ctaAdmin") : userRole === "brand" ? t("ctaBrand") : t("ctaManufacturer")}
+                {isAdminLike ? t("ctaAdmin") : userRole === "brand" ? t("ctaBrand") : t("ctaManufacturer")}
               </TooltipContent>
             </Tooltip>
           </Link>
@@ -279,14 +280,16 @@ export default function Sidebar({
         <div className="px-4 pb-3">
           <span
             className={`text-xs px-2 py-1 rounded-full font-medium ${
-              userRole === "admin"
-                ? "bg-purple-100 text-purple-700"
-                : userRole === "manufacturer"
-                  ? "bg-emerald-100 text-emerald-700"
-                  : "bg-blue-100 text-blue-700"
+              userRole === "super_admin"
+                ? "bg-red-100 text-red-700"
+                : userRole === "admin"
+                  ? "bg-purple-100 text-purple-700"
+                  : userRole === "manufacturer"
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-blue-100 text-blue-700"
             }`}
           >
-            {userRole === "admin" ? t("roleAdmin") : userRole === "manufacturer" ? t("roleManufacturer") : t("roleBrand")}
+            {userRole === "super_admin" ? t("roleSuperAdmin") : userRole === "admin" ? t("roleAdmin") : userRole === "manufacturer" ? t("roleManufacturer") : t("roleBrand")}
           </span>
         </div>
       )}

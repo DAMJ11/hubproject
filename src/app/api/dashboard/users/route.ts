@@ -5,7 +5,7 @@ import { query } from "@/lib/db";
 export async function GET() {
   try {
     const user = await getCurrentUser();
-    if (!user || user.role !== "admin") {
+    if (!user || (user.role !== "admin" && user.role !== "super_admin")) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
@@ -39,7 +39,7 @@ export async function GET() {
 export async function PATCH(request: Request) {
   try {
     const currentUser = await getCurrentUser();
-    if (!currentUser || currentUser.role !== "admin") {
+    if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "super_admin")) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
@@ -71,7 +71,7 @@ export async function PATCH(request: Request) {
 
     // Cambiar contraseña solo si NO es admin
     if (action === "change_password") {
-      if (target[0].role === "admin") {
+      if (target[0].role === "admin" || target[0].role === "super_admin") {
         return NextResponse.json({ error: "No puedes cambiar la contraseña de un admin" }, { status: 400 });
       }
       if (!newPassword || typeof newPassword !== "string" || newPassword.length < 6) {
@@ -89,7 +89,7 @@ export async function PATCH(request: Request) {
 
     // Permitir activar/desactivar/grant_admin para cualquier usuario excepto el propio
     if (action === "grant_admin") {
-      if (target[0].role === "admin") {
+      if (target[0].role === "admin" || target[0].role === "super_admin") {
         return NextResponse.json({ error: "Ya es admin" }, { status: 400 });
       }
       await query(
@@ -119,7 +119,7 @@ export async function PATCH(request: Request) {
 export async function DELETE(request: Request) {
   try {
     const currentUser = await getCurrentUser();
-    if (!currentUser || currentUser.role !== "admin") {
+    if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "super_admin")) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
@@ -143,7 +143,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: "Usuario no encontrado" }, { status: 404 });
     }
 
-    if (target[0].role === "admin") {
+    if (target[0].role === "admin" || target[0].role === "super_admin") {
       return NextResponse.json(
         { error: "Solo se pueden eliminar usuarios no admin" },
         { status: 400 }

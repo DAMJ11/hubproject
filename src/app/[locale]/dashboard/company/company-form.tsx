@@ -41,7 +41,7 @@ export default function CompanyForm({ company }: CompanyFormProps) {
   }, [company.brand_categories]);
 
   const { user } = useDashboardUser();
-  const isAdmin = user?.role === "admin";
+  const isAdmin = user?.role === "admin" || user?.role === "super_admin";
 
   const [form, setForm] = useState({
     name: company.name || "",

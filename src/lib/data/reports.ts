@@ -35,7 +35,7 @@ export interface ReportsData {
 
 export async function getReports(): Promise<ReportsData | null> {
   const user = await getCurrentUser();
-  if (!user || user.role !== "admin") return null;
+  if (!user || (user.role !== "admin" && user.role !== "super_admin")) return null;
 
   const [monthlyData, topManufacturers, rfqByCategory, totals] = await Promise.all([
     query<MonthlyData[]>(

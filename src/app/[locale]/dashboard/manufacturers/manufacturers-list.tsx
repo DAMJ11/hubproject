@@ -59,7 +59,7 @@ export default function ManufacturersList({
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 12;
-  const canContactManufacturers = userRole === "brand" || userRole === "admin";
+  const canContactManufacturers = userRole === "brand" || userRole === "admin" || userRole === "super_admin";
   const hasLoadedOnceRef = useRef(false);
 
   const [debouncedFilters, setDebouncedFilters] = useState({

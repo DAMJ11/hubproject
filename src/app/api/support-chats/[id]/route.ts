@@ -47,7 +47,7 @@ export async function GET(
        LEFT JOIN users adm ON adm.id = sc.admin_user_id
        WHERE sc.id = ?
        AND (sc.initiated_by_user_id = ? OR ? = 1)`,
-      [chatId, user.id, user.role === "admin" ? 1 : 0]
+      [chatId, user.id, (user.role === "admin" || user.role === "super_admin") ? 1 : 0]
     );
 
     if (!chat) {

@@ -31,7 +31,7 @@ export async function getRfqList(status?: string): Promise<RFQItem[] | null> {
   if (user.role === "brand" && user.companyId) {
     fromWhere += ` AND r.brand_company_id = ?`;
     params.push(user.companyId);
-  } else if (user.role !== "admin") {
+  } else if (user.role !== "admin" && user.role !== "super_admin") {
     return [];
   }
 

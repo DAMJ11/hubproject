@@ -16,7 +16,7 @@ export async function getReviewsList(): Promise<{ reviews: ReviewItem[]; isAdmin
   const user = await getCurrentUser();
   if (!user) return null;
 
-  const isAdmin = user.role === "admin";
+  const isAdmin = user.role === "admin" || user.role === "super_admin";
 
   const reviews = await query<ReviewItem[]>(
     `SELECT r.*,

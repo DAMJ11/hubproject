@@ -5,7 +5,7 @@ import { query, queryOne } from "@/lib/db";
 export async function GET() {
   try {
     const user = await getCurrentUser();
-    if (!user || user.role !== "admin") {
+    if (!user || (user.role !== "admin" && user.role !== "super_admin")) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 

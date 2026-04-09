@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe, getPlanSlugFromPriceId } from "@/lib/stripe";
 import { query, queryOne } from "@/lib/db";
+import { createNotificationBulk } from "@/lib/notifications";
 import type Stripe from "stripe";
 
 /**
@@ -57,6 +58,14 @@ export async function POST(request: NextRequest) {
 
       case "invoice.payment_failed":
         await handleInvoicePaymentFailed(event.data.object as Stripe.Invoice);
+        break;
+
+      case "payment_intent.succeeded":
+        await handlePaymentIntentSucceeded(event.data.object as Stripe.PaymentIntent);
+        break;
+
+      case "payment_intent.payment_failed":
+        await handlePaymentIntentFailed(event.data.object as Stripe.PaymentIntent);
         break;
 
       default:
@@ -303,6 +312,93 @@ async function handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
       [localSub.id, invoice.id, amount, currency, "Pago fallido"]
     );
   }
+}
+
+// =============================================
+// Invoice Payment Intent handlers
+// =============================================
+
+async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent) {
+  const invoiceId = paymentIntent.metadata?.invoice_id;
+  if (!invoiceId) return; // Not an invoice payment
+
+  const invoice = await queryOne<{
+    id: number; contract_id: number; conversation_id: number | null; code: string; total: number; currency: string;
+  }>(
+    `SELECT id, contract_id, conversation_id, code, total, currency FROM invoices WHERE id = ? AND stripe_payment_intent_id = ?`,
+    [Number(invoiceId), paymentIntent.id]
+  );
+  if (!invoice) return;
+
+  // Mark invoice as paid
+  await query(
+    `UPDATE invoices SET status = 'paid', paid_at = NOW(), updated_at = NOW() WHERE id = ?`,
+    [invoice.id]
+  );
+
+  // Create payment record
+  const contract = await queryOne<{
+    brand_company_id: number; manufacturer_company_id: number;
+  }>(
+    `SELECT brand_company_id, manufacturer_company_id FROM contracts WHERE id = ?`,
+    [invoice.contract_id]
+  );
+
+  if (contract) {
+    await query(
+      `INSERT INTO payments (contract_id, payer_company_id, payee_company_id, amount, currency,
+        payment_method, status, transaction_id, payment_gateway, paid_at)
+       VALUES (?, ?, ?, ?, ?, 'card', 'completed', ?, 'stripe', NOW())`,
+      [invoice.contract_id, contract.brand_company_id, contract.manufacturer_company_id,
+        Number(invoice.total), invoice.currency, paymentIntent.id]
+    );
+
+    // System message
+    if (invoice.conversation_id) {
+      // Use a system user id (1 = first admin)
+      const adminUser = await queryOne<{ id: number }>(
+        `SELECT id FROM users WHERE role IN ('admin','super_admin') AND is_active = TRUE ORDER BY id ASC LIMIT 1`
+      );
+      const senderId = adminUser?.id ?? 1;
+      await query(
+        `INSERT INTO messages (conversation_id, sender_user_id, content, message_type, metadata)
+         VALUES (?, ?, ?, 'invoice', ?)`,
+        [invoice.conversation_id, senderId,
+          `Payment confirmed for invoice ${invoice.code}. Amount: ${invoice.total} ${invoice.currency}`,
+          JSON.stringify({ invoiceId: invoice.id, action: "paid", status: "paid" })]
+      );
+      await query(`UPDATE conversations SET last_message_at = NOW() WHERE id = ?`, [invoice.conversation_id]);
+    }
+
+    // Notify both parties
+    const allUsers = await query<Array<{ id: number }>>(
+      `SELECT id FROM users WHERE company_id IN (?, ?) AND is_active = TRUE`,
+      [contract.brand_company_id, contract.manufacturer_company_id]
+    );
+    if (allUsers.length) {
+      await createNotificationBulk(
+        allUsers.map((u) => u.id),
+        {
+          title: "Payment received",
+          message: `Payment of ${invoice.total} ${invoice.currency} for invoice ${invoice.code} has been confirmed.`,
+          type: "payment",
+          referenceType: "invoice",
+          referenceId: invoice.id,
+        }
+      );
+    }
+  }
+}
+
+async function handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent) {
+  const invoiceId = paymentIntent.metadata?.invoice_id;
+  if (!invoiceId) return;
+
+  // Revert to approved so they can retry
+  await query(
+    `UPDATE invoices SET status = 'approved', updated_at = NOW() WHERE id = ? AND status = 'payment_processing'`,
+    [Number(invoiceId)]
+  );
 }
 
 // =============================================

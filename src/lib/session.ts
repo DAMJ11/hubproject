@@ -18,7 +18,9 @@ export async function getSessionUser(request: NextRequest): Promise<(JWTPayload 
 
 /**
  * Verifica que el usuario tenga uno de los roles permitidos.
+ * super_admin hereda todos los permisos de admin.
  */
 export function hasRole(user: { role: UserRole }, ...roles: UserRole[]): boolean {
+  if (user.role === "super_admin" && roles.includes("admin")) return true;
   return roles.includes(user.role);
 }

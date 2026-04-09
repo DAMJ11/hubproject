@@ -20,6 +20,8 @@ import {
   ShieldAlert,
   AlertTriangle,
   Headphones,
+  FileText,
+  Receipt,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { emitUnreadMessagesRefresh, setViewingConversationId } from "@/hooks/useUnreadMessagesCount";
@@ -29,6 +31,7 @@ import { useTranslations, useLocale } from "next-intl";
 interface Conversation {
   id: number;
   rfq_id: number | null;
+  contract_id: number | null;
   subject: string | null;
   status: string;
   last_message_at: string | null;
@@ -63,6 +66,7 @@ interface Message {
   sender_name: string;
   sender_role: string;
   sender_avatar: string | null;
+  metadata?: string | null;
   pending?: boolean;
   failed?: boolean;
 }
@@ -99,6 +103,7 @@ export default function MessagesPanel() {
   const t = useTranslations("MessagesPanel");
   const locale = useLocale();
   const [user, setUser] = useState<UserInfo | null>(null);
+  const isAdminRole = user?.role === "admin" || user?.role === "super_admin";
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConv, setSelectedConv] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -133,6 +138,12 @@ export default function MessagesPanel() {
   const [rfqLoading, setRfqLoading] = useState(false);
   const [creatingChat, setCreatingChat] = useState(false);
   const [createChatError, setCreateChatError] = useState("");
+
+  // Invoice state
+  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
+  const [invoiceForm, setInvoiceForm] = useState({ productionCost: "", shippingCost: "", otherCosts: "", taxRate: "0", notes: "" });
+  const [creatingInvoice, setCreatingInvoice] = useState(false);
+  const [invoiceActionLoading, setInvoiceActionLoading] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -355,7 +366,7 @@ export default function MessagesPanel() {
 
   // Cargar opciones de RFQ para el nuevo chat según rol y empresa destino
   useEffect(() => {
-    if (!newChatTarget || !user || user.role === "admin") {
+    if (!newChatTarget || !user || isAdminRole) {
       setRfqOptions([]);
       setSelectedRfqId(null);
       return;
@@ -565,7 +576,7 @@ export default function MessagesPanel() {
     if (!newChatTarget || !newChatSubject.trim() || creatingChat) return;
     setCreateChatError("");
 
-    if (user?.role !== "admin" && !selectedRfqId) {
+    if (!isAdminRole && !selectedRfqId) {
       setCreateChatError(t("newChat.selectProject"));
       return;
     }
@@ -593,7 +604,7 @@ export default function MessagesPanel() {
         setNewChatMessage("");
         setSelectedRfqId(null);
         setRfqOptions([]);
-        setTab(user?.role === "admin" ? "chats" : "pending");
+        setTab(isAdminRole ? "chats" : "pending");
       } else {
         setCreateChatError(data.message || t("errors.createFailed"));
       }
@@ -645,6 +656,72 @@ export default function MessagesPanel() {
     return d.toLocaleDateString(locale, { day: "2-digit", month: "short" });
   };
 
+  // Invoice handlers
+  const handleCreateInvoice = async () => {
+    if (!selectedConv?.contract_id || !invoiceForm.productionCost) return;
+    setCreatingInvoice(true);
+    try {
+      const res = await fetch(`/api/contracts/${selectedConv.contract_id}/invoices`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productionCost: Number(invoiceForm.productionCost),
+          shippingCost: Number(invoiceForm.shippingCost || 0),
+          otherCosts: Number(invoiceForm.otherCosts || 0),
+          taxRate: Number(invoiceForm.taxRate || 0),
+          notes: invoiceForm.notes || undefined,
+          conversationId: selectedConv.id,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setShowInvoiceForm(false);
+        setInvoiceForm({ productionCost: "", shippingCost: "", otherCosts: "", taxRate: "0", notes: "" });
+        // Submit immediately
+        await fetch(`/api/invoices/${data.data.id}/status`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "submit" }),
+        });
+        loadMessages(selectedConv.id);
+      }
+    } catch { /* silent */ }
+    finally { setCreatingInvoice(false); }
+  };
+
+  const handleInvoiceAction = async (invoiceId: number, action: string, notes?: string) => {
+    setInvoiceActionLoading(`${invoiceId}-${action}`);
+    try {
+      const res = await fetch(`/api/invoices/${invoiceId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, notes }),
+      });
+      const data = await res.json();
+      if (data.success && selectedConv) {
+        loadMessages(selectedConv.id);
+      }
+    } catch { /* silent */ }
+    finally { setInvoiceActionLoading(null); }
+  };
+
+  const handleInvoicePay = async (invoiceId: number) => {
+    setInvoiceActionLoading(`${invoiceId}-pay`);
+    try {
+      const res = await fetch(`/api/invoices/${invoiceId}/pay`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      if (data.success && data.data?.clientSecret) {
+        // Open Stripe payment in new window or redirect
+        window.open(`/dashboard/pay?client_secret=${data.data.clientSecret}&invoice_id=${invoiceId}`, "_blank");
+        if (selectedConv) loadMessages(selectedConv.id);
+      }
+    } catch { /* silent */ }
+    finally { setInvoiceActionLoading(null); }
+  };
+
   const getInitials = (name: string) =>
     name
       .split(" ")
@@ -656,10 +733,10 @@ export default function MessagesPanel() {
   const getOtherPartyName = (conv: Conversation) => {
     if (!user) return conv.target_company_name || conv.brand_name || conv.manufacturer_name || t("defaults.conversation");
     if (conv.admin_user_id) {
-      if (user.role === "admin") return conv.target_company_name || t("defaults.company");
+      if (user.role === "admin" || user.role === "super_admin") return conv.target_company_name || t("defaults.company");
       return conv.admin_user_name || t("defaults.admin");
     }
-    if (user.role === "admin") return `${conv.brand_name || "-"} ? ${conv.manufacturer_name || "-"}`;
+    if (user.role === "admin" || user.role === "super_admin") return `${conv.brand_name || "-"} ? ${conv.manufacturer_name || "-"}`;
     if (user.companyId && conv.brand_company_id === user.companyId) return conv.manufacturer_name || t("companyType.manufacturer");
     return conv.brand_name || t("companyType.brand");
   };
@@ -667,9 +744,9 @@ export default function MessagesPanel() {
   const getOtherPartyType = (conv: Conversation) => {
     if (!user) return "";
     if (conv.admin_user_id) {
-      return user.role === "admin" ? t("defaults.company") : t("defaults.admin");
+      return (user.role === "admin" || user.role === "super_admin") ? t("defaults.company") : t("defaults.admin");
     }
-    if (user.role === "admin") return t("defaults.b2b");
+    if (user.role === "admin" || user.role === "super_admin") return t("defaults.b2b");
     if (user.companyId === conv.brand_company_id) return t("companyType.manufacturer");
     return t("companyType.brand");
   };
@@ -775,14 +852,14 @@ export default function MessagesPanel() {
                 <ArrowLeft className="w-3.5 h-3.5" /> {t("search.back")}
               </button>
               <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                {user?.role === "admin"
+                {isAdminRole
                   ? t("search.hintAdmin")
                   : user?.role === "brand" ? t("search.hintBrand") : t("search.hintManufacturer")}
               </p>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 dark:text-slate-400" />
                 <input
-                  placeholder={user?.role === "admin"
+                  placeholder={isAdminRole
                     ? t("search.inputAdmin")
                     : user?.role === "brand" ? t("search.inputBrand") : t("search.inputManufacturer")}
                   value={companySearch}
@@ -927,7 +1004,7 @@ export default function MessagesPanel() {
           >
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 p-6 w-full max-w-md">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">
-                {user?.role === "admin" ? t("newChat.titleAdmin") : t("newChat.titleUser")}
+                {isAdminRole ? t("newChat.titleAdmin") : t("newChat.titleUser")}
               </h3>
               <div className="flex items-center gap-3 mb-4 bg-slate-100 dark:bg-slate-700 rounded-lg p-3">
                 <div className="w-10 h-10 bg-brand-600 rounded-full flex items-center justify-center flex-shrink-0">
@@ -943,12 +1020,12 @@ export default function MessagesPanel() {
                 </div>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
-                {user?.role === "admin"
+                {isAdminRole
                   ? t("newChat.infoAdmin")
                   : t("newChat.infoUser")}
               </p>
               <div className="space-y-3">
-                {user?.role !== "admin" && (
+                {!isAdminRole && (
                   <div>
                     <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
                       {user?.role === "brand" ? t("newChat.rfqLabelBrand") : t("newChat.rfqLabelManufacturer")}
@@ -1004,7 +1081,7 @@ export default function MessagesPanel() {
                 )}
                 <Button
                   onClick={handleCreateChat}
-                  disabled={!newChatSubject.trim() || creatingChat || (user?.role !== "admin" && (!selectedRfqId || rfqOptions.length === 0))}
+                  disabled={!newChatSubject.trim() || creatingChat || (!isAdminRole && (!selectedRfqId || rfqOptions.length === 0))}
                   className="w-full bg-brand-600 hover:bg-brand-700 text-white rounded-lg"
                 >
                   {creatingChat ? (
@@ -1012,7 +1089,7 @@ export default function MessagesPanel() {
                   ) : (
                     <Send className="w-4 h-4 mr-2" />
                   )}
-                  {user?.role === "admin" ? t("newChat.submitAdmin") : t("newChat.submitUser")}
+                  {isAdminRole ? t("newChat.submitAdmin") : t("newChat.submitUser")}
                 </Button>
               </div>
             </div>
@@ -1025,7 +1102,7 @@ export default function MessagesPanel() {
               <Building2 className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
               <h3 className="text-lg font-medium text-slate-900 dark:text-white">{t("searchEmpty.title")}</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                {user?.role === "admin" ? t("searchEmpty.subtitleAdmin") : user?.role === "brand" ? t("searchEmpty.subtitleBrand") : t("searchEmpty.subtitleManufacturer")}
+                {isAdminRole ? t("searchEmpty.subtitleAdmin") : user?.role === "brand" ? t("searchEmpty.subtitleBrand") : t("searchEmpty.subtitleManufacturer")}
               </p>
             </div>
           </div>
@@ -1167,6 +1244,7 @@ export default function MessagesPanel() {
               {messages.map((msg, idx) => {
                 const isMe = msg.sender_user_id === user?.id;
                 const isSystem = msg.message_type === "system";
+                const isInvoice = msg.message_type === "invoice";
 
                 // Agrupacion: mostrar hora del bloque
                 const prevMsg = idx > 0 ? messages[idx - 1] : null;
@@ -1179,6 +1257,81 @@ export default function MessagesPanel() {
                       <span className="text-xs text-slate-500 dark:text-slate-400 bg-blue-50 dark:bg-slate-800 px-3 py-1 rounded-lg shadow">
                         {msg.content}
                       </span>
+                    </div>
+                  );
+                }
+
+                if (isInvoice) {
+                  const meta = (() => { try { return JSON.parse(msg.metadata || "{}"); } catch { return {}; } })();
+                  const invId = meta.invoiceId;
+                  const invStatus = meta.status || "";
+                  const invAction = meta.action || "";
+                  const statusColors: Record<string, string> = {
+                    draft: "bg-gray-100 text-gray-700",
+                    pending_approval: "bg-yellow-100 text-yellow-800",
+                    revision_requested: "bg-orange-100 text-orange-800",
+                    approved: "bg-green-100 text-green-800",
+                    payment_processing: "bg-blue-100 text-blue-800",
+                    paid: "bg-emerald-100 text-emerald-800",
+                    cancelled: "bg-red-100 text-red-700",
+                  };
+
+                  return (
+                    <div key={msg.id}>
+                      {showDateSep && (
+                        <div className="flex justify-center py-2">
+                          <span className="text-xs text-slate-500 dark:text-slate-400 bg-blue-50 dark:bg-slate-800 px-3 py-1 rounded-lg shadow">
+                            {new Date(msg.created_at).toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric" })}
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex justify-center py-2">
+                        <div className="bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-xl p-4 shadow-sm max-w-[80%] w-full">
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              <FileText className="w-4 h-4 text-blue-600" />
+                              <span className="text-sm font-semibold text-slate-900 dark:text-white">{t("invoice.title")}</span>
+                            </div>
+                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusColors[invStatus] || "bg-gray-100 text-gray-700"}`}>
+                              {invStatus.replace(/_/g, " ")}
+                            </span>
+                          </div>
+                          <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">{msg.content}</p>
+                          {invId && invStatus === "pending_approval" && !isMe && (
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleInvoiceAction(invId, "approve")}
+                                disabled={invoiceActionLoading === `${invId}-approve`}
+                                className="flex-1 text-xs bg-green-600 hover:bg-green-700 text-white rounded-lg py-1.5 disabled:opacity-50"
+                              >
+                                {t("invoice.approve")}
+                              </button>
+                              <button
+                                onClick={() => handleInvoiceAction(invId, "request_revision", "Please review the amounts")}
+                                disabled={invoiceActionLoading === `${invId}-request_revision`}
+                                className="flex-1 text-xs bg-orange-500 hover:bg-orange-600 text-white rounded-lg py-1.5 disabled:opacity-50"
+                              >
+                                {t("invoice.requestRevision")}
+                              </button>
+                            </div>
+                          )}
+                          {invId && invStatus === "approved" && user?.companyId && (
+                            <button
+                              onClick={() => handleInvoicePay(invId)}
+                              disabled={invoiceActionLoading === `${invId}-pay`}
+                              className="w-full text-xs bg-brand-600 hover:bg-brand-700 text-white rounded-lg py-2 disabled:opacity-50 font-medium"
+                            >
+                              {t("invoice.payNow")}
+                            </button>
+                          )}
+                          {invStatus === "paid" && (
+                            <div className="flex items-center gap-1 text-green-600 text-xs font-medium">
+                              <CheckCircle2 className="w-3.5 h-3.5" /> {t("invoice.paid")}
+                            </div>
+                          )}
+                          <p className="text-[10px] text-slate-400 mt-2 text-right">{formatTime(msg.created_at)}</p>
+                        </div>
+                      </div>
                     </div>
                   );
                 }
@@ -1290,28 +1443,98 @@ export default function MessagesPanel() {
                 )}
               </div>
             ) : (
-              <div className="px-3 py-2 bg-white dark:bg-slate-800 flex items-end gap-2">
-                <div className="flex-1 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-end">
-                  <input
-                    placeholder={t("chat.inputPlaceholder")}
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSend();
-                      }
-                    }}
-                    className="flex-1 bg-transparent text-slate-800 dark:text-white text-sm px-3 py-[9px] outline-none border-none placeholder:text-slate-500 dark:placeholder:text-slate-400"
-                  />
+              <div className="bg-white dark:bg-slate-800">
+                {/* Invoice creation form */}
+                {showInvoiceForm && selectedConv?.contract_id && (
+                  <div className="px-3 pt-2 pb-1 border-t dark:border-slate-700">
+                    <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-3 space-y-2">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                          <Receipt className="w-3.5 h-3.5" /> {t("invoice.createInvoice")}
+                        </span>
+                        <button onClick={() => setShowInvoiceForm(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                          <XCircle className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <input
+                          type="number"
+                          placeholder={t("invoice.productionCost")}
+                          value={invoiceForm.productionCost}
+                          onChange={(e) => setInvoiceForm({ ...invoiceForm, productionCost: e.target.value })}
+                          className="text-xs px-2 py-1.5 rounded border dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white"
+                        />
+                        <input
+                          type="number"
+                          placeholder={t("invoice.shippingCost")}
+                          value={invoiceForm.shippingCost}
+                          onChange={(e) => setInvoiceForm({ ...invoiceForm, shippingCost: e.target.value })}
+                          className="text-xs px-2 py-1.5 rounded border dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white"
+                        />
+                        <input
+                          type="number"
+                          placeholder={t("invoice.otherCosts")}
+                          value={invoiceForm.otherCosts}
+                          onChange={(e) => setInvoiceForm({ ...invoiceForm, otherCosts: e.target.value })}
+                          className="text-xs px-2 py-1.5 rounded border dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white"
+                        />
+                        <input
+                          type="number"
+                          placeholder={t("invoice.taxRate")}
+                          value={invoiceForm.taxRate}
+                          onChange={(e) => setInvoiceForm({ ...invoiceForm, taxRate: e.target.value })}
+                          className="text-xs px-2 py-1.5 rounded border dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white"
+                        />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder={t("invoice.notes")}
+                        value={invoiceForm.notes}
+                        onChange={(e) => setInvoiceForm({ ...invoiceForm, notes: e.target.value })}
+                        className="w-full text-xs px-2 py-1.5 rounded border dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white"
+                      />
+                      <button
+                        onClick={handleCreateInvoice}
+                        disabled={!invoiceForm.productionCost || creatingInvoice}
+                        className="w-full text-xs bg-brand-600 hover:bg-brand-700 text-white rounded-lg py-1.5 disabled:opacity-50 font-medium"
+                      >
+                        {creatingInvoice ? <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto" /> : t("invoice.sendInvoice")}
+                      </button>
+                    </div>
+                  </div>
+                )}
+                <div className="px-3 py-2 flex items-end gap-2">
+                  {selectedConv?.contract_id && (
+                    <button
+                      onClick={() => setShowInvoiceForm(!showInvoiceForm)}
+                      title={t("invoice.createInvoice")}
+                      className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 flex items-center justify-center text-slate-600 dark:text-slate-300 transition-colors flex-shrink-0"
+                    >
+                      <Receipt className="w-5 h-5" />
+                    </button>
+                  )}
+                  <div className="flex-1 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-end">
+                    <input
+                      placeholder={t("chat.inputPlaceholder")}
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          handleSend();
+                        }
+                      }}
+                      className="flex-1 bg-transparent text-slate-800 dark:text-white text-sm px-3 py-[9px] outline-none border-none placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                    />
+                  </div>
+                  <button
+                    onClick={handleSend}
+                    disabled={!newMessage.trim() || sending}
+                    className="w-10 h-10 rounded-full bg-brand-600 hover:bg-brand-700 flex items-center justify-center text-white disabled:opacity-40 disabled:hover:bg-brand-600 transition-colors flex-shrink-0"
+                  >
+                    {sending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5 ml-0.5" />}
+                  </button>
                 </div>
-                <button
-                  onClick={handleSend}
-                  disabled={!newMessage.trim() || sending}
-                  className="w-10 h-10 rounded-full bg-brand-600 hover:bg-brand-700 flex items-center justify-center text-white disabled:opacity-40 disabled:hover:bg-brand-600 transition-colors flex-shrink-0"
-                >
-                  {sending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5 ml-0.5" />}
-                </button>
               </div>
             )}
           </div>

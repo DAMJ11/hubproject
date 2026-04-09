@@ -119,15 +119,15 @@ export interface CompanyItem {
 
 export async function getCompanies(type?: string): Promise<CompanyItem[] | null> {
   const user = await getCurrentUser();
-  if (!user || user.role !== "admin") return null;
+  if (!user || (user.role !== "admin" && user.role !== "super_admin")) return null;
 
   let sql = `SELECT id, name, slug, type, description, logo_url, city, state, country,
              is_verified, employee_count, founded_year, created_at
-             FROM companies WHERE is_active = TRUE`;
+             FROM companies`;
   const params: string[] = [];
 
   if (type && (type === "brand" || type === "manufacturer")) {
-    sql += ` AND type = ?`;
+    sql += ` WHERE type = ?`;
     params.push(type);
   }
 

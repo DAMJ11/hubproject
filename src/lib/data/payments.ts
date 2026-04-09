@@ -26,7 +26,7 @@ export async function getPaymentsList(): Promise<{ payments: PaymentItem[]; tota
   const user = await getCurrentUser();
   if (!user) return null;
 
-  const isAdmin = user.role === "admin";
+  const isAdmin = user.role === "admin" || user.role === "super_admin";
 
   let whereClause = "";
   const params: (string | number)[] = [];

@@ -121,7 +121,7 @@ export default function TranslationsAdminPage() {
   }, [t]);
 
   useEffect(() => {
-    if (user?.role !== "admin") {
+    if (user?.role !== "admin" && user?.role !== "super_admin") {
       return;
     }
 
@@ -129,7 +129,7 @@ export default function TranslationsAdminPage() {
   }, [fetchKeys, user?.role]);
 
   useEffect(() => {
-    if (!selectedKey || user?.role !== "admin") {
+    if (!selectedKey || (user?.role !== "admin" && user?.role !== "super_admin")) {
       setDetail(null);
       return;
     }
@@ -214,7 +214,7 @@ export default function TranslationsAdminPage() {
     );
   }
 
-  if (!user || user.role !== "admin") {
+  if (!user || (user.role !== "admin" && user.role !== "super_admin")) {
     return <EmptyState icon={ShieldAlert} title={t("unauthorizedTitle")} description={t("unauthorizedDescription")} />;
   }
 

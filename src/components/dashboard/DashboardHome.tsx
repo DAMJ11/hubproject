@@ -69,7 +69,7 @@ export default function DashboardHome({ user, initialStats, initialProjects }: D
   const locale = useLocale();
   const isBrand = user.role === "brand";
   const isManufacturer = user.role === "manufacturer";
-  const isAdmin = user.role === "admin";
+  const isAdmin = user.role === "admin" || user.role === "super_admin";
   const stats = initialStats;
   const projects = initialProjects;
   const [callLoading, setCallLoading] = useState(false);
@@ -182,7 +182,7 @@ export default function DashboardHome({ user, initialStats, initialProjects }: D
                   </div>
                   <div className="min-w-0">
                     <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white leading-tight">{stat.value}</p>
-                    <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 leading-tight">{stat.label}</p>
+                    <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 leading-tight">{t(stat.label)}</p>
                   </div>
                 </div>
               </CardContent>

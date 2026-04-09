@@ -9,7 +9,7 @@ export default async function DashboardTranslationsPage() {
     redirect("/login");
   }
 
-  if (user.role !== "admin") {
+  if (user.role !== "admin" && user.role !== "super_admin") {
     redirect("/dashboard");
   }
 

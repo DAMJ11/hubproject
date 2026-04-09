@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Factory, Search, CheckCircle, MapPin, Users, Calendar } from "lucide-react";
+import { Factory, Search, CheckCircle, MapPin, Users, Calendar, Eye } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/shared/empty-state";
 import type { CompanyItem } from "@/lib/data/companies";
@@ -155,7 +155,8 @@ export default function CompaniesList({ companies, initialType }: { companies: C
             return (
               <div
                 key={company.id}
-                className="bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700 p-5 hover:shadow-md transition-shadow"
+                className="bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700 p-5 hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => router.push(`/dashboard/companies/${company.id}`)}
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
@@ -197,6 +198,19 @@ export default function CompaniesList({ companies, initialType }: { companies: C
                       {t("foundedPrefix")} {company.founded_year}
                     </div>
                   )}
+                </div>
+
+                <div className="mt-3 pt-3 border-t dark:border-slate-700">
+                  <button
+                    className="inline-flex items-center gap-1 text-xs text-brand-600 hover:text-brand-700 font-medium"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push(`/dashboard/companies/${company.id}`);
+                    }}
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    {t("viewDetail")}
+                  </button>
                 </div>
               </div>
             );
