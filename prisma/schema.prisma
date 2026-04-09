@@ -531,6 +531,60 @@ model AdminNote {
   @@map("admin_notes")
 }
 
+model I18nKey {
+  id          Int            @id @default(autoincrement())
+  key_path    String         @unique @db.VarChar(255)
+  module      String         @db.VarChar(100)
+  description String?        @db.Text
+  is_active   Boolean        @default(true)
+  created_at  DateTime       @default(now())
+  updated_at  DateTime       @updatedAt
+  values      I18nValue[]
+  audit_logs  I18nAuditLog[]
+
+  @@index([module], map: "idx_i18n_keys_module")
+  @@index([is_active], map: "idx_i18n_keys_active")
+  @@map("i18n_keys")
+}
+
+model I18nValue {
+  id                   Int         @id @default(autoincrement())
+  key_id               Int
+  locale               String      @db.VarChar(5)
+  value_text           String      @db.MediumText
+  status               String      @db.VarChar(20)
+  version              Int         @default(1)
+  created_by_user_id   Int
+  published_by_user_id Int?
+  published_at         DateTime?
+  created_at           DateTime    @default(now())
+  updated_at           DateTime    @updatedAt
+  key                  I18nKey     @relation(fields: [key_id], references: [id])
+  created_by_user      User        @relation("I18nValueCreatedBy", fields: [created_by_user_id], references: [id], onDelete: Cascade)
+  published_by_user    User?       @relation("I18nValuePublishedBy", fields: [published_by_user_id], references: [id], onDelete: Cascade)
+
+  @@unique([key_id, locale, version], map: "uq_i18n_values_key_locale_version")
+  @@index([key_id, locale], map: "idx_i18n_values_key_locale")
+  @@index([locale, status], map: "idx_i18n_values_locale_status")
+  @@map("i18n_values")
+}
+
+model I18nAuditLog {
+  id                 Int      @id @default(autoincrement())
+  key_path           String   @db.VarChar(255)
+  locale             String   @db.VarChar(5)
+  old_value          String?  @db.MediumText
+  new_value          String   @db.MediumText
+  action             String   @db.VarChar(20)
+  changed_by_user_id Int
+  created_at         DateTime @default(now())
+  changed_by_user    User     @relation("I18nAuditLogsChangedBy", fields: [changed_by_user_id], references: [id], onDelete: Cascade)
+
+  @@index([key_path, locale], map: "idx_i18n_audit_key_locale")
+  @@index([created_at], map: "idx_i18n_audit_created")
+  @@map("i18n_audit_logs")
+}
+
 model SubscriptionPlan {
   id                  Int                  @id @default(autoincrement())
   slug                SubscriptionPlanType @unique
