@@ -86,8 +86,8 @@ export default function SetupPaymentPage() {
   return (
     <div className="flex min-h-[60vh] items-center justify-center">
       <div className="mx-auto max-w-lg text-center">
-        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/20">
-          <CreditCard className="h-10 w-10 text-blue-600 dark:text-blue-400" />
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-brand-100 dark:bg-brand-900/20">
+          <CreditCard className="h-10 w-10 text-brand-600 dark:text-brand-300" />
         </div>
 
         <h1 className="mt-6 text-2xl font-bold text-gray-900 dark:text-white">
@@ -130,7 +130,7 @@ export default function SetupPaymentPage() {
         <Button
           onClick={handleSetupPayment}
           disabled={loading}
-          className="mt-6 w-full"
+          className="mt-6 w-full bg-brand-600 hover:bg-brand-700 text-white"
           size="lg"
         >
           {loading ? (

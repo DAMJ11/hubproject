@@ -195,10 +195,27 @@ export async function PUT(
     }
 
     if (action === "shortlist") {
-      await query(
-        `UPDATE proposals SET status = 'shortlisted', updated_at = NOW() WHERE id = ?`,
-        [proposalId]
-      );
+      const connection = await pool.getConnection();
+      try {
+        await connection.beginTransaction();
+
+        await connection.execute(
+          `UPDATE proposals SET status = 'shortlisted', updated_at = NOW() WHERE id = ?`,
+          [proposalId]
+        );
+
+        await connection.execute(
+          `UPDATE rfq_projects SET status = 'evaluating', updated_at = NOW() WHERE id = ? AND status = 'open'`,
+          [p.rfq_id]
+        );
+
+        await connection.commit();
+      } catch (txError) {
+        await connection.rollback();
+        throw txError;
+      } finally {
+        connection.release();
+      }
 
       // Notify manufacturer
       const mfgUser = await queryOne<{ id: number }>(

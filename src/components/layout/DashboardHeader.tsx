@@ -376,11 +376,11 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
               <p className="font-medium text-gray-900 dark:text-white">{user.firstName} {user.lastName}</p>
               <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
             </div>
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem className="cursor-pointer" onClick={() => router.push("/dashboard/company")}>
               <User className="w-4 h-4 mr-2" />
               {t("segmentLabels.company")}
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem className="cursor-pointer" onClick={() => router.push("/dashboard/settings")}>
               <Settings className="w-4 h-4 mr-2" />
               {t("profileSettings")}
             </DropdownMenuItem>

@@ -53,8 +53,8 @@ export default function ProjectsList({ projects }: { projects: RFQItem[] }) {
       {filtered.length === 0 ? (
         <EmptyState
           icon={FileText}
-          title={t("emptyState")}
-          action={{ label: t("firstProject"), href: "/dashboard/projects/new" }}
+          title={projects.length > 0 ? t("emptyStateFiltered") : t("emptyState")}
+          action={{ label: projects.length > 0 ? t("newProject") : t("firstProject"), href: "/dashboard/projects/new" }}
         />
       ) : (
         <div className="grid gap-4">

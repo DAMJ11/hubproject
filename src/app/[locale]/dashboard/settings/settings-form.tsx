@@ -455,7 +455,7 @@ export default function SettingsForm({ user }: SettingsFormProps) {
                         type="checkbox"
                         checked={notifications[item.key]}
                         onChange={() => setNotifications({ ...notifications, [item.key]: !notifications[item.key] })}
-                        className="w-5 h-5 rounded text-brand-600 focus:ring-brand-600"
+                        className="h-5 w-5 rounded border-gray-300 accent-brand-600 focus:ring-2 focus:ring-brand-600"
                       />
                     </label>
                   ))}
@@ -478,7 +478,7 @@ export default function SettingsForm({ user }: SettingsFormProps) {
                         type="checkbox"
                         checked={notifications[item.key]}
                         onChange={() => setNotifications({ ...notifications, [item.key]: !notifications[item.key] })}
-                        className="w-5 h-5 rounded text-brand-600 focus:ring-brand-600"
+                        className="h-5 w-5 rounded border-gray-300 accent-brand-600 focus:ring-2 focus:ring-brand-600"
                       />
                     </label>
                   ))}
