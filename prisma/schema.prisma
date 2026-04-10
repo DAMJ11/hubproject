@@ -32,12 +32,7 @@ model Company {
   legal_id                      String?                     @db.VarChar(50)
   description                   String?                     @db.Text
   logo_url                      String?                     @db.MediumText
-  cover_image_url               String?                     @db.MediumText
   website                       String?                     @db.VarChar(500)
-  instagram_handle              String?                     @db.VarChar(120)
-  brand_categories              String?                     @db.Text
-  brand_tagline                 String?                     @db.VarChar(160)
-  ships_worldwide               Boolean                     @default(false)
   phone                         String?                     @db.VarChar(50)
   email                         String?                     @db.VarChar(255)
   address_line1                 String?                     @db.VarChar(255)
@@ -53,6 +48,11 @@ model Company {
   verified_at                   DateTime?
   created_at                    DateTime                    @default(now())
   updated_at                    DateTime                    @updatedAt
+  brand_categories              String?                     @db.Text
+  brand_tagline                 String?                     @db.VarChar(160)
+  cover_image_url               String?                     @db.MediumText
+  instagram_handle              String?                     @db.VarChar(120)
+  ships_worldwide               Boolean                     @default(false)
   contracts_as_brand            Contract[]                  @relation("ContractBrand")
   contracts_as_manufacturer     Contract[]                  @relation("ContractManufacturer")
   conversations_as_brand        Conversation[]              @relation("ConvBrand")
@@ -80,7 +80,7 @@ model User {
   phone                      String?                 @db.VarChar(50)
   avatar_url                 String?                 @db.MediumText
   preferred_currency         String                  @default("USD") @db.VarChar(3)
-  role                       UserRole                @default(brand)
+  role                       users_role              @default(brand)
   company_id                 Int?
   terms_accepted             Boolean                 @default(false)
   email_verified             Boolean                 @default(false)
@@ -94,6 +94,7 @@ model User {
   created_at                 DateTime                @default(now())
   updated_at                 DateTime                @updatedAt
   addresses                  Address[]
+  admin_notes                AdminNote[]             @relation("AdminNotes")
   admin_conversations        Conversation[]          @relation("ConversationAdmin")
   initiated_conversations    Conversation[]          @relation("ConversationInitiator")
   messages                   Message[]
@@ -104,16 +105,10 @@ model User {
   rfq_projects               RfqProject[]
   strategy_call_purchases    StrategyCallPurchase[]
   subscriptions              Subscription[]
-  payment_methods            UserPaymentMethod[]
-  support_chats_initiated    SupportChat[]           @relation("SupportChatInitiator")
   support_chats_admin        SupportChat[]           @relation("SupportChatAdmin")
+  support_chats_initiated    SupportChat[]           @relation("SupportChatInitiator")
   support_messages           SupportMessage[]
-  admin_notes                AdminNote[]              @relation("AdminNotes")
-  admin_created_projects     RfqProject[]             @relation("AdminCreatedProjects")
-  invoices_proposed          Invoice[]
-  i18n_values_created        I18nValue[]              @relation("I18nValueCreatedBy")
-  i18n_values_published      I18nValue[]              @relation("I18nValuePublishedBy")
-  i18n_audit_logs_changed    I18nAuditLog[]           @relation("I18nAuditLogsChangedBy")
+  payment_methods            UserPaymentMethod[]
   company                    Company?                @relation(fields: [company_id], references: [id])
 
   @@index([company_id], map: "idx_users_company")
@@ -184,6 +179,7 @@ model RfqProject {
   project_type            String?         @db.VarChar(50)
   brand_company_id        Int
   created_by_user_id      Int
+  created_by_admin_id     Int?
   category_id             Int
   title                   String          @db.VarChar(255)
   description             String          @db.Text
@@ -209,15 +205,12 @@ model RfqProject {
   awarded_proposal        Proposal?       @relation("AwardedProposal", fields: [awarded_proposal_id], references: [id])
   brand_company           Company         @relation("BrandCompany", fields: [brand_company_id], references: [id])
   category                ServiceCategory @relation(fields: [category_id], references: [id])
-  created_by_admin_id     Int?
   created_by              User            @relation(fields: [created_by_user_id], references: [id])
-  created_by_admin        User?           @relation("AdminCreatedProjects", fields: [created_by_admin_id], references: [id])
 
   @@index([brand_company_id], map: "idx_brand")
   @@index([category_id], map: "idx_category")
   @@index([awarded_proposal_id], map: "rfq_projects_awarded_proposal_id_fkey")
   @@index([created_by_user_id], map: "rfq_projects_created_by_user_id_fkey")
-  @@index([created_by_admin_id], map: "rfq_projects_created_by_admin_id_fkey")
   @@map("rfq_projects")
 }
 
@@ -300,11 +293,10 @@ model Contract {
   milestones              ContractMilestone[]
   brand_company           Company             @relation("ContractBrand", fields: [brand_company_id], references: [id])
   manufacturer_company    Company             @relation("ContractManufacturer", fields: [manufacturer_company_id], references: [id])
-  proposal                Proposal?           @relation(fields: [proposal_id], references: [id])
+  proposal                Proposal?           @relation(fields: [proposal_id], references: [id], onDelete: Restrict)
   rfq_project             RfqProject          @relation(fields: [rfq_id], references: [id])
   conversations           Conversation[]
   payments                Payment[]
-  invoices                Invoice[]
   reviews                 Review[]
 
   @@index([proposal_id], map: "contracts_proposal_id_fkey")
@@ -355,7 +347,6 @@ model Conversation {
   rfq_project             RfqProject?        @relation(fields: [rfq_id], references: [id])
   target_company          Company?           @relation("ConvAdminTarget", fields: [target_company_id], references: [id], onDelete: Cascade)
   messages                Message[]
-  invoices                Invoice[]
 
   @@index([contract_id], map: "conversations_contract_id_fkey")
   @@index([initiated_by_user_id], map: "conversations_initiated_by_user_id_fkey")
@@ -385,20 +376,21 @@ model Message {
   @@index([sender_user_id], map: "messages_sender_user_id_fkey")
   @@map("messages")
 }
+
 model SupportChat {
-  id                       Int                @id @default(autoincrement())
-  initiated_by_user_id     Int
-  admin_user_id            Int?
-  subject                  String             @db.VarChar(255)
-  message                  String             @db.Text
-  status                   SupportChatStatus  @default(pending)
-  accepted_at              DateTime?
-  closed_at                DateTime?
-  created_at               DateTime           @default(now())
-  updated_at               DateTime           @updatedAt
-  initiated_by             User               @relation("SupportChatInitiator", fields: [initiated_by_user_id], references: [id], onDelete: Cascade)
-  admin_user               User?              @relation("SupportChatAdmin", fields: [admin_user_id], references: [id], onDelete: Cascade)
-  support_messages         SupportMessage[]
+  id                   Int               @id @default(autoincrement())
+  initiated_by_user_id Int
+  admin_user_id        Int?
+  subject              String            @db.VarChar(255)
+  message              String            @db.Text
+  status               SupportChatStatus @default(pending)
+  accepted_at          DateTime?
+  closed_at            DateTime?
+  created_at           DateTime          @default(now())
+  updated_at           DateTime          @updatedAt
+  admin_user           User?             @relation("SupportChatAdmin", fields: [admin_user_id], references: [id], onDelete: Cascade)
+  initiated_by         User              @relation("SupportChatInitiator", fields: [initiated_by_user_id], references: [id], onDelete: Cascade)
+  support_messages     SupportMessage[]
 
   @@index([status], map: "idx_status")
   @@index([admin_user_id], map: "idx_admin_user")
@@ -407,18 +399,19 @@ model SupportChat {
 }
 
 model SupportMessage {
-  id              Int          @id @default(autoincrement())
+  id              Int         @id @default(autoincrement())
   support_chat_id Int
   sender_user_id  Int
-  content         String       @db.Text
-  created_at      DateTime     @default(now())
-  support_chat    SupportChat  @relation(fields: [support_chat_id], references: [id], onDelete: Cascade)
-  sender          User         @relation(fields: [sender_user_id], references: [id], onDelete: Cascade)
+  content         String      @db.Text
+  created_at      DateTime    @default(now())
+  sender          User        @relation(fields: [sender_user_id], references: [id], onDelete: Cascade)
+  support_chat    SupportChat @relation(fields: [support_chat_id], references: [id], onDelete: Cascade)
 
   @@index([support_chat_id], map: "idx_support_chat")
   @@index([sender_user_id], map: "idx_sender")
   @@map("support_messages")
 }
+
 model Review {
   id                  Int      @id @default(autoincrement())
   contract_id         Int
@@ -477,25 +470,22 @@ model Invoice {
   contract_id              Int
   conversation_id          Int?
   production_cost          Decimal       @db.Decimal(10, 2)
-  shipping_cost            Decimal       @default(0) @db.Decimal(10, 2)
-  other_costs              Decimal       @default(0) @db.Decimal(10, 2)
+  shipping_cost            Decimal       @default(0.00) @db.Decimal(10, 2)
+  other_costs              Decimal       @default(0.00) @db.Decimal(10, 2)
   subtotal                 Decimal       @db.Decimal(10, 2)
-  tax_rate                 Decimal       @default(0) @db.Decimal(5, 2)
-  tax_amount               Decimal       @default(0) @db.Decimal(10, 2)
-  platform_fee_rate        Decimal       @default(3) @db.Decimal(5, 2)
-  platform_fee             Decimal       @default(0) @db.Decimal(10, 2)
+  tax_rate                 Decimal       @default(0.00) @db.Decimal(5, 2)
+  tax_amount               Decimal       @default(0.00) @db.Decimal(10, 2)
+  platform_fee_rate        Decimal       @default(3.00) @db.Decimal(5, 2)
+  platform_fee             Decimal       @default(0.00) @db.Decimal(10, 2)
   total                    Decimal       @db.Decimal(10, 2)
   currency                 String        @default("EUR") @db.VarChar(3)
   status                   InvoiceStatus @default(draft)
   proposed_by              Int
   notes                    String?       @db.Text
-  paid_at                  DateTime?
+  paid_at                  DateTime?     @db.DateTime(0)
   stripe_payment_intent_id String?       @db.VarChar(255)
-  created_at               DateTime      @default(now())
-  updated_at               DateTime      @updatedAt
-  contract                 Contract      @relation(fields: [contract_id], references: [id])
-  conversation             Conversation? @relation(fields: [conversation_id], references: [id])
-  proposed_by_user         User          @relation(fields: [proposed_by], references: [id])
+  created_at               DateTime      @default(now()) @db.DateTime(0)
+  updated_at               DateTime      @default(now()) @updatedAt @db.DateTime(0)
 
   @@index([contract_id], map: "idx_invoice_contract")
   @@index([conversation_id], map: "idx_invoice_conversation")
@@ -521,13 +511,13 @@ model Notification {
 }
 
 model AdminNote {
-  id          Int      @id @default(autoincrement())
-  entity_type String   @db.VarChar(50)
+  id          Int       @id @default(autoincrement())
+  entity_type String    @db.VarChar(50)
   entity_id   Int
   admin_id    Int
-  content     String   @db.Text
-  created_at  DateTime @default(now())
-  admin       User     @relation("AdminNotes", fields: [admin_id], references: [id], onDelete: Cascade)
+  content     String    @db.Text
+  created_at  DateTime? @default(now()) @db.DateTime(0)
+  admin       User      @relation("AdminNotes", fields: [admin_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_admin_notes_user")
 
   @@index([entity_type, entity_id], map: "idx_entity")
   @@index([admin_id], map: "idx_admin")
@@ -535,14 +525,13 @@ model AdminNote {
 }
 
 model I18nKey {
-  id          Int            @id @default(autoincrement())
-  key_path    String         @unique @db.VarChar(255)
-  module      String         @db.VarChar(100)
-  description String?        @db.Text
-  is_active   Boolean        @default(true)
-  created_at  DateTime       @default(now())
-  updated_at  DateTime       @updatedAt
-  values      I18nValue[]
+  id          Int      @id @default(autoincrement())
+  key_path    String   @unique(map: "key_path") @db.VarChar(255)
+  module      String   @db.VarChar(100)
+  description String?  @db.Text
+  is_active   Boolean  @default(true)
+  created_at  DateTime @default(now()) @db.DateTime(0)
+  updated_at  DateTime @default(now()) @updatedAt @db.DateTime(0)
 
   @@index([module], map: "idx_i18n_keys_module")
   @@index([is_active], map: "idx_i18n_keys_active")
@@ -550,20 +539,17 @@ model I18nKey {
 }
 
 model I18nValue {
-  id                   Int         @id @default(autoincrement())
+  id                   Int       @id @default(autoincrement())
   key_id               Int
-  locale               String      @db.VarChar(5)
-  value_text           String      @db.MediumText
-  status               String      @db.VarChar(20)
-  version              Int         @default(1)
+  locale               String    @db.VarChar(5)
+  value_text           String    @db.MediumText
+  status               String    @db.VarChar(20)
+  version              Int       @default(1)
   created_by_user_id   Int
   published_by_user_id Int?
-  published_at         DateTime?
-  created_at           DateTime    @default(now())
-  updated_at           DateTime    @updatedAt
-  key                  I18nKey     @relation(fields: [key_id], references: [id])
-  created_by_user      User        @relation("I18nValueCreatedBy", fields: [created_by_user_id], references: [id], onDelete: Cascade)
-  published_by_user    User?       @relation("I18nValuePublishedBy", fields: [published_by_user_id], references: [id], onDelete: Cascade)
+  published_at         DateTime? @db.DateTime(0)
+  created_at           DateTime  @default(now()) @db.DateTime(0)
+  updated_at           DateTime  @default(now()) @updatedAt @db.DateTime(0)
 
   @@unique([key_id, locale, version], map: "uq_i18n_values_key_locale_version")
   @@index([key_id, locale], map: "idx_i18n_values_key_locale")
@@ -579,8 +565,7 @@ model I18nAuditLog {
   new_value          String   @db.MediumText
   action             String   @db.VarChar(20)
   changed_by_user_id Int
-  created_at         DateTime @default(now())
-  changed_by_user    User     @relation("I18nAuditLogsChangedBy", fields: [changed_by_user_id], references: [id], onDelete: Cascade)
+  created_at         DateTime @default(now()) @db.DateTime(0)
 
   @@index([key_path, locale], map: "idx_i18n_audit_key_locale")
   @@index([created_at], map: "idx_i18n_audit_created")
@@ -588,20 +573,20 @@ model I18nAuditLog {
 }
 
 model SubscriptionPlan {
-  id                  Int                  @id @default(autoincrement())
-  slug                SubscriptionPlanType @unique
-  name                String               @db.VarChar(100)
-  target_role         UserRole
-  price_usd           Decimal              @db.Decimal(8, 2)
-  max_active_projects Int                  @default(-1)
-  priority_matching   Boolean              @default(false)
-  verified_badge      Boolean              @default(false)
-  production_tracking Boolean              @default(false)
-  dedicated_support   Boolean              @default(false)
-  stripe_price_id     String?              @db.VarChar(255)
-  is_active           Boolean              @default(true)
-  created_at          DateTime             @default(now())
-  updated_at          DateTime             @updatedAt
+  id                  Int                            @id @default(autoincrement())
+  slug                SubscriptionPlanType           @unique
+  name                String                         @db.VarChar(100)
+  target_role         subscription_plans_target_role
+  price_usd           Decimal                        @db.Decimal(8, 2)
+  max_active_projects Int                            @default(-1)
+  priority_matching   Boolean                        @default(false)
+  verified_badge      Boolean                        @default(false)
+  production_tracking Boolean                        @default(false)
+  dedicated_support   Boolean                        @default(false)
+  stripe_price_id     String?                        @db.VarChar(255)
+  is_active           Boolean                        @default(true)
+  created_at          DateTime                       @default(now())
+  updated_at          DateTime                       @updatedAt
   subscriptions       Subscription[]
 
   @@map("subscription_plans")
@@ -728,13 +713,6 @@ enum CompanyType {
   manufacturer
 }
 
-enum UserRole {
-  brand
-  manufacturer
-  admin
-  super_admin
-}
-
 enum RfqStatus {
   draft
   open
@@ -857,4 +835,16 @@ enum chat_appeals_status {
   pending
   approved
   rejected
+}
+
+enum subscription_plans_target_role {
+  brand
+  manufacturer
+  admin
+}
+
+enum users_role {
+  brand
+  manufacturer
+  admin
 }
