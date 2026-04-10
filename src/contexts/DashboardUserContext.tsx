@@ -11,6 +11,7 @@ export interface DashboardUser {
   role: string;
   avatarUrl?: string | null;
   companyLogoUrl?: string | null;
+  companyName?: string | null;
   phone?: string;
   hasPaymentMethod?: boolean;
 }

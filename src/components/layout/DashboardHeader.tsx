@@ -57,6 +57,7 @@ interface DashboardHeaderProps {
     role: string;
     avatarUrl?: string | null;
     companyLogoUrl?: string | null;
+    companyName?: string | null;
   };
   onMenuClick: () => void;
 }
