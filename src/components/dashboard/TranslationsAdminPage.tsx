@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Languages, Loader2, Save, Search, ShieldAlert, UploadCloud } from "lucide-react";
+import { Eye, Languages, Loader2, Save, Search, ShieldAlert, UploadCloud } from "lucide-react";
 import { toast } from "sonner";
 import { useDashboardUser } from "@/contexts/DashboardUserContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EmptyState } from "@/components/shared/empty-state";
+import { TranslationContextPreview } from "@/components/dashboard/TranslationContextPreview";
 
 type LocaleCode = "es" | "en" | "fr";
 
@@ -43,6 +44,96 @@ interface TranslationDetailResponse {
 }
 
 const locales: LocaleCode[] = ["es", "en", "fr"];
+
+// ---------------------------------------------------------------------------
+// Preview helpers
+// ---------------------------------------------------------------------------
+
+type PreviewType = "heading" | "subheading" | "paragraph" | "button" | "badge" | "label" | "placeholder" | "error" | "success" | "link" | "text";
+
+function detectPreviewType(keyPath: string): { type: PreviewType; label: string } {
+  const last = (keyPath.split(".").pop() ?? "").toLowerCase();
+  const full = keyPath.toLowerCase();
+
+  if ((last === "title" || last.endsWith("title")) && !last.includes("subtitle")) return { type: "heading", label: "Título" };
+  if (last.includes("subtitle") || last.includes("heading")) return { type: "subheading", label: "Subtítulo" };
+  if (last.includes("button") || last.includes("btn") || last.includes("cta") || last.startsWith("action")) return { type: "button", label: "Botón" };
+  if (last.includes("badge") || last.includes("tag") || last.includes("status")) return { type: "badge", label: "Badge" };
+  if (last.includes("label")) return { type: "label", label: "Etiqueta" };
+  if (last.includes("placeholder")) return { type: "placeholder", label: "Placeholder" };
+  if (last.includes("error") || last.includes("invalid") || full.includes("required")) return { type: "error", label: "Error" };
+  if (last.includes("success") || last.includes("confirm") || last.includes("saved")) return { type: "success", label: "Éxito" };
+  if (last.includes("link") || last.includes("href")) return { type: "link", label: "Enlace" };
+  if (last.includes("description") || last.includes("text") || last.includes("body") || last.includes("content") || last.includes("message") || last.includes("helper") || last.includes("info")) return { type: "paragraph", label: "Párrafo" };
+  return { type: "text", label: "Texto" };
+}
+
+function PreviewRender({ type, text }: { type: PreviewType; text: string }) {
+  const display = text.trim() || "—";
+  switch (type) {
+    case "heading":
+      return <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{display}</h2>;
+    case "subheading":
+      return <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200">{display}</h3>;
+    case "button":
+      return (
+        <span className="inline-flex cursor-default items-center justify-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm">
+          {display}
+        </span>
+      );
+    case "badge":
+      return (
+        <span className="inline-flex items-center rounded-full bg-brand-100 px-2.5 py-0.5 text-xs font-medium text-brand-700 dark:bg-brand-900 dark:text-brand-300">
+          {display}
+        </span>
+      );
+    case "label":
+      return <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{display}</span>;
+    case "placeholder":
+      return (
+        <div className="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm italic text-gray-400 dark:border-slate-700 dark:bg-slate-700 dark:text-gray-500">
+          {display}
+        </div>
+      );
+    case "error":
+      return <p className="flex items-center gap-1.5 text-sm text-red-600 dark:text-red-400"><span aria-hidden>⚠</span>{display}</p>;
+    case "success":
+      return <p className="flex items-center gap-1.5 text-sm text-green-600 dark:text-green-400"><span aria-hidden>✓</span>{display}</p>;
+    case "link":
+      return (
+        <span className="cursor-default text-sm text-brand-600 underline underline-offset-2 dark:text-brand-400">
+          {display}
+        </span>
+      );
+    case "paragraph":
+      return <p className="whitespace-pre-wrap text-sm text-gray-600 dark:text-gray-400">{display}</p>;
+    default:
+      return <p className="text-sm text-gray-700 dark:text-gray-300">{display}</p>;
+  }
+}
+
+function TranslationPreviewPanel({ keyPath, text, locale }: { keyPath: string; text: string; locale: LocaleCode }) {
+  const { type, label } = detectPreviewType(keyPath);
+  return (
+    <div className="rounded-xl border-2 border-dashed border-brand-200 bg-gradient-to-br from-brand-50/60 to-white p-4 dark:border-brand-800/60 dark:from-brand-950/20 dark:to-slate-900">
+      <div className="mb-3 flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          <Eye className="h-3.5 w-3.5 text-brand-500" />
+          <span className="text-xs font-semibold text-brand-600 dark:text-brand-400">Vista previa en vivo</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-medium uppercase tracking-wider text-gray-400">{locale}</span>
+          <Badge variant="secondary" className="text-[10px]">{label}</Badge>
+        </div>
+      </div>
+      <div className="flex min-h-[56px] items-center justify-center rounded-lg bg-white px-4 py-3 shadow-sm ring-1 ring-gray-100 dark:bg-slate-800 dark:ring-slate-700">
+        <PreviewRender type={type} text={text} />
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 
 export default function TranslationsAdminPage() {
   const t = useTranslations("TranslationsAdmin");
@@ -356,6 +447,12 @@ export default function TranslationsAdminPage() {
                         />
                       </div>
 
+                      <TranslationPreviewPanel
+                        keyPath={detail.key.keyPath}
+                        text={draftValues[locale]}
+                        locale={locale}
+                      />
+
                       <div className="flex flex-wrap gap-3">
                         <Button
                           onClick={() => saveDraft(locale)}
@@ -373,6 +470,11 @@ export default function TranslationsAdminPage() {
                           {publishingLocale === locale ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UploadCloud className="mr-2 h-4 w-4" />}
                           {t("publish")}
                         </Button>
+                        <TranslationContextPreview
+                          keyPath={detail.key.keyPath}
+                          editedValue={draftValues[locale]}
+                          locale={locale}
+                        />
                       </div>
 
                       <div className="grid gap-4 lg:grid-cols-2">
