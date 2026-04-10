@@ -34,9 +34,9 @@ export async function POST(request: NextRequest) {
     const { email, password } = parsed.data;
 
     // Find user by email (include company info)
-    const user = await queryOne<User & { company_name?: string; email_verified: boolean }>(
+    const user = await queryOne<User & { company_name?: string; company_logo_url?: string | null; email_verified: boolean }>(
       `SELECT u.id, u.email, u.password, u.first_name, u.last_name, u.role, u.company_id,
-              u.email_verified, c.name as company_name
+              u.avatar_url, u.email_verified, c.name AS company_name, c.logo_url AS company_logo_url
        FROM users u LEFT JOIN companies c ON u.company_id = c.id
        WHERE u.email = ?`,
       [email.toLowerCase()]
@@ -98,6 +98,8 @@ export async function POST(request: NextRequest) {
           lastName: user.last_name,
           role: user.role || "brand",
           companyId: user.company_id ?? null,
+          avatarUrl: (user as { avatar_url?: string | null }).avatar_url ?? null,
+          companyLogoUrl: (user as { company_logo_url?: string | null }).company_logo_url ?? null,
           companyName: (user as { company_name?: string }).company_name,
         },
         token,

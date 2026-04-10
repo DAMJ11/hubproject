@@ -9,6 +9,8 @@ export interface DashboardUser {
   firstName: string;
   lastName: string;
   role: string;
+  avatarUrl?: string | null;
+  companyLogoUrl?: string | null;
   phone?: string;
   hasPaymentMethod?: boolean;
 }

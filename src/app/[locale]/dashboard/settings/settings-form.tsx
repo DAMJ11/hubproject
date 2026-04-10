@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Mail, Phone, Lock, Bell, Shield, Eye, EyeOff, Save, Camera, Loader2, DollarSign } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { useDashboardUser } from "@/contexts/DashboardUserContext";
 import type { SettingsUser } from "@/lib/data/settings";
 
 interface SettingsFormProps {
@@ -17,6 +18,7 @@ interface SettingsFormProps {
 
 export default function SettingsForm({ user }: SettingsFormProps) {
   const t = useTranslations("Settings");
+  const { user: currentUser, setUser } = useDashboardUser();
 
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -83,6 +85,17 @@ export default function SettingsForm({ user }: SettingsFormProps) {
       if (!json.success) {
         toast.error(json.message || t("profileSaveError"));
         return;
+      }
+
+      if (currentUser && setUser) {
+        setUser({
+          ...currentUser,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          avatarUrl: formData.avatarUrl ?? null,
+        });
       }
 
       toast.success(t("profileSaved"));

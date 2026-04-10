@@ -4,9 +4,27 @@ import { query } from "@/lib/db";
 
 const VALID_ENTITY_TYPES = ["rfq_project", "company", "user", "contract"];
 
+async function ensureAdminNotesTable() {
+  await query(
+    `CREATE TABLE IF NOT EXISTS admin_notes (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      entity_type VARCHAR(50) NOT NULL,
+      entity_id INT NOT NULL,
+      admin_id INT NOT NULL,
+      content TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      INDEX idx_entity (entity_type, entity_id),
+      INDEX idx_admin (admin_id),
+      CONSTRAINT fk_admin_notes_user FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`
+  );
+}
+
 // GET /api/admin/notes?entity_type=rfq_project&entity_id=123
 export async function GET(request: Request) {
   try {
+    await ensureAdminNotesTable();
+
     const user = await getCurrentUser();
     if (!user || (user.role !== "admin" && user.role !== "super_admin")) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
@@ -44,6 +62,8 @@ export async function GET(request: Request) {
 // POST /api/admin/notes
 export async function POST(request: Request) {
   try {
+    await ensureAdminNotesTable();
+
     const user = await getCurrentUser();
     if (!user || (user.role !== "admin" && user.role !== "super_admin")) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
@@ -79,6 +99,8 @@ export async function POST(request: Request) {
 // DELETE /api/admin/notes?id=123
 export async function DELETE(request: Request) {
   try {
+    await ensureAdminNotesTable();
+
     const user = await getCurrentUser();
     if (!user || (user.role !== "admin" && user.role !== "super_admin")) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });

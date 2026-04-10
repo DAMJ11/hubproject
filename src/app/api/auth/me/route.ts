@@ -55,6 +55,17 @@ export async function GET() {
       [user.id]
     );
 
+    const avatarAndCompanyRow = await queryOne<{
+      avatar_url: string | null;
+      company_logo_url: string | null;
+    }>(
+      `SELECT u.avatar_url, c.logo_url AS company_logo_url
+       FROM users u
+       LEFT JOIN companies c ON u.company_id = c.id
+       WHERE u.id = ? LIMIT 1`,
+      [user.id]
+    );
+
     return NextResponse.json<AuthResponse>(
       {
         success: true,
@@ -66,6 +77,8 @@ export async function GET() {
           lastName: user.lastName,
           role: user.role,
           companyId: user.companyId ?? null,
+          avatarUrl: avatarAndCompanyRow?.avatar_url ?? null,
+          companyLogoUrl: avatarAndCompanyRow?.company_logo_url ?? null,
           ...(hasPaymentMethod !== undefined && { hasPaymentMethod }),
           preferredCurrency: preferredCurrencyRow?.preferred_currency ?? "USD",
         },

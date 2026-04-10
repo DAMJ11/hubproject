@@ -8,6 +8,7 @@ export interface User {
   last_name: string;
   role: UserRole;
   company_id: number | null;
+  avatar_url: string | null;
   terms_accepted: boolean;
   created_at: Date;
   updated_at: Date;
@@ -36,6 +37,8 @@ export interface UserResponse {
   lastName: string;
   role: UserRole;
   companyId: number | null;
+  avatarUrl?: string | null;
+  companyLogoUrl?: string | null;
   companyName?: string;
   hasPaymentMethod?: boolean;
   preferredCurrency?: string;

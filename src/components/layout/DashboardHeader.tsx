@@ -15,6 +15,7 @@ import {
   CheckCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import {
   DropdownMenu,
@@ -54,6 +55,8 @@ interface DashboardHeaderProps {
     firstName: string;
     lastName: string;
     role: string;
+    avatarUrl?: string | null;
+    companyLogoUrl?: string | null;
   };
   onMenuClick: () => void;
 }
@@ -363,9 +366,18 @@ export default function DashboardHeader({ user, onMenuClick }: DashboardHeaderPr
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="flex items-center gap-2 px-2">
-              <div className="w-9 h-9 bg-brand-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-medium text-sm">{getInitials()}</span>
-              </div>
+              <Avatar className="w-9 h-9">
+                {user.avatarUrl || user.companyLogoUrl ? (
+                  <AvatarImage
+                    src={user.avatarUrl ?? user.companyLogoUrl ?? ""}
+                    alt={user.avatarUrl ? `${user.firstName} ${user.lastName}` : `${user.companyName ?? "Company"} logo`}
+                  />
+                ) : (
+                  <AvatarFallback className="bg-brand-600 text-white font-medium text-sm">
+                    {getInitials()}
+                  </AvatarFallback>
+                )}
+              </Avatar>
               <div className="hidden sm:block text-left">
                 <p className="text-sm font-medium text-gray-900 dark:text-white">{user.firstName}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">{roleLabel}</p>
