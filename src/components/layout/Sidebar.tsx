@@ -28,6 +28,7 @@ import {
   Languages,
   Palette,
   Image as ImageIcon,
+  DollarSign,
 } from "lucide-react";
 import Image from "next/image";
 import { images } from "@/lib/images";
@@ -109,6 +110,8 @@ const designerNavItems: NavItem[] = [
   { key: "portfolio", href: "/dashboard/designer-portfolio", icon: ImageIcon },
   { key: "designOpportunities", href: "/dashboard/design-opportunities", icon: Leaf },
   { key: "designProposals", href: "/dashboard/design-proposals", icon: Send },
+  { key: "earnings", href: "/dashboard/earnings", icon: DollarSign },
+  { key: "payoutSettings", href: "/dashboard/payout-settings", icon: CreditCard },
   { key: "messages", href: "/dashboard/messages", icon: MessageSquare },
   { key: "reviews", href: "/dashboard/reviews", icon: Star },
   { key: "settings", href: "/dashboard/settings", icon: Settings },
