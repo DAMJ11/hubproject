@@ -1,6 +1,6 @@
 import { query } from "@/lib/db";
 
-export type NotificationType = "message" | "payment" | "review" | "system" | "rfq" | "proposal" | "contract";
+export type NotificationType = "message" | "payment" | "review" | "system" | "rfq" | "proposal" | "contract" | "design_project" | "design_proposal";
 
 export interface CreateNotificationInput {
   userId: number;

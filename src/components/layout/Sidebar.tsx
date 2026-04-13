@@ -72,6 +72,7 @@ const adminNavItems: NavItem[] = [
 const brandNavItems: NavItem[] = [
   { key: "home", href: "/dashboard", icon: Home },
   { key: "myProjects", href: "/dashboard/projects", icon: FileText },
+  { key: "designProjects", href: "/dashboard/design-projects", icon: Palette },
   { key: "myContracts", href: "/dashboard/contracts", icon: Briefcase },
   { key: "manufacturers", href: "/dashboard/manufacturers", icon: Factory },
   { key: "messages", href: "/dashboard/messages", icon: MessageSquare },

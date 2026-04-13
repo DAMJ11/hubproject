@@ -66,6 +66,8 @@ model Company {
   reviews_received              Review[]                    @relation("ReviewedCompany")
   reviews_given                 Review[]                    @relation("ReviewerCompany")
   rfq_projects_as_brand         RfqProject[]                @relation("BrandCompany")
+  design_projects_as_brand      DesignProject[]             @relation("DesignProjectBrand")
+  design_projects_as_manufacturer DesignProject[]           @relation("DesignProjectManufacturer")
   users                         User[]
   designer_profiles              DesignerProfile[]
 
@@ -104,6 +106,7 @@ model User {
   proposals                  Proposal[]
   reviews                    Review[]
   rfq_projects               RfqProject[]
+  design_projects            DesignProject[]
   strategy_call_purchases    StrategyCallPurchase[]
   subscriptions              Subscription[]
   support_chats_admin        SupportChat[]           @relation("SupportChatAdmin")
@@ -803,6 +806,25 @@ enum NotificationType {
   rfq
   proposal
   contract
+  design_project
+  design_proposal
+}
+
+enum DesignProjectStatus {
+  draft
+  open
+  in_progress
+  review
+  completed
+  cancelled
+}
+
+enum DesignProposalStatus {
+  submitted
+  shortlisted
+  accepted
+  rejected
+  withdrawn
 }
 
 enum SubscriptionPlanType {
@@ -888,6 +910,8 @@ model DesignerProfile {
   user            User                    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   company         Company?                @relation(fields: [company_id], references: [id])
   portfolio_items DesignerPortfolioItem[]
+  design_proposals DesignProposal[]
+  assigned_projects DesignProject[]       @relation("AssignedDesigner")
 
   @@index([company_id], map: "idx_designer_company")
   @@index([slug], map: "idx_designer_slug")
@@ -919,4 +943,60 @@ model DesignerPortfolioItem {
   @@index([category], map: "idx_portfolio_category")
   @@index([is_public], map: "idx_portfolio_public")
   @@map("designer_portfolio_items")
+}
+
+model DesignProject {
+  id                   Int                 @id @default(autoincrement())
+  code                 String              @unique @db.VarChar(20)
+  brand_company_id     Int
+  created_by_user_id   Int
+  designer_profile_id  Int?
+  category             String              @db.VarChar(50)
+  title                String              @db.VarChar(255)
+  description          String              @db.Text
+  reference_images     String?             @db.Text
+  season               String?             @db.VarChar(30)
+  budget_min           Decimal?            @db.Decimal(12, 2)
+  budget_max           Decimal?            @db.Decimal(12, 2)
+  currency             String              @default("USD") @db.VarChar(3)
+  deadline             DateTime?           @db.Date
+  proposals_deadline   DateTime?           @db.Date
+  status               DesignProjectStatus @default(draft)
+  manufacturer_id      Int?
+  proposals_count      Int                 @default(0)
+  created_at           DateTime            @default(now())
+  updated_at           DateTime            @updatedAt
+
+  brand_company    Company          @relation("DesignProjectBrand", fields: [brand_company_id], references: [id])
+  created_by       User             @relation(fields: [created_by_user_id], references: [id])
+  designer_profile DesignerProfile? @relation("AssignedDesigner", fields: [designer_profile_id], references: [id])
+  manufacturer     Company?         @relation("DesignProjectManufacturer", fields: [manufacturer_id], references: [id])
+  proposals        DesignProposal[]
+
+  @@index([brand_company_id], map: "idx_dp_brand")
+  @@index([designer_profile_id], map: "idx_dp_designer")
+  @@index([status], map: "idx_dp_status")
+  @@index([created_by_user_id], map: "idx_dp_created_by")
+  @@map("design_projects")
+}
+
+model DesignProposal {
+  id                   Int                  @id @default(autoincrement())
+  design_project_id    Int
+  designer_profile_id  Int
+  price                Decimal              @db.Decimal(12, 2)
+  estimated_days       Int
+  concept_notes        String?              @db.Text
+  sample_attachments   String?              @db.Text
+  status               DesignProposalStatus @default(submitted)
+  submitted_at         DateTime             @default(now())
+  responded_at         DateTime?
+
+  design_project   DesignProject   @relation(fields: [design_project_id], references: [id], onDelete: Cascade)
+  designer_profile DesignerProfile @relation(fields: [designer_profile_id], references: [id], onDelete: Cascade)
+
+  @@unique([design_project_id, designer_profile_id], map: "idx_dp_unique_proposal")
+  @@index([designer_profile_id], map: "idx_dpr_designer")
+  @@index([status], map: "idx_dpr_status")
+  @@map("design_proposals")
 }
