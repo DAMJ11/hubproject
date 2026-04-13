@@ -32,11 +32,12 @@ export default async function CTASection() {
                     {t("cta")}
                   </Button>
                 </Link>
-                <Link href="/#strategy-call">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-[#9279BA] rounded-lg px-8 h-12 font-semibold inline-flex items-center gap-2">
-                    <Phone className="w-4 h-4" />
-                    {t("ctaOptionalCall")}
-                  </Button>
+                <Link
+                  href="/#strategy-call"
+                  className="inline-flex h-12 items-center gap-2 rounded-lg border border-white bg-transparent px-8 font-semibold text-white transition-colors duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                >
+                  <Phone className="w-4 h-4" />
+                  {t("ctaOptionalCall")}
                 </Link>
               </div>
             </div>
