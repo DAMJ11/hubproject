@@ -67,6 +67,7 @@ model Company {
   reviews_given                 Review[]                    @relation("ReviewerCompany")
   rfq_projects_as_brand         RfqProject[]                @relation("BrandCompany")
   users                         User[]
+  designer_profiles              DesignerProfile[]
 
   @@map("companies")
 }
@@ -110,6 +111,7 @@ model User {
   support_messages           SupportMessage[]
   payment_methods            UserPaymentMethod[]
   company                    Company?                @relation(fields: [company_id], references: [id])
+  designer_profile           DesignerProfile?
 
   @@index([company_id], map: "idx_users_company")
   @@index([stripe_customer_id], map: "idx_users_stripe")
@@ -711,6 +713,7 @@ model chat_violations {
 enum CompanyType {
   brand
   manufacturer
+  designer_studio
 }
 
 enum RfqStatus {
@@ -840,11 +843,44 @@ enum chat_appeals_status {
 enum subscription_plans_target_role {
   brand
   manufacturer
+  designer
   admin
 }
 
 enum users_role {
   brand
   manufacturer
+  designer
   admin
+}
+
+model DesignerProfile {
+  id                  Int      @id @default(autoincrement())
+  user_id             Int      @unique
+  company_id          Int?
+  display_name        String   @db.VarChar(200)
+  bio                 String?  @db.Text
+  specialties         String?  @db.Text
+  years_experience    Int?
+  portfolio_url       String?  @db.VarChar(500)
+  instagram_handle    String?  @db.VarChar(120)
+  behance_url         String?  @db.VarChar(500)
+  location_city       String?  @db.VarChar(100)
+  location_country    String   @default("Colombia") @db.VarChar(100)
+  availability_status String   @default("available") @db.VarChar(20)
+  hourly_rate_min     Decimal? @db.Decimal(10, 2)
+  hourly_rate_max     Decimal? @db.Decimal(10, 2)
+  currency            String   @default("USD") @db.VarChar(3)
+  is_verified         Boolean  @default(false)
+  rating_avg          Decimal  @default(0) @db.Decimal(3, 2)
+  projects_completed  Int      @default(0)
+  is_freelance        Boolean  @default(true)
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  user    User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  company Company? @relation(fields: [company_id], references: [id])
+
+  @@index([company_id], map: "idx_designer_company")
+  @@map("designer_profiles")
 }

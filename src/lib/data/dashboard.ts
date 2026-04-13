@@ -78,6 +78,15 @@ async function getStatsForRole(user: JWTPayload): Promise<StatItem[]> {
     ];
   }
 
+  // designer
+  if (user.role === "designer") {
+    return [
+      { label: "stats.portfolio", value: 0, icon: "FileText" },
+      { label: "stats.activeProposals", value: 0, icon: "Send" },
+      { label: "stats.messages", value: 0, icon: "MessageSquare" },
+    ];
+  }
+
   // manufacturer
   const [opportunities, proposals, contracts] = await Promise.all([
     queryOne<{ count: number }>("SELECT COUNT(*) as count FROM rfq_projects WHERE status = 'open'"),

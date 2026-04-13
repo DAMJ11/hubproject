@@ -65,10 +65,11 @@ export async function POST(request: NextRequest) {
 
       // Create company
       const slug = companyName.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+      const companyType = role === "designer" ? "designer_studio" : role;
       const [companyResult] = await connection.execute(
         `INSERT INTO companies (name, slug, type, email, is_active, created_at, updated_at)
          VALUES (?, ?, ?, ?, TRUE, NOW(), NOW())`,
-        [companyName.trim(), slug + "-" + Date.now(), role, email.toLowerCase()]
+        [companyName.trim(), slug + "-" + Date.now(), companyType, email.toLowerCase()]
       );
       const companyId = (companyResult as { insertId: number }).insertId;
 
@@ -98,6 +99,15 @@ export async function POST(request: NextRequest) {
             [insertId, plan.id, now.toISOString().slice(0, 19).replace("T", " "), periodEnd.toISOString().slice(0, 19).replace("T", " ")]
           );
         }
+      }
+
+      // Create designer profile for designers
+      if (role === "designer") {
+        await connection.execute(
+          `INSERT INTO designer_profiles (user_id, company_id, display_name, is_freelance, location_country, created_at, updated_at)
+           VALUES (?, ?, ?, TRUE, 'Colombia', NOW(), NOW())`,
+          [insertId, companyId, `${firstName} ${lastName}`]
+        );
       }
 
       await connection.commit();

@@ -26,6 +26,8 @@ import {
   Building2,
   MessageSquare,
   Languages,
+  Palette,
+  Image as ImageIcon,
 } from "lucide-react";
 import Image from "next/image";
 import { images } from "@/lib/images";
@@ -100,6 +102,17 @@ const manufacturerNavItems: NavItem[] = [
   { key: "settings", href: "/dashboard/settings", icon: Settings },
 ];
 
+const designerNavItems: NavItem[] = [
+  { key: "home", href: "/dashboard", icon: Home },
+  { key: "designerProfile", href: "/dashboard/designer-profile", icon: Palette },
+  { key: "portfolio", href: "/dashboard/designer-portfolio", icon: ImageIcon },
+  { key: "designOpportunities", href: "/dashboard/design-opportunities", icon: Leaf },
+  { key: "designProposals", href: "/dashboard/design-proposals", icon: Send },
+  { key: "messages", href: "/dashboard/messages", icon: MessageSquare },
+  { key: "reviews", href: "/dashboard/reviews", icon: Star },
+  { key: "settings", href: "/dashboard/settings", icon: Settings },
+];
+
 export default function Sidebar({
   isOpen,
   isMobile = false,
@@ -121,7 +134,9 @@ export default function Sidebar({
     ? adminNavItems
     : userRole === "manufacturer"
       ? manufacturerNavItems
-      : brandNavItems;
+      : userRole === "designer"
+        ? designerNavItems
+        : brandNavItems;
 
   const toggleExpand = (name: string) => {
     setExpandedItems((prev) =>
@@ -213,19 +228,21 @@ export default function Sidebar({
             href={
               isAdminLike ? "/dashboard/rfq"
                 : userRole === "brand" ? "/dashboard/projects/new"
+                : userRole === "designer" ? "/dashboard/designer-portfolio"
                 : "/dashboard/opportunities"
             }
             onClick={() =>
               handleNavigate(
                 isAdminLike ? "/dashboard/rfq"
                   : userRole === "brand" ? "/dashboard/projects/new"
+                  : userRole === "designer" ? "/dashboard/designer-portfolio"
                   : "/dashboard/opportunities"
               )
             }
           >
             <Button className="w-full bg-brand-600 hover:bg-brand-700 text-white rounded-lg flex items-center justify-center gap-2">
               <Plus className="w-4 h-4" />
-              {isAdminLike ? t("ctaAdmin") : userRole === "brand" ? t("ctaBrand") : t("ctaManufacturer")}
+              {isAdminLike ? t("ctaAdmin") : userRole === "brand" ? t("ctaBrand") : userRole === "designer" ? t("ctaDesigner") : t("ctaManufacturer")}
             </Button>
           </Link>
         </div>
@@ -235,24 +252,26 @@ export default function Sidebar({
             href={
               isAdminLike ? "/dashboard/rfq"
                 : userRole === "brand" ? "/dashboard/projects/new"
+                : userRole === "designer" ? "/dashboard/designer-portfolio"
                 : "/dashboard/opportunities"
             }
             onClick={() =>
               handleNavigate(
                 isAdminLike ? "/dashboard/rfq"
                   : userRole === "brand" ? "/dashboard/projects/new"
+                  : userRole === "designer" ? "/dashboard/designer-portfolio"
                   : "/dashboard/opportunities"
               )
             }
           >
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button size="icon" className="bg-brand-600 hover:bg-brand-700 text-white rounded-lg" aria-label={isAdminLike ? t("ctaAdminAria") : userRole === "brand" ? t("ctaBrandAria") : t("ctaManufacturerAria")}>
+                <Button size="icon" className="bg-brand-600 hover:bg-brand-700 text-white rounded-lg" aria-label={isAdminLike ? t("ctaAdminAria") : userRole === "brand" ? t("ctaBrandAria") : userRole === "designer" ? t("ctaDesignerAria") : t("ctaManufacturerAria")}>
                   <Plus className="w-5 h-5" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right">
-                {isAdminLike ? t("ctaAdmin") : userRole === "brand" ? t("ctaBrand") : t("ctaManufacturer")}
+                {isAdminLike ? t("ctaAdmin") : userRole === "brand" ? t("ctaBrand") : userRole === "designer" ? t("ctaDesigner") : t("ctaManufacturer")}
               </TooltipContent>
             </Tooltip>
           </Link>
@@ -286,10 +305,12 @@ export default function Sidebar({
                   ? "bg-purple-100 text-purple-700"
                   : userRole === "manufacturer"
                     ? "bg-emerald-100 text-emerald-700"
-                    : "bg-blue-100 text-blue-700"
+                    : userRole === "designer"
+                      ? "bg-amber-100 text-amber-700"
+                      : "bg-blue-100 text-blue-700"
             }`}
           >
-            {userRole === "super_admin" ? t("roleSuperAdmin") : userRole === "admin" ? t("roleAdmin") : userRole === "manufacturer" ? t("roleManufacturer") : t("roleBrand")}
+            {userRole === "super_admin" ? t("roleSuperAdmin") : userRole === "admin" ? t("roleAdmin") : userRole === "manufacturer" ? t("roleManufacturer") : userRole === "designer" ? t("roleDesigner") : t("roleBrand")}
           </span>
         </div>
       )}

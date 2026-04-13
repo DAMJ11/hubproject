@@ -1,4 +1,4 @@
-export type UserRole = "brand" | "manufacturer" | "admin" | "super_admin";
+export type UserRole = "brand" | "manufacturer" | "designer" | "admin" | "super_admin";
 
 export interface User {
   id: number;
@@ -19,7 +19,7 @@ export interface UserCreateInput {
   password: string;
   firstName: string;
   lastName: string;
-  role: "brand" | "manufacturer";
+  role: "brand" | "manufacturer" | "designer";
   companyName: string;
   termsAccepted: boolean;
 }

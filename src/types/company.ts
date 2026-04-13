@@ -2,7 +2,7 @@
 // Company Types
 // =============================================
 
-export type CompanyType = "brand" | "manufacturer";
+export type CompanyType = "brand" | "manufacturer" | "designer_studio";
 
 export interface Company {
   id: number;

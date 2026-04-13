@@ -552,6 +552,9 @@
     "lookingForFactories": "Je cherche des fabricants",
     "iAmManufacturer": "Je suis un fabricant",
     "offeringProduction": "J'offre la production",
+    "iAmDesigner": "Je suis designer",
+    "offeringDesign": "J'offre des services de design",
+    "studioName": "Nom du studio / freelance",
     "brandName": "Nom de votre marque",
     "companyName": "Nom de votre entreprise",
     "email": "Email",
@@ -676,7 +679,11 @@
       "companyDetails": "Données d'entreprise",
       "capabilities": "Capacités",
       "certifications": "Portfolio",
-      "greenScore": "Score Vert"
+      "greenScore": "Score Vert",
+      "designerProfile": "Profil Designer",
+      "portfolio": "Portfolio",
+      "designOpportunities": "Opportunités de Design",
+      "designProposals": "Propositions de Design"
     },
     "closeMenu": "Fermer le menu",
     "collapseMenu": "Réduire le menu",
@@ -691,9 +698,12 @@
     "ctaAdmin": "Voir Projets",
     "ctaBrand": "Publier Projet",
     "ctaManufacturer": "Voir Opportunités",
+    "ctaDesigner": "Mon Portfolio",
     "ctaAdminAria": "Voir projets",
     "ctaBrandAria": "Publier projet",
-    "ctaManufacturerAria": "Voir opportunités"
+    "ctaManufacturerAria": "Voir opportunités",
+    "ctaDesignerAria": "Voir mon portfolio",
+    "roleDesigner": "Designer"
   },
   "DashboardHeader": {
     "dashboard": "Tableau de bord",
@@ -832,7 +842,8 @@
       "contracts": "Contrats",
       "messages": "Messages",
       "opportunities": "Opportunités",
-      "activeProposals": "Propositions actives"
+      "activeProposals": "Propositions actives",
+      "portfolio": "Éléments du portfolio"
     },
     "status": {
       "draft": "Brouillon",
@@ -850,12 +861,14 @@
     "subtitle": {
       "admin": "Voici un résumé de l'activité de FashionsDen.",
       "brand": "Quel projet de mode avez-vous besoin de produire aujourd'hui ?",
-      "manufacturer": "Consultez les opportunités disponibles."
+      "manufacturer": "Consultez les opportunités disponibles.",
+      "designer": "Gérez votre portfolio de design et trouvez des opportunités."
     },
     "button": {
       "createProject": "Créer un projet",
       "viewOpportunities": "Voir les opportunités",
-      "viewProjects": "Voir les projets"
+      "viewProjects": "Voir les projets",
+      "viewPortfolio": "Mon Portfolio"
     },
     "section": {
       "recentProjects": "Projets récents",

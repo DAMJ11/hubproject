@@ -213,7 +213,7 @@ export default function RegisterPage() {
             <form onSubmit={rhfSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t("accountType")}<span className="text-red-400">*</span></label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-3 gap-3">
                   <button
                     type="button"
                     onClick={() => setValue("role", "brand")}
@@ -232,12 +232,21 @@ export default function RegisterPage() {
                     <span className="text-sm font-semibold">{t("iAmManufacturer")}</span>
                     <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t("offeringProduction")}</span>
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => setValue("role", "designer")}
+                    className={`p-3 rounded-lg border-2 text-center transition-all ${watchedRole === "designer" ? "border-brand-600 bg-landing-light dark:bg-brand-950/30 text-brand-600" : "border-gray-200 dark:border-slate-600 hover:border-gray-300 text-gray-600 dark:text-gray-300"}`}
+                  >
+                    <span className="block text-lg mb-1">🎨</span>
+                    <span className="text-sm font-semibold">{t("iAmDesigner")}</span>
+                    <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t("offeringDesign")}</span>
+                  </button>
                 </div>
               </div>
 
               <div className="space-y-2">
                 <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {watchedRole === "brand" ? t("brandName") : t("companyName")}<span className="text-red-400">*</span>
+                  {watchedRole === "brand" ? t("brandName") : watchedRole === "designer" ? t("studioName") : t("companyName")}<span className="text-red-400">*</span>
                 </label>
                 <Input id="companyName" {...register("companyName")} className={`h-11 rounded-lg border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-brand-600 focus:ring-brand-600 ${fieldErrors.companyName ? "border-red-400" : ""}`} />
                 {fieldErrors.companyName && <p className="text-xs text-red-400">{fieldErrors.companyName.message}</p>}

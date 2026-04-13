@@ -552,6 +552,9 @@
     "lookingForFactories": "Looking for factories",
     "iAmManufacturer": "I am a manufacturer",
     "offeringProduction": "Offering production",
+    "iAmDesigner": "I am a designer",
+    "offeringDesign": "Offering design services",
+    "studioName": "Studio / freelance name",
     "brandName": "Brand name",
     "companyName": "Company name",
     "email": "Email",
@@ -676,7 +679,11 @@
       "companyDetails": "Company Details",
       "capabilities": "Capabilities",
       "certifications": "Portfolio",
-      "greenScore": "Green Score"
+      "greenScore": "Green Score",
+      "designerProfile": "Designer Profile",
+      "portfolio": "Portfolio",
+      "designOpportunities": "Design Opportunities",
+      "designProposals": "Design Proposals"
     },
     "closeMenu": "Close menu",
     "collapseMenu": "Collapse menu",
@@ -691,9 +698,12 @@
     "ctaAdmin": "View Projects",
     "ctaBrand": "Publish Project",
     "ctaManufacturer": "View Opportunities",
+    "ctaDesigner": "My Portfolio",
     "ctaAdminAria": "View projects",
     "ctaBrandAria": "Publish project",
-    "ctaManufacturerAria": "View opportunities"
+    "ctaManufacturerAria": "View opportunities",
+    "ctaDesignerAria": "View my portfolio",
+    "roleDesigner": "Designer"
   },
   "DashboardHeader": {
     "dashboard": "Dashboard",
@@ -832,7 +842,8 @@
       "contracts": "Contracts",
       "messages": "Messages",
       "opportunities": "Opportunities",
-      "activeProposals": "Active Proposals"
+      "activeProposals": "Active Proposals",
+      "portfolio": "Portfolio Items"
     },
     "status": {
       "draft": "Draft",
@@ -850,12 +861,14 @@
     "subtitle": {
       "admin": "Here's a summary of FashionsDen activity.",
       "brand": "What fashion project do you need to produce today?",
-      "manufacturer": "Check available opportunities."
+      "manufacturer": "Check available opportunities.",
+      "designer": "Manage your design portfolio and find opportunities."
     },
     "button": {
       "createProject": "Create Project",
       "viewOpportunities": "View Opportunities",
-      "viewProjects": "View Projects"
+      "viewProjects": "View Projects",
+      "viewPortfolio": "My Portfolio"
     },
     "section": {
       "recentProjects": "Recent Projects",

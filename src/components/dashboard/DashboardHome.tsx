@@ -16,6 +16,7 @@ import {
   Loader2,
   CheckCircle,
   Calendar,
+  Palette,
 } from "lucide-react";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { formatCurrency } from "@/lib/currency";
@@ -69,6 +70,7 @@ export default function DashboardHome({ user, initialStats, initialProjects }: D
   const locale = useLocale();
   const isBrand = user.role === "brand";
   const isManufacturer = user.role === "manufacturer";
+  const isDesigner = user.role === "designer";
   const isAdmin = user.role === "admin" || user.role === "super_admin";
   const stats = initialStats;
   const projects = initialProjects;
@@ -143,7 +145,9 @@ export default function DashboardHome({ user, initialStats, initialProjects }: D
               ? t("subtitle.admin")
               : isBrand
                 ? t("subtitle.brand")
-                : t("subtitle.manufacturer")}
+                : isDesigner
+                  ? t("subtitle.designer")
+                  : t("subtitle.manufacturer")}
           </p>
         </div>
         {isBrand && (
@@ -157,6 +161,13 @@ export default function DashboardHome({ user, initialStats, initialProjects }: D
           <Link href="/dashboard/opportunities">
             <Button className="bg-brand-600 hover:bg-brand-700 text-white">
               <Search className="w-4 h-4 mr-2" /> {t("button.viewOpportunities")}
+            </Button>
+          </Link>
+        )}
+        {isDesigner && (
+          <Link href="/dashboard/designer-portfolio">
+            <Button className="bg-brand-600 hover:bg-brand-700 text-white">
+              <Palette className="w-4 h-4 mr-2" /> {t("button.viewPortfolio")}
             </Button>
           </Link>
         )}

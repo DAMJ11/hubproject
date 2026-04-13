@@ -22,7 +22,7 @@ export const registerBase = z.object({
     .string()
     .min(1, "El apellido es requerido")
     .max(100, "Apellido demasiado largo"),
-  role: z.enum(["brand", "manufacturer"]),
+  role: z.enum(["brand", "manufacturer", "designer"]),
   companyName: z
     .string()
     .min(2, "El nombre de empresa debe tener al menos 2 caracteres")
