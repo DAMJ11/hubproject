@@ -859,12 +859,16 @@ model DesignerProfile {
   user_id             Int      @unique
   company_id          Int?
   display_name        String   @db.VarChar(200)
+  slug                String?  @unique @db.VarChar(200)
   bio                 String?  @db.Text
   specialties         String?  @db.Text
   years_experience    Int?
   portfolio_url       String?  @db.VarChar(500)
   instagram_handle    String?  @db.VarChar(120)
   behance_url         String?  @db.VarChar(500)
+  dribbble_url        String?  @db.VarChar(500)
+  linkedin_url        String?  @db.VarChar(500)
+  website_url         String?  @db.VarChar(500)
   location_city       String?  @db.VarChar(100)
   location_country    String   @default("Colombia") @db.VarChar(100)
   availability_status String   @default("available") @db.VarChar(20)
@@ -873,14 +877,46 @@ model DesignerProfile {
   currency            String   @default("USD") @db.VarChar(3)
   is_verified         Boolean  @default(false)
   rating_avg          Decimal  @default(0) @db.Decimal(3, 2)
+  total_reviews       Int      @default(0)
   projects_completed  Int      @default(0)
   is_freelance        Boolean  @default(true)
+  avatar_url          String?  @db.MediumText
+  cover_image_url     String?  @db.MediumText
   created_at          DateTime @default(now())
   updated_at          DateTime @updatedAt
 
-  user    User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  company Company? @relation(fields: [company_id], references: [id])
+  user            User                    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  company         Company?                @relation(fields: [company_id], references: [id])
+  portfolio_items DesignerPortfolioItem[]
 
   @@index([company_id], map: "idx_designer_company")
+  @@index([slug], map: "idx_designer_slug")
+  @@index([availability_status], map: "idx_designer_availability")
+  @@index([location_country], map: "idx_designer_location")
   @@map("designer_profiles")
+}
+
+model DesignerPortfolioItem {
+  id                   Int      @id @default(autoincrement())
+  designer_profile_id  Int
+  title                String   @db.VarChar(255)
+  description          String?  @db.Text
+  category             String   @db.VarChar(50)
+  season               String?  @db.VarChar(30)
+  year                 Int?
+  image_url            String?  @db.MediumText
+  tags                 String?  @db.Text
+  is_public            Boolean  @default(true)
+  views_count          Int      @default(0)
+  likes_count          Int      @default(0)
+  sort_order           Int      @default(0)
+  created_at           DateTime @default(now())
+  updated_at           DateTime @updatedAt
+
+  designer_profile DesignerProfile @relation(fields: [designer_profile_id], references: [id], onDelete: Cascade)
+
+  @@index([designer_profile_id], map: "idx_portfolio_designer")
+  @@index([category], map: "idx_portfolio_category")
+  @@index([is_public], map: "idx_portfolio_public")
+  @@map("designer_portfolio_items")
 }
