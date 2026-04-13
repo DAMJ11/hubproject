@@ -123,6 +123,7 @@ export async function POST(request: NextRequest) {
     const session = await stripe.checkout.sessions.create({
       customer: stripeCustomerId,
       mode: "payment",
+      payment_method_types: ["card"],
       line_items: [{ price: priceId, quantity: 1 }],
       metadata: {
         user_id: String(user.id),

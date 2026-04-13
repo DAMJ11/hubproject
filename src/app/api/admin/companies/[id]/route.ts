@@ -78,16 +78,25 @@ export async function GET(
       [companyId]
     );
 
-    // Get stats
+    // Get stats using the actual foreign keys defined in the schema.
+    const isBrand = company.type === "brand";
     const [rfqCount, proposalCount, contractCount] = await Promise.all([
       queryOne<{ count: number }>(
-        `SELECT COUNT(*) as count FROM rfq_projects WHERE company_id = ?`,
+        `SELECT COUNT(*) as count FROM rfq_projects WHERE brand_company_id = ?`,
         [companyId]
       ),
-      queryOne<{ count: number }>(
-        `SELECT COUNT(*) as count FROM proposals WHERE company_id = ?`,
-        [companyId]
-      ),
+      isBrand
+        ? queryOne<{ count: number }>(
+            `SELECT COUNT(*) as count
+             FROM proposals p
+             INNER JOIN rfq_projects r ON r.id = p.rfq_id
+             WHERE r.brand_company_id = ?`,
+            [companyId]
+          )
+        : queryOne<{ count: number }>(
+            `SELECT COUNT(*) as count FROM proposals WHERE manufacturer_company_id = ?`,
+            [companyId]
+          ),
       queryOne<{ count: number }>(
         `SELECT COUNT(*) as count FROM contracts WHERE brand_company_id = ? OR manufacturer_company_id = ?`,
         [companyId, companyId]

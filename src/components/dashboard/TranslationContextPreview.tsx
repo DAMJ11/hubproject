@@ -38,6 +38,7 @@ const MODULE_TO_SECTION: Record<string, string> = {
   Pricing: "Pricing",
   FinalCTA: "FinalCTA",
   Footer: "Footer",
+  ForManufacturers: "ForManufacturers",
 };
 
 const SECTION_LABELS: Record<string, string> = {
@@ -52,6 +53,7 @@ const SECTION_LABELS: Record<string, string> = {
   Pricing: "Precios",
   FinalCTA: "CTA Final",
   Footer: "Pie de página",
+  ForManufacturers: "Para Fabricantes",
 };
 
 function getSection(keyPath: string): string | null {

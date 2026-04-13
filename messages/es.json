@@ -34,8 +34,7 @@
     },
     "manufacturerLinks": {
       "0": "Crear perfil de fábrica",
-      "1": "Requisitos de verificación",
-      "2": "Centro de Ayuda"
+      "1": "Centro de Ayuda"
     },
     "legalLinks": {
       "0": "Términos y Condiciones",
@@ -387,7 +386,7 @@
   },
   "ForManufacturers": {
     "heroTitle": "Encuentre Nuevos Clientes Potenciales Y Haga Crecer Su Negocio",
-    "heroSubtitle": "Hazte visible para las marcas en toda Europa.",
+    "heroSubtitle": "Hazte visible para las marcas en todo el mundo.",
     "joinNow": "Únete Ahora",
     "learnMore": "Aprende Más",
     "platformTitle": "El Futuro de la Moda Empieza Aquí",
@@ -884,10 +883,10 @@
     },
     "strategyCall": {
       "bookedTitle": "Strategy Call reservada",
-      "bookedSubtitle": "Tu sesion de 30 minutos esta confirmada",
+      "bookedSubtitle": "Tu sesion de 45 minutos esta confirmada",
       "bookedHint": "Revisa tu correo para los detalles",
       "ctaTitle": "Reservar Strategy Call",
-      "ctaSubtitle": "Sesion de 30 minutos para acelerar tu proceso",
+      "ctaSubtitle": "Sesion de 45 minutos para acelerar tu proceso",
       "ctaButton": "Reservar ahora",
       "processing": "Procesando...",
       "checking": "Revisando tus reservas..."

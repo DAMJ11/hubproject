@@ -5,7 +5,7 @@ import { images } from "@/lib/images";
 
 const serviceHrefs = ["/#servicios", "/#servicios", "/#servicios", "/#servicios", "/#servicios", "/#servicios"];
 const companyHrefs = ["/sobre-nosotros", "/blog", "/para-fabricantes", "/contacto"];
-const manufacturerHrefs = ["/register", "/#manufacturers", "/contacto"];
+const manufacturerHrefs = ["/register", "/contacto"];
 const legalHrefs = ["/terminos", "/privacidad", "/privacidad"];
 
 export default async function Footer() {

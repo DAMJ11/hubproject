@@ -10,9 +10,9 @@ import { Rocket, MessageSquare, Factory } from "lucide-react";
 const stepIcons = [Rocket, MessageSquare, Factory];
 
 const featureImages = [
-  "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=600&h=400&fit=crop",
-  "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=400&fit=crop",
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=600&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&h=400&fit=crop",
 ];
 
 const featureReverse = [false, true, false];
@@ -49,8 +49,8 @@ export default async function ParaFabricantesPage() {
           </div>
           <div className="mt-12 max-w-4xl mx-auto">
             <Image
-              src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=800&h=500&fit=crop"
-              alt="Manufacturing workshop"
+              src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=500&fit=crop"
+              alt="Fashion collection"
               width={800}
               height={500}
               className="rounded-2xl shadow-2xl"
@@ -82,7 +82,7 @@ export default async function ParaFabricantesPage() {
             </div>
             <div className="relative">
               <Image
-                src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=600&h=400&fit=crop"
+                src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=600&h=400&fit=crop"
                 alt="Platform preview"
                 width={600}
                 height={400}

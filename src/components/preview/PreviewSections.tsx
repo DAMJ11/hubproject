@@ -282,13 +282,13 @@ export function PreviewCTA() {
               ))}
             </div>
             <div className="mt-10 flex flex-wrap gap-3">
-              <Button size="lg" className="bg-white text-[#9279BA] hover:bg-white/90 rounded-lg px-8 h-12 font-semibold">
+              <div className="inline-flex h-12 items-center justify-center rounded-lg bg-white px-8 font-semibold text-[#9279BA] shadow-sm">
                 {t("cta")}
-              </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-[#9279BA] rounded-lg px-8 h-12 font-semibold inline-flex items-center gap-2">
-                <Phone className="w-4 h-4" />
+              </div>
+              <div className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-white bg-transparent px-8 font-semibold text-white">
+                <Phone className="h-4 w-4" />
                 {t("ctaOptionalCall")}
-              </Button>
+              </div>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-6">
@@ -302,6 +302,61 @@ export function PreviewCTA() {
         </div>
       </div>
     </section>
+  );
+}
+
+// ─── ForManufacturers ───────────────────────────────────────────────────────
+
+export function PreviewForManufacturers() {
+  const t = useTranslations("ForManufacturers");
+  return (
+    <div className="space-y-16 bg-gradient-to-b from-[#E7DDFF] to-white py-16 dark:from-slate-900 dark:to-slate-800">
+      <section className="container-custom mx-auto px-4 text-center">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#745E96] dark:text-white mb-6">
+          {t("heroTitle")}
+        </h1>
+        <p className="text-lg md:text-xl text-[#9279BA] dark:text-gray-400 max-w-2xl mx-auto mb-8">
+          {t("heroSubtitle")}
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-4">
+          <div className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-[#9279BA] px-8 py-4 text-lg font-medium text-white shadow-sm">
+            {t("joinNow")}
+          </div>
+          <div className="inline-flex min-h-[56px] items-center justify-center rounded-full border-2 border-[#9279BA] bg-transparent px-8 py-4 text-lg font-medium text-[#9279BA]">
+            {t("learnMore")}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 md:py-24 bg-white dark:bg-slate-900">
+        <div className="container-custom mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-[#745E96] dark:text-white leading-tight">
+                {t("platformTitle")}
+              </h2>
+              <p className="text-[#9279BA] dark:text-gray-400 leading-relaxed text-base">
+                {t("platformText1")}
+              </p>
+              <p className="text-[#9279BA] dark:text-gray-400 leading-relaxed text-base">
+                {t("platformText2")}
+              </p>
+              <div className="mt-8">
+                <button
+                  type="button"
+                  className="bg-[#9279BA] hover:bg-[#745E96] text-white rounded-full px-8 py-6 text-lg font-medium transition-colors duration-200"
+                >
+                  {t("joinNow")}
+                </button>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="h-[400px] w-full rounded-2xl bg-slate-200" />
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
 
@@ -446,6 +501,7 @@ export const SECTION_MAP: Record<string, React.ComponentType> = {
   Pricing: PreviewPricing,
   FinalCTA: PreviewFinalCTA,
   Footer: PreviewFooter,
+  ForManufacturers: PreviewForManufacturers,
 };
 
 /** Ordered list matching the landing page layout */
@@ -461,4 +517,5 @@ export const SECTION_ORDER = [
   "Pricing",
   "FinalCTA",
   "Footer",
+  "ForManufacturers",
 ];

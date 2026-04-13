@@ -34,8 +34,7 @@
     },
     "manufacturerLinks": {
       "0": "Create factory profile",
-      "1": "Verification requirements",
-      "2": "Help Center"
+      "1": "Help Center"
     },
     "legalLinks": {
       "0": "Terms and Conditions",
@@ -387,7 +386,7 @@
   },
   "ForManufacturers": {
     "heroTitle": "Find New Leads And Grow Your Business",
-    "heroSubtitle": "Get visible to brands across Europe.",
+    "heroSubtitle": "Get visible to brands around the world.",
     "joinNow": "Join Now",
     "learnMore": "Learn More",
     "platformTitle": "The Future of Fashion Starts Here",
@@ -886,10 +885,10 @@
     },
     "strategyCall": {
       "bookedTitle": "Strategy Call booked",
-      "bookedSubtitle": "Your 30-minute session is confirmed",
+      "bookedSubtitle": "Your 45-minute session is confirmed",
       "bookedHint": "Check your email for details",
       "ctaTitle": "Book a Strategy Call",
-      "ctaSubtitle": "30-minute session to accelerate your process",
+      "ctaSubtitle": "45-minute session to accelerate your process",
       "ctaButton": "Book now",
       "processing": "Processing...",
       "checking": "Checking your bookings..."

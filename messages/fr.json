@@ -34,8 +34,7 @@
     },
     "manufacturerLinks": {
       "0": "Creer un profil usine",
-      "1": "Exigences de verification",
-      "2": "Centre d'aide"
+      "1": "Centre d'aide"
     },
     "legalLinks": {
       "0": "Conditions generales",
@@ -387,7 +386,7 @@
   },
   "ForManufacturers": {
     "heroTitle": "Trouvez de nouveaux prospects et developpez votre activite",
-    "heroSubtitle": "Soyez visible aupres des marques dans toute l'Europe.",
+    "heroSubtitle": "Soyez visible aupres des marques dans le monde entier.",
     "joinNow": "Rejoignez maintenant",
     "learnMore": "En savoir plus",
     "platformTitle": "L'Avenir de la Mode Commence Ici",
@@ -886,10 +885,10 @@
     },
     "strategyCall": {
       "bookedTitle": "Strategy Call reservee",
-      "bookedSubtitle": "Votre session de 30 minutes est confirmee",
+      "bookedSubtitle": "Votre session de 45 minutes est confirmee",
       "bookedHint": "Verifiez votre email pour les details",
       "ctaTitle": "Reserver une Strategy Call",
-      "ctaSubtitle": "Session de 30 minutes pour accelerer votre processus",
+      "ctaSubtitle": "Session de 45 minutes pour accelerer votre processus",
       "ctaButton": "Reserver",
       "processing": "Traitement...",
       "checking": "Verification de vos reservations..."
